@@ -8,7 +8,9 @@
     "build": "tsc && cp -r views dist/",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint '{src,test}/**/*'",
-    "sonarqube": "sonar-scanner",
+    "sonarqube-base-branch": "sonar-scanner",
+    "sonarqube-pull-request": "sonar-scanner -D sonar.pullrequest.base=main",
+    "sonarqube": "branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD); if [[ $branch == \"main\" ]]; then npm run sonarqube-base-branch; else npm run sonarqube-pull-request; fi;",
     "coverage": ""
   },
   "repository": {
