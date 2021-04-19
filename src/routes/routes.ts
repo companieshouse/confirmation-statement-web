@@ -1,7 +1,8 @@
 import { Router } from "express";
-import * as indexRoute from "../controllers/index.controller";
+import * as startRoute from "../controllers/start.controller";
 
 
 export const router: Router = Router();
 
-router.get("/", indexRoute.get);
+
+router.get("/", startRoute.get);

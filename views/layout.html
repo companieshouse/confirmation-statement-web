@@ -1,0 +1,85 @@
+{% extends "govuk/template.njk" %}
+
+{% from "govuk/components/details/macro.njk"    import govukDetails %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/phase-banner/macro.njk"   import govukPhaseBanner %}
+
+{% block head %}
+
+  <!--[if !IE 8]><!-->
+  <link href="{{assetPath}}/stylesheets/govuk-frontend/v3.11.0/govuk-frontend-3.11.0.min.css" rel="stylesheet" />
+  <!--<![endif]-->
+
+  {# For Internet Explorer 8, you need to compile specific stylesheet #}
+  {# see https://github.com/alphagov/govuk-frontend/blob/master/docs/installation/supporting-internet-explorer-8.md #}
+  <!--[if IE 8]>
+  <link href="{{assetPath}}/stylesheets/govuk-frontend/v3.11.0/govuk-frontend-ie8-3.11.0.min.css" rel="stylesheet" />
+  <![endif]-->
+
+  {# For older browsers to allow them to recognise HTML5 elements such as `<header>` #}
+  <!--[if lt IE 9]>
+  <script src="/html5-shiv/html5shiv.js"></script>
+  <![endif]-->
+
+{% endblock %}
+
+{% block bodyStart %}
+{% endblock %}
+
+{% block header %}
+  {{ govukHeader({
+    homepageUrl: "/confirmation-statement",
+    serviceName: "File a confirmation statement",
+    serviceUrl: "/confirmation-statement",
+    containerClasses: "govuk-width-container"})
+  }}
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "alpha"
+    },
+    html: 'This is a new service - Help us improve it by providing <a class="govuk-link" href="#" target="_blank" rel="noopener noreferrer">feedback <span class="govuk-visually-hidden">(This link opens in a new window)</span></a>'
+  }) }}
+  {% block backLink %}
+  {% endblock %}
+{% endblock %}
+
+{% set mainClasses = mainClasses | default("govuk-main-wrapper--auto-spacing govuk-body") %}
+
+{% block footer %}
+  {{ govukFooter({
+    meta: {
+      items: [
+        {
+          href: "http://resources.companieshouse.gov.uk/legal/termsAndConditions.shtml",
+          text: "Policies"
+        },
+        {
+          href: "/help/cookies",
+          text: "Cookies"
+        },
+        {
+          href: "/help/contact-us",
+          text: "Contact us"
+        },
+        {
+          href: "https://developer.companieshouse.gov.uk/",
+          text: "Developers"
+        },
+        {
+          href: "/confirmation-statement/accessibility-statement",
+          text: "Accessibility statement"
+        }
+      ]
+    }
+  }) }}
+{% endblock %}
+
+{% block bodyEnd %}
+  {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
+  <script src="{{assetPath}}/javascripts/govuk-frontend/v3.11.0/govuk-frontend-3.11.0.min.js"></script>
+  <script>window.GOVUKFrontend.initAll()</script>
+  {# {% include "includes/piwik-scripts.html" %} #}
+{% endblock %}
