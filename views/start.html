@@ -8,7 +8,6 @@
   <!-- Blank header with no service name for the start page -->
   {{ govukHeader() }}
 {% endblock %}
-{% block signOut %}{% endblock %}
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -56,7 +55,7 @@
           html: insetHTML
         }) }}
 
-        <a href="/sign-in" role="button" draggable="false" class="govuk-button govuk-button--start govuk-!-margin-top-2 govuk-!-margin-bottom-8" data-module="govuk-button">
+        <a href="#" role="button" draggable="false" class="govuk-button govuk-button--start govuk-!-margin-top-2 govuk-!-margin-bottom-8" data-module="govuk-button">
           Start now
           <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewbox="0 0 33 40" role="presentation" focusable="false">
             <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"></path>
@@ -68,7 +67,7 @@
         <p>
           <a href="https://www.gov.uk/guidance/confirmation-statement-guidance">Read the guidance on filing a confirmation statement</a>, including how to make changes to your company information.</p>
         <p>
-          <a href="/welsh">This service is also available in Welsh.</a>
+          <a href="#">This service is also available in Welsh.</a>
         </p>
         {{ govukDetails({
         summaryText: "Other ways to file a confirmation statement",
@@ -77,6 +76,4 @@
 
       </div>
     </div>
-
-    <a href="/start-2">Version B</a>
   {% endblock %}
