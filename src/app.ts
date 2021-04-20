@@ -1,4 +1,5 @@
 import express from "express";
+import { serviceAvailabilityMiddleware } from "./middleware/service.availability.middleware";
 import * as nunjucks from "nunjucks";
 import * as path from "path";
 import { router } from "./routes/routes";
@@ -24,6 +25,9 @@ app.use(express.urlencoded({ extended: false }));
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "html");
+
+// apply middleware
+app.use(serviceAvailabilityMiddleware);
 
 // apply our default router to /
 app.use("/confirmation-statement", router);

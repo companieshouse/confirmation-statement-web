@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Service offline - File a confirmation statement
+{% endblock %}
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">
+        Sorry, the service is unavailable
+      </h1>
+      <p class="govuk-body-m">You will be able to use the service at a later date.</p>
+
+      {% set fileByPostHTML %}
+      <p>Download and fill in a
+        <a href="https://www.gov.uk/government/publications/confirmation-statement-cs01">confirmation statement form</a>
+        and post it to Companies House - the address is on the form.</p>
+      <p>You’ll need to download and fill in parts 1 to 4 if you’re updating information about your company.</p>
+      <p>It costs £40. Include a cheque with your company number written on the back.</p>
+      {% endset %}
+
+      {{ govukDetails({
+        summaryText: "Other ways to apply",
+        html: fileByPostHTML
+      }) }}
+
+    </div>
+  </div>
+{% endblock %}
