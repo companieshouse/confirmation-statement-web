@@ -18,10 +18,7 @@
       {% endset %}
 
       {% set insetHTML %}
-      <p>Your WebFiling details will not work with this service. You will need to
-        <a
-          href="https://identity.company-information.service.gov.uk/user/register?request=eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwidHlwIjoiSldFIn0..CqLAjmGq1VFW8Jm8gxMj_Q.paWnr2eJYpBc2a4Q5i1K2vOzQcQ-Tnsn2N8ffb_4fiAjlNWRnWnoKGUI6txYapz-vUn_3-0VxK5n5VIhq4avJbWB3CcB98YVBfAD2lVc_SoTcyf-t8QY2PtfUI4vO3Cws8JoPIqQaBP2GT5bABduaGHbMFotpRtne5sRIR-uP5XgWP4tTtB9z4sTYy6M6aIyw7qdQfQx7QLDxY--mj7ZIYUF5FBgTH4qLldqoZYKI0Xr-kgH05oMDVIDrs38VTCELe9KGr3zEi7ihqV1xj2EVed5mnWv7c_r8OqxILST6xihQdYO-carv25oprMJWm3MGyZvpWjzOsmcDLftvpOosEo_XZjHxXog0QjtBMXbnRyBbukExNlcaNoIfrQ5MCyAZTiDlzdK6kQ5bz5S65sJZ_mUL6CaQ4R0GmzTjb_TI-csPZI8TWhnsmVlxHjzzI9Gdr-8bTdJE0O7AMvfn1OfCZbLN6paRx-LnDxO0gARMD3AeVgW-d5J8UlBJbGo3oe2U15W2_dmnQxBhVU2_tue_3rJNJwGFTr685VSuas3ZOP-N_Hi7qCclNzFhdNKwfzYVe9c_I94S_eOBVNbzXvZsgXnarZsVS-BIAB7oZZ4Z2gpi00ZdZ4XljxzJNvEZUOS9GOxwm2wvaeqpCyfBPb2jSURIPsEEm8OUjXflzZcS4CLRwFX1VarjFA-tvqlaz1NjFNQZbRrrqcJ_4CS8o5To-Ik8Y6VbSk6orpFUJWkfwwg3UsEdf5_PJ2QlT6hJUbDdhVPE-pNQsBSHjKHdxIi8FaDGLkZyXTC8WJGl2EOpRywnhOvYe0Z3ETWDKDj3XsEecOpGDJGOzwldqwbzUFHU6_pauu74cCjk3hf9HqBFEU6itAWV8MHVwT8SnPA0EyH6X8FnMKSPUtMwx4Qlecr-EfPRUKAoqlNgmsgUS6lix0UfwPH25VOUMhmzuZ8A33klDOtbeNfMyfCz34_8DMBRHu81BSj-QCFaxOjmbg9DybwNU0A8VYHyWm06ehgGXEajjsrYrjTH4hXJGVNjYnQJXZAJfvdF2rSfVu6BwVpfpCRE-6Wcj6VfR7t1M0Z5OpEjDNEvx6YbN9SUhNwawZ-7g.qisSdgkYDilrsIt09td5jQ">register a Companies House account</a>
-        if you do not already have one.</p>
+      <p>Your WebFiling details will not work with this service. You will need to register a Companies House account if you do not already have one, which you can do within this service.</p>
       {% endset %}
 
       <h1 class="govuk-heading-xl">
@@ -40,7 +37,7 @@
         <a href="https://ewf.companieshouse.gov.uk//seclogin?tc=1">WebFiling service</a>.</p>
 
       <p>You cannot use this service to make any changes to company information. You should
-        <a href="https://find-and-update.company-information.service.gov.uk/">check the company's details</a>
+        <a href="{{CHS_URL}}">check the company's details</a>
         and update any information that is incorrect or out of date before filing the confirmation statement.
 
         <p class="govuk-body govuk-!-font-weight-bold">To file a confirmation statement, you'll need:</p>
