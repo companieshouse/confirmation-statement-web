@@ -3,6 +3,7 @@ import { serviceAvailabilityMiddleware } from "./middleware/service.availability
 import * as nunjucks from "nunjucks";
 import * as path from "path";
 import { router } from "./routes/routes";
+import * as urls from "./types/page.urls";
 
 const app = express();
 
@@ -30,6 +31,6 @@ app.set("view engine", "html");
 app.use(serviceAvailabilityMiddleware);
 
 // apply our default router to /
-app.use("/confirmation-statement", router);
+app.use(urls.CONFIRMATION_STATEMENT, router);
 
 export default app;
