@@ -16,9 +16,4 @@ describe("start controller tests", function() {
     expect(response.text).to.contain(EXPECTED_TEXT);
   });
 
-  it("should return start page when url ends with slash", async function() {
-    const response = await chai.request(app).get("/confirmation-statement/");
-
-    expect(response.text).to.contain(EXPECTED_TEXT);
-  });
 });
