@@ -4,6 +4,7 @@ import * as nunjucks from "nunjucks";
 import * as path from "path";
 import { router } from "./routes/routes";
 import * as urls from "./types/page.urls";
+import { authenticationMiddleware } from "./middleware/authentication.middleware";
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.set("view engine", "html");
 
 // apply middleware
 app.use(serviceAvailabilityMiddleware);
+app.use(`${urls.CONFIRMATION_STATEMENT}/*`, authenticationMiddleware);
 
 // apply our default router to /
 app.use(urls.CONFIRMATION_STATEMENT, router);
