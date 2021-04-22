@@ -30,7 +30,7 @@ app.set("view engine", "html");
 
 // apply middleware
 app.use(serviceAvailabilityMiddleware);
-app.use(`${urls.CONFIRMATION_STATEMENT}/*`, authenticationMiddleware);
+app.use(`/${urls.CONFIRMATION_STATEMENT}/+/i`, authenticationMiddleware);
 
 // apply our default router to /
 app.use(urls.CONFIRMATION_STATEMENT, router);

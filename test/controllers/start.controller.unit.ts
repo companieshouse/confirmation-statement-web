@@ -1,28 +1,24 @@
-import { NextFunction, Request, Response } from "express";
 import chai from "chai";
 import chaiHttp from "chai-http";
-import sinon from "sinon";
 import decache from "decache";
-decache('../../src/app');
+
 chai.use(chaiHttp);
-const auth = require ("../../src/middleware/authentication.middleware");
-
-// store reference to original function in case you need it:
-const originalAuthMid = auth.authenticationMiddleware
-
-// replace isAdmin method with a stubbed, but don't specify implementation yet
-const authMidStub = sinon.stub(auth, "authenticationMiddleware");
-
+decache('../../src/app');
 import app from "../../src/app";
 
 const expect = chai.expect;
+const EXPECTED_TEXT = "File a confirmation statement";
 
 describe("start controller tests", function() {
   it("should return start page", async function() {
-    auth.authenticationMiddleware.callsFake((req : Request, res: Response, next: NextFunction) => next());
-    const response = await chai.request(app).get("/confirmation-statement/");
+    const response = await chai.request(app).get("/confirmation-statement");
 
-    expect(response.text).to.contain("File a confirmation statement");
+    expect(response.text).to.contain(EXPECTED_TEXT);
   });
 
+  it("should return start page when url ends with slash", async function() {
+    const response = await chai.request(app).get("/confirmation-statement/");
+
+    expect(response.text).to.contain(EXPECTED_TEXT);
+  });
 });
