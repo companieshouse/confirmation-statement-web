@@ -1,24 +1,41 @@
-import chai from "chai";
-import chaiHttp from "chai-http";
-chai.use(chaiHttp);
+jest.mock("ioredis");
+jest.mock("../../src/middleware/authentication.middleware");
+jest.mock("../../src/middleware/session.middleware");
+jest.mock("../../src/utils/feature.flag");
 
+import { NextFunction, Request, Response } from "express";
+import request from "supertest";
 import app from "../../src/app";
+import { authenticationMiddleware } from "../../src/middleware/authentication.middleware";
+import { sessionMiddleware } from "../../src/middleware/session.middleware";
+import { isActiveFeature } from "../../src/utils/feature.flag";
 
-const expect = chai.expect;
+// create a dummy middleware function to use in the mocks
+const dummyMiddleware = (req: Request, res: Response, next: NextFunction) => next();
 
-describe("service availability middleware test", function() {
-  it("should return service offline page", async function() {
-    process.env.SHOW_SERVICE_OFFLINE_PAGE = "true";
-    const response = await chai.request(app).get("/confirmation-statement/");
+// get handles on mocked functions
+const mockAuthenticationMiddleware = authenticationMiddleware as jest.Mock;
+const mockSessionMiddleware = sessionMiddleware as jest.Mock;
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
-    expect(response.text).to.contain("Service offline - File a confirmation statement");
+// tell the mocks what to return
+mockAuthenticationMiddleware.mockImplementation(dummyMiddleware);
+mockSessionMiddleware.mockImplementation(dummyMiddleware);
+
+describe("service.availability.middleware.unit.ts", () => {
+
+  it("should return service offline page", async () => {
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    const response = await request(app).get("/confirmation-statement");
+
+    expect(response.text).toContain("Service offline - File a confirmation statement");
   });
 
-  it("should not return service offline page", async function() {
-    process.env.SHOW_SERVICE_OFFLINE_PAGE = "false";
-    const response = await chai.request(app).get("/confirmation-statement/");
+  it("should not return service offline page", async () => {
+    mockIsActiveFeature.mockReturnValueOnce(false);
+    const response = await request(app).get("/confirmation-statement");
 
-    expect(response.text).to.not.contain("Service offline - File a confirmation statement");
+    expect(response.text).not.toContain("Service offline - File a confirmation statement");
   });
 
 });

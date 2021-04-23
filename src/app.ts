@@ -1,10 +1,13 @@
 import express from "express";
-import { serviceAvailabilityMiddleware } from "./middleware/service.availability.middleware";
 import * as nunjucks from "nunjucks";
 import * as path from "path";
 import { router } from "./routes/routes";
 import * as urls from "./types/page.urls";
+import { serviceAvailabilityMiddleware } from "./middleware/service.availability.middleware";
 import { authenticationMiddleware } from "./middleware/authentication.middleware";
+import { sessionMiddleware } from "./middleware/session.middleware";
+
+import cookieParser from "cookie-parser";
 
 const app = express();
 
@@ -29,7 +32,9 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "html");
 
 // apply middleware
+app.use(cookieParser());
 app.use(serviceAvailabilityMiddleware);
+app.use(`${urls.CONFIRMATION_STATEMENT}*`, sessionMiddleware);
 app.use(`${urls.CONFIRMATION_STATEMENT}/*`, authenticationMiddleware);
 
 // apply our default router to /
