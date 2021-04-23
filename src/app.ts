@@ -1,11 +1,12 @@
 import express from "express";
-import { serviceAvailabilityMiddleware } from "./middleware/service.availability.middleware";
 import * as nunjucks from "nunjucks";
 import * as path from "path";
 import { router } from "./routes/routes";
 import * as urls from "./types/page.urls";
+import { serviceAvailabilityMiddleware } from "./middleware/service.availability.middleware";
 import { authenticationMiddleware } from "./middleware/authentication.middleware";
 import { sessionMiddleware } from "./middleware/session.middleware";
+
 import cookieParser from "cookie-parser";
 
 const app = express();
