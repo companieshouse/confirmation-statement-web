@@ -35,9 +35,10 @@ app.set("view engine", "html");
 app.use(cookieParser());
 app.use(serviceAvailabilityMiddleware);
 app.use(`${urls.CONFIRMATION_STATEMENT}*`, sessionMiddleware);
-app.use(`${urls.CONFIRMATION_STATEMENT}/*`, authenticationMiddleware);
+const regexp = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
+app.use(regexp, authenticationMiddleware);
 
-// apply our default router to /
+// apply our default router to /confirmation-statement
 app.use(urls.CONFIRMATION_STATEMENT, router);
 
 export default app;

@@ -31,6 +31,6 @@ describe("company number controller tests", () => {
       .get("/confirmation-statement/company-number");
 
     expect(response.text).toContain(EXPECTED_TEXT);
-    expect(mockAuthenticationMiddleware).toHaveBeenCalled;
+    expect(mockAuthenticationMiddleware).toHaveBeenCalled();
   });
 });

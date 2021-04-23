@@ -32,7 +32,15 @@ describe("start controller tests", () => {
       .get("/confirmation-statement");
 
     expect(response.text).toContain(EXPECTED_TEXT);
-    expect(mockAuthenticationMiddleware).toHaveBeenCalled;
+    expect(mockAuthenticationMiddleware).not.toHaveBeenCalled();
+  });
+
+  it("should return start page when url has trailing slash", async () => {
+    const response = await request(app)
+      .get("/confirmation-statement/");
+
+    expect(response.text).toContain(EXPECTED_TEXT);
+    expect(mockAuthenticationMiddleware).not.toHaveBeenCalled();
   });
 
 });

@@ -22,7 +22,7 @@ const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation(dummyMiddleware);
 mockSessionMiddleware.mockImplementation(dummyMiddleware);
 
-describe("service.availability.middleware.unit.ts", () => {
+describe("service availability middleware tests", () => {
 
   it("should return service offline page", async () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
