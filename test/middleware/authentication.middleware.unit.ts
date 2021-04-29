@@ -1,7 +1,7 @@
 jest.mock("@companieshouse/web-security-node");
 
 import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { authenticationMiddleware } from "../../src/middleware/authentication.middleware";
 import { ACCESSIBILITY_STATEMENT, CONFIRMATION_STATEMENT } from "../../src/types/page.urls";
 
@@ -15,7 +15,7 @@ mockAuthMiddleware.mockReturnValue(mockAuthReturnedFunction);
 const URL = "/confirmation-statement/something";
 const req: Request = { originalUrl: URL } as Request;
 const res: Response = {} as Response;
-const next: NextFunction = () => { return; };
+const next = jest.fn();
 
 const expectedAuthMiddlewareConfig: AuthOptions = {
   accountWebUrl: "",
@@ -26,6 +26,7 @@ describe("authentication middleware tests", () => {
 
   beforeEach(() => {
     mockAuthMiddleware.mockClear();
+    next.mockClear();
   });
 
   it("should call CH authentication library", () => {
@@ -40,6 +41,7 @@ describe("authentication middleware tests", () => {
     authenticationMiddleware(req, res, next);
 
     expect(mockAuthMiddleware).not.toHaveBeenCalled();
+    expect(next).toHaveBeenCalled();
   });
 
 });
