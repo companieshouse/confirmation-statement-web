@@ -3,6 +3,7 @@ jest.mock("@companieshouse/web-security-node");
 import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
 import { NextFunction, Request, Response } from "express";
 import { authenticationMiddleware } from "../../src/middleware/authentication.middleware";
+import { ACCESSIBILITY_STATEMENT, CONFIRMATION_STATEMENT } from "../../src/types/page.urls";
 
 // get handle on mocked function and create mock function to be returned from calling authMiddleware
 const mockAuthMiddleware = authMiddleware as jest.Mock;
@@ -29,4 +30,12 @@ describe("authentication middleware tests", () => {
     expect(mockAuthMiddleware).toHaveBeenCalledWith(expectedAuthMiddlewareConfig);
     expect(mockAuthReturnedFunction).toHaveBeenCalledWith(req, res, next);
   });
+
+  it("should not call authentication middleware when loading accessibility page", () => {
+    req.originalUrl = CONFIRMATION_STATEMENT + ACCESSIBILITY_STATEMENT;
+    authenticationMiddleware(req, res, next);
+
+    expect(mockAuthMiddleware).toBeCalled;
+  });
+
 });
