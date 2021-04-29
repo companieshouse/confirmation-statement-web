@@ -8,6 +8,7 @@ import { authenticationMiddleware } from "./middleware/authentication.middleware
 import { sessionMiddleware } from "./middleware/session.middleware";
 
 import cookieParser from "cookie-parser";
+import logger from "./utils/logger";
 
 const app = express();
 
@@ -41,4 +42,5 @@ app.use(regexp, authenticationMiddleware);
 // apply our default router to /confirmation-statement
 app.use(urls.CONFIRMATION_STATEMENT, router);
 
+logger.info("Confirmation Statement Web has started");
 export default app;

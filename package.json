@@ -26,6 +26,7 @@
   "homepage": "https://github.com/companieshouse/confirmation-statement-web#readme",
   "dependencies": {
     "@companieshouse/node-session-handler": "^4.1.6",
+    "@companieshouse/structured-logging-node": "^1.0.4",
     "@companieshouse/web-security-node": "^1.0.2",
     "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
