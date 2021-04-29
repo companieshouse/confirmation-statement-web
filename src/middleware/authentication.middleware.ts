@@ -1,7 +1,17 @@
 import { NextFunction, Request, Response } from "express";
 import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
+import { ACCESSIBILITY_STATEMENT, CONFIRMATION_STATEMENT } from "../types/page.urls";
+
+const USER_AUTH_WHITELISTED_URLS: string[] = [
+  CONFIRMATION_STATEMENT + ACCESSIBILITY_STATEMENT,
+  `${CONFIRMATION_STATEMENT + ACCESSIBILITY_STATEMENT}/`
+];
 
 export const authenticationMiddleware = (req: Request, res: Response, next: NextFunction) => {
+
+  if (isWhitelistedUrl(req.originalUrl)) {
+    return next();
+  }
 
   const authMiddlewareConfig: AuthOptions = {
     accountWebUrl: "",
@@ -10,3 +20,7 @@ export const authenticationMiddleware = (req: Request, res: Response, next: Next
 
   return authMiddleware(authMiddlewareConfig)(req, res, next);
 };
+
+function isWhitelistedUrl(url: string): boolean {
+  return USER_AUTH_WHITELISTED_URLS.includes(url);
+}
