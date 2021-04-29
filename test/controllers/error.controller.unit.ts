@@ -12,6 +12,7 @@ describe("error controller test", () => {
     const response = await request(app)
       .get(INCORRECT_URL);
     expect(response.text).toContain(EXPECTED_TEXT);
+    expect(response.status).toEqual(404);
     expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
   });
 });
