@@ -1,3 +1,4 @@
+jest.mock("ioredis");
 jest.mock("../../src/middleware/session.middleware");
 
 import { NextFunction, Request, Response } from "express";
