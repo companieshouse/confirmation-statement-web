@@ -1,5 +1,3 @@
-jest.mock("ioredis");
-
 import mocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
