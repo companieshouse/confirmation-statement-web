@@ -3,6 +3,7 @@ import * as nunjucks from "nunjucks";
 import * as path from "path";
 import { router } from "./routes/routes";
 import * as urls from "./types/page.urls";
+import errorHandler from "./controllers/error.controller";
 import { serviceAvailabilityMiddleware } from "./middleware/service.availability.middleware";
 import { authenticationMiddleware } from "./middleware/authentication.middleware";
 import { sessionMiddleware } from "./middleware/session.middleware";
@@ -40,5 +41,6 @@ app.use(regexp, authenticationMiddleware);
 
 // apply our default router to /confirmation-statement
 app.use(urls.CONFIRMATION_STATEMENT, router);
+app.use(errorHandler);
 
 export default app;
