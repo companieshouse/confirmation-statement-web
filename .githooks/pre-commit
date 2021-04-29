@@ -19,22 +19,14 @@ fi
 
 for FILE in $STAGED_FILES
 do
-  "$ESLINT" "$FILE"
+  "$ESLINT" --fix "$FILE"
 
   if [[ "$?" == 0 ]]; then
     git add $FILE
     printf "\n\r\t\033[32mESLint Passed: $FILE\033[0m\n\r"
   else
-    printf "\t\033[33mAttempting to fix $FILE\033[0m\n\r"
-    "$ESLINT" --fix "$FILE"
-
-    if [[ "$?" == 0 ]]; then
-      git add $FILE
-      printf "\n\r\t\033[32mESLint Fixed: $FILE\033[0m\n\r"
-    else    
-      printf "\t\033[41mESLint Failed: $FILE\033[0m\n\r"
-      PASS=false
-    fi
+    printf "\t\033[41mESLint Failed: $FILE\033[0m\n\r"
+    PASS=false
   fi
 done
 
