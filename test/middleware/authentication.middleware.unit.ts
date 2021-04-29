@@ -27,6 +27,7 @@ describe("authentication middleware tests", () => {
   beforeEach(() => {
     mockAuthMiddleware.mockClear();
     next.mockClear();
+    req.originalUrl = URL;
   });
 
   it("should call CH authentication library", () => {
