@@ -24,6 +24,10 @@ const expectedAuthMiddlewareConfig: AuthOptions = {
 
 describe("authentication middleware tests", () => {
 
+  beforeEach(() => {
+    mockAuthMiddleware.mockClear();
+  });
+
   it("should call CH authentication library", () => {
     authenticationMiddleware(req, res, next);
 
@@ -31,11 +35,11 @@ describe("authentication middleware tests", () => {
     expect(mockAuthReturnedFunction).toHaveBeenCalledWith(req, res, next);
   });
 
-  it("should not call authentication middleware when loading accessibility page", () => {
+  it("should not redirect to sign in when url is on whitelist", () => {
     req.originalUrl = CONFIRMATION_STATEMENT + ACCESSIBILITY_STATEMENT;
     authenticationMiddleware(req, res, next);
 
-    expect(mockAuthMiddleware).toBeCalled;
+    expect(mockAuthMiddleware).not.toHaveBeenCalled();
   });
 
 });
