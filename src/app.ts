@@ -9,6 +9,7 @@ import { authenticationMiddleware } from "./middleware/authentication.middleware
 import { sessionMiddleware } from "./middleware/session.middleware";
 
 import cookieParser from "cookie-parser";
+import logger from "./utils/logger";
 
 const app = express();
 
@@ -43,4 +44,5 @@ app.use(regexp, authenticationMiddleware);
 app.use(urls.CONFIRMATION_STATEMENT, router);
 app.use(errorHandler);
 
+logger.info("Confirmation Statement Web has started");
 export default app;
