@@ -102,14 +102,12 @@
             html: notDueWarningHTML,
             iconFallbackText: "Warning"
           }) }}
-        {% else %}
         {% endif %}
         {% if company.type === "PLC" %}
           {{ govukWarningText({
             html: coTypeWarningHTML,
             conFallbackText: "Warning"
           }) }}
-        {% else %}
         {% endif %}
         {% if company.type === 'PLC' %}
           {{ govukButton({
