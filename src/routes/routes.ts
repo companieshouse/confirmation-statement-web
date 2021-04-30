@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
-import * as startRoute from "../controllers/start.controller";
+import * as confirmCompanyRoute from "../controllers/confirm.company.controller";
 import * as companyNumberRoute from "../controllers/company.number.controller";
+import * as startRoute from "../controllers/start.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 
@@ -21,3 +22,5 @@ router.get("/", startRoute.get);
 router.get(urls.COMPANY_NUMBER, companyNumberRoute.get);
 
 router.get(urls.ACCESSIBILITY_STATEMENT, renderTemplate(Templates.ACCESSIBILITY_STATEMENT));
+
+router.get(urls.CONFIRM_COMPANY, confirmCompanyRoute.get);

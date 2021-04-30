@@ -1,0 +1,129 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Confirm the company
+{% endblock %}
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/company-number"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">Confirm this is the correct company</h1>
+      <h2 class="govuk-heading-l">{{company.name}}</h2>
+      <form action="" method="post">
+
+        {% set notDueWarningHTML %}
+        <p>
+          You are not due to file a confirmation statement. If you file a confirmation statement today, it will show the date as
+          <strong>{{moment}}</strong>
+          and this will change your future review periods.
+          <br><br>You will not need to pay a fee if you file your confirmation statement before
+          <strong>{{company.csDueDate}}</strong>.
+          <br><br>
+          <a href="https://www.youtube.com/watch?v=dxN4djaAE3k">This video explains review periods and payment periods (opens in new tab).</a>
+        </p>
+        {% endset %}
+        {% set coTypeWarningHTML %}
+          This company does not meet all the criteria, you will need to file a confirmation statement using our
+          <a href="https://ewf.companieshouse.gov.uk//seclogin?tc=1">WebFiling service</a>.<br><br>
+          This service can only be used to file confirmation statements for private limited companies of a certain size.
+
+        {% endset %}
+        {{ govukTable({
+          firstCellIsHeader: true,
+          classes: "align-top",
+          rows: [
+            [
+              {
+                text: "Company number"
+              },
+              {
+                text: company.number
+                }
+              ],
+              [
+                {
+                  text: "Status"
+                },
+                {
+                  text: company.status
+                }
+              ],
+              [
+                {
+                  text: "Incorporation date"
+                },
+                {
+                  text: company.incorporationDate
+                }
+              ],
+              [
+                {
+                  text: "Company type"
+                },
+                {
+                  text: company.companyType
+                }
+              ],
+              [
+                {
+                  text: "Registered office address"
+                },
+                {
+                  html: company.address | nl2br
+                }
+              ],
+              [
+                {
+                  text: "Next confirmation statement due by"
+                },
+                {
+                  html: company.csDueDate
+                }
+              ],
+              [
+                {
+                  text: "Last confirmation statement made up to"
+                },
+                {
+                  html: company.csLast
+                }
+              ]
+            ]
+          }) 
+        }}
+        {% if company.csDue === "notdue" %}
+          {{ govukWarningText({
+            html: notDueWarningHTML,
+            iconFallbackText: "Warning"
+          }) }}
+        {% endif %}
+        {% if company.type === "PLC" %}
+          {{ govukWarningText({
+            html: coTypeWarningHTML,
+            conFallbackText: "Warning"
+          }) }}
+        {% endif %}
+        {% if company.type === 'PLC' %}
+          {{ govukButton({
+            text: "Confirm and continue",
+            href: "/use-webfiling"
+          }) }}
+        {% else %}
+          {{ govukButton({
+            text: "Confirm and continue",
+            href: "/authenticate"
+          }) }}
+        {% endif %}
+        <p>
+          <a href="/company-number">Choose a different company</a>
+        </p>
+      </form>
+    </div>
+  </div>
+{% endblock %}
