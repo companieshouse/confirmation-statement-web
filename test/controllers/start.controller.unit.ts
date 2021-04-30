@@ -5,6 +5,13 @@ import app from "../../src/app";
 const EXPECTED_TEXT = "File a confirmation statement";
 
 describe("start controller tests", () => {
+
+  beforeEach(() => {
+    middlewareMocks.mockAuthenticationMiddleware.mockClear();
+    middlewareMocks.mockServiceAvailabilityMiddleware.mockClear();
+    middlewareMocks.mockSessionMiddleware.mockClear();
+  });
+
   it("should return start page", async () => {
     const response = await request(app)
       .get("/confirmation-statement");
