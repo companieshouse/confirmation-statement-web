@@ -2,7 +2,7 @@ import { Templates } from "./template.paths";
 
 const SEPARATOR = "/";
 
-export const ACCESSIBILITY_STATEMENT = "/accessibility-statement";
+export const ACCESSIBILITY_STATEMENT = SEPARATOR + Templates.ACCESSIBILITY_STATEMENT;
 export const CONFIRM_COMPANY = SEPARATOR + Templates.CONFIRM_COMPANY;
 export const CONFIRMATION_STATEMENT = "/confirmation-statement";
 export const COMPANY_NUMBER = "/company-number";
