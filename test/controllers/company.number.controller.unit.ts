@@ -5,6 +5,13 @@ import app from "../../src/app";
 const EXPECTED_LOCATION = "/company-lookup/search?forward=/confirmation-statement/confirm-company?companyNumber=%7BcompanyNumber%7D";
 
 describe("company number controller tests", () => {
+
+  beforeEach(() => {
+    mocks.mockAuthenticationMiddleware.mockClear();
+    mocks.mockServiceAvailabilityMiddleware.mockClear();
+    mocks.mockSessionMiddleware.mockClear();
+  });
+
   it("should return company number page", async () => {
     const response = await request(app)
       .get("/confirmation-statement/company-number");

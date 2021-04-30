@@ -9,6 +9,10 @@ const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 describe("service availability middleware tests", () => {
 
+  beforeEach(() => {
+    mockIsActiveFeature.mockClear();
+  });
+
   it("should return service offline page", async () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
     const response = await request(app).get("/confirmation-statement");
