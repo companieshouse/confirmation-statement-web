@@ -6,6 +6,13 @@ const EXPECTED_TEXT = "Page not found - File a confirmation statement";
 const INCORRECT_URL = "/confirmation-statement/company-numberr";
 
 describe("error controller test", () => {
+
+  beforeEach(() => {
+    mocks.mockAuthenticationMiddleware.mockClear();
+    mocks.mockServiceAvailabilityMiddleware.mockClear();
+    mocks.mockSessionMiddleware.mockClear();
+  });
+
   it("should return page not found screen if page url is not recognised", async () => {
     const response = await request(app)
       .get(INCORRECT_URL);

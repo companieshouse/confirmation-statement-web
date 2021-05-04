@@ -1,4 +1,3 @@
-jest.mock("ioredis");
 jest.mock("../../src/services/company.profile.service");
 
 import mocks from "../mocks/all.middleware.mock";
@@ -14,6 +13,9 @@ describe("Confirm company controller tests", () => {
 
   beforeEach(() => {
     mockGetCompanyProfile.mockClear();
+    mocks.mockAuthenticationMiddleware.mockClear();
+    mocks.mockServiceAvailabilityMiddleware.mockClear();
+    mocks.mockSessionMiddleware.mockClear();
   });
 
   it("Should navigate to confirm company page", async () => {

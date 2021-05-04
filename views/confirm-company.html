@@ -6,7 +6,7 @@
 {% block backLink %}
   {{ govukBackLink({
     text: "Back",
-    href: "/company-number"
+    href: "/confirmation-statement/company-number"
   }) }}
 {% endblock %}
 
@@ -28,75 +28,75 @@
           <a href="https://www.youtube.com/watch?v=dxN4djaAE3k">This video explains review periods and payment periods (opens in new tab).</a>
         </p>
         {% endset %}
+
         {% set coTypeWarningHTML %}
           This company does not meet all the criteria, you will need to file a confirmation statement using our
           <a href="https://ewf.companieshouse.gov.uk//seclogin?tc=1">WebFiling service</a>.<br><br>
           This service can only be used to file confirmation statements for private limited companies of a certain size.
-
         {% endset %}
-        {{ govukTable({
-          firstCellIsHeader: true,
-          classes: "align-top",
+
+        {{ govukSummaryList({
           rows: [
-            [
-              {
+            {
+              key: {
+                classes: "govuk-!-width-full",
                 text: "Company number"
               },
-              {
+              value: {
                 text: company.number
-                }
-              ],
-              [
-                {
-                  text: "Status"
-                },
-                {
-                  text: company.status
-                }
-              ],
-              [
-                {
-                  text: "Incorporation date"
-                },
-                {
-                  text: company.incorporationDate
-                }
-              ],
-              [
-                {
-                  text: "Company type"
-                },
-                {
-                  text: company.companyType
-                }
-              ],
-              [
-                {
-                  text: "Registered office address"
-                },
-                {
-                  html: company.address | nl2br
-                }
-              ],
-              [
-                {
-                  text: "Next confirmation statement due by"
-                },
-                {
-                  html: company.csDueDate
-                }
-              ],
-              [
-                {
-                  text: "Last confirmation statement made up to"
-                },
-                {
-                  html: company.csLast
-                }
-              ]
-            ]
-          }) 
-        }}
+              }
+            },
+            {
+              key: {
+                text: "Status"
+              },
+              value: {
+                text: company.status
+              }
+            },
+            {
+              key: {
+                text: "Incorporation date"
+              },
+              value: {
+                text: company.incorporationDate
+              }
+            },
+            {
+              key: {
+                text: "Company type"
+              },
+              value: {
+                text: company.companyType
+              }
+            },
+            {
+              key: {
+                text: "Registered office address"
+              },
+              value: {
+                html: company.address
+              }
+            },
+            {
+              key: {
+                text: "Next confirmation statement due by"
+              },
+              value: {
+                html: company.csDueDate
+              }
+            },
+            {
+              key: {
+                text: "Last confirmation statement made up to"
+              },
+              value: {
+                html: company.csLast
+              }
+            }
+          ]
+        }) }}
+
         {% if company.csDue === "notdue" %}
           {{ govukWarningText({
             html: notDueWarningHTML,
@@ -116,6 +116,9 @@
           }) }}
         {% else %}
           {{ govukButton({
+            attributes: {
+              id: "submit"
+            },
             text: "Confirm and continue",
             href: "/authenticate"
           }) }}
