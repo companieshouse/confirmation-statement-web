@@ -10,22 +10,21 @@ export const getCompanyProfile = async (companyNumber: string): Promise<CompanyP
   const sdkResponse: Resource<CompanyProfile> = await apiClient.companyProfile.getCompanyProfile(companyNumber);
 
   if (!sdkResponse) {
-    const error = new Error (`Company Profile API returned no response for company number ${companyNumber}`);
-    logger.error(`${error.message} - ${error.stack}`);
-    throw error;
+    return logAndThrowError(new Error (`Company Profile API returned no response for company number ${companyNumber}`));
   }
 
   if (sdkResponse.httpStatusCode >= 400) {
-    const error = new Error (`Http status code ${sdkResponse.httpStatusCode} - Failed to get company profile for company number ${companyNumber}`);
-    logger.error(`${error.message} - ${error.stack}`);
-    throw error;
+    return logAndThrowError(new Error (`Http status code ${sdkResponse.httpStatusCode} - Failed to get company profile for company number ${companyNumber}`));
   }
 
   if (!sdkResponse.resource) {
-    const error = new Error (`Company Profile API returned no resource for company number ${companyNumber}`);
-    logger.error(`${error.message} - ${error.stack}`);
-    throw error;
+    return logAndThrowError(new Error (`Company Profile API returned no resource for company number ${companyNumber}`));
   }
 
   return sdkResponse.resource;
+};
+
+const logAndThrowError = (error: Error) => {
+  logger.error(`${error.message} - ${error.stack}`);
+  throw error;
 };
