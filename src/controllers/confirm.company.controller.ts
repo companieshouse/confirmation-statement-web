@@ -7,6 +7,8 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 
 export const get = async (req: Request, res: Response) => {
   const companyProfile: CompanyProfile = await getCompanyProfile(req.query.companyNumber as string);
+
   logger.info(JSON.stringify(companyProfile, null, 2));
+
   return res.render(Templates.CONFIRM_COMPANY);
 };
