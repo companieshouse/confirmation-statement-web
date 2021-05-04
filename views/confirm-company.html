@@ -6,7 +6,7 @@
 {% block backLink %}
   {{ govukBackLink({
     text: "Back",
-    href: "/company-number"
+    href: "/confirmation-statement/company-number"
   }) }}
 {% endblock %}
 
@@ -116,6 +116,9 @@
           }) }}
         {% else %}
           {{ govukButton({
+            attributes: {
+              id: "submit"
+            },
             text: "Confirm and continue",
             href: "/authenticate"
           }) }}
