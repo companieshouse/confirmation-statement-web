@@ -10,7 +10,7 @@ export const getCompanyProfile = async (companyNumber: string): Promise<CompanyP
   const sdkResponse: Resource<CompanyProfile> = await apiClient.companyProfile.getCompanyProfile(companyNumber);
 
   if (sdkResponse.httpStatusCode >= 400) {
-    const error = new Error ("Failed to get company profile");
+    const error = new Error (`Http status code ${sdkResponse.httpStatusCode} - Failed to get company profile for company number ${companyNumber}`);
     logger.error(`${error.message} - ${error.stack}`);
     throw error;
   }
@@ -18,7 +18,7 @@ export const getCompanyProfile = async (companyNumber: string): Promise<CompanyP
   if (sdkResponse.resource) {
     return sdkResponse.resource;
   } else {
-    const error = new Error ("Company profile is undefined");
+    const error = new Error (`Company profile is undefined for company number ${companyNumber}`);
     logger.error(`${error.message} - ${error.stack}`);
     throw error;
   }
