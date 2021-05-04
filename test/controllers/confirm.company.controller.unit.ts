@@ -19,14 +19,21 @@ describe("Confirm company controller tests", () => {
   });
 
   it("Should navigate to confirm company page", async () => {
+    const response = await request(app)
+      .get(CONFIRM_COMPANY_PATH);
+
+    expect(response.text).toContain(PAGE_HEADING);
+    expect(mocks.mockServiceAvailabilityMiddleware).toHaveBeenCalled();
+  });
+
+  it("Should pass the company number to the company profile service", async () => {
     const companyNumber = "123456";
 
-    const response = await request(app)
+    await request(app)
       .get(CONFIRM_COMPANY_PATH)
       .query({ companyNumber });
 
     expect(mockGetCompanyProfile).toHaveBeenCalledWith(companyNumber);
-    expect(response.text).toContain(PAGE_HEADING);
-    expect(mocks.mockServiceAvailabilityMiddleware).toHaveBeenCalled();
   });
+
 });
