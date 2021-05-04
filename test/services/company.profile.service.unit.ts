@@ -1,21 +1,28 @@
-jest.mock("@companieshouse/api-sdk-node/dist/services/company-profile/service");
+jest.mock("@companieshouse/api-sdk-node");
 jest.mock("../../src/utils/logger");
 
 import { getCompanyProfile } from "../../src/services/company.profile.service";
-import CompanyProfileService from "@companieshouse/api-sdk-node/dist/services/company-profile/service";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { Resource } from "@companieshouse/api-sdk-node";
+import { createApiClient, Resource } from "@companieshouse/api-sdk-node";
 import logger from "../../src/utils/logger";
 
-const mockGetCompanyProfile = CompanyProfileService.prototype.getCompanyProfile as jest.Mock;
-const mockErrorLogger = logger.error as jest.Mock;
+const mockLoggerError = logger.error as jest.Mock;
+const mockCreateApiClient = createApiClient as jest.Mock;
+const mockGetCompanyProfile = jest.fn();
+
+mockCreateApiClient.mockReturnValue({
+  companyProfile: {
+    getCompanyProfile: mockGetCompanyProfile
+  }
+});
 
 describe("Company profile service test", () => {
   const COMPANY_NUMBER = "1234567";
 
   beforeEach(() => {
     mockGetCompanyProfile.mockReset();
-    mockErrorLogger.mockClear();
+    mockLoggerError.mockClear();
+    mockCreateApiClient.mockClear();
   });
 
   it("Should return a company profile", async () => {
@@ -38,7 +45,7 @@ describe("Company profile service test", () => {
       .catch((error: Error) => {
         expect(error.message).toContain(HTTP_STATUS_CODE);
         expect(error.message).toContain(COMPANY_NUMBER);
-        expect(mockErrorLogger).toHaveBeenCalled();
+        expect(mockLoggerError).toHaveBeenCalled();
       });
   });
 
@@ -55,7 +62,7 @@ describe("Company profile service test", () => {
       .catch((error: Error) => {
         expect(error.message).toContain(HTTP_STATUS_CODE);
         expect(error.message).toContain(COMPANY_NUMBER);
-        expect(mockErrorLogger).toHaveBeenCalled();
+        expect(mockLoggerError).toHaveBeenCalled();
       });
   });
 
@@ -69,7 +76,7 @@ describe("Company profile service test", () => {
       .catch((error: Error) => {
         expect(error.message).toContain("no response");
         expect(error.message).toContain(COMPANY_NUMBER);
-        expect(mockErrorLogger).toHaveBeenCalled();
+        expect(mockLoggerError).toHaveBeenCalled();
       });
   });
 
@@ -83,7 +90,7 @@ describe("Company profile service test", () => {
       .catch((error: Error) => {
         expect(error.message).toContain("no resource");
         expect(error.message).toContain(COMPANY_NUMBER);
-        expect(mockErrorLogger).toHaveBeenCalled();
+        expect(mockLoggerError).toHaveBeenCalled();
       });
   });
 });
