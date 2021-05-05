@@ -5,6 +5,7 @@ import request from "supertest";
 import app from "../../src/app";
 import { CONFIRM_COMPANY_PATH } from "../../src/types/page.urls";
 import { getCompanyProfile } from "../../src/services/company.profile.service";
+import { validCompanyProfile } from "../mocks/company.profile.mock";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 
@@ -34,6 +35,16 @@ describe("Confirm company controller tests", () => {
       .query({ companyNumber });
 
     expect(mockGetCompanyProfile).toHaveBeenCalledWith(companyNumber);
+  });
+
+  it("Should populate the template with CompanyProfile data", async () => {
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+
+    const response = await request(app)
+      .get(CONFIRM_COMPANY_PATH);
+
+    expect(response.text).toContain(validCompanyProfile.companyNumber);
+    expect(response.text).toContain(validCompanyProfile.companyName);
   });
 
 });

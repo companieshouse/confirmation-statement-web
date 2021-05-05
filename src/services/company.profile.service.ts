@@ -21,6 +21,8 @@ export const getCompanyProfile = async (companyNumber: string): Promise<CompanyP
     return logAndThrowError(new Error (`Company Profile API returned no resource for company number ${companyNumber}`));
   }
 
+  logger.debug(`Received company profile ${sdkResponse}`);
+
   return sdkResponse.resource;
 };
 
