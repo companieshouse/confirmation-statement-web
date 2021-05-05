@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/companieshouse/confirmation-statement-web#readme",
   "dependencies": {
+    "@companieshouse/api-sdk-node": "^1.0.25",
     "@companieshouse/node-session-handler": "^4.1.6",
     "@companieshouse/structured-logging-node": "^1.0.4",
     "@companieshouse/web-security-node": "^1.0.2",
