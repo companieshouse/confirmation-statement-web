@@ -14,7 +14,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl">Confirm this is the correct company</h1>
-      <h2 class="govuk-heading-l">{{company.name}}</h2>
+      <h2 class="govuk-heading-l">{{company.companyName}}</h2>
       <form action="" method="post">
 
         {% set notDueWarningHTML %}
@@ -23,7 +23,7 @@
           <strong>{{moment}}</strong>
           and this will change your future review periods.
           <br><br>You will not need to pay a fee if you file your confirmation statement before
-          <strong>{{company.csDueDate}}</strong>.
+          <strong>{{company.confirmationStatement.nextDue}}</strong>.
           <br><br>
           <a href="https://www.youtube.com/watch?v=dxN4djaAE3k">This video explains review periods and payment periods (opens in new tab).</a>
         </p>
@@ -35,6 +35,15 @@
           This service can only be used to file confirmation statements for private limited companies of a certain size.
         {% endset %}
 
+        {% set registeredAddress %}
+          {{company.registeredOfficeAddress.addressLineOne}}
+          <br/>
+          {{company.registeredOfficeAddress.addressLineTwo}}
+          <br/>
+          {{company.registeredOfficeAddress.postalCode}}
+        {% endset %}
+
+
         {{ govukSummaryList({
           rows: [
             {
@@ -43,7 +52,7 @@
                 text: "Company number"
               },
               value: {
-                text: company.number
+                text: company.companyNumber
               }
             },
             {
@@ -51,7 +60,7 @@
                 text: "Status"
               },
               value: {
-                text: company.status
+                text: company.companyStatus
               }
             },
             {
@@ -59,7 +68,7 @@
                 text: "Incorporation date"
               },
               value: {
-                text: company.incorporationDate
+                text: company.dateOfCreation
               }
             },
             {
@@ -67,7 +76,7 @@
                 text: "Company type"
               },
               value: {
-                text: company.companyType
+                text: company.type
               }
             },
             {
@@ -75,7 +84,7 @@
                 text: "Registered office address"
               },
               value: {
-                html: company.address
+                html: registeredAddress
               }
             },
             {
@@ -83,7 +92,7 @@
                 text: "Next confirmation statement due by"
               },
               value: {
-                html: company.csDueDate
+                text: company.confirmationStatement.nextDue
               }
             },
             {
@@ -91,7 +100,7 @@
                 text: "Last confirmation statement made up to"
               },
               value: {
-                html: company.csLast
+                text: company.confirmationStatement.lastMadeUpTo
               }
             }
           ]

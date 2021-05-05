@@ -5,6 +5,7 @@ import { getCompanyProfile } from "../../src/services/company.profile.service";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { createApiClient, Resource } from "@companieshouse/api-sdk-node";
 import logger from "../../src/utils/logger";
+import { validSDKResource } from "../mocks/company.profile.mock";
 
 const mockLoggerError = logger.error as jest.Mock;
 const mockCreateApiClient = createApiClient as jest.Mock;
@@ -26,10 +27,10 @@ describe("Company profile service test", () => {
   });
 
   it("Should return a company profile", async () => {
-    mockGetCompanyProfile.mockResolvedValueOnce(dummySDKResponse);
+    mockGetCompanyProfile.mockResolvedValueOnce(validSDKResource);
     const returnedProfile = await getCompanyProfile(COMPANY_NUMBER);
 
-    expect(returnedProfile).toBe(dummySDKResponse.resource);
+    expect(returnedProfile).toBe(validSDKResource.resource);
   });
 
   it("Should throw an error if status code == 400", () => {
@@ -95,44 +96,4 @@ describe("Company profile service test", () => {
   });
 });
 
-const dummySDKResponse: Resource<CompanyProfile> = {
-  httpStatusCode: 200,
-  resource: {
-    accounts: {
-      nextAccounts: {
-        periodEndOn: "2019-10-10",
-        periodStartOn: "2019-01-01",
-      },
-      nextDue: "2020-05-31",
-      overdue: false,
-    },
-    companyName: "Test Company",
-    companyNumber: "12345678",
-    companyStatus: "active",
-    companyStatusDetail: "company status detail",
-    confirmationStatement: {
-      nextDue: "2020-04-30",
-      overdue: false,
-    },
-    dateOfCreation: "1972-06-22",
-    hasBeenLiquidated: false,
-    hasCharges: false,
-    hasInsolvencyHistory: false,
-    jurisdiction: "england-wales",
-    links: {},
-    registeredOfficeAddress: {
-      addressLineOne: "line1",
-      addressLineTwo: "line2",
-      careOf: "careOf",
-      country: "uk",
-      locality: "locality",
-      poBox: "123",
-      postalCode: "post code",
-      premises: "premises",
-      region: "region",
-    },
-    sicCodes: ["123"],
-    type: "limited",
-  },
-};
 
