@@ -13,6 +13,7 @@ clean:
 
 .PHONY: build
 build:
+	update_submodules
 	npm ci
 	npm run build
 
@@ -35,6 +36,8 @@ ifndef version
 endif
 	$(info Packaging version: $(version))
 	$(eval tmpdir := $(shell mktemp -d build-XXXXXXXXXX))
+	mkdir $(tmpdir)/api-enumerations
+	cp ./api-enumerations/*.yml $(tmpdir)/api-enumerations
 	cp -r ./dist/* $(tmpdir)
 	cp -r ./package.json $(tmpdir)
 	cp -r ./package-lock.json $(tmpdir)
@@ -48,4 +51,6 @@ endif
 .PHONY: dist
 dist: lint test clean package
 
-
+.PHONY: update_submodules
+update_submodules:
+	test -f ./api-enumerations/constants.yml || git submodule update --init --recursive -- api-enumerations
