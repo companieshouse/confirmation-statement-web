@@ -1,4 +1,7 @@
+jest.mock("../../src/utils/logger");
+
 import { readableFormat } from "../../src/utils/date.formatter";
+import logger from "../../src/utils/logger";
 
 describe("Date formatter tests", () => {
 
@@ -6,17 +9,17 @@ describe("Date formatter tests", () => {
     const dateString = "2019-03-18";
     const date = readableFormat(dateString);
 
-    expect(date).toBe("18 March 2019");
+    expect(date).toEqual("18 March 2019");
   });
 
   it("Should return a human readable date from local string", () => {
     const dateString = "March 18, 2019";
     const date = readableFormat(dateString);
 
-    expect(date).toBe("18 March 2019");
+    expect(date).toEqual("18 March 2019");
   });
 
-  it("Should throw an error", () => {
+  it("Should log and throw an error", () => {
     const nullString = "";
 
     try {
@@ -24,7 +27,7 @@ describe("Date formatter tests", () => {
       fail();
     } catch (e) {
       expect(e.message).toContain(nullString);
+      expect(logger.error).toHaveBeenCalledWith(expect.stringContaining(e.message));
     }
   });
-
 });
