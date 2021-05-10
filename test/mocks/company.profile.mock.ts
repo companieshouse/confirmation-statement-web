@@ -15,7 +15,9 @@ export const validCompanyProfile: CompanyProfile = {
   companyStatus: "active",
   companyStatusDetail: "company status detail",
   confirmationStatement: {
+    lastMadeUpTo: "2019-04-30",
     nextDue: "2020-04-30",
+    nextMadeUpTo: "2020-03-15",
     overdue: false,
   },
   dateOfCreation: "1972-06-22",
