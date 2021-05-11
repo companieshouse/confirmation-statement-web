@@ -1,5 +1,5 @@
 import { createApiClient, Resource } from "@companieshouse/api-sdk-node";
-import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import { CompanyProfile, ConfirmationStatement } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { CHS_API_KEY } from "../utils/properties";
 import logger from "../utils/logger";
 import { lookupCompanyStatus, lookupCompanyType } from "../utils/api.enumerations";
@@ -23,7 +23,7 @@ export const getCompanyProfile = async (companyNumber: string): Promise<CompanyP
     return logAndThrowError(new Error (`Company Profile API returned no resource for company number ${companyNumber}`));
   }
 
-  logger.debug(`Received company profile ${sdkResponse}`);
+  logger.debug(`Received company profile ${JSON.stringify(sdkResponse)}`);
 
   return transform(sdkResponse.resource);
 };
@@ -37,9 +37,11 @@ const transform = (companyProfile: CompanyProfile): CompanyProfile => {
   companyProfile.type = lookupCompanyType(companyProfile.type);
   companyProfile.companyStatus = lookupCompanyStatus(companyProfile.companyStatus);
   companyProfile.dateOfCreation = readableFormat(companyProfile.dateOfCreation);
-  companyProfile.confirmationStatement.nextDue = readableFormat(companyProfile.confirmationStatement.nextDue);
-  companyProfile.confirmationStatement.lastMadeUpTo = companyProfile.confirmationStatement.lastMadeUpTo ? readableFormat(companyProfile.confirmationStatement.lastMadeUpTo) : "";
-  companyProfile.confirmationStatement.nextMadeUpTo = companyProfile.confirmationStatement.nextMadeUpTo ? readableFormat(companyProfile.confirmationStatement.nextMadeUpTo) : "";
 
+  if (companyProfile.confirmationStatement) {
+    const confirmationStatement: ConfirmationStatement = companyProfile.confirmationStatement;
+    confirmationStatement.nextDue = readableFormat(confirmationStatement.nextDue);
+    confirmationStatement.lastMadeUpTo = confirmationStatement.lastMadeUpTo ? readableFormat(confirmationStatement.lastMadeUpTo) : "";
+  }
   return companyProfile;
 };

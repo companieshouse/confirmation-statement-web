@@ -4,7 +4,7 @@ jest.mock("../../src/utils/date.formatter");
 jest.mock("../../src/utils/api.enumerations");
 
 import { getCompanyProfile } from "../../src/services/company.profile.service";
-import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import { CompanyProfile, ConfirmationStatement } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { createApiClient, Resource } from "@companieshouse/api-sdk-node";
 import logger from "../../src/utils/logger";
 import { validSDKResource } from "../mocks/company.profile.mock";
@@ -53,7 +53,6 @@ describe("Company profile service test", () => {
     expect(mockReadableFormat.mock.calls[0][0]).toEqual(validSDKResource?.resource?.dateOfCreation);
     expect(mockReadableFormat.mock.calls[1][0]).toEqual(validSDKResource?.resource?.confirmationStatement.nextDue);
     expect(mockReadableFormat.mock.calls[2][0]).toEqual(validSDKResource?.resource?.confirmationStatement.lastMadeUpTo);
-    expect(mockReadableFormat.mock.calls[3][0]).toEqual(validSDKResource?.resource?.confirmationStatement.nextMadeUpTo);
   });
 
   it("Should return empty strings for undefined dates", async () => {
@@ -61,13 +60,23 @@ describe("Company profile service test", () => {
     const clonedSDKResource: Resource<CompanyProfile> = JSON.parse(JSON.stringify(validSDKResource));
     if (clonedSDKResource.resource) {
       clonedSDKResource.resource.confirmationStatement.lastMadeUpTo = undefined;
-      clonedSDKResource.resource.confirmationStatement.nextMadeUpTo = undefined;
     }
     mockGetCompanyProfile.mockResolvedValueOnce(clonedSDKResource);
     const result: CompanyProfile = await getCompanyProfile(COMPANY_NUMBER);
 
     expect(result.confirmationStatement.lastMadeUpTo).toEqual("");
-    expect(result.confirmationStatement.nextMadeUpTo).toEqual("");
+  });
+
+  it("Should not try to convert confirmation statement dates if confirmation statement undefined", async () => {
+    const clonedSDKResource: Resource<CompanyProfile> = JSON.parse(JSON.stringify(validSDKResource));
+    if (clonedSDKResource.resource) {
+      clonedSDKResource.resource.confirmationStatement = undefined as unknown as ConfirmationStatement;
+    }
+    mockGetCompanyProfile.mockResolvedValueOnce(clonedSDKResource);
+    await getCompanyProfile(COMPANY_NUMBER);
+
+    expect(mockReadableFormat.mock.calls[0][0]).toEqual(validSDKResource?.resource?.dateOfCreation);
+    expect(mockReadableFormat).toBeCalledTimes(1);
   });
 
   it("Should convert company status into readable format", async () => {
