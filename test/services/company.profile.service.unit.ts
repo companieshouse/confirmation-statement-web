@@ -53,7 +53,6 @@ describe("Company profile service test", () => {
     expect(mockReadableFormat.mock.calls[0][0]).toEqual(validSDKResource?.resource?.dateOfCreation);
     expect(mockReadableFormat.mock.calls[1][0]).toEqual(validSDKResource?.resource?.confirmationStatement.nextDue);
     expect(mockReadableFormat.mock.calls[2][0]).toEqual(validSDKResource?.resource?.confirmationStatement.lastMadeUpTo);
-    expect(mockReadableFormat.mock.calls[3][0]).toEqual(validSDKResource?.resource?.confirmationStatement.nextMadeUpTo);
   });
 
   it("Should return empty strings for undefined dates", async () => {
@@ -61,13 +60,11 @@ describe("Company profile service test", () => {
     const clonedSDKResource: Resource<CompanyProfile> = JSON.parse(JSON.stringify(validSDKResource));
     if (clonedSDKResource.resource) {
       clonedSDKResource.resource.confirmationStatement.lastMadeUpTo = undefined;
-      clonedSDKResource.resource.confirmationStatement.nextMadeUpTo = undefined;
     }
     mockGetCompanyProfile.mockResolvedValueOnce(clonedSDKResource);
     const result: CompanyProfile = await getCompanyProfile(COMPANY_NUMBER);
 
     expect(result.confirmationStatement.lastMadeUpTo).toEqual("");
-    expect(result.confirmationStatement.nextMadeUpTo).toEqual("");
   });
 
   it("Should convert company status into readable format", async () => {

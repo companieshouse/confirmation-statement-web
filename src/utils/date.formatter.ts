@@ -2,6 +2,9 @@ import logger from "./logger";
 import { DateTime } from "luxon";
 
 export const readableFormat = (dateToConvert: string): string => {
+  if (!dateToConvert) {
+    return "";
+  }
   const jsDate = new Date(dateToConvert);
   const dateTime = DateTime.fromJSDate(jsDate);
   const convertedDate = dateTime.toFormat("dd MMMM yyyy");

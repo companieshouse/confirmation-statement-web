@@ -19,14 +19,35 @@ describe("Date formatter tests", () => {
     expect(date).toEqual("18 March 2019");
   });
 
+  it("Should return empty string if date is undefined", () => {
+    const input = undefined as unknown as string;
+    const date = readableFormat(input);
+
+    expect(date).toEqual("");
+  });
+
+  it("Should return empty string if date is null", () => {
+    const input = null as unknown as string;
+    const date = readableFormat(input);
+
+    expect(date).toEqual("");
+  });
+
+  it("Should return empty string if date is empty string", () => {
+    const input = "";
+    const date = readableFormat(input);
+
+    expect(date).toEqual("");
+  });
+
   it("Should log and throw an error", () => {
-    const nullString = "";
+    const badDate = "12345/44/44";
 
     try {
-      readableFormat(nullString);
+      readableFormat(badDate);
       fail();
     } catch (e) {
-      expect(e.message).toContain(nullString);
+      expect(e.message).toContain(badDate);
       expect(logger.error).toHaveBeenCalledWith(expect.stringContaining(e.message));
     }
   });
