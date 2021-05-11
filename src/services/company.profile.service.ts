@@ -2,6 +2,8 @@ import { createApiClient, Resource } from "@companieshouse/api-sdk-node";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { CHS_API_KEY } from "../utils/properties";
 import logger from "../utils/logger";
+import { lookupCompanyStatus, lookupCompanyType } from "../utils/api.enumerations";
+import { readableFormat } from "../utils/date.formatter";
 
 export const getCompanyProfile = async (companyNumber: string): Promise<CompanyProfile> => {
   const apiClient = createApiClient(CHS_API_KEY);
@@ -23,10 +25,21 @@ export const getCompanyProfile = async (companyNumber: string): Promise<CompanyP
 
   logger.debug(`Received company profile ${sdkResponse}`);
 
-  return sdkResponse.resource;
+  return transform(sdkResponse.resource);
 };
 
 const logAndThrowError = (error: Error) => {
   logger.error(`${error.message} - ${error.stack}`);
   throw error;
+};
+
+const transform = (companyProfile: CompanyProfile): CompanyProfile => {
+  companyProfile.type = lookupCompanyType(companyProfile.type);
+  companyProfile.companyStatus = lookupCompanyStatus(companyProfile.companyStatus);
+  companyProfile.dateOfCreation = readableFormat(companyProfile.dateOfCreation);
+  companyProfile.confirmationStatement.nextDue = readableFormat(companyProfile.confirmationStatement.nextDue);
+  companyProfile.confirmationStatement.lastMadeUpTo = companyProfile.confirmationStatement.lastMadeUpTo ? readableFormat(companyProfile.confirmationStatement.lastMadeUpTo) : "";
+  companyProfile.confirmationStatement.nextMadeUpTo = companyProfile.confirmationStatement.nextMadeUpTo ? readableFormat(companyProfile.confirmationStatement.nextMadeUpTo) : "";
+
+  return companyProfile;
 };
