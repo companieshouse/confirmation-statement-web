@@ -17,6 +17,7 @@ describe("Confirm company controller tests", () => {
 
   beforeEach(() => {
     mockGetCompanyProfile.mockClear();
+    mockCreateConfirmationStatement.mockClear();
     mocks.mockAuthenticationMiddleware.mockClear();
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();

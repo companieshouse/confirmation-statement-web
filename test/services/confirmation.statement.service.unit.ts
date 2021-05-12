@@ -22,9 +22,10 @@ describe ("Confirmation statement api service unit tests", () => {
       confirmationStatementService: ConfirmationStatementService.prototype
     } as PrivateApiClient
     );
+    mockPostNewConfirmationStatement.mockClear();
   });
 
-  it ("should create confirmation statement is called in the private sdk", async () => {
+  it ("should call create confirmation statement in the private sdk", async () => {
     mockPostNewConfirmationStatement.mockResolvedValueOnce(201);
     const response = await createConfirmationStatement(getSessionRequest(), transactionId);
     expect(response).toEqual(201);

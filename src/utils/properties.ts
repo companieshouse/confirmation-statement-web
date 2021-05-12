@@ -29,4 +29,4 @@ export const CHS_API_KEY = getEnvironmentVariable("CHS_API_KEY");
 
 export const INTERNAL_API_URL = getEnvironmentVariable("INTERNAL_API_URL");
 
-export const PRIVATE_SDK_FEATURE_FLAG = getEnvironmentVariable("PRIVATE_SDK_FEATURE_FLAG");
+export const FEATURE_FLAG_PRIVATE_SDK_12052021 = getEnvironmentVariable("FEATURE_FLAG_PRIVATE_SDK_12052021");
