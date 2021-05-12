@@ -1,5 +1,7 @@
 jest.mock("../../src/services/company.profile.service");
+jest.mock("../../src/services/confirmation.statement.service");
 
+import {createConfirmationStatement} from "../../src/services/confirmation.statement.service";
 import mocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
@@ -8,6 +10,7 @@ import { getCompanyProfile } from "../../src/services/company.profile.service";
 import { validCompanyProfile } from "../mocks/company.profile.mock";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
+const mockCreateConfirmationStatement = createConfirmationStatement as jest.Mock;
 
 describe("Confirm company controller tests", () => {
   const PAGE_HEADING = "Confirm this is the correct company";
@@ -45,6 +48,13 @@ describe("Confirm company controller tests", () => {
 
     expect(response.text).toContain(validCompanyProfile.companyNumber);
     expect(response.text).toContain(validCompanyProfile.companyName);
+  });
+
+  it("Should call private sdk client", async () => {
+    mockCreateConfirmationStatement.mockResolvedValueOnce(201);
+    await request(app)
+        .post(CONFIRM_COMPANY_PATH);
+    expect(mockCreateConfirmationStatement).toHaveBeenCalled();
   });
 
 });
