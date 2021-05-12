@@ -1,7 +1,7 @@
 jest.mock("../../src/services/company.profile.service");
 jest.mock("../../src/services/confirmation.statement.service");
 
-import {createConfirmationStatement} from "../../src/services/confirmation.statement.service";
+import { createConfirmationStatement } from "../../src/services/confirmation.statement.service";
 import mocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
@@ -53,7 +53,7 @@ describe("Confirm company controller tests", () => {
   it("Should call private sdk client", async () => {
     mockCreateConfirmationStatement.mockResolvedValueOnce(201);
     await request(app)
-        .post(CONFIRM_COMPANY_PATH);
+      .post(CONFIRM_COMPANY_PATH);
     expect(mockCreateConfirmationStatement).toHaveBeenCalled();
   });
 
