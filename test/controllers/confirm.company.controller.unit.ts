@@ -22,6 +22,10 @@ describe("Confirm company controller tests", () => {
     mocks.mockSessionMiddleware.mockClear();
   });
 
+  afterAll(() => {
+    process.env.PRIVATE_SDK_FEATURE_FLAG = "false";
+  });
+
   it("Should navigate to confirm company page", async () => {
     const response = await request(app)
       .get(CONFIRM_COMPANY_PATH);
