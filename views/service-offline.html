@@ -12,15 +12,18 @@
       <p class="govuk-body-m">You will be able to use the service at a later date.</p>
 
       {% set fileByPostHTML %}
-      <p>Download and fill in a
-        <a href="https://www.gov.uk/government/publications/confirmation-statement-cs01">confirmation statement form</a>
-        and post it to Companies House - the address is on the form.</p>
-      <p>You’ll need to download and fill in parts 1 to 4 if you’re updating information about your company.</p>
-      <p>It costs £40. Include a cheque with your company number written on the back.</p>
+      <p>You can file a confirmation statement online using our <a href="https://ewf.companieshouse.gov.uk//seclogin?tc=1">WebFiling service</a>.</p>
+      <p>You can also file a confirmation statement by post using the <a href="https://www.gov.uk/government/publications/confirmation-statement-cs01">CS01 paper form</a>. It costs £40 and will take longer than if you file online.</p>
+      <p>There are separate paper forms for:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li><a href="https://www.gov.uk/government/publications/confirmation-statement-for-a-limited-liability-partnership-ll-cs01">limited liability partnerships - LLCS01</a></li>
+        <li><a href="https://www.gov.uk/government/publications/confirmation-statement-for-a-scottish-limited-partnership-slp-cs01">Scottish limited partnerships - SLPCS01</a></li>
+        <li><a href="https://www.gov.uk/government/publications/confirmation-statement-for-a-scottish-qualifying-partnership-sqp-cs01">Scottish qualifying partnerships - SQPCS01</a></li>
+        </ul>
       {% endset %}
 
       {{ govukDetails({
-        summaryText: "Other ways to apply",
+        summaryText: "Other ways to file",
         html: fileByPostHTML
       }) }}
 
