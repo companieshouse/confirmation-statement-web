@@ -14,6 +14,7 @@ describe ("Test node session handler authorization for private sdk", () => {
   it("should throw error when no data is present", () => {
     try {
       createOAuthApiClient(getEmptySessionRequest());
+      fail();
     } catch (error) {
       expect(error.message).toBe(ERROR_MESSSAGE);
     }
@@ -24,6 +25,7 @@ describe ("Test node session handler authorization for private sdk", () => {
       const session: Session = getEmptySessionRequest();
       session.data = {};
       createOAuthApiClient(session);
+      fail();
     } catch (error) {
       expect(error.message).toBe(ERROR_MESSSAGE);
     }
@@ -32,6 +34,7 @@ describe ("Test node session handler authorization for private sdk", () => {
   it("should throw error when no access token is present", () => {
     try {
       createOAuthApiClient(getSessionRequest());
+      fail();
     } catch (error) {
       expect(error.message).toBe(ERROR_MESSSAGE);
     }
