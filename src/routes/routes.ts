@@ -24,3 +24,5 @@ router.get(urls.COMPANY_NUMBER, companyNumberRoute.get);
 router.get(urls.ACCESSIBILITY_STATEMENT, renderTemplate(Templates.ACCESSIBILITY_STATEMENT));
 
 router.get(urls.CONFIRM_COMPANY, confirmCompanyRoute.get);
+
+router.post(urls.CONFIRM_COMPANY, confirmCompanyRoute.post);
