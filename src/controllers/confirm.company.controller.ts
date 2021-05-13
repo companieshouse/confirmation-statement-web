@@ -7,10 +7,13 @@ import { Session } from "@companieshouse/node-session-handler";
 import { FEATURE_FLAG_PRIVATE_SDK_12052021 } from "../utils/properties";
 import { isActiveFeature } from "../utils/feature.flag";
 
-export const get = async (req: Request, res: Response) => {
-  const company: CompanyProfile = await getCompanyProfile(req.query.companyNumber as string);
-
-  return res.render(Templates.CONFIRM_COMPANY, { company });
+export const get = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const company: CompanyProfile = await getCompanyProfile(req.query.companyNumber as string);
+    return res.render(Templates.CONFIRM_COMPANY, { company });
+  } catch (e) {
+    next(e);
+  }
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
