@@ -1,7 +1,7 @@
 import { Session } from "@companieshouse/node-session-handler";
 import { SessionKey } from "@companieshouse/node-session-handler/lib/session/keys/SessionKey";
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
-import {IAccessToken, ISignInInfo} from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
+import { IAccessToken, ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
 
 export const getSessionRequest = (accessToken?: IAccessToken): Session => {
   return new Session({
@@ -13,6 +13,6 @@ export const getSessionRequest = (accessToken?: IAccessToken): Session => {
   });
 };
 
-export const getEmptySessionRequest = (accessToken?: IAccessToken): Session => {
+export const getEmptySessionRequest = (): Session => {
   return new Session();
 };

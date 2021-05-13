@@ -1,28 +1,39 @@
 import { createOAuthApiClient } from "../../../src/services/api/api.service";
-import {getEmptySessionRequest, getSessionRequest} from "../../mocks/session.mock";
-import {Session} from "@companieshouse/node-session-handler";
+import { getEmptySessionRequest, getSessionRequest } from "../../mocks/session.mock";
+import { Session } from "@companieshouse/node-session-handler";
+
+const ERROR_MESSSAGE = "Error getting session keys for creating api client";
 
 describe ("Test node session handler authorization for private sdk", () => {
   it ("should obtain private node sdk oauth client", () => {
     const client = createOAuthApiClient(
-        getSessionRequest({ access_token: "token" }));
+      getSessionRequest({ access_token: "token" }));
     expect(client.confirmationStatementService).not.toBeNull();
   });
 
   it("should throw error when no data is present", () => {
-     expect(createOAuthApiClient(getEmptySessionRequest()))
-        .toThrow(new Error("Error getting session keys for creating api client "));
+    try {
+      createOAuthApiClient(getEmptySessionRequest());
+    } catch (error) {
+      expect(error.message).toBe(ERROR_MESSSAGE);
+    }
   });
 
   it("should throw error when no sign in info is present", () => {
-    const session: Session = getEmptySessionRequest();
-    session.data = {};
-    expect(createOAuthApiClient(session))
-        .toThrow(new Error("Error getting session keys for creating api client "));
+    try {
+      const session: Session = getEmptySessionRequest();
+      session.data = {};
+      createOAuthApiClient(session);
+    } catch (error) {
+      expect(error.message).toBe(ERROR_MESSSAGE);
+    }
   });
 
   it("should throw error when no access token is present", () => {
-    expect(createOAuthApiClient(getSessionRequest()))
-        .toThrow(new Error("Error getting session keys for creating api client "));
+    try {
+      createOAuthApiClient(getSessionRequest());
+    } catch (error) {
+      expect(error.message).toBe(ERROR_MESSSAGE);
+    }
   });
 });

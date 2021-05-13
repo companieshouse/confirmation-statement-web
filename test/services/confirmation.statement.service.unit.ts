@@ -28,7 +28,7 @@ describe ("Confirmation statement api service unit tests", () => {
   it ("should call create confirmation statement in the private sdk", async () => {
     mockPostNewConfirmationStatement.mockResolvedValueOnce(201);
     const response = await createConfirmationStatement(
-        getSessionRequest({ access_token: "token" }), transactionId);
+      getSessionRequest({ access_token: "token" }), transactionId);
     expect(response).toEqual(201);
     expect(mockPostNewConfirmationStatement).toBeCalledWith(transactionId);
   });
