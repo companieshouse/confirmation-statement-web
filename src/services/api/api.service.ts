@@ -15,5 +15,5 @@ export const createOAuthApiClient = (session: Session): PrivateApiClient => {
       return createPrivateApiClient(undefined, oAuth, INTERNAL_API_URL);
     }
   }
-  return logAndThrowError(new Error ("Error getting session keys for creating api client "));
+  return logAndThrowError(new Error ("Error getting session keys for creating api client"));
 };
