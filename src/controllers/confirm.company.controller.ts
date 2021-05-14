@@ -10,7 +10,7 @@ import { isActiveFeature } from "../utils/feature.flag";
 export const get = async (req: Request, res: Response) => {
   const company: CompanyProfile = await getCompanyProfile(req.query.companyNumber as string);
 
-  return res.render(Templates.CONFIRM_COMPANY, { company });
+  return res.render(Templates.CONFIRM_COMPANY, { company, templateName: Templates.ERROR_404 });
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
