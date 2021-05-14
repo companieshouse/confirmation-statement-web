@@ -8,12 +8,9 @@ import { INTERNAL_API_URL } from "../../utils/properties";
 import { logAndThrowError } from "../../utils/logger";
 
 export const createOAuthApiClient = (session: Session): PrivateApiClient => {
-  const signInInfo = session.data?.[SessionKey.SignInInfo];
-  if (signInInfo) {
-    const oAuth: string = signInInfo?.[SignInInfoKeys.AccessToken]?.[AccessTokenKeys.AccessToken] as string;
-    if (oAuth) {
-      return createPrivateApiClient(undefined, oAuth, INTERNAL_API_URL);
-    }
+  const oAuth = session.data?.[SessionKey.SignInInfo]?.[SignInInfoKeys.AccessToken]?.[AccessTokenKeys.AccessToken];
+  if (oAuth) {
+    return createPrivateApiClient(undefined, oAuth, INTERNAL_API_URL);
   }
   return logAndThrowError(new Error ("Error getting session keys for creating api client"));
 };

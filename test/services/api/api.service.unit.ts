@@ -13,7 +13,7 @@ describe ("Test node session handler authorization for private sdk", () => {
 
   it("should throw error when no data is present", () => {
     try {
-      createOAuthApiClient(getEmptySessionRequest());
+      createOAuthApiClient({} as Session);
       fail();
     } catch (error) {
       expect(error.message).toBe(ERROR_MESSSAGE);
