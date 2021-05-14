@@ -85,5 +85,5 @@
   {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
   <script src="{{assetPath}}/javascripts/govuk-frontend/v3.11.0/govuk-frontend-3.11.0.min.js"></script>
   <script>window.GOVUKFrontend.initAll()</script>
-  {# {% include "includes/piwik-scripts.html" %} #}
+  {% include "includes/piwik-scripts.html" %}
 {% endblock %}
