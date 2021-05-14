@@ -1,23 +1,44 @@
+jest.mock("../../src/utils/logger");
+
 import mocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
+import { NextFunction } from "express";
+import { CONFIRM_COMPANY_PATH } from "../../src/types/page.urls";
+import logger from "../../src/utils/logger";
+
+const mockLoggerErrorRequest = logger.errorRequest as jest.Mock;
 
 const EXPECTED_TEXT = "Page not found - File a confirmation statement";
 const INCORRECT_URL = "/confirmation-statement/company-numberr";
 
-describe("error controller test", () => {
+describe("Error controller test", () => {
 
   beforeEach(() => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
+    mockLoggerErrorRequest.mockClear();
   });
 
-  it("should return page not found screen if page url is not recognised", async () => {
+  it("Should return page not found screen if page url is not recognised", async () => {
     const response = await request(app)
       .get(INCORRECT_URL);
     expect(response.text).toContain(EXPECTED_TEXT);
     expect(response.status).toEqual(404);
     expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+  });
+
+  it("Should render the error page", async () => {
+    const message = "Can't connect";
+    mocks.mockSessionMiddleware.mockImplementationOnce((req: Request, res: Response, next: NextFunction) => {
+      return next(new Error(message));
+    });
+    const response = await request(app)
+      .get(CONFIRM_COMPANY_PATH);
+
+    expect(response.status).toEqual(500);
+    expect(response.text).toContain("Sorry, the service is unavailable");
+    expect(mockLoggerErrorRequest.mock.calls[0][1]).toContain(message);
   });
 });
