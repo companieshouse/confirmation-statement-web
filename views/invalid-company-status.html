@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+You cannot file a confirmation statement - File a confirmation statement
+{% endblock %}
+{% block signOut %}{% endblock %}
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            You cannot file a confirmation statement
+        </h1>
+        <p>A confirmation statement cannot be filed for {{ scenario.company.name }} because it:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>has been dissolved and struck off the register</li>
+            <li>is in the process of being dissolved and struck off the register</li>
+        </ul>
+        <p><a href="https://www.gov.uk/government/organisations/companies-house/about/access-and-opening">Contact us if you think this information is wrong</a>.</p>
+        <p><a href="https://www.gov.uk/guidance/company-restoration-guide">Read the Company Restoration Guide</a> to find out more about restoring a company name to the register.</p>
+        <p>If this is the wrong company, start the <a href="/start">File a confirmation statement</a> service again.</p>
+        <p>
+            <a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-cannotfiledissolvedorliquidated/">What did you think of this service?</a>
+            (takes 2 minutes)</p>
+
+    </div>
+</div>
+{% endblock %}
