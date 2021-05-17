@@ -1,7 +1,6 @@
-import ApplicationLogger from "@companieshouse/structured-logging-node/lib/ApplicationLogger";
 import { logger, createAndLogError } from "../../src/utils/logger";
 
-ApplicationLogger.prototype.error = jest.fn();
+logger.error = jest.fn();
 
 describe("logger tests", () => {
 
