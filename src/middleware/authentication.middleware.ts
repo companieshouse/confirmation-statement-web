@@ -21,6 +21,6 @@ export const authenticationMiddleware = (req: Request, res: Response, next: Next
   return authMiddleware(authMiddlewareConfig)(req, res, next);
 };
 
-function isWhitelistedUrl(url: string): boolean {
+const isWhitelistedUrl = (url: string): boolean => {
   return USER_AUTH_WHITELISTED_URLS.includes(url);
-}
+};
