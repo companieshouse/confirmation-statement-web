@@ -6,7 +6,7 @@ jest.mock("../../src/utils/api.enumerations");
 import { getCompanyProfile } from "../../src/services/company.profile.service";
 import { CompanyProfile, ConfirmationStatement } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { createApiClient, Resource } from "@companieshouse/api-sdk-node";
-import logger from "../../src/utils/logger";
+import { logger } from "../../src/utils/logger";
 import { validSDKResource } from "../mocks/company.profile.mock";
 import { readableFormat } from "../../src/utils/date.formatter";
 import { lookupCompanyStatus, lookupCompanyType } from "../../src/utils/api.enumerations";

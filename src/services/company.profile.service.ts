@@ -1,7 +1,7 @@
 import { createApiClient, Resource } from "@companieshouse/api-sdk-node";
 import { CompanyProfile, ConfirmationStatement } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { CHS_API_KEY } from "../utils/properties";
-import logger from "../utils/logger";
+import { logger } from "../utils/logger";
 import { lookupCompanyStatus, lookupCompanyType } from "../utils/api.enumerations";
 import { readableFormat } from "../utils/date.formatter";
 

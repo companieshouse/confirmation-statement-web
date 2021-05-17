@@ -1,7 +1,7 @@
 jest.mock("../../src/utils/logger");
 
 import { readableFormat } from "../../src/utils/date.formatter";
-import logger from "../../src/utils/logger";
+import { logger } from "../../src/utils/logger";
 
 describe("Date formatter tests", () => {
 

@@ -1,4 +1,4 @@
-import logger from "./logger";
+import { logger } from "./logger";
 import { DateTime } from "luxon";
 
 export const readableFormat = (dateToConvert: string): string => {
