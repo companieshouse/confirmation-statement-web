@@ -5,6 +5,6 @@ export const logger: ApplicationLogger = createLogger("Confirmation Statement We
 
 export const createAndLogError = (description: string): Error => {
   const error = new Error (description);
-  logger.error(`${error.message} - ${error.stack}`);
+  logger.error(`${error.stack}`);
   return error;
 };
