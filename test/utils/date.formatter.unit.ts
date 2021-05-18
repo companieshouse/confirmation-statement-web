@@ -1,7 +1,10 @@
 jest.mock("../../src/utils/logger");
 
 import { readableFormat } from "../../src/utils/date.formatter";
-import { logger } from "../../src/utils/logger";
+import { createAndLogError } from "../../src/utils/logger";
+
+const mockCreateAndLogError = createAndLogError as jest.Mock;
+mockCreateAndLogError.mockReturnValue(new Error());
 
 describe("Date formatter tests", () => {
 
@@ -47,8 +50,7 @@ describe("Date formatter tests", () => {
       readableFormat(badDate);
       fail();
     } catch (e) {
-      expect(e.message).toContain(badDate);
-      expect(logger.error).toHaveBeenCalledWith(expect.stringContaining(e.message));
+      expect(mockCreateAndLogError).toHaveBeenCalledWith(expect.stringContaining(badDate));
     }
   });
 });

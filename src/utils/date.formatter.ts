@@ -1,5 +1,5 @@
-import { logger } from "./logger";
 import { DateTime } from "luxon";
+import { createAndLogError } from "./logger";
 
 export const readableFormat = (dateToConvert: string): string => {
   if (!dateToConvert) {
@@ -10,10 +10,7 @@ export const readableFormat = (dateToConvert: string): string => {
   const convertedDate = dateTime.toFormat("dd MMMM yyyy");
 
   if (convertedDate === "Invalid DateTime") {
-    const errorMsg = `Unable to convert provided date ${dateToConvert}`;
-    const error = new Error(errorMsg);
-    logger.error(`${errorMsg} - ${error.stack}`);
-    throw error;
+    throw createAndLogError(`Unable to convert provided date ${dateToConvert}`);
   }
 
   return convertedDate;
