@@ -15,10 +15,7 @@ const INCORRECT_URL = "/confirmation-statement/company-numberr";
 describe("Error controller test", () => {
 
   beforeEach(() => {
-    mocks.mockAuthenticationMiddleware.mockClear();
-    mocks.mockServiceAvailabilityMiddleware.mockClear();
-    mocks.mockSessionMiddleware.mockClear();
-    mockLoggerErrorRequest.mockClear();
+    jest.clearAllMocks();
   });
 
   it("Should return page not found screen if page url is not recognised", async () => {

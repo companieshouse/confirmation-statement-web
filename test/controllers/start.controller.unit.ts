@@ -7,9 +7,7 @@ const EXPECTED_TEXT = "File a confirmation statement";
 describe("start controller tests", () => {
 
   beforeEach(() => {
-    middlewareMocks.mockAuthenticationMiddleware.mockClear();
-    middlewareMocks.mockServiceAvailabilityMiddleware.mockClear();
-    middlewareMocks.mockSessionMiddleware.mockClear();
+    jest.clearAllMocks();
   });
 
   it("should return start page", async () => {
