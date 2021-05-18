@@ -4,7 +4,7 @@
  * thrown.
  */
 
-const getEnvironmentVariable = (key: string, defaultValue?: any): string => {
+const getEnvironmentVariable = (key: string, defaultValue?: string): string => {
   const isMandatory = !defaultValue;
   const value: string = process.env[key] || "";
 
@@ -30,3 +30,7 @@ export const CHS_API_KEY = getEnvironmentVariable("CHS_API_KEY");
 export const INTERNAL_API_URL = getEnvironmentVariable("INTERNAL_API_URL");
 
 export const FEATURE_FLAG_PRIVATE_SDK_12052021 = getEnvironmentVariable("FEATURE_FLAG_PRIVATE_SDK_12052021");
+
+export const testingOnly = {
+  getEnvironmentVariable
+};
