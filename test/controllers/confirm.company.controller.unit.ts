@@ -19,12 +19,7 @@ describe("Confirm company controller tests", () => {
   const PAGE_HEADING = "Confirm this is the correct company";
 
   beforeEach(() => {
-    mockIsActiveFeature.mockReset();
-    mockGetCompanyProfile.mockClear();
-    mockCreateConfirmationStatement.mockClear();
-    mocks.mockAuthenticationMiddleware.mockClear();
-    mocks.mockServiceAvailabilityMiddleware.mockClear();
-    mocks.mockSessionMiddleware.mockClear();
+    jest.clearAllMocks();
   });
 
   it("Should navigate to confirm company page", async () => {

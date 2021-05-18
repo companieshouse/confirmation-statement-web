@@ -13,7 +13,7 @@ const ERROR_MESSSAGE = "Error getting session keys for creating api client";
 describe ("Test node session handler authorization for private sdk", () => {
 
   beforeEach(() => {
-    mockCreateAndLogError.mockClear();
+    jest.clearAllMocks();
   });
 
   it ("Should obtain private node sdk oauth client", () => {

@@ -8,6 +8,10 @@ mockCreateAndLogError.mockReturnValue(new Error());
 
 describe("Date formatter tests", () => {
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("Should return a human readable date from hyphanated-date string", () => {
     const dateString = "2019-03-18";
     const date = readableFormat(dateString);

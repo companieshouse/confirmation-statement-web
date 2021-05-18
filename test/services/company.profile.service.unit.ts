@@ -30,12 +30,7 @@ describe("Company profile service test", () => {
   const COMPANY_NUMBER = "1234567";
 
   beforeEach(() => {
-    mockGetCompanyProfile.mockReset();
-    mockCreateApiClient.mockClear();
-    mockReadableFormat.mockReset();
-    mockLookupCompanyStatus.mockReset();
-    mockLookupCompanyType.mockReset();
-    mockCreateAndLogError.mockClear();
+    jest.clearAllMocks();
   });
 
   it("Should return a company profile", async () => {
