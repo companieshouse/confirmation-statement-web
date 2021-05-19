@@ -3,10 +3,11 @@ import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
 import { CHS_URL } from "../utils/properties";
 import { logger } from "../utils/logger";
 import { isCompanyNumberValid } from "../validators/company.number.validator";
+import { urlParams } from "../types/page.urls";
 
 export const companyAuthenticationMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
-  const companyNumber: string = req.params.companyNumber;
+  const companyNumber: string = req.params[urlParams.COMPANY_NUMBER];
 
   if (!isCompanyNumberValid(companyNumber)) {
     logger.errorRequest(req, "No Valid Company Number in URL: " + req.originalUrl);

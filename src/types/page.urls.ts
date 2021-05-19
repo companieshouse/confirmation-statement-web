@@ -1,5 +1,9 @@
 import { Templates } from "./template.paths";
 
+export enum urlParams {
+  COMPANY_NUMBER = "companyNumber"
+}
+
 const SEPARATOR = "/";
 
 export const ACCESSIBILITY_STATEMENT = SEPARATOR + Templates.ACCESSIBILITY_STATEMENT;
@@ -10,4 +14,4 @@ export const COMPANY_LOOKUP = "/company-lookup/search?forward=/confirmation-stat
 
 export const CONFIRM_COMPANY_PATH = CONFIRMATION_STATEMENT + CONFIRM_COMPANY;
 
-export const COMPANY_AUTH_PROTECTED_BASE = "/company/:companyNumber/";
+export const COMPANY_AUTH_PROTECTED_BASE = `/company/:${urlParams.COMPANY_NUMBER}`;
