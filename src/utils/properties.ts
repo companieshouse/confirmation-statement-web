@@ -27,6 +27,8 @@ export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentVariable("SHOW_SERVICE_OF
 
 export const CHS_API_KEY = getEnvironmentVariable("CHS_API_KEY");
 
+export const CHS_URL = getEnvironmentVariable("CHS_URL");
+
 export const INTERNAL_API_URL = getEnvironmentVariable("INTERNAL_API_URL");
 
 export const FEATURE_FLAG_PRIVATE_SDK_12052021 = getEnvironmentVariable("FEATURE_FLAG_PRIVATE_SDK_12052021");
