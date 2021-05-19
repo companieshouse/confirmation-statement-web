@@ -26,3 +26,5 @@ router.get(urls.ACCESSIBILITY_STATEMENT, renderTemplate(Templates.ACCESSIBILITY_
 router.get(urls.CONFIRM_COMPANY, confirmCompanyRoute.get);
 
 router.post(urls.CONFIRM_COMPANY, confirmCompanyRoute.post);
+
+router.get(urls.COMPANY_AUTH_PROTECTED_BASE, (req, res) => res.send(req.params));

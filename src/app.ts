@@ -10,6 +10,7 @@ import { sessionMiddleware } from "./middleware/session.middleware";
 
 import cookieParser from "cookie-parser";
 import logger from "./utils/logger";
+import { companyAuthenticationMiddleware } from "./middleware/company.authentication.middleware";
 
 const app = express();
 
@@ -39,8 +40,10 @@ app.set("view engine", "html");
 app.use(cookieParser());
 app.use(serviceAvailabilityMiddleware);
 app.use(`${urls.CONFIRMATION_STATEMENT}*`, sessionMiddleware);
-const regexp = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
-app.use(regexp, authenticationMiddleware);
+const userAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
+app.use(userAuthRegex, authenticationMiddleware);
+const companyAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/company/.*/");
+app.use(companyAuthRegex, companyAuthenticationMiddleware);
 
 // apply our default router to /confirmation-statement
 app.use(urls.CONFIRMATION_STATEMENT, router);

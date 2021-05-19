@@ -18,7 +18,7 @@ const res: Response = {} as Response;
 const next = jest.fn();
 
 const expectedAuthMiddlewareConfig: AuthOptions = {
-  accountWebUrl: "",
+  chsWebUrl: "http://chs.local",
   returnUrl: URL
 };
 
