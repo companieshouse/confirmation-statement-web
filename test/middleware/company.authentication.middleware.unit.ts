@@ -38,6 +38,24 @@ describe("company authentication middleware tests", () => {
     expect(mockAuthReturnedFunction).toHaveBeenCalledWith(req, res, next);
   });
 
+  it("should call CH authentication library when two letter 6 number pattern in url", () => {
+    req.originalUrl = COMPANY_AUTH_PROTECTED_BASE.replace(":companyNumber", "AB123456");
+    expectedAuthMiddlewareConfig.companyNumber = "AB123456";
+    expectedAuthMiddlewareConfig.returnUrl = COMPANY_AUTH_PROTECTED_BASE.replace(":companyNumber", "AB123456");
+    companyAuthenticationMiddleware(req, res, next);
+
+    expect(mockCompanyAuthMiddleware).toHaveBeenCalledWith(expectedAuthMiddlewareConfig);
+    expect(mockAuthReturnedFunction).toHaveBeenCalledWith(req, res, next);
+  });
+
+  it("should call next(Error) when invalid company pattern in url", () => {
+    req.originalUrl = COMPANY_AUTH_PROTECTED_BASE.replace(":companyNumber", "1234567890");
+    companyAuthenticationMiddleware(req, res, next);
+
+    expect(mockCompanyAuthMiddleware).not.toHaveBeenCalled();
+    expect(next).toHaveBeenCalledWith(Error("No Valid Company Number in Request"));
+  });
+
   it("should call next(Error) when company pattern not in url", () => {
     req.originalUrl = CONFIRMATION_STATEMENT;
     companyAuthenticationMiddleware(req, res, next);
