@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
 import { CHS_URL } from "../utils/properties";
-import logger from "../utils/logger";
+import { logger } from "../utils/logger";
 
 const COMPANY_NUMBER_MATCHER = new RegExp("^.*?\\/company\\/([0-9a-zA-Z]{8}).*$");
 

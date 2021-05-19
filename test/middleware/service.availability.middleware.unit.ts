@@ -10,7 +10,7 @@ const mockIsActiveFeature = isActiveFeature as jest.Mock;
 describe("service availability middleware tests", () => {
 
   beforeEach(() => {
-    mockIsActiveFeature.mockClear();
+    jest.clearAllMocks();
   });
 
   it("should return service offline page", async () => {

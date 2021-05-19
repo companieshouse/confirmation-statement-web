@@ -7,9 +7,7 @@ const EXPECTED_LOCATION = "/company-lookup/search?forward=/confirmation-statemen
 describe("company number controller tests", () => {
 
   beforeEach(() => {
-    mocks.mockAuthenticationMiddleware.mockClear();
-    mocks.mockServiceAvailabilityMiddleware.mockClear();
-    mocks.mockSessionMiddleware.mockClear();
+    jest.clearAllMocks();
   });
 
   it("should return company number page", async () => {

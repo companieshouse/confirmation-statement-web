@@ -6,17 +6,17 @@ jest.mock("../../src/utils/api.enumerations");
 import { getCompanyProfile } from "../../src/services/company.profile.service";
 import { CompanyProfile, ConfirmationStatement } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { createApiClient, Resource } from "@companieshouse/api-sdk-node";
-import logger from "../../src/utils/logger";
+import { createAndLogError } from "../../src/utils/logger";
 import { validSDKResource } from "../mocks/company.profile.mock";
 import { readableFormat } from "../../src/utils/date.formatter";
 import { lookupCompanyStatus, lookupCompanyType } from "../../src/utils/api.enumerations";
 
-const mockLoggerError = logger.error as jest.Mock;
 const mockCreateApiClient = createApiClient as jest.Mock;
 const mockGetCompanyProfile = jest.fn();
 const mockReadableFormat = readableFormat as jest.Mock;
 const mockLookupCompanyStatus = lookupCompanyStatus as jest.Mock;
 const mockLookupCompanyType = lookupCompanyType as jest.Mock;
+const mockCreateAndLogError = createAndLogError as jest.Mock;
 
 mockCreateApiClient.mockReturnValue({
   companyProfile: {
@@ -24,16 +24,13 @@ mockCreateApiClient.mockReturnValue({
   }
 });
 
+mockCreateAndLogError.mockReturnValue(new Error());
+
 describe("Company profile service test", () => {
   const COMPANY_NUMBER = "1234567";
 
   beforeEach(() => {
-    mockGetCompanyProfile.mockReset();
-    mockLoggerError.mockClear();
-    mockCreateApiClient.mockClear();
-    mockReadableFormat.mockReset();
-    mockLookupCompanyStatus.mockReset();
-    mockLookupCompanyType.mockReset();
+    jest.clearAllMocks();
   });
 
   it("Should return a company profile", async () => {
@@ -93,67 +90,61 @@ describe("Company profile service test", () => {
     expect(mockLookupCompanyType).toBeCalledWith(validSDKResource.resource?.type);
   });
 
-  it("Should throw an error if status code == 400", () => {
+  it("Should throw an error if status code == 400", async () => {
     const HTTP_STATUS_CODE = 400;
     mockGetCompanyProfile.mockResolvedValueOnce({
       httpStatusCode: HTTP_STATUS_CODE
     } as Resource<CompanyProfile>);
 
-    getCompanyProfile(COMPANY_NUMBER)
+    await getCompanyProfile(COMPANY_NUMBER)
       .then(() => {
         fail("Was expecting an error to be thrown.");
       })
-      .catch((error: Error) => {
-        expect(error.message).toContain(HTTP_STATUS_CODE);
-        expect(error.message).toContain(COMPANY_NUMBER);
-        expect(mockLoggerError).toHaveBeenCalled();
+      .catch(() => {
+        expect(createAndLogError).toHaveBeenCalledWith(expect.stringContaining(`${HTTP_STATUS_CODE}`));
+        expect(createAndLogError).toHaveBeenCalledWith(expect.stringContaining(`${COMPANY_NUMBER}`));
       });
   });
 
-  it("Should throw an error if status code > 400", () => {
+  it("Should throw an error if status code > 400", async () => {
     const HTTP_STATUS_CODE = 502;
     mockGetCompanyProfile.mockResolvedValueOnce({
       httpStatusCode: HTTP_STATUS_CODE
     } as Resource<CompanyProfile>);
 
-    getCompanyProfile(COMPANY_NUMBER)
+    await getCompanyProfile(COMPANY_NUMBER)
       .then(() => {
         fail("Was expecting an error to be thrown.");
       })
-      .catch((error: Error) => {
-        expect(error.message).toContain(HTTP_STATUS_CODE);
-        expect(error.message).toContain(COMPANY_NUMBER);
-        expect(mockLoggerError).toHaveBeenCalled();
+      .catch(() => {
+        expect(createAndLogError).toHaveBeenCalledWith(expect.stringContaining(`${HTTP_STATUS_CODE}`));
+        expect(createAndLogError).toHaveBeenCalledWith(expect.stringContaining(`${COMPANY_NUMBER}`));
       });
   });
 
-  it("Should throw an error if no response returned from SDK", () => {
+  it("Should throw an error if no response returned from SDK", async () => {
     mockGetCompanyProfile.mockResolvedValueOnce(undefined);
 
-    getCompanyProfile(COMPANY_NUMBER)
+    await getCompanyProfile(COMPANY_NUMBER)
       .then(() => {
         fail("Was expecting an error to be thrown.");
       })
-      .catch((error: Error) => {
-        expect(error.message).toContain("no response");
-        expect(error.message).toContain(COMPANY_NUMBER);
-        expect(mockLoggerError).toHaveBeenCalled();
+      .catch(() => {
+        expect(createAndLogError).toHaveBeenCalledWith(expect.stringContaining("no response"));
+        expect(createAndLogError).toHaveBeenCalledWith(expect.stringContaining(`${COMPANY_NUMBER}`));
       });
   });
 
-  it("Should throw an error if no response resource returned from SDK", () => {
+  it("Should throw an error if no response resource returned from SDK", async () => {
     mockGetCompanyProfile.mockResolvedValueOnce({} as Resource<CompanyProfile>);
 
-    getCompanyProfile(COMPANY_NUMBER)
+    await getCompanyProfile(COMPANY_NUMBER)
       .then(() => {
         fail("Was expecting an error to be thrown.");
       })
-      .catch((error: Error) => {
-        expect(error.message).toContain("no resource");
-        expect(error.message).toContain(COMPANY_NUMBER);
-        expect(mockLoggerError).toHaveBeenCalled();
+      .catch(() => {
+        expect(createAndLogError).toHaveBeenCalledWith(expect.stringContaining("no resource"));
+        expect(createAndLogError).toHaveBeenCalledWith(expect.stringContaining(`${COMPANY_NUMBER}`));
       });
   });
 });
-
-

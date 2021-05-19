@@ -9,7 +9,7 @@ import { authenticationMiddleware } from "./middleware/authentication.middleware
 import { sessionMiddleware } from "./middleware/session.middleware";
 
 import cookieParser from "cookie-parser";
-import logger from "./utils/logger";
+import { logger } from "./utils/logger";
 import { companyAuthenticationMiddleware } from "./middleware/company.authentication.middleware";
 
 const app = express();

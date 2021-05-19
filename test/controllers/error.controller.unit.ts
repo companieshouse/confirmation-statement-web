@@ -5,7 +5,7 @@ import request from "supertest";
 import app from "../../src/app";
 import { NextFunction } from "express";
 import { CONFIRM_COMPANY_PATH } from "../../src/types/page.urls";
-import logger from "../../src/utils/logger";
+import { logger } from "../../src/utils/logger";
 
 const mockLoggerErrorRequest = logger.errorRequest as jest.Mock;
 
@@ -15,10 +15,7 @@ const INCORRECT_URL = "/confirmation-statement/company-numberr";
 describe("Error controller test", () => {
 
   beforeEach(() => {
-    mocks.mockAuthenticationMiddleware.mockClear();
-    mocks.mockServiceAvailabilityMiddleware.mockClear();
-    mocks.mockSessionMiddleware.mockClear();
-    mockLoggerErrorRequest.mockClear();
+    jest.clearAllMocks();
   });
 
   it("Should return page not found screen if page url is not recognised", async () => {
