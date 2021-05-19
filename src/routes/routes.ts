@@ -27,4 +27,4 @@ router.get(urls.CONFIRM_COMPANY, confirmCompanyRoute.get);
 
 router.post(urls.CONFIRM_COMPANY, confirmCompanyRoute.post);
 
-router.get(urls.COMPANY_AUTH_PROTECTED_BASE, (req, res) => res.send(req.params));
+router.get(urls.TRADING_STATUS, (req, res) => res.send("Trading Status"));
