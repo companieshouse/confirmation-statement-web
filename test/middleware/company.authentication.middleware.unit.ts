@@ -2,7 +2,7 @@ jest.mock("@companieshouse/web-security-node");
 
 import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
 import { Request, Response } from "express";
-import { authenticationMiddleware } from "../../src/middleware/authentication.middleware";
+import { companyAuthenticationMiddleware } from "../../src/middleware/company.authentication.middleware";
 import { COMPANY_AUTH_PROTECTED_BASE, CONFIRMATION_STATEMENT } from "../../src/types/page.urls";
 
 // get handle on mocked function and create mock function to be returned from calling companyAuthMiddleware
@@ -32,18 +32,17 @@ describe("company authentication middleware tests", () => {
   });
 
   it("should call CH authentication library when company pattern in url", () => {
-    authenticationMiddleware(req, res, next);
+    companyAuthenticationMiddleware(req, res, next);
 
     expect(mockCompanyAuthMiddleware).toHaveBeenCalledWith(expectedAuthMiddlewareConfig);
     expect(mockAuthReturnedFunction).toHaveBeenCalledWith(req, res, next);
   });
 
-  it("should not redirect to authentication when company pattern not in url", () => {
+  it("should call next(Error) when company pattern not in url", () => {
     req.originalUrl = CONFIRMATION_STATEMENT;
-    authenticationMiddleware(req, res, next);
+    companyAuthenticationMiddleware(req, res, next);
 
     expect(mockCompanyAuthMiddleware).not.toHaveBeenCalled();
-    expect(next).toHaveBeenCalled();
+    expect(next).toHaveBeenCalledWith(Error("No Valid Company Number in Request"));
   });
-
 });
