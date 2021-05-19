@@ -23,7 +23,7 @@ const mockAuthReturnedFunction = jest.fn();
 mockAuthReturnedFunction.mockImplementation((_req, _res, next) => next());
 mockCompanyAuthMiddleware.mockReturnValue(mockAuthReturnedFunction);
 
-const URL = CONFIRMATION_STATEMENT + COMPANY_AUTH_PROTECTED_BASE.replace(":companyNumber", "12345678");
+const URL = CONFIRMATION_STATEMENT + COMPANY_AUTH_PROTECTED_BASE.replace(":companyNumber", "12345678") + "/test";
 const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
 
 const expectedAuthMiddlewareConfig: AuthOptions = {
