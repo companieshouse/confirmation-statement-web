@@ -42,8 +42,8 @@ app.use(serviceAvailabilityMiddleware);
 app.use(`${urls.CONFIRMATION_STATEMENT}*`, sessionMiddleware);
 const userAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
 app.use(userAuthRegex, authenticationMiddleware);
-const companyAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/company/.*/");
-app.use(companyAuthRegex, companyAuthenticationMiddleware);
+// onst companyAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/company/.*/");
+app.use(urls.CONFIRMATION_STATEMENT + "/company/:id", companyAuthenticationMiddleware);
 
 // apply our default router to /confirmation-statement
 app.use(urls.CONFIRMATION_STATEMENT, router);

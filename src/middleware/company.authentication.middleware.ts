@@ -7,6 +7,8 @@ const COMPANY_NUMBER_MATCHER = new RegExp("\\/company\\/([0-9a-zA-Z]{8})\\/");
 
 export const companyAuthenticationMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
+  console.log("************* " + JSON.stringify(req.params));
+
   const companyNumber: string | undefined = extractCompanyNumberFromRequest(req);
 
   if (!companyNumber) {
