@@ -24,11 +24,8 @@ export const companyAuthenticationMiddleware = (req: Request, res: Response, nex
 };
 
 const extractCompanyNumberFromRequest = (req: Request): string | undefined => {
-  const originalPath = req.originalUrl;
-  let pathMatches;
-  if (originalPath) {
-    pathMatches = originalPath.match(COMPANY_NUMBER_MATCHER);
-  }
+  const originalPath: string = req.originalUrl;
+  const pathMatches = originalPath.match(COMPANY_NUMBER_MATCHER);
 
   if (pathMatches) {
     return pathMatches[1];
