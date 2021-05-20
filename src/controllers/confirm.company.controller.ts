@@ -6,7 +6,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { FEATURE_FLAG_PRIVATE_SDK_12052021, INVALID_COMPANY_STATUSES } from "../utils/properties";
 import { isActiveFeature } from "../utils/feature.flag";
 import { createConfirmationStatement } from "../services/confirmation.statement.service";
-import {COMPANY_AUTH_PROTECTED_BASE, CONFIRMATION_STATEMENT_TRADING_STATUS} from "../types/page.urls";
+import { CONFIRMATION_STATEMENT_TRADING_STATUS } from "../types/page.urls";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
