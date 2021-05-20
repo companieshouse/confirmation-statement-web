@@ -14,7 +14,7 @@
 
       {% set fileByPostHTML %}
       <p>You can also file a confirmation statement by post using the
-        <a href="https://www.gov.uk/government/publications/confirmation-statement-cs01">CS01 paper form</a>. It costs £40 and will take longer to process than if you file online.</p>
+        <a href="https://www.gov.uk/government/publications/confirmation-statement-cs01" data-event-id="CS01-paper-form-link">CS01 paper form</a>. It costs £40 and will take longer to process than if you file online.</p>
       {% endset %}
 
       {% set insetHTML %}
@@ -34,10 +34,10 @@
         <li>has one person with significant control (PSC) or fewer</li>
       </ul>
       <p>If the company does not meet these criteria, you will need to file a confirmation statement using our
-        <a href="https://ewf.companieshouse.gov.uk//seclogin?tc=1">WebFiling service</a>.</p>
+        <a href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" data-event-id="webfiling-service-link-from-ncs-start-page">WebFiling service</a>.</p>
 
       <p>You cannot use this service to make any changes to company information. You should
-        <a href="{{CHS_URL}}">check the company's details</a>
+        <a href="{{CHS_URL}}" data-event-id="check-company-details-link">check the company's details</a>
         and update any information that is incorrect or out of date before filing the confirmation statement.
 
         <p class="govuk-body govuk-!-font-weight-bold">To file a confirmation statement, you'll need:</p>
@@ -52,7 +52,7 @@
           html: insetHTML
         }) }}
 
-        <a href="/confirmation-statement/company-number" id="start-now" role="button" draggable="false" class="govuk-button govuk-button--start govuk-!-margin-top-2 govuk-!-margin-bottom-8" data-module="govuk-button">
+        <a href="/confirmation-statement/company-number" id="start-now" onclick="_paq.push(['trackGoal', 3])" role="button" draggable="false" class="govuk-button govuk-button--start govuk-!-margin-top-2 govuk-!-margin-bottom-8" data-module="govuk-button">
           Start now
           <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewbox="0 0 33 40" role="presentation" focusable="false">
             <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"></path>
@@ -62,12 +62,12 @@
         <h2 class="govuk-heading-m">Before you start</h2>
 
         <p>
-          <a href="https://www.gov.uk/guidance/confirmation-statement-guidance">Read the guidance on filing a confirmation statement</a>, including how to make changes to your company information.</p>
+          <a href="https://www.gov.uk/guidance/confirmation-statement-guidance" data-event-id="Read-the-guidance-on-filing-link">Read the guidance on filing a confirmation statement</a>, including how to make changes to your company information.</p>
         <p>
           <a href="#">This service is also available in Welsh.</a>
         </p>
         {{ govukDetails({
-        summaryText: "Other ways to file a confirmation statement",
+        summaryHtml: '<div data-event-id="Other-ways-to-file-a-confirmation-statement-details-dropdown"> Other ways to file a confirmation statement</div>',
         html: fileByPostHTML
       }) }}
 
