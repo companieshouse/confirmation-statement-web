@@ -18,15 +18,14 @@ const res: Response = {} as Response;
 const next = jest.fn();
 
 const expectedAuthMiddlewareConfig: AuthOptions = {
-  accountWebUrl: "",
+  chsWebUrl: "http://chs.local",
   returnUrl: URL
 };
 
 describe("authentication middleware tests", () => {
 
   beforeEach(() => {
-    mockAuthMiddleware.mockClear();
-    next.mockClear();
+    jest.clearAllMocks();
     req.originalUrl = URL;
   });
 

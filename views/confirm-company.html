@@ -129,11 +129,11 @@
               id: "submit"
             },
             text: "Confirm and continue",
-            href: "/authenticate"
+            href: "/confirmation-statement/company/" + company.companyNumber + "/trading-status"
           }) }}
         {% endif %}
         <p>
-          <a href="/confirmation-statement/company-number" class="piwik-event" data-event-id="choose-a-different-company-link">Choose a different company</a>
+          <a href="/confirmation-statement/company-number" data-event-id="choose-a-different-company-link">Choose a different company</a>
         </p>
       </form>
     </div>

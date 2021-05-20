@@ -13,16 +13,16 @@ const mockPostNewConfirmationStatement
     = ConfirmationStatementService.prototype.postNewConfirmationStatement as jest.Mock;
 const mockCreatePrivateApiClient = createPrivateApiClient as jest.Mock;
 
+mockCreatePrivateApiClient.mockReturnValue({
+  confirmationStatementService: ConfirmationStatementService.prototype
+} as PrivateApiClient);
+
 const transactionId = "12345";
 
 describe ("Confirmation statement api service unit tests", () => {
 
   beforeEach (() => {
-    mockCreatePrivateApiClient.mockReturnValue({
-      confirmationStatementService: ConfirmationStatementService.prototype
-    } as PrivateApiClient
-    );
-    mockPostNewConfirmationStatement.mockClear();
+    jest.clearAllMocks();
   });
 
   it ("should call create confirmation statement in the private sdk", async () => {

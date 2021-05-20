@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import logger from "../utils/logger";
+import { logger } from "../utils/logger";
 import { Templates } from "../types/template.paths";
 
 const pageNotFound = (req: Request, res: Response) => {
