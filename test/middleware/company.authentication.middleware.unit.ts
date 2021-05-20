@@ -23,7 +23,7 @@ const mockAuthReturnedFunction = jest.fn();
 mockAuthReturnedFunction.mockImplementation((_req, _res, next) => next());
 mockCompanyAuthMiddleware.mockReturnValue(mockAuthReturnedFunction);
 
-const URL = CONFIRMATION_STATEMENT + COMPANY_AUTH_PROTECTED_BASE.replace(":companyNumber", "12345678") + "/test";
+const URL = CONFIRMATION_STATEMENT + COMPANY_AUTH_PROTECTED_BASE.replace(":companyNumber", "12345678");
 const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
 
 const expectedAuthMiddlewareConfig: AuthOptions = {
@@ -47,6 +47,19 @@ describe("company authentication middleware tests", () => {
 
     expect(mockCompanyAuthMiddleware).toHaveBeenCalledWith(expectedAuthMiddlewareConfig);
     expect(mockAuthReturnedFunction).toHaveBeenCalled();
+  });
+
+  it("should call CH authentication library when company pattern in middle of url", async () => {
+    const extraUrl = URL + "/extra";
+    const originalReturnUrl = expectedAuthMiddlewareConfig.returnUrl;
+    expectedAuthMiddlewareConfig.returnUrl = extraUrl;
+
+    await request(app).get(extraUrl);
+
+    expect(mockCompanyAuthMiddleware).toHaveBeenCalledWith(expectedAuthMiddlewareConfig);
+    expect(mockAuthReturnedFunction).toHaveBeenCalled();
+
+    expectedAuthMiddlewareConfig.returnUrl = originalReturnUrl;
   });
 
   it("should call next(Error) when invalid company pattern in url", async () => {
