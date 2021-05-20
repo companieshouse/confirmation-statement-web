@@ -59,12 +59,31 @@ describe("Confirm company controller tests", () => {
     expect(response.text).toContain("Sorry, the service is unavailable");
   });
 
-  it("Should call private sdk client", async () => {
+  it("Should call private sdk client when company is active", async () => {
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockIsActiveFeature.mockReturnValueOnce(true);
     mockCreateConfirmationStatement.mockResolvedValueOnce(201);
     await request(app)
       .post(CONFIRM_COMPANY_PATH);
     expect(mockCreateConfirmationStatement).toHaveBeenCalled();
+  });
+
+  it("Should render error page when company is converted or closed", async () => {
+    validCompanyProfile.companyStatus = "Converted / Closed";
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    const response = await request(app)
+      .post(CONFIRM_COMPANY_PATH);
+    expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
+    expect(response.text).toContain("dissolved and struck off the register");
+  });
+
+  it("Should render error page when company is dissolved", async () => {
+    validCompanyProfile.companyStatus = "Dissolved";
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    const response = await request(app)
+      .post(CONFIRM_COMPANY_PATH);
+    expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
+    expect(response.text).toContain("dissolved and struck off the register");
   });
 
   it("Should not call private sdk client id feature flag is off", async () => {
