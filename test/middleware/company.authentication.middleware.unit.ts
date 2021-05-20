@@ -38,6 +38,15 @@ describe("company authentication middleware tests", () => {
     expect(mockAuthReturnedFunction).toHaveBeenCalledWith(req, res, next);
   });
 
+  it("should call CH authentication library when company pattern in middle of url", () => {
+    req.originalUrl = req.originalUrl + "/some-extra-stuff";
+    expectedAuthMiddlewareConfig.returnUrl = req.originalUrl;
+    companyAuthenticationMiddleware(req, res, next);
+
+    expect(mockCompanyAuthMiddleware).toHaveBeenCalledWith(expectedAuthMiddlewareConfig);
+    expect(mockAuthReturnedFunction).toHaveBeenCalledWith(req, res, next);
+  });
+
   it("should call CH authentication library when two letter 6 number pattern in url", () => {
     req.originalUrl = COMPANY_AUTH_PROTECTED_BASE.replace(":companyNumber", "AB123456");
     expectedAuthMiddlewareConfig.companyNumber = "AB123456";

@@ -10,4 +10,7 @@ export const COMPANY_LOOKUP = "/company-lookup/search?forward=/confirmation-stat
 
 export const CONFIRM_COMPANY_PATH = CONFIRMATION_STATEMENT + CONFIRM_COMPANY;
 
+// Company Auth protected routes
 export const COMPANY_AUTH_PROTECTED_BASE = "/company/:companyNumber/";
+
+export const TRADING_STATUS = COMPANY_AUTH_PROTECTED_BASE + "trading-status";
