@@ -1,21 +1,30 @@
 jest.mock("@companieshouse/web-security-node");
+jest.mock("../../src/utils/logger");
+jest.mock("../../src/validators/company.number.validator");
 
+import mockSessionMiddleware from "../mocks/session.middleware.mock";
+import mockServiceAvailabilityMiddleware from "../mocks/service.availability.middleware.mock";
+import mockAuthenticationMiddleware from "../mocks/authentication.middleware.mock";
 import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
-import { Request, Response } from "express";
-import { companyAuthenticationMiddleware } from "../../src/middleware/company.authentication.middleware";
+import request from "supertest";
+import app from "../../src/app";
 import { COMPANY_AUTH_PROTECTED_BASE, CONFIRMATION_STATEMENT } from "../../src/types/page.urls";
+import { logger } from "../../src/utils/logger";
+import { isCompanyNumberValid } from "../../src/validators/company.number.validator";
 
 // get handle on mocked function and create mock function to be returned from calling companyAuthMiddleware
 const mockCompanyAuthMiddleware = authMiddleware as jest.Mock;
-const mockAuthReturnedFunction = jest.fn();
+const mockLoggerErrorRequest = logger.errorRequest as jest.Mock;
+const mockCompanyNumberValidator = isCompanyNumberValid as jest.Mock;
+mockCompanyNumberValidator.mockReturnValue(true);
 
 // when the mocked companyAuthMiddleware is called, make it return a mocked function so we can verify it gets called
+const mockAuthReturnedFunction = jest.fn();
+mockAuthReturnedFunction.mockImplementation((_req, _res, next) => next());
 mockCompanyAuthMiddleware.mockReturnValue(mockAuthReturnedFunction);
 
-const URL = COMPANY_AUTH_PROTECTED_BASE.replace(":companyNumber", "12345678");
-const req: Request = { originalUrl: URL } as Request;
-const res: Response = {} as Response;
-const next = jest.fn();
+const URL = CONFIRMATION_STATEMENT + COMPANY_AUTH_PROTECTED_BASE.replace(":companyNumber", "12345678");
+const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
 
 const expectedAuthMiddlewareConfig: AuthOptions = {
   chsWebUrl: "http://chs.local",
@@ -27,49 +36,49 @@ describe("company authentication middleware tests", () => {
 
   beforeEach(() => {
     mockCompanyAuthMiddleware.mockClear();
-    next.mockClear();
-    req.originalUrl = URL;
+    mockSessionMiddleware.mockClear();
+    mockServiceAvailabilityMiddleware.mockClear();
+    mockAuthenticationMiddleware.mockClear();
+    mockLoggerErrorRequest.mockClear();
   });
 
-  it("should call CH authentication library when company pattern in url", () => {
-    companyAuthenticationMiddleware(req, res, next);
+  it("should call CH authentication library when company pattern in url", async () => {
+    await request(app).get(URL);
 
     expect(mockCompanyAuthMiddleware).toHaveBeenCalledWith(expectedAuthMiddlewareConfig);
-    expect(mockAuthReturnedFunction).toHaveBeenCalledWith(req, res, next);
+    expect(mockAuthReturnedFunction).toHaveBeenCalled();
   });
 
-  it("should call CH authentication library when company pattern in middle of url", () => {
-    req.originalUrl = req.originalUrl + "/some-extra-stuff";
-    expectedAuthMiddlewareConfig.returnUrl = req.originalUrl;
-    companyAuthenticationMiddleware(req, res, next);
+  it("should call CH authentication library when company pattern in middle of url", async () => {
+    const extraUrl = URL + "/extra";
+    const originalReturnUrl = expectedAuthMiddlewareConfig.returnUrl;
+    expectedAuthMiddlewareConfig.returnUrl = extraUrl;
+
+    await request(app).get(extraUrl);
 
     expect(mockCompanyAuthMiddleware).toHaveBeenCalledWith(expectedAuthMiddlewareConfig);
-    expect(mockAuthReturnedFunction).toHaveBeenCalledWith(req, res, next);
+    expect(mockAuthReturnedFunction).toHaveBeenCalled();
+
+    expectedAuthMiddlewareConfig.returnUrl = originalReturnUrl;
   });
 
-  it("should call CH authentication library when two letter 6 number pattern in url", () => {
-    req.originalUrl = COMPANY_AUTH_PROTECTED_BASE.replace(":companyNumber", "AB123456");
-    expectedAuthMiddlewareConfig.companyNumber = "AB123456";
-    expectedAuthMiddlewareConfig.returnUrl = COMPANY_AUTH_PROTECTED_BASE.replace(":companyNumber", "AB123456");
-    companyAuthenticationMiddleware(req, res, next);
+  it("should call next(Error) when invalid company pattern in url", async () => {
+    mockCompanyNumberValidator.mockReturnValueOnce(false);
 
-    expect(mockCompanyAuthMiddleware).toHaveBeenCalledWith(expectedAuthMiddlewareConfig);
-    expect(mockAuthReturnedFunction).toHaveBeenCalledWith(req, res, next);
-  });
-
-  it("should call next(Error) when invalid company pattern in url", () => {
-    req.originalUrl = COMPANY_AUTH_PROTECTED_BASE.replace(":companyNumber", "1234567890");
-    companyAuthenticationMiddleware(req, res, next);
+    const returnedPage = await request(app).get(CONFIRMATION_STATEMENT + "/company/1234");
 
     expect(mockCompanyAuthMiddleware).not.toHaveBeenCalled();
-    expect(next).toHaveBeenCalledWith(Error("No Valid Company Number in Request"));
+    expect(mockLoggerErrorRequest.mock.calls[0][1]).toEqual(`No Valid Company Number in URL: ${CONFIRMATION_STATEMENT}/company/1234`);
+    expect(returnedPage.text).toContain(ERROR_PAGE_TEXT);
   });
 
-  it("should call next(Error) when company pattern not in url", () => {
-    req.originalUrl = CONFIRMATION_STATEMENT;
-    companyAuthenticationMiddleware(req, res, next);
+  it("should call next(Error) when company pattern not in url", async () => {
+    mockCompanyNumberValidator.mockReturnValueOnce(false);
+
+    const returnedPage = await request(app).get(CONFIRMATION_STATEMENT + "/company/test");
 
     expect(mockCompanyAuthMiddleware).not.toHaveBeenCalled();
-    expect(next).toHaveBeenCalledWith(Error("No Valid Company Number in Request"));
+    expect(mockLoggerErrorRequest.mock.calls[0][1]).toEqual(`No Valid Company Number in URL: ${CONFIRMATION_STATEMENT}/company/test`);
+    expect(returnedPage.text).toContain(ERROR_PAGE_TEXT);
   });
 });
