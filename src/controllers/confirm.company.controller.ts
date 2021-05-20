@@ -21,7 +21,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const company: CompanyProfile = await getCompanyProfile(req.query.companyNumber as string);
     if (isStatusEligible(company)) {
-      create(req);
+      await createCsStatement(req);
       const url = CONFIRMATION_STATEMENT_TRADING_STATUS.replace(":companyNumber", company.companyNumber);
       return res.redirect(url);
     } else {
@@ -44,7 +44,7 @@ const isStatusEligible = (company: CompanyProfile): boolean => {
   return isValid;
 };
 
-const create = async (req: Request) => {
+const createCsStatement = async (req: Request) => {
   if (isActiveFeature(FEATURE_FLAG_PRIVATE_SDK_12052021)) {
     const transactionId: string = "";
     const session: Session = req.session as Session;
