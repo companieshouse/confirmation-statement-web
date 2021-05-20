@@ -7,7 +7,7 @@ import { urlParams } from "../types/page.urls";
 
 export const companyAuthenticationMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
-  const companyNumber: string = req.params[urlParams.COMPANY_NUMBER];
+  const companyNumber: string = req.params[urlParams.PARAM_COMPANY_NUMBER];
 
   if (!isCompanyNumberValid(companyNumber)) {
     logger.errorRequest(req, "No Valid Company Number in URL: " + req.originalUrl);
