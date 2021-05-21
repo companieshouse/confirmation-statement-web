@@ -4,21 +4,25 @@
   File a confirmation statement - Companies House
 {% endblock %}
 
+<!-- No service name header-->
 {% block header %}
-  <!-- Blank header with no service name for the start page -->
-  {{ govukHeader() }}
+  {{ govukHeader({
+    homepageUrl: "https://www.gov.uk",
+    containerClasses: "govuk-width-container"})
+  }}
 {% endblock %}
+
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
       {% set fileByPostHTML %}
-      <p>You can also file a confirmation statement by post using the
+        <p>You can also file a confirmation statement by post using the
         <a href="https://www.gov.uk/government/publications/confirmation-statement-cs01" data-event-id="CS01-paper-form-link">CS01 paper form</a>. It costs £40 and will take longer to process than if you file online.</p>
       {% endset %}
 
       {% set insetHTML %}
-      <p>Your WebFiling details will not work with this service. You will need to register a Companies House account if you do not already have one, which you can do within this service.</p>
+        <p>Your WebFiling details will not work with this service. You will need to register a Companies House account if you do not already have one, which you can do within this service.</p>
       {% endset %}
 
       <h1 class="govuk-heading-xl">
@@ -67,9 +71,9 @@
           <a href="#">This service is also available in Welsh.</a>
         </p>
         {{ govukDetails({
-        summaryHtml: '<div data-event-id="Other-ways-to-file-a-confirmation-statement-details-dropdown"> Other ways to file a confirmation statement</div>',
-        html: fileByPostHTML
-      }) }}
+          summaryHtml: '<div data-event-id="Other-ways-to-file-a-confirmation-statement-details-dropdown"> Other ways to file a confirmation statement</div>',
+          html: fileByPostHTML
+        }) }}
 
       </div>
     </div>
