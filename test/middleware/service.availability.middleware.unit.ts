@@ -27,4 +27,10 @@ describe("service availability middleware tests", () => {
     expect(response.text).not.toContain("Service offline - File a confirmation statement");
   });
 
+  it("should not return service offline page for accessibility statement page", async () => {
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    const response = await request(app).get("/confirmation-statement/accessibility-statement");
+
+    expect(response.text).not.toContain("Service offline - File a confirmation statement");
+  });
 });
