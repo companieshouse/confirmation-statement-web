@@ -4,7 +4,7 @@ import { Templates } from "../types/template.paths";
 import { isActiveFeature } from "../utils/feature.flag";
 import { CONFIRMATION_STATEMENT, ACCESSIBILITY_STATEMENT } from "../types/page.urls";
 
-const USER_AUTH_WHITELISTED_URLS: string[] = [
+const WHITELISTED_URLS: string[] = [
   `${CONFIRMATION_STATEMENT}${ACCESSIBILITY_STATEMENT}`,
   `${CONFIRMATION_STATEMENT}${ACCESSIBILITY_STATEMENT}/`
 ];
@@ -26,4 +26,4 @@ export const serviceAvailabilityMiddleware = (req: Request, res: Response, next:
   return next();
 };
 
-const isWhitelistedUrl = (url: string): boolean => USER_AUTH_WHITELISTED_URLS.includes(url);
+const isWhitelistedUrl = (url: string): boolean => WHITELISTED_URLS.includes(url);
