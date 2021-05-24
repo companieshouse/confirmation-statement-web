@@ -12,5 +12,5 @@ export const CONFIRMATION_STATEMENT = "/confirmation-statement";
 export const COMPANY_NUMBER = "/company-number";
 export const COMPANY_LOOKUP = "/company-lookup/search?forward=/confirmation-statement/confirm-company?companyNumber={companyNumber}";
 export const CONFIRM_COMPANY_PATH = CONFIRMATION_STATEMENT + CONFIRM_COMPANY;
-export const COMPANY_AUTH_PROTECTED_BASE = `/company/:${urlParams.PARAM_COMPANY_NUMBER}`;
+export const COMPANY_AUTH_PROTECTED_BASE = `/company/:${urlParams.PARAM_COMPANY_NUMBER}/`;
 export const TRADING_STATUS = COMPANY_AUTH_PROTECTED_BASE + "trading-status";
