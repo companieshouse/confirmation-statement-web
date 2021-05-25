@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "Web front end for Confirmation Statement service",
   "main": "app.ts",
-  "type": "module",
   "scripts": {
     "start": "node dist/bin/www.js",
     "build": "tsc && cp -r views dist/",
