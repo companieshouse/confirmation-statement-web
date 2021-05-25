@@ -1,0 +1,18 @@
+{
+  "type": "Service",
+  "name": "confirmation-statement-web",
+  "description": "Web interface to allow eligible companies to digitally submit confirmation statements",
+  "owned_by": "Team Toro Loco, Synergy",
+  "calls_via": "Eric",
+  "documentation": "TO BE ADDED",
+  "git_repo": "https://github.com/companieshouse/confirmation-statement-web",
+  "specification": "TO BE ADDED",
+  "public": true,
+  "users": "public - Web",
+  "code_analysis_link": "http://code-analysis.platform.aws.chdev.org:9000/dashboard?id=uk.gov.companieshouse%3Aconfirmation-statement-web",
+  "test_automation_repo": "https://github.com/companieshouse/chs-test-automation",
+  "language": "NodeJS",
+  "integration_outgoing": [
+    "confirmation-statement-api,CALLS_API"
+  ]
+}
