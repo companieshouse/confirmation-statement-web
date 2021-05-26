@@ -11,7 +11,7 @@ import {
   EligibilityStatusCode
 } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { TRADING_STATUS_PATH } from "../types/page.urls";
-import {logger} from "../utils/logger";
+import { logger } from "../utils/logger";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {

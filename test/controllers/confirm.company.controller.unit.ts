@@ -8,7 +8,7 @@ import { createConfirmationStatement } from "../../src/services/confirmation.sta
 import mocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
-import {CONFIRM_COMPANY_PATH, urlParams} from "../../src/types/page.urls";
+import { CONFIRM_COMPANY_PATH } from "../../src/types/page.urls";
 import { getCompanyProfile } from "../../src/services/company.profile.service";
 import { validCompanyProfile } from "../mocks/company.profile.mock";
 import { isActiveFeature } from "../../src/utils/feature.flag";
