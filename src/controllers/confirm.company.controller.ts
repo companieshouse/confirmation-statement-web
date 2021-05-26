@@ -35,7 +35,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return displayEligibilityStopPage(res, eligibilityStatusCode);
     }
   } catch (e) {
-    logger.errorRequest(req, `An error has occurred. Re-routing to the error screen - ${e.stack}`);
     return next(e);
   }
 };
@@ -44,7 +43,7 @@ const displayEligibilityStopPage = (res: Response, eligibilityStatusCode: Eligib
   if (eligibilityStatusCode === EligibilityStatusCode.INVALID_COMPANY_STATUS) {
     return res.render(Templates.INVALID_COMPANY_STATUS);
   }
-  throw new Error("Unknown eligibility code");
+  throw new Error("Unknown eligibilityStatusCode");
 };
 
 const createNewConfirmationStatement = async (req: Request) => {
