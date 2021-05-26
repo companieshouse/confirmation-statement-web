@@ -8,7 +8,7 @@ import { createConfirmationStatement } from "../../src/services/confirmation.sta
 import mocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
-import { CONFIRM_COMPANY_PATH } from "../../src/types/page.urls";
+import {CONFIRM_COMPANY_PATH, urlParams} from "../../src/types/page.urls";
 import { getCompanyProfile } from "../../src/services/company.profile.service";
 import { validCompanyProfile } from "../mocks/company.profile.mock";
 import { isActiveFeature } from "../../src/utils/feature.flag";
@@ -63,18 +63,19 @@ describe("Confirm company controller tests", () => {
     expect(response.text).toContain("Sorry, the service is unavailable");
   });
 
-  it("Should call private sdk client", async () => {
-    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+  it("Should call private sdk client and redirect to trading status using company number in query", async () => {
+    const companyNumber = "11111111";
     mockIsActiveFeature.mockReturnValueOnce(true);
     mockCreateConfirmationStatement.mockResolvedValueOnce(201);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
-    await request(app)
-      .post(CONFIRM_COMPANY_PATH);
+    const response = await request(app)
+      .post(CONFIRM_COMPANY_PATH + "?companyNumber=" + companyNumber);
+    expect(response.status).toEqual(302);
+    expect(response.header.location).toEqual("/confirmation-statement/company/" + companyNumber + "/trading-status");
     expect(mockCreateConfirmationStatement).toHaveBeenCalled();
   });
 
   it("Should not call private sdk client id feature flag is off", async () => {
-    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockIsActiveFeature.mockReturnValueOnce(false);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
     await request(app)
@@ -84,9 +85,7 @@ describe("Confirm company controller tests", () => {
 
 
   it("Should render error page when company status is not valid", async () => {
-    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockIsActiveFeature.mockReturnValueOnce(true);
-    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_STATUS);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);

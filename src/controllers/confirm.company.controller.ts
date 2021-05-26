@@ -22,12 +22,12 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = async (req: Request, res: Response) => {
-  const company: CompanyProfile = await getCompanyProfile(req.query.companyNumber as string);
   const session: Session = req.session as Session;
-  const eligibilityStatusCode: EligibilityStatusCode = await checkEligibility(session, company.companyNumber);
+  const companyNumber = req.query["companyNumber"] as string;
+  const eligibilityStatusCode: EligibilityStatusCode = await checkEligibility(session, companyNumber);
   if (eligibilityStatusCode === EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE) {
     await createNewConfirmationStatement(req);
-    const url = TRADING_STATUS_PATH.replace(":companyNumber", company.companyNumber);
+    const url = TRADING_STATUS_PATH.replace(":companyNumber", companyNumber);
     return res.redirect(url);
   } else {
     return displayEligibilityStopPage(res, eligibilityStatusCode );
