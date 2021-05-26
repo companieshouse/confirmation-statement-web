@@ -1,3 +1,5 @@
+import {EligibilityStatusCode} from "private-api-sdk-node/dist/services/confirmation-statement";
+
 jest.mock("../../src/services/company.profile.service");
 jest.mock("../../src/services/eligibility.service");
 jest.mock("../../src/services/confirmation.statement.service");
@@ -12,7 +14,6 @@ import { CONFIRM_COMPANY_PATH } from "../../src/types/page.urls";
 import { getCompanyProfile } from "../../src/services/company.profile.service";
 import { validCompanyProfile } from "../mocks/company.profile.mock";
 import { isActiveFeature } from "../../src/utils/feature.flag";
-import { EligibilityStatusCode } from "private-api-sdk-node/dist/services/confirmation-statement";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockCreateConfirmationStatement = createConfirmationStatement as jest.Mock;
