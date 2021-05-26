@@ -10,7 +10,7 @@ import { checkEligibility } from "../services/eligibility.service";
 import {
   EligibilityStatusCode
 } from "private-api-sdk-node/dist/services/confirmation-statement";
-import {TRADING_STATUS} from "../types/page.urls";
+import { TRADING_STATUS } from "../types/page.urls";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -21,7 +21,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = async (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response) => {
   const company: CompanyProfile = await getCompanyProfile(req.query.companyNumber as string);
   const session: Session = req.session as Session;
   const eligibilityStatusCode: EligibilityStatusCode = await checkEligibility(session, company.companyNumber);
