@@ -6,6 +6,10 @@ import { createConfirmationStatement } from "../services/confirmation.statement.
 import { Session } from "@companieshouse/node-session-handler";
 import { FEATURE_FLAG_PRIVATE_SDK_12052021 } from "../utils/properties";
 import { isActiveFeature } from "../utils/feature.flag";
+import { checkEligibility } from "../services/eligibility.service";
+import {
+  EligibilityStatusCode
+} from "private-api-sdk-node/dist/services/confirmation-statement";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -17,10 +21,27 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
+  const company: CompanyProfile = await getCompanyProfile(req.query.companyNumber as string);
+  const session: Session = req.session as Session;
+  const eligibilityStatusCode: EligibilityStatusCode = await checkEligibility(session, company.companyNumber);
+  if (eligibilityStatusCode === EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE) {
+    createNewConfirmationStatement(req);
+    next();
+  } else {
+    return displayEligibilityStopPage(res, eligibilityStatusCode );
+  }
+};
+
+const displayEligibilityStopPage = (res: Response, eligibilityStatusCode: EligibilityStatusCode) => {
+  if (eligibilityStatusCode === EligibilityStatusCode.INVALID_COMPANY_STATUS) {
+    return res.render(Templates.INVALID_COMPANY_STATUS);
+  }
+};
+
+const createNewConfirmationStatement = async (req: Request) => {
   if (isActiveFeature(FEATURE_FLAG_PRIVATE_SDK_12052021)) {
     const transactionId: string = "";
     const session: Session = req.session as Session;
     await createConfirmationStatement(session, transactionId);
   }
-  next();
 };
