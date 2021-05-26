@@ -1,10 +1,9 @@
-import {EligibilityStatusCode} from "private-api-sdk-node/dist/services/confirmation-statement";
-
 jest.mock("../../src/services/company.profile.service");
 jest.mock("../../src/services/eligibility.service");
 jest.mock("../../src/services/confirmation.statement.service");
 jest.mock("../../src/utils/feature.flag");
 
+import { EligibilityStatusCode } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { checkEligibility } from "../../src/services/eligibility.service";
 import { createConfirmationStatement } from "../../src/services/confirmation.statement.service";
 import mocks from "../mocks/all.middleware.mock";
