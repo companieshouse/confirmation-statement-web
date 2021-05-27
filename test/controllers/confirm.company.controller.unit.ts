@@ -1,7 +1,10 @@
 jest.mock("../../src/services/company.profile.service");
+jest.mock("../../src/services/eligibility.service");
 jest.mock("../../src/services/confirmation.statement.service");
 jest.mock("../../src/utils/feature.flag");
 
+import { EligibilityStatusCode } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { checkEligibility } from "../../src/services/eligibility.service";
 import { createConfirmationStatement } from "../../src/services/confirmation.statement.service";
 import mocks from "../mocks/all.middleware.mock";
 import request from "supertest";
@@ -14,6 +17,7 @@ import { isActiveFeature } from "../../src/utils/feature.flag";
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockCreateConfirmationStatement = createConfirmationStatement as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockEligibilityStatusCode = checkEligibility as jest.Mock;
 
 describe("Confirm company controller tests", () => {
   const PAGE_HEADING = "Confirm this is the correct company";
@@ -59,18 +63,65 @@ describe("Confirm company controller tests", () => {
     expect(response.text).toContain("Sorry, the service is unavailable");
   });
 
-  it("Should call private sdk client", async () => {
+  it("Should call private sdk client and redirect to trading status using company number in query", async () => {
+    const companyNumber = "11111111";
     mockIsActiveFeature.mockReturnValueOnce(true);
     mockCreateConfirmationStatement.mockResolvedValueOnce(201);
-    await request(app)
-      .post(CONFIRM_COMPANY_PATH);
+    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
+    const response = await request(app)
+      .post(CONFIRM_COMPANY_PATH + "?companyNumber=" + companyNumber);
+    expect(response.status).toEqual(302);
+    expect(response.header.location).toEqual("/confirmation-statement/company/" + companyNumber + "/trading-status");
     expect(mockCreateConfirmationStatement).toHaveBeenCalled();
   });
 
   it("Should not call private sdk client id feature flag is off", async () => {
     mockIsActiveFeature.mockReturnValueOnce(false);
-    await request(app)
+    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
+    const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
+    expect(response.status).toEqual(302);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
   });
+
+  it("Should render eligibility error page when company status is not valid", async () => {
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_STATUS);
+    const response = await request(app)
+      .post(CONFIRM_COMPANY_PATH);
+    expect(response.status).toEqual(200);
+    expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
+    expect(response.text).toContain("dissolved and struck off the register");
+  });
+
+  it("Should redirect to error page when unrecognised eligibility code is returned", async () => {
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TYPE_CS01_FILING_NOT_REQUIRED);
+    const response = await request(app)
+      .post(CONFIRM_COMPANY_PATH);
+    expect(response.status).toEqual(500);
+    expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
+    expect(response.text).toContain("Sorry, the service is unavailable");
+  });
+
+  it("Should redirect to error page when promise fails", async () => {
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockEligibilityStatusCode.mockRejectedValueOnce(new Error());
+    const response = await request(app)
+      .post(CONFIRM_COMPANY_PATH);
+    expect(response.status).toEqual(500);
+    expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
+    expect(response.text).toContain("Sorry, the service is unavailable");
+  });
+
+  it("Should redirect to error page when the eligibility status code is undefined", async () => {
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockEligibilityStatusCode.mockResolvedValueOnce(undefined);
+    const response = await request(app)
+      .post(CONFIRM_COMPANY_PATH);
+    expect(response.status).toEqual(500);
+    expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
+    expect(response.text).toContain("Sorry, the service is unavailable");
+  });
+
 });
