@@ -1,11 +1,12 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-{% if errorList.length > 0 %}
-  Error:
-{% endif %}  Company trading status
+  {% if errorList.length > 0 %}
+    Error:
+  {% endif %}
+  Company trading status
 {% endblock %}
-{% block signOut %}{% endblock %}
+
 {% block backLink %}
   {{ govukBackLink({
     text: "Back",
@@ -20,9 +21,9 @@
       <form action="" method="post">
 
         {% if errorList.length > 0 %}
-        {{ govukErrorSummary({
-          titleText: "There is a problem",
-          errorList: [
+          {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: [
             {
               text: "Select yes if the trading status of shares is correct",
               href: "#trading-status"
@@ -44,7 +45,7 @@
 
           {% set dtrDetails %}
             <p>DTR5 refers to Vote Holder and Issuer Notification Rules in
-                <a href="https://www.handbook.fca.org.uk/handbook/DTR/5.pdf">Chapter 5 of the Financial Conduct Authority's Disclosure and Transparency Rules</a>.</p>
+              <a href="https://www.handbook.fca.org.uk/handbook/DTR/5.pdf">Chapter 5 of the Financial Conduct Authority's Disclosure and Transparency Rules</a>.</p>
             <p>It applies to UK companies with shares traded on a market. Under DTR5, shareholders must notify the company if their shareholding reaches or falls below certain percentage thresholds (starting at 3%).</p>
           {% endset %}
 
