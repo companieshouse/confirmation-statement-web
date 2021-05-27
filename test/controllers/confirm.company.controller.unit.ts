@@ -89,6 +89,7 @@ describe("Confirm company controller tests", () => {
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_STATUS);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
+    expect(response.status).toEqual(200);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
     expect(response.text).toContain("dissolved and struck off the register");
   });
