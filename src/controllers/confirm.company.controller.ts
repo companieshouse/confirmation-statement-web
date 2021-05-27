@@ -42,7 +42,7 @@ const displayEligibilityStopPage = (res: Response, eligibilityStatusCode: Eligib
   if (eligibilityStatusCode === EligibilityStatusCode.INVALID_COMPANY_STATUS) {
     return res.render(Templates.INVALID_COMPANY_STATUS);
   }
-  throw new Error("Unknown eligibilityStatusCode");
+  throw new Error(`Unknown eligibilityStatusCode ${eligibilityStatusCode}`);
 };
 
 const createNewConfirmationStatement = async (req: Request) => {

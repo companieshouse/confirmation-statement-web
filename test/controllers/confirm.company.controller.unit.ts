@@ -84,14 +84,23 @@ describe("Confirm company controller tests", () => {
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
   });
 
-
-  it("Should render error page when company status is not valid", async () => {
+  it("Should render eligibility error page when company status is not valid", async () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_STATUS);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
     expect(response.text).toContain("dissolved and struck off the register");
+  });
+
+  it("Should redirect to error page when unrecognised eligibility code is returned", async () => {
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TYPE_CS01_FILING_NOT_REQUIRED);
+    const response = await request(app)
+      .post(CONFIRM_COMPANY_PATH);
+    expect(response.status).toEqual(500);
+    expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
+    expect(response.text).toContain("Sorry, the service is unavailable");
   });
 
   it("Should redirect to error page when promise fails", async () => {
