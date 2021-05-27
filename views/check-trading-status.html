@@ -71,17 +71,26 @@
           items: [
             {
               value: "yes",
-              text: "Yes"
+              text: "Yes",
+              attributes: {
+                "data-event-id": "trading-status-correct-yes"
+              }
             },
             {
               value: "no",
-              text: "No"
+              text: "No",
+              attributes: {
+                "data-event-id": "trading-status-correct-no"
+              }
             }
           ]
         }) }}
 
         {{ govukButton({
-           text: "Continue"
+           text: "Continue",
+           attributes: {
+             "data-event-id": "trading-status-continue"
+           }
         }) }}
       </form>
     </div>
