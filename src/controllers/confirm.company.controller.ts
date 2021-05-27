@@ -41,6 +41,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 const displayEligibilityStopPage = (res: Response, eligibilityStatusCode: EligibilityStatusCode) => {
   if (eligibilityStatusCode === EligibilityStatusCode.INVALID_COMPANY_STATUS) {
     return res.render(Templates.INVALID_COMPANY_STATUS);
+  } else if (eligibilityStatusCode === EligibilityStatusCode.INVALID_COMPANY_TYPE_USE_WEB_FILING) {
+    return res.render(Templates.USE_WEBFILING);
   }
   throw new Error(`Unknown eligibilityStatusCode ${eligibilityStatusCode}`);
 };
