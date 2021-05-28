@@ -6,5 +6,6 @@ export enum Templates {
     SERVICE_OFFLINE_MID_JOURNEY = "service-offline-mid-journey",
     START = "start",
     TRADING_STATUS  = "check-trading-status",
-    INVALID_COMPANY_STATUS = "invalid-company-status"
+    INVALID_COMPANY_STATUS = "invalid-company-status",
+    USE_WEBFILING = "use-webfiling"
   }
