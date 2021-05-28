@@ -39,12 +39,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const displayEligibilityStopPage = (res: Response, eligibilityStatusCode: EligibilityStatusCode) => {
-  if (eligibilityStatusCode === EligibilityStatusCode.INVALID_COMPANY_STATUS) {
-    return res.render(Templates.INVALID_COMPANY_STATUS);
-  } else if (eligibilityStatusCode === EligibilityStatusCode.INVALID_COMPANY_TYPE_USE_WEB_FILING) {
-    return res.render(Templates.USE_WEBFILING);
+  const stopPage: string = stopPages[eligibilityStatusCode];
+  if (!stopPage) {
+    throw new Error(`Unknown eligibilityStatusCode ${eligibilityStatusCode}`);
   }
-  throw new Error(`Unknown eligibilityStatusCode ${eligibilityStatusCode}`);
+  return res.render(stopPage);
 };
 
 const createNewConfirmationStatement = async (req: Request) => {
@@ -53,4 +52,9 @@ const createNewConfirmationStatement = async (req: Request) => {
     const session: Session = req.session as Session;
     await createConfirmationStatement(session, transactionId);
   }
+};
+
+const stopPages = {
+  [EligibilityStatusCode.INVALID_COMPANY_STATUS]: Templates.INVALID_COMPANY_STATUS,
+  [EligibilityStatusCode.INVALID_COMPANY_TYPE_USE_WEB_FILING]: Templates.USE_WEBFILING
 };
