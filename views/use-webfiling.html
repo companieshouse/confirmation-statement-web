@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  You cannot use this service - File a confirmation statement
+{% endblock %}
+{% block signOut %}{% endblock %}
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">
+        You cannot use this service
+      </h1>
+
+      <p>You cannot file a confirmation statement on this service because :</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>is not a private limited company</li>
+        <li>has more than one officer</li>
+        <li>has more than one shareholder</li>
+        <li>has more than one person with significant control</li>
+        <li>has traded shares on a market</li>
+      </ul>
+      
+      <p>You will need to use
+        <a href="https://ewf.companieshouse.gov.uk//seclogin?tc=1">our Webfiling service</a> to file a confirmation statement for this company.
+        <p>
+            <a href="https://www.smartsurvey.co.uk/">What did you think of this service?</a>
+            (takes 2 minutes)</p>
+      </div>
+    </div>
+{% endblock %}
