@@ -1,3 +1,5 @@
+import mocks from "../mocks/all.middleware.mock";
+
 jest.mock("../../src/services/company.profile.service");
 jest.mock("../../src/middleware/company.authentication.middleware");
 jest.mock("../../src/middleware/session.middleware");
@@ -27,6 +29,7 @@ describe("Task list controller tests", () => {
 
   it("Should navigate to the task list page", async () => {
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    mocks.mockAuthenticationMiddleware.mockClear();
     const url = TASK_LIST_PATH.replace(":companyNumber", COMPANY_NUMBER);
     const response = await request(app).get(url);
     expect(response.text).toContain("You will need to check and confirm that the company information we have on record is correct");
