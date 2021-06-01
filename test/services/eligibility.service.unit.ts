@@ -37,7 +37,7 @@ describe("Test eligibility checks", () => {
       resource: companyValidationResponse
     };
     mockGetEligiblity.mockResolvedValueOnce(resource);
-    const response = await checkEligibility(getSessionRequest(companyNumber, { access_token: "token" }), companyNumber);
+    const response = await checkEligibility(getSessionRequest({ access_token: "token" }), companyNumber);
     expect(mockGetEligiblity).toBeCalledWith(companyNumber);
     expect(response).toEqual(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
   });
