@@ -3,12 +3,13 @@ import { SessionKey } from "@companieshouse/node-session-handler/lib/session/key
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
 import { IAccessToken, ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
 
-export const getSessionRequest = (accessToken?: IAccessToken): Session => {
+export const getSessionRequest = (companyNumber?: string, accessToken?: IAccessToken): Session => {
   return new Session({
     [SessionKey.SignInInfo]: {
       [SignInInfoKeys.SignedIn]: 1,
       [SignInInfoKeys.UserProfile]: { id: "j bloggs" },
-      [SignInInfoKeys.AccessToken]: accessToken
+      [SignInInfoKeys.AccessToken]: accessToken,
+      [SignInInfoKeys.CompanyNumber]: companyNumber
     } as ISignInInfo
   });
 };
