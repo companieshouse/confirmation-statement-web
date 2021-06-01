@@ -7,5 +7,6 @@ export enum Templates {
     START = "start",
     TRADING_STATUS  = "check-trading-status",
     INVALID_COMPANY_STATUS = "invalid-company-status",
+    USE_PAPER = "paper-filing",
     USE_WEBFILING = "use-webfiling"
   }
