@@ -1,0 +1,91 @@
+<h2 class="app-task-list__section">
+    People
+</h2>
+<ul class="app-task-list__items">
+    {% if company.type === "Private limited company use of 'Limited' exemption" %}
+        <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+                <a href="/confirmation-statement/active-officers" aria-describedby="eligibility-status">
+                    Officers
+                </a>
+            </span>
+            {% if taskList.additionalOfficers === 1 %}
+                <strong class="govuk-tag app-task-list__tag" id="eligibility-status">
+                    Checked</strong>
+            {% elseif taskList.additionalOfficers === 2 or taskList.officers === 1 or taskList.activeOfficers === 1 %}
+                <strong class="govuk-tag govuk-tag--blue app-task-list__tag" id="eligibility-status">In progress</strong>
+            {% else %}
+                <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="medical-information-status">Not checked</strong>
+            {% endif %}
+        </li>
+    {% elseif company.type === "LLP" %}
+        <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+                <a href="/confirmation-statement/active-members" aria-describedby="eligibility-status">
+                    Members
+                </a>
+            </span>
+            {% if taskList.additionalMembers === 1 %}
+                <strong class="govuk-tag app-task-list__tag" id="eligibility-status">
+                    Checked</strong>
+            {% elseif taskList.additionalMembers === 2 or taskList.members === 1 or taskList.activeMembers === 1 %}
+                <strong class="govuk-tag govuk-tag--blue app-task-list__tag" id="eligibility-status">In progress</strong>
+            {% else %}
+                <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="medical-information-status">Not checked</strong>
+            {% endif %}
+        </li>
+    {% endif %}
+    {% if tradingStatus === "1" %}
+        <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+                <a href="/confirmation-statement/active-pscs" aria-describedby="read-declaration-status">
+                    People with significant control (PSC)
+                </a>
+            </span>
+            {% if taskList.pscStatement === 2 %}
+                <strong class="govuk-tag app-task-list__tag" id="eligibility-status">
+                    Checked</strong>
+            {% elseif taskList.additionalPscs === 2 or taskList.pscs === 1 or taskList.activePscs === 1 %}
+                <strong class="govuk-tag govuk-tag--blue app-task-list__tag" id="eligibility-status">In progress</strong>
+            {% else %}
+                <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="medical-information-status">Not checked</strong>
+            {% endif %}
+        </li>
+    {% elseif tradingStatus === "2" %}
+        <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+                <a href="/psc-exemption" aria-describedby="read-declaration-status">
+                    People with significant control (PSC)
+                </a>
+            </span>
+            {% if taskList.exemption === 1 and taskList.psc === 2 %}
+                <strong class="govuk-tag app-task-list__tag" id="eligibility-status">
+                    Checked</strong>
+            {% elseif taskList.exemption === 1 and taskList.additionalPscs === 2 or taskList.pscs === 1 or taskList.activePSCs === 1 %}
+                <strong class="govuk-tag govuk-tag--blue app-task-list__tag" id="eligibility-status">In progress</strong>
+            {% elseif taskList.exemption === 2 %}
+                <strong class="govuk-tag app-task-list__tag" id="eligibility-status">
+                    Checked</strong>
+            {% else %}
+                <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="medical-information-status">Not checked</strong>
+            {% endif %}
+        </li>
+    {% endif %}
+    {% if company.type === "Private limited company use of 'Limited' exemption" %}
+        <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+                <a href="/confirmation-statement/shareholders" aria-describedby="read-declaration-status">
+                    Shareholders
+                </a>
+            </span>
+            {% if taskList.shareholders === 2 %}
+                <strong class="govuk-tag app-task-list__tag" id="eligibility-status">
+                    Checked</strong>
+            {% elseif taskList.shareholders === 1 %}
+                <strong class="govuk-tag govuk-tag--blue app-task-list__tag" id="eligibility-status">In progress</strong>
+            {% else %}
+                <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="medical-information-status">Not checked</strong>
+            {% endif %}
+        </li>
+    {% endif %}
+</ul>

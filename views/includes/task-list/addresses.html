@@ -1,0 +1,35 @@
+<h2 class="app-task-list__section">
+    Addresses
+</h2>
+<ul class="app-task-list__items">
+    <li class="app-task-list__item">
+        <span class="app-task-list__task-name">
+            <a href="/confirmation-statement/ro" aria-describedby="company-information-status">
+                Registered office address
+            </a>
+        </span>
+        {% if taskList.ro === 2 %}
+            <strong class="govuk-tag app-task-list__tag" id="eligibility-status">
+                Checked</strong>
+        {% elseif taskList.ro === 1 %}
+            <strong class="govuk-tag govuk-tag--blue app-task-list__tag" id="eligibility-status">In progress</strong>
+        {% else %}
+            <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="medical-information-status">Not checked</strong>
+        {% endif %}
+    </li>
+    <li class="app-task-list__item">
+        <span class="app-task-list__task-name">
+            <a href="/confirmation-statement/registers" aria-describedby="contact-details-status">
+                Register locations
+            </a>
+        </span>
+        {% if taskList.register === 2 %}
+            <strong class="govuk-tag app-task-list__tag" id="eligibility-status">
+                Checked</strong>
+        {% elseif taskList.register === 1 %}
+            <strong class="govuk-tag govuk-tag--blue app-task-list__tag" id="eligibility-status">In progress</strong>
+        {% else %}
+            <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="medical-information-status">Not checked</strong>
+        {% endif %}
+    </li>
+</ul>

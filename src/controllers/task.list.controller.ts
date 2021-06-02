@@ -5,11 +5,13 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { getCompanyProfile } from "../services/company.profile.service";
 
 export const get = async (req: Request, res: Response) => {
-  const companyNumber = req.params.companyNumber as string;
+  const companyNumber = req.params.companyNumber;
   const company: CompanyProfile = await getCompanyProfile(companyNumber);
   const taskList: TaskList = initTaskList();
+  const tradingStatus = "1";
   return res.render(Templates.TASK_LIST, {
     company,
-    taskList
+    taskList,
+    tradingStatus
   });
 };

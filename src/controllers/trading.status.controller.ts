@@ -7,7 +7,7 @@ export const get = (req: Request, res: Response) => {
 };
 
 export const post = (req: Request, res: Response) => {
-  const companyNumber =  req.params.companyNumber as string;
+  const companyNumber =  req.params.companyNumber;
   const url = TASK_LIST_PATH.replace(":companyNumber", companyNumber);
   return res.redirect(url);
 };
