@@ -1,56 +1,62 @@
 import { DateTime } from "luxon";
 import { readableFormat } from "../utils/date.formatter";
 
-export enum Task {
+export enum TaskState {
     NOT_CHECKED,
     IN_PROGRESS,
     CHECKED
 }
 
+export enum TradingStatus {
+  NOT_ADMITTED,
+  ADMITTED,
+  ADMITTED_DTR5
+}
+
 export interface TaskList {
-    completedTasks: Task;
-    exemption: Task;
-    activeOfficers: Task;
-    activePscs: Task;
-    activeMembers: Task;
-    additionalPscs: Task;
-    additionalOfficers: Task;
-    additionalMembers: Task;
-    members: Task;
+    completedTasks: TaskState;
+    exemption: TaskState;
+    activeOfficers: TaskState;
+    activePscs: TaskState;
+    activeMembers: TaskState;
+    additionalPscs: TaskState;
+    additionalOfficers: TaskState;
+    additionalMembers: TaskState;
+    members: TaskState;
     recordDate: string;
-    officers: Task;
-    psc: Task;
-    pscStatement: Task;
-    register: Task;
+    officers: TaskState;
+    psc: TaskState;
+    pscStatement: TaskState;
+    register: TaskState;
     result: number;
-    ro: Task;
-    statementOfCapital: Task;
-    shareholders: Task;
-    sic: Task;
-    trading: Task;
+    ro: TaskState;
+    statementOfCapital: TaskState;
+    shareholders: TaskState;
+    sic: TaskState;
+    trading: TaskState;
 }
 
 export const initTaskList = (): TaskList => {
   return {
-    completedTasks: Task.NOT_CHECKED,
-    exemption: Task.NOT_CHECKED,
-    activeOfficers: Task.NOT_CHECKED,
-    activePscs: Task.NOT_CHECKED,
-    activeMembers: Task.NOT_CHECKED,
-    additionalPscs: Task.NOT_CHECKED,
-    additionalOfficers: Task.NOT_CHECKED,
-    additionalMembers: Task.NOT_CHECKED,
-    members: Task.NOT_CHECKED,
+    completedTasks: TaskState.NOT_CHECKED,
+    exemption: TaskState.NOT_CHECKED,
+    activeOfficers: TaskState.NOT_CHECKED,
+    activePscs: TaskState.NOT_CHECKED,
+    activeMembers: TaskState.NOT_CHECKED,
+    additionalPscs: TaskState.NOT_CHECKED,
+    additionalOfficers: TaskState.NOT_CHECKED,
+    additionalMembers: TaskState.NOT_CHECKED,
+    members: TaskState.NOT_CHECKED,
     recordDate: readableFormat(DateTime.now().toString()),
-    officers: Task.NOT_CHECKED,
-    psc: Task.NOT_CHECKED,
-    pscStatement: Task.NOT_CHECKED,
-    register: Task.NOT_CHECKED,
+    officers: TaskState.NOT_CHECKED,
+    psc: TaskState.NOT_CHECKED,
+    pscStatement: TaskState.NOT_CHECKED,
+    register: TaskState.NOT_CHECKED,
     result: 0,
-    ro: Task.NOT_CHECKED,
-    statementOfCapital: Task.NOT_CHECKED,
-    shareholders: Task.NOT_CHECKED,
-    sic: Task.NOT_CHECKED,
-    trading: Task.NOT_CHECKED
+    ro: TaskState.NOT_CHECKED,
+    statementOfCapital: TaskState.NOT_CHECKED,
+    shareholders: TaskState.NOT_CHECKED,
+    sic: TaskState.NOT_CHECKED,
+    trading: TaskState.NOT_CHECKED
   };
 };
