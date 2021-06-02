@@ -17,7 +17,7 @@ export interface TaskList {
     additionalOfficers: Task;
     additionalMembers: Task;
     members: Task;
-    moment: string;
+    recordDate: string;
     officers: Task;
     psc: Task;
     pscStatement: Task;
@@ -41,7 +41,7 @@ export const initTaskList = (): TaskList => {
     additionalOfficers: Task.NOT_CHECKED,
     additionalMembers: Task.NOT_CHECKED,
     members: Task.NOT_CHECKED,
-    moment: readableFormat(DateTime.now().toString()),
+    recordDate: readableFormat(DateTime.now().toString()),
     officers: Task.NOT_CHECKED,
     psc: Task.NOT_CHECKED,
     pscStatement: Task.NOT_CHECKED,
