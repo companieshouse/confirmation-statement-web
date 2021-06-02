@@ -10,11 +10,12 @@ import mocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
 import { CONFIRM_COMPANY_PATH } from "../../src/types/page.urls";
-import { getCompanyProfile } from "../../src/services/company.profile.service";
+import { getCompanyProfile, formatForDisplay } from "../../src/services/company.profile.service";
 import { validCompanyProfile } from "../mocks/company.profile.mock";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
+const mockFormatForDisplay = formatForDisplay as jest.Mock;
 const mockCreateConfirmationStatement = createConfirmationStatement as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockEligibilityStatusCode = checkEligibility as jest.Mock;
@@ -46,6 +47,7 @@ describe("Confirm company controller tests", () => {
 
   it("Should populate the template with CompanyProfile data", async () => {
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    mockFormatForDisplay.mockReturnValueOnce(validCompanyProfile);
 
     const response = await request(app)
       .get(CONFIRM_COMPANY_PATH);

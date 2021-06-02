@@ -18,9 +18,9 @@
       <form action="" method="post">
 
         {% set notDueWarningHTML %}
-        <p>
+        <p style="font-weight: 400; display: inline;">
           You are not due to file a confirmation statement. If you file a confirmation statement today, it will show the date as
-          <strong>{{moment}}</strong>
+          <strong>{{notDueWarning.todaysDate}}</strong>
           and this will change your future review periods.
           <br><br>You will not need to pay a fee if you file your confirmation statement before
           <strong>{{company.confirmationStatement.nextDue}}</strong>.
@@ -106,7 +106,7 @@
           ]
         }) }}
 
-        {% if company.csDue === "notdue" %}
+        {% if notDueWarning %}
           {{ govukWarningText({
             html: notDueWarningHTML,
             iconFallbackText: "Warning"
