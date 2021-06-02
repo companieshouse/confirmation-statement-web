@@ -4,8 +4,8 @@
 <ul class="app-task-list__items">
     <li class="app-task-list__item">
         <span class="app-task-list__task-name">
-            {% if taskList.result === 7 %}
-                {% if scenario.company.csDue === "notdue" %}
+            {% if taskList.allTasksCompleted %}
+                {% if taskList.csDue %}
                     <a href="/confirmation-statement/review">Submit</a>
                 {% else %}
                     <a href="/confirmation-statement/review">Submit and pay</a>

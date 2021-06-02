@@ -1,4 +1,15 @@
 {% extends "layout.html" %}
+
+{% set showChecked %}
+  <strong class="govuk-tag app-task-list__tag">Checked</strong>
+{% endset %}
+{% set showInProgress %}
+  <strong class="govuk-tag govuk-tag--blue app-task-list__tag">In progress</strong>
+{% endset %}
+{% set showNotChecked %}
+  <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not checked</strong>
+{% endset %}
+
 {% block pageTitle %}
   Task list
 {% endblock %}
@@ -18,12 +29,9 @@
       <p>You will need to check and confirm that the company information we have on record is correct as of
         {{ taskList.recordDate }}.
       </p>
-      <p class="govuk-body govuk-!-margin-bottom-7">
-        {% include "includes/task-list/checked-results.html" %}
-      </p>
       {% if company.type === "Private limited company use of 'Limited' exemption" %}
         <p class="govuk-body govuk-!-margin-bottom-7">
-          You have checked {{ taskList.result }} of 7 sections
+          You have checked {{ taskList.tasksCompleted }} of 7 sections
         </p>
         <ol class="app-task-list">
           <li>
@@ -41,13 +49,13 @@
         </ol>
       {% elseif company.type === "LLP" %}
         <p class="govuk-body govuk-!-margin-bottom-7">
-          You have checked {{ taskList.result }} of 4 sections
+          You have checked {{ taskList.tasksCompleted }} of 4 sections
         </p>
         <ol class="app-task-list">
-           <li>
+          <li>
             {% include "includes/task-list/people.html" %}
           </li>
-           <li>
+          <li>
             {% include "includes/task-list/addresses.html" %}
           </li>
           <li>

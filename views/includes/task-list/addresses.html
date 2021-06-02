@@ -4,32 +4,30 @@
 <ul class="app-task-list__items">
     <li class="app-task-list__item">
         <span class="app-task-list__task-name">
-            <a href="/confirmation-statement/ro" aria-describedby="company-information-status">
+            <a href="/confirmation-statement/ro">
                 Registered office address
             </a>
         </span>
-        {% if taskList.ro === 2 %}
-            <strong class="govuk-tag app-task-list__tag" id="eligibility-status">
-                Checked</strong>
-        {% elseif taskList.ro === 1 %}
-            <strong class="govuk-tag govuk-tag--blue app-task-list__tag" id="eligibility-status">In progress</strong>
+        {% if taskList.roState === "CHECKED" %}
+            {{ showChecked | safe }}
+        {% elseif taskList.roState === "IN_PROGRESS" %}
+            {{ showInProgress | safe }}
         {% else %}
-            <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="medical-information-status">Not checked</strong>
+            {{ showNotChecked | safe }}
         {% endif %}
     </li>
     <li class="app-task-list__item">
         <span class="app-task-list__task-name">
-            <a href="/confirmation-statement/registers" aria-describedby="contact-details-status">
+            <a href="/confirmation-statement/registers">
                 Register locations
             </a>
         </span>
-        {% if taskList.register === 2 %}
-            <strong class="govuk-tag app-task-list__tag" id="eligibility-status">
-                Checked</strong>
-        {% elseif taskList.register === 1 %}
-            <strong class="govuk-tag govuk-tag--blue app-task-list__tag" id="eligibility-status">In progress</strong>
+        {% if taskList.registerState === "CHECKED" %}
+            {{ showChecked | safe }}
+        {% elseif taskList.registerState === "IN_PROGRESS" %}
+            {{ showInProgress | safe }}
         {% else %}
-            <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="medical-information-status">Not checked</strong>
+            {{ showNotChecked | safe }}
         {% endif %}
     </li>
 </ul>

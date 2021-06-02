@@ -9,10 +9,8 @@ export const get = async (req: Request, res: Response) => {
   const companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER];
   const company: CompanyProfile = await getCompanyProfile(companyNumber);
   const taskList: TaskList = initTaskList();
-  const tradingStatus = "1";
   return res.render(Templates.TASK_LIST, {
     company,
-    taskList,
-    tradingStatus
+    taskList
   });
 };
