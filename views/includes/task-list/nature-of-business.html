@@ -1,0 +1,33 @@
+<h2 class="app-task-list__section">
+    Nature of business
+</h2>
+<ul class="app-task-list__items">
+    <li class="app-task-list__item">
+        <span class="app-task-list__task-name">
+            <a href="/confirmation-statement/sic">
+                SIC codes
+            </a>
+        </span>
+        {% if taskList.sicState === "CHECKED" %}
+            {{ showChecked | safe }}
+        {% elseif taskList.sicState === "IN_PROGRESS" %}
+            {{ showInProgress | safe }}
+        {% else %}
+            {{ showNotChecked | safe }}
+        {% endif %}
+    </li>
+    <li class="app-task-list__item">
+        <span class="app-task-list__task-name">
+            <a href="/confirmation-statement/statement-of-capital">
+                Statement of capital
+            </a>
+        </span>
+        {% if taskList.statementOfCapitalState === "CHECKED" %}
+            {{ showChecked | safe }}
+        {% elseif taskList.statementOfCapitalState === "IN_PROGRESS" %}
+            {{ showInProgress | safe }}
+        {% else %}
+            {{ showNotChecked | safe }}
+        {% endif %}
+    </li>
+</ul>

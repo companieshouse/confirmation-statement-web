@@ -1,0 +1,11 @@
+{% set recentFilingHTML %}
+<h3 class="govuk-notification-banner__heading">
+    A filing to update company details has been received
+</h3>
+<p class="govuk-body">You can continue filing this confirmation statement, even if the change is not yet reflected in
+    this service.
+</p>
+{% endset %}
+{{ govukNotificationBanner({
+      html: recentFilingHTML
+}) }}

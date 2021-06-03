@@ -10,7 +10,7 @@ import { checkEligibility } from "../services/eligibility.service";
 import {
   EligibilityStatusCode
 } from "private-api-sdk-node/dist/services/confirmation-statement";
-import { TRADING_STATUS_PATH } from "../types/page.urls";
+import { TRADING_STATUS_PATH, urlParams } from "../types/page.urls";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -29,7 +29,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const eligibilityStatusCode: EligibilityStatusCode = await checkEligibility(session, companyNumber);
     if (eligibilityStatusCode === EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE) {
       await createNewConfirmationStatement(req);
-      const url = TRADING_STATUS_PATH.replace(":companyNumber", companyNumber);
+      const url = TRADING_STATUS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, companyNumber);
       return res.redirect(url);
     } else {
       return displayEligibilityStopPage(res, eligibilityStatusCode, company);
