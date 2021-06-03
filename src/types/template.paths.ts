@@ -8,5 +8,6 @@ export enum Templates {
     TRADING_STATUS  = "check-trading-status",
     INVALID_COMPANY_STATUS = "invalid-company-status",
     TASK_LIST = "task-list",
-    USE_WEBFILING = "use-webfiling"
+    USE_WEBFILING = "use-webfiling",
+    TRADING_STOP = "trading-stop"
   }
