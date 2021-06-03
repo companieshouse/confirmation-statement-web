@@ -44,7 +44,7 @@ const displayEligibilityStopPage = (res: Response, eligibilityStatusCode: Eligib
   if (!stopPage) {
     throw new Error(`Unknown eligibilityStatusCode ${eligibilityStatusCode}`);
   }
-  return res.render(stopPage, { company, templateName: Templates.USE_PAPER });
+  return res.render(stopPage, { company, templateName: stopPage });
 };
 
 const createNewConfirmationStatement = async (req: Request) => {
