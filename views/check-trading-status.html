@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  {% if errorList.length > 0 %}
+  {% if tradingStatusErrorMsg %}
     Error:
   {% endif %}
   Company trading status
@@ -20,19 +20,25 @@
 
       <form action="" method="post">
 
-        {% if errorList.length > 0 %}
+        {% if tradingStatusErrorMsg %}
           {{ govukErrorSummary({
             titleText: "There is a problem",
             errorList: [
             {
-              text: "Select yes if the trading status of shares is correct",
+              text: tradingStatusErrorMsg,
               href: "#trading-status"
             }
           ]
           }) }}
+          {% set tradingStatusError = {
+            text: tradingStatusErrorMsg
+          } %}
+        {% else %}
+          {% set tradingStatusError = false %}
         {% endif %}
 
-          <h1 class="govuk-heading-xl">Check the trading status of shares</h1>
+
+        <h1 class="govuk-heading-xl">Check the trading status</h1>
 
 
         {% if scenario.company.tradingStatus === '1' %}
@@ -59,11 +65,11 @@
         {{ govukRadios({
           classes: "govuk-radios--inline",
           idPrefix: "trading-status",
-          name: "trading-status",
+          name: "tradingStatus",
           errorMessage: tradingStatusError,
           fieldset: {
             legend: {
-              text: "Is the trading status of shares correct?",
+              text: "Is the company trading status correct?",
               isPageHeading: false,
               classes: "govuk-fieldset__legend--l"
             }

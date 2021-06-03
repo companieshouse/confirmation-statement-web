@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { readableFormat } from "../utils/date.formatter";
+import { toReadableFormat } from "../utils/date";
 
 export enum TaskState {
     NOT_CHECKED = "NOT_CHECKED",
@@ -35,7 +35,7 @@ export const initTaskList = (): TaskList => {
   return {
     exemptionState: TaskState.NOT_CHECKED,
     membersState: TaskState.NOT_CHECKED,
-    recordDate: readableFormat(DateTime.now().toString()),
+    recordDate: toReadableFormat(DateTime.now().toString()),
     officersState: TaskState.NOT_CHECKED,
     pscState: TaskState.NOT_CHECKED,
     pscStatement: TaskState.NOT_CHECKED,
