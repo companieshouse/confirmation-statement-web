@@ -8,6 +8,6 @@ export const get = (req: Request, res: Response) => {
 
 export const post = (req: Request, res: Response) => {
   const companyNumber =  req.params[urlParams.PARAM_COMPANY_NUMBER];
-  const url = TASK_LIST_PATH.replace(":companyNumber", companyNumber);
+  const url = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, companyNumber);
   return res.redirect(url);
 };
