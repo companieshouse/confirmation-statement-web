@@ -12,6 +12,7 @@ import {
 } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { TRADING_STATUS_PATH, urlParams } from "../types/page.urls";
 import { isInFuture, toReadableFormat } from "../utils/date";
+import { DateTime } from "luxon";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -33,7 +34,7 @@ const buildPageOptions = (companyProfile: CompanyProfile): Object => {
 
   if (!isFilingDue(nextMadeUpTo)) {
     pageOptions["notDueWarning"] = {
-      todaysDate: toReadableFormat(new Date().toISOString())
+      todaysDate: toReadableFormat(DateTime.now().toISODate())
     };
   }
   return pageOptions;

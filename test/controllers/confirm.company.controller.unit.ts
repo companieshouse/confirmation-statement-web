@@ -2,6 +2,7 @@ jest.mock("../../src/services/company.profile.service");
 jest.mock("../../src/services/eligibility.service");
 jest.mock("../../src/services/confirmation.statement.service");
 jest.mock("../../src/utils/feature.flag");
+jest.mock("../../src/utils/date");
 
 import { EligibilityStatusCode } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { checkEligibility } from "../../src/services/eligibility.service";
@@ -13,18 +14,25 @@ import { CONFIRM_COMPANY_PATH } from "../../src/types/page.urls";
 import { getCompanyProfile, formatForDisplay } from "../../src/services/company.profile.service";
 import { validCompanyProfile } from "../mocks/company.profile.mock";
 import { isActiveFeature } from "../../src/utils/feature.flag";
+import { isInFuture, toReadableFormat } from "../../src/utils/date";
+import { Settings as luxonSettings } from "luxon";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockFormatForDisplay = formatForDisplay as jest.Mock;
 const mockCreateConfirmationStatement = createConfirmationStatement as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockEligibilityStatusCode = checkEligibility as jest.Mock;
+const mockIsInFuture = isInFuture as jest.Mock;
+const mockToReadableFormat = toReadableFormat as jest.Mock;
+
+const today = "2020-04-25";
 
 describe("Confirm company controller tests", () => {
   const PAGE_HEADING = "Confirm this is the correct company";
 
   beforeEach(() => {
     jest.clearAllMocks();
+    luxonSettings.now = () => new Date(today).valueOf();
   });
 
   it("Should navigate to confirm company page", async () => {
@@ -146,4 +154,35 @@ describe("Confirm company controller tests", () => {
     expect(response.text).toContain("You cannot use this service - File a confirmation statement");
   });
 
+  it("Should display a warning if filing is not due", async () => {
+    const formattedToday = "25 April 2020";
+    const formattedNextMadeUpTo = "15 March 2020";
+
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    mockIsInFuture.mockReturnValueOnce(true);
+    mockFormatForDisplay.mockReturnValueOnce({
+      confirmationStatement:
+        { nextMadeUpTo: formattedNextMadeUpTo }
+    });
+
+    mockToReadableFormat
+      .mockReturnValueOnce(formattedToday)
+      .mockReturnValueOnce(formattedNextMadeUpTo);
+
+    const response = await request(app)
+      .get(CONFIRM_COMPANY_PATH);
+
+    expect(response.text).toContain("You are not due to file a confirmation statement");
+    expect(response.text).toContain(formattedToday);
+    expect(response.text).toContain(formattedNextMadeUpTo);
+  });
+
+  it("Should not display a warning if filing is due", async () => {
+    mockIsInFuture.mockReturnValueOnce(false);
+
+    const response = await request(app)
+      .get(CONFIRM_COMPANY_PATH);
+
+    expect(response.text).not.toContain("You are not due to file a confirmation statement");
+  });
 });
