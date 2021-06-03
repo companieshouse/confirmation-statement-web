@@ -10,7 +10,8 @@ const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as j
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 
 const PAGE_HEADING = "Check the trading status of shares";
-const COMPANY_NUMBER = "11111111";
+const COMPANY_NUMBER = "12345678";
+
 
 describe("Trading status controller tests", () => {
 
@@ -19,5 +20,13 @@ describe("Trading status controller tests", () => {
     const url = TRADING_STATUS_PATH.replace(":companyNumber", COMPANY_NUMBER);
     const response = await request(app).get(url);
     expect(response.text).toContain(PAGE_HEADING);
+  });
+
+  it("Should navigate to the task list page", async () => {
+    mocks.mockAuthenticationMiddleware.mockClear();
+    const url = TRADING_STATUS_PATH.replace(":companyNumber", COMPANY_NUMBER);
+    const response = await request(app).post(url);
+    expect(response.status).toEqual(302);
+    expect(response.header.location).toEqual("/confirmation-statement/company/12345678/task-list");
   });
 });
