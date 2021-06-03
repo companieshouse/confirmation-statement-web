@@ -16,28 +16,37 @@ import { isInFuture, toReadableFormat } from "../utils/date";
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const companyProfile: CompanyProfile = await getCompanyProfile(req.query.companyNumber as string);
-    return res.render(Templates.CONFIRM_COMPANY, getPageOptions(companyProfile));
+    return res.render(Templates.CONFIRM_COMPANY, buildPageOptions(companyProfile));
   } catch (e) {
     return next(e);
   }
 };
 
-const getPageOptions = (companyProfile: CompanyProfile): Object => {
+const buildPageOptions = (companyProfile: CompanyProfile): Object => {
+  // need to extract the nextMadeUpTo before company profile is formatted for display as it will modify the date format
+  const nextMadeUpTo = companyProfile?.confirmationStatement?.nextMadeUpTo;
+
   const pageOptions = {
     company: formatForDisplay(companyProfile),
     templateName: Templates.CONFIRM_COMPANY
   };
 
-  const nextMadeUpTo = companyProfile?.confirmationStatement?.nextMadeUpTo;
-  if (nextMadeUpTo) {
-    if (isInFuture(nextMadeUpTo)) {
-      const todayISOString = new Date().toISOString();
-      pageOptions["notDueWarning"] = {
-        todaysDate: toReadableFormat(todayISOString)
-      };
-    }
+  if (!isFilingDue(nextMadeUpTo)) {
+    pageOptions["notDueWarning"] = {
+      todaysDate: toReadableFormat(new Date().toISOString())
+    };
   }
   return pageOptions;
+};
+
+const isFilingDue = (nextMadeUpTo: string | undefined): boolean => {
+  let due = true;
+  if (nextMadeUpTo) {
+    if (isInFuture(nextMadeUpTo)) {
+      due = false;
+    }
+  }
+  return due;
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
