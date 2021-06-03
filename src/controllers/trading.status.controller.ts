@@ -11,7 +11,6 @@ export const post = (req: Request, res: Response) => {
   const companyNumber =  req.params[urlParams.PARAM_COMPANY_NUMBER];
   const url = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, companyNumber);
   const tradingStatus: string = req.body.tradingStatus;
-  console.log("TRADING STATUS: " + tradingStatus);
   if (tradingStatus === "yes") {
     return res.redirect(url);
   } else if (tradingStatus === "no") {
