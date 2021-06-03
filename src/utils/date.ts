@@ -16,23 +16,10 @@ export const toReadableFormat = (dateToConvert: string): string => {
   return convertedDate;
 };
 
-// export const diffInDays = (startDateISO: string, endDateISO: string): number => {
-//   const start = DateTime.fromISO(startDateISO);
-//   const end = DateTime.fromISO(endDateISO);
-//   const diff: Duration = end.startOf("day").diff(start.startOf("day"), "days");
-
-//   const days: number | undefined = diff.toObject().days;
-//   // days can be 0 so a falsy check wouldn't work here
-//   if (typeof days === "undefined") {
-//     throw new Error(`Unable to check diffInDays between starDate = ${startDateISO} and endDate = ${endDateISO}`);
-//   }
-//   return days;
-// };
-
-
 export const isInFuture = (dateToCheckISO: string): boolean => {
-  const today = DateTime.now();
-  const dateToCheck = DateTime.fromISO(dateToCheckISO);
+  const today: DateTime = DateTime.now();
+  const dateToCheck: DateTime = DateTime.fromISO(dateToCheckISO);
+  const timeUnitDay = "day";
 
-  return dateToCheck.startOf("day") > today.startOf("day");
+  return dateToCheck.startOf(timeUnitDay) > today.startOf(timeUnitDay);
 };
