@@ -36,7 +36,7 @@ const transform = (companyProfile: CompanyProfile): CompanyProfile => {
   if (companyProfile.confirmationStatement) {
     const confirmationStatement: ConfirmationStatement = companyProfile.confirmationStatement;
     confirmationStatement.nextDue = readableFormat(confirmationStatement.nextDue);
-    confirmationStatement.lastMadeUpTo = confirmationStatement.lastMadeUpTo ? readableFormat(confirmationStatement.lastMadeUpTo) : "";
+    confirmationStatement.nextMadeUpTo = confirmationStatement.nextMadeUpTo ? readableFormat(confirmationStatement.nextMadeUpTo) : "";
   }
   return companyProfile;
 };
