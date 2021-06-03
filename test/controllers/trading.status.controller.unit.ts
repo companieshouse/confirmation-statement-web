@@ -46,7 +46,7 @@ describe("Trading status controller tests", () => {
     expect(response.text).toContain(STOP_PAGE_HEADING);
   });
 
-  it("Should redisplay trading status page with error when trading status is selected", async () => {
+  it("Should redisplay trading status page with error when trading status is not selected", async () => {
     mocks.mockAuthenticationMiddleware.mockClear();
     const url = TRADING_STATUS_PATH.replace(":companyNumber", COMPANY_NUMBER);
     const response = await request(app).post(url);
