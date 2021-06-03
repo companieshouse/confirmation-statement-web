@@ -3,6 +3,7 @@ import * as confirmCompanyRoute from "../controllers/confirm.company.controller"
 import * as companyNumberRoute from "../controllers/company.number.controller";
 import * as startRoute from "../controllers/start.controller";
 import * as tradingStatusRoute from "../controllers/trading.status.controller";
+import * as taskListRoute from "../controllers/task.list.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 
@@ -29,3 +30,7 @@ router.get(urls.CONFIRM_COMPANY, confirmCompanyRoute.get);
 router.post(urls.CONFIRM_COMPANY, confirmCompanyRoute.post);
 
 router.get(urls.TRADING_STATUS, tradingStatusRoute.get);
+
+router.post(urls.TRADING_STATUS, tradingStatusRoute.post);
+
+router.get(urls.TASK_LIST, taskListRoute.get);

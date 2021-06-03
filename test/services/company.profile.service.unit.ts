@@ -114,10 +114,10 @@ describe("Company profile service test", () => {
 
       expect(mockToReadableFormat.mock.calls[0][0]).toEqual(validCompanyProfile.dateOfCreation);
       expect(mockToReadableFormat.mock.calls[1][0]).toEqual(validCompanyProfile.confirmationStatement.nextDue);
-      expect(mockToReadableFormat.mock.calls[2][0]).toEqual(validCompanyProfile.confirmationStatement.lastMadeUpTo);
+      expect(mockToReadableFormat.mock.calls[2][0]).toEqual(validCompanyProfile.confirmationStatement.nextMadeUpTo);
       expect(formattedCompanyProfile.dateOfCreation).toEqual(formattedDate);
       expect(formattedCompanyProfile.confirmationStatement.nextDue).toEqual(formattedDate);
-      expect(formattedCompanyProfile.confirmationStatement.lastMadeUpTo).toEqual(formattedDate);
+      expect(formattedCompanyProfile.confirmationStatement.nextMadeUpTo).toEqual(formattedDate);
     });
 
     it("Should convert company type into readable format", () => {
@@ -151,11 +151,11 @@ describe("Company profile service test", () => {
     it("Should return empty strings for undefined dates", () => {
       mockToReadableFormat.mockReturnValue("30 April 2019");
       const clonedCompanyProfile: CompanyProfile = clone(validCompanyProfile);
-      clonedCompanyProfile.confirmationStatement.lastMadeUpTo = undefined;
+      clonedCompanyProfile.confirmationStatement.nextMadeUpTo = undefined;
 
       const formattedCompanyProfile: CompanyProfile = formatForDisplay(clone(clonedCompanyProfile));
 
-      expect(formattedCompanyProfile.confirmationStatement.lastMadeUpTo).toEqual("");
+      expect(formattedCompanyProfile.confirmationStatement.nextMadeUpTo).toEqual("");
     });
   });
 

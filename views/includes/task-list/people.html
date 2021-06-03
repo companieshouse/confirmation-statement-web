@@ -1,0 +1,83 @@
+<h2 class="app-task-list__section">
+    People
+</h2>
+<ul class="app-task-list__items">
+    {% if company.type === "Private limited company use of 'Limited' exemption" %}
+        <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+                <a href="/confirmation-statement/active-officers">
+                    Officers
+                </a>
+            </span>
+            {% if taskList.officersState === "CHECKED" %}
+                {{ showChecked | safe }}
+            {% elseif taskList.officersState === "IN_PROGRESS" %}
+                {{ showInProgress | safe }}
+            {% else %}
+                {{ showNotChecked | safe }}
+            {% endif %}
+        </li>
+    {% elseif company.type === "LLP" %}
+        <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+                <a href="/confirmation-statement/active-members">
+                    Members
+                </a>
+            </span>
+            {% if taskList.membersState === "CHECKED" %}
+                {{ showChecked | safe }}
+            {% elseif taskList.membersState === "IN_PROGRESS" %}
+                {{ showInProgress | safe }}
+            {% else %}
+                {{ showNotChecked | safe }}
+            {% endif %}
+        </li>
+    {% endif %}
+    {% if taskList.tradingStatus === "ADMITTED" %}
+        <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+                <a href="/confirmation-statement/active-pscs">
+                    People with significant control (PSC)
+                </a>
+            </span>
+            {% if taskList.pscState === "CHECKED" %}
+                {{ showChecked | safe }}
+            {% elseif taskList.pscState === "IN_PROGRESS" %}
+                {{ showInProgress | safe }}
+            {% else %}
+                {{ showNotChecked | safe }}
+            {% endif %}
+        </li>
+    {% elseif taskList.tradingStatus === "ADMITTED_DTR5" %}
+        <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+                <a href="/psc-exemption">
+                    People with significant control (PSC)
+                </a>
+            </span>
+            {% if taskList.exemptionState === "CHECKED" %}
+                {{ showChecked | safe }}
+            {% elseif taskList.exemptionState === "IN_PROGRESS" %}
+                {{ showInProgress | safe }}
+            {% else %}
+                {{ showNotChecked | safe }}
+            {% endif %}
+        </li>
+    {% endif %}
+    {% if company.type === "Private limited company use of 'Limited' exemption" %}
+        <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+                <a href="/confirmation-statement/shareholders">
+                    Shareholders
+                </a>
+            </span>
+            {% if taskList.shareholdersState === "CHECKED" %}
+                {{ showChecked | safe }}}
+            {% elseif taskList.shareholdersState === "IN_PROGRESS" %}
+                {{ showInProgress | safe }}
+            {% else %}
+                {{ showNotChecked | safe }}
+            {% endif %}
+        </li>
+    {% endif %}
+</ul>

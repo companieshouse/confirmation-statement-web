@@ -1,0 +1,33 @@
+<h2 class="app-task-list__section">
+    Addresses
+</h2>
+<ul class="app-task-list__items">
+    <li class="app-task-list__item">
+        <span class="app-task-list__task-name">
+            <a href="/confirmation-statement/ro">
+                Registered office address
+            </a>
+        </span>
+        {% if taskList.roState === "CHECKED" %}
+            {{ showChecked | safe }}
+        {% elseif taskList.roState === "IN_PROGRESS" %}
+            {{ showInProgress | safe }}
+        {% else %}
+            {{ showNotChecked | safe }}
+        {% endif %}
+    </li>
+    <li class="app-task-list__item">
+        <span class="app-task-list__task-name">
+            <a href="/confirmation-statement/registers">
+                Register locations
+            </a>
+        </span>
+        {% if taskList.registerState === "CHECKED" %}
+            {{ showChecked | safe }}
+        {% elseif taskList.registerState === "IN_PROGRESS" %}
+            {{ showInProgress | safe }}
+        {% else %}
+            {{ showNotChecked | safe }}
+        {% endif %}
+    </li>
+</ul>

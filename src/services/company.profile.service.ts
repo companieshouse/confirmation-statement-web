@@ -36,7 +36,7 @@ export const formatForDisplay = (companyProfile: CompanyProfile): CompanyProfile
   if (companyProfile.confirmationStatement) {
     const confirmationStatement: ConfirmationStatement = companyProfile.confirmationStatement;
     confirmationStatement.nextDue = toReadableFormat(confirmationStatement.nextDue);
-    confirmationStatement.lastMadeUpTo = confirmationStatement.lastMadeUpTo ? toReadableFormat(confirmationStatement.lastMadeUpTo) : "";
+    confirmationStatement.nextMadeUpTo = confirmationStatement.nextMadeUpTo ? toReadableFormat(confirmationStatement.nextMadeUpTo) : "";
   }
   return companyProfile;
 };

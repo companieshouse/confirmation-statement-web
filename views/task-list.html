@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% set showChecked %}
+  <strong class="govuk-tag app-task-list__tag">Checked</strong>
+{% endset %}
+{% set showInProgress %}
+  <strong class="govuk-tag govuk-tag--blue app-task-list__tag">In progress</strong>
+{% endset %}
+{% set showNotChecked %}
+  <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not checked</strong>
+{% endset %}
+
+{% block pageTitle %}
+  Task list
+{% endblock %}
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/check-trading-status"
+  }) }}
+{% endblock %}
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% include "includes/task-list/notification-banner.html" %}
+      <h1 class="govuk-heading-l">
+        File a confirmation statement
+      </h1>
+      <p>You will need to check and confirm that the company information we have on record is correct as of
+        {{ taskList.recordDate }}.
+      </p>
+      {% if company.type === "Private limited company use of 'Limited' exemption" %}
+        <p class="govuk-body govuk-!-margin-bottom-7">
+          You have checked {{ taskList.tasksCompleted }} of 7 sections
+        </p>
+        <ol class="app-task-list">
+          <li>
+            {% include "includes/task-list/nature-of-business.html" %}
+          </li>
+          <li>
+            {% include "includes/task-list/people.html" %}
+          </li>
+          <li>
+            {% include "includes/task-list/addresses.html" %}
+          </li>
+          <li>
+            {% include "includes/task-list/confirm-and-submit.html" %}
+          </li>
+        </ol>
+      {% elseif company.type === "LLP" %}
+        <p class="govuk-body govuk-!-margin-bottom-7">
+          You have checked {{ taskList.tasksCompleted }} of 4 sections
+        </p>
+        <ol class="app-task-list">
+          <li>
+            {% include "includes/task-list/people.html" %}
+          </li>
+          <li>
+            {% include "includes/task-list/addresses.html" %}
+          </li>
+          <li>
+            {% include "includes/task-list/confirm-and-submit.html" %}
+          </li>
+        </ol>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
