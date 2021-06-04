@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  You cannot use this service - File a confirmation statement
+{% endblock %}
+{% block signOut %}{% endblock %}
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">
+        You cannot use this service
+      </h1>
+      <p>{{ company.companyName }} is a {{ company.type }}, which means it is not required to file confirmation statements.</p>
+
+      <p><a href="https://www.gov.uk/government/organisations/companies-house/about/access-and-opening">Contact us if you think this information is wrong</a>.</p>
+      <p>If this is the wrong company, start the <a href="/confirmation-statement">File a confirmation statement</a> service again.</p>
+      <p>
+          <a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-cannotfilecs/">What did you think of this service?</a>
+          (takes 2 minutes)</p>
+
+    </div>
+  </div>
+{% endblock %}
