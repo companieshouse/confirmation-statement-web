@@ -5,9 +5,9 @@ import { TRADING_STATUS_ERROR } from "../utils/constants";
 
 export const get = (req: Request, res: Response) => {
   const companyNumber =  req.params[urlParams.PARAM_COMPANY_NUMBER];
-  const back = `/confirmation-statement/confirm-company?companyNumber=${companyNumber}`;
+  const backLinkUrl = `/confirmation-statement/confirm-company?companyNumber=${companyNumber}`;
   return res.render(Templates.TRADING_STATUS, {
-    back
+    backLinkUrl
   });
 };
 
@@ -18,9 +18,9 @@ export const post = (req: Request, res: Response) => {
   if (tradingStatus === "yes") {
     return res.redirect(url);
   } else if (tradingStatus === "no") {
-    const back = `/confirmation-statement/company/${companyNumber}/trading-status`;
+    const backLinkUrl = `/confirmation-statement/company/${companyNumber}/trading-status`;
     return res.render(Templates.TRADING_STOP, {
-      back
+      backLinkUrl
     });
   } else {
     return res.render(Templates.TRADING_STATUS, {
