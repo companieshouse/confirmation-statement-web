@@ -104,6 +104,16 @@ describe("Confirm company controller tests", () => {
     expect(response.text).toContain("dissolved and struck off the register");
   });
 
+  it("Should redirect to error page when unrecognised eligibility code is returned", async () => {
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockEligibilityStatusCode.mockResolvedValueOnce("abcdefg");
+    const response = await request(app)
+      .post(CONFIRM_COMPANY_PATH);
+    expect(response.status).toEqual(500);
+    expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
+    expect(response.text).toContain("Sorry, the service is unavailable");
+  });
+
   it("Should redirect to error page when promise fails", async () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
     mockEligibilityStatusCode.mockRejectedValueOnce(new Error());
