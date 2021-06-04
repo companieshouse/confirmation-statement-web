@@ -13,6 +13,7 @@ import {
 import { TRADING_STATUS_PATH, urlParams } from "../types/page.urls";
 import { isInFuture, toReadableFormat } from "../utils/date";
 import { DateTime } from "luxon";
+import { initTaskList, TaskList, TradingStatus } from "../types/task.list";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -56,7 +57,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = req.query.companyNumber as string;
     const company: CompanyProfile = await getCompanyProfile(req.query.companyNumber as string);
     const eligibilityStatusCode: EligibilityStatusCode = await checkEligibility(session, companyNumber);
-    if (eligibilityStatusCode === EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE) {
+    const taskList: TaskList = initTaskList();
+    const tradingStatus: TradingStatus = taskList.tradingStatus;
+    if (eligibilityStatusCode === EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE && tradingStatus === TradingStatus.ADMITTED) {
       await createNewConfirmationStatement(req);
       const url = TRADING_STATUS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, companyNumber);
       return res.redirect(url);
