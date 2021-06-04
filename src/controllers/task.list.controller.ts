@@ -7,9 +7,11 @@ import { urlParams } from "../types/page.urls";
 
 export const get = async (req: Request, res: Response) => {
   const companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER];
+  const back = `/confirmation-statement/company/${companyNumber}/trading-status`;
   const company: CompanyProfile = await getCompanyProfile(companyNumber);
   const taskList: TaskList = initTaskList();
   return res.render(Templates.TASK_LIST, {
+    back,
     company,
     taskList
   });

@@ -4,7 +4,11 @@ import { TASK_LIST_PATH, urlParams } from "../types/page.urls";
 import { TRADING_STATUS_ERROR } from "../utils/constants";
 
 export const get = (req: Request, res: Response) => {
-  return res.render(Templates.TRADING_STATUS);
+  const companyNumber =  req.params[urlParams.PARAM_COMPANY_NUMBER];
+  const back = `/confirmation-statement/confirm-company?companyNumber=${companyNumber}`;
+  return res.render(Templates.TRADING_STATUS, {
+    back
+  });
 };
 
 export const post = (req: Request, res: Response) => {
@@ -14,7 +18,10 @@ export const post = (req: Request, res: Response) => {
   if (tradingStatus === "yes") {
     return res.redirect(url);
   } else if (tradingStatus === "no") {
-    return res.render(Templates.TRADING_STOP);
+    const back = `/confirmation-statement/company/${companyNumber}/trading-status`;
+    return res.render(Templates.TRADING_STOP, {
+      back
+    });
   } else {
     return res.render(Templates.TRADING_STATUS, {
       tradingStatusErrorMsg: TRADING_STATUS_ERROR
