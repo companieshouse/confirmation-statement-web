@@ -41,11 +41,11 @@
         <h1 class="govuk-heading-xl">Check the trading status</h1>
 
 
-        {% if tradingStatus === 'NOT_ADMITTED' %}
+        {% if scenario.company.tradingStatus === '1' %}
           <p>No company shares were traded on a market during this confirmation period</p>
-        {% elseif tradingStatus === 'ADMITTED' %}
+        {% elseif scenario.company.tradingStatus === '2' %}
           <p>Company shares were traded on a market, and the company has not been subject to DTR5, during this confirmation statement period</p>
-        {% elseif tradingStatus === 'ADMITTED_DTR5' %}
+        {% elseif scenario.company.tradingStatus === '3' %}
           <p>Company shares were traded on a market, and the company has been subject to DTR5, during this confirmation statement period</p>
         {% endif %}
 
@@ -55,7 +55,7 @@
           <p>It applies to UK companies with shares traded on a market. Under DTR5, shareholders must notify the company if their shareholding reaches or falls below certain percentage thresholds (starting at 3%).</p>
         {% endset %}
 
-        {% if tradingStatus === 'ADMITTED' or tradingStatus === 'ADMITTED_DTR5' %}
+        {% if scenario.company.tradingStatus === '2' or scenario.company.tradingStatus === '3' %}
           {{ govukDetails({
              summaryText: "What is DTR5?",
              html: dtrDetails
