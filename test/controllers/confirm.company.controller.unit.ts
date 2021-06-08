@@ -106,7 +106,7 @@ describe("Confirm company controller tests", () => {
 
   it("Should redirect to error page when unrecognised eligibility code is returned", async () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
-    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TYPE_CS01_FILING_NOT_REQUIRED);
+    mockEligibilityStatusCode.mockResolvedValueOnce("abcdefg");
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
     expect(response.status).toEqual(500);
@@ -154,14 +154,14 @@ describe("Confirm company controller tests", () => {
     expect(response.text).toContain("You cannot use this service - File a confirmation statement");
   });
 
-  it("Should redirect to use webfiling stop screen when the eligibility status code is INVALID_COMPANY_TRADED_STATUS_USE_WEBFILING", async () => {
+  it("Should redirect to use no filing required stop screen when the eligibility status code is INVALID_COMPANY_TYPE_CS01_FILING_NOT_REQUIRED", async () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
-    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TRADED_STATUS_USE_WEBFILING);
+    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TYPE_CS01_FILING_NOT_REQUIRED);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
     expect(response.status).toEqual(200);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
-    expect(response.text).toContain("You cannot use this service - File a confirmation statement");
+    expect(response.text).toContain("which means it is not required to file confirmation statements.");
   });
 
   it("Should display a warning if filing is not due", async () => {

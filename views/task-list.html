@@ -13,12 +13,14 @@
 {% block pageTitle %}
   Task list
 {% endblock %}
+
 {% block backLink %}
   {{ govukBackLink({
     text: "Back",
-    href: "/check-trading-status"
+    href: backLinkUrl
   }) }}
 {% endblock %}
+
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
