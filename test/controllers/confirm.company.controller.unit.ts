@@ -154,6 +154,16 @@ describe("Confirm company controller tests", () => {
     expect(response.text).toContain("You cannot use this service - File a confirmation statement");
   });
 
+  it("Should redirect to use webfiling stop screen when the eligibility status code is INVALID_COMPANY_TRADED_STATUS_USE_WEBFILING", async () => {
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TRADED_STATUS_USE_WEBFILING);
+    const response = await request(app)
+      .post(CONFIRM_COMPANY_PATH);
+    expect(response.status).toEqual(200);
+    expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
+    expect(response.text).toContain("You cannot use this service - File a confirmation statement");
+  });
+
   it("Should display a warning if filing is not due", async () => {
     const formattedToday = "25 April 2020";
     const formattedNextMadeUpTo = "15 March 2020";
