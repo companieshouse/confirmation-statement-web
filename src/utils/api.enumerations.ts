@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as yaml from "js-yaml";
+import { editCompanyTypeDisplay } from "./company.type.display.procressor";
 
 interface ApiEnumerationsConstants {
   [propName: string]: any
@@ -11,7 +12,8 @@ const apiConstants: ApiEnumerationsConstants = yaml.load(apiConstantsFile) as Ap
 export const lookupCompanyType = (companyTypeKey: string): string => {
   // we actually use the 'company_summary' values from the yaml file to
   //  display the company type (following the ch.gov.uk templates)
-  return apiConstants.company_summary[companyTypeKey] || companyTypeKey;
+  const displayValue: string = apiConstants.company_summary[companyTypeKey] || companyTypeKey;
+  return editCompanyTypeDisplay(companyTypeKey, displayValue);
 };
 
 export const lookupCompanyStatus = (companyStatusKey: string): string => {

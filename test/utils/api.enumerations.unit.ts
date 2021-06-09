@@ -1,8 +1,8 @@
 const READABLE_COMPANY_STATUS = "Receiver Action";
-const READABLE_COMPANY_TYPE = "Private limited company";
+const READABLE_COMPANY_TYPE = "Private Limited Company";
 const KEY_RECEIVERSHIP = "receivership";
 const KEY_LTD = "ltd";
-const KEY = "key";
+const KEY = "Key";
 
 jest.mock("js-yaml", () => {
   return {
