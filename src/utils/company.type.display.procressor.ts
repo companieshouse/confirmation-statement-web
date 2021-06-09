@@ -5,7 +5,7 @@ const multipleSpaces = /[\s]+/g;
 
 export const editCompanyTypeDisplay = (companyTypeKey: string, displayValue: string): string => {
   let editedDisplayValue: string = removeNonAlphanumericChars(displayValue);
-  editedDisplayValue = removedUnrequiredWords(companyTypeKey, editedDisplayValue, displayValue);
+  editedDisplayValue = removeUnrequiredWords(companyTypeKey, editedDisplayValue, displayValue);
   if (editedDisplayValue.length === 0) {
     return displayValue;
   }
@@ -20,7 +20,7 @@ const ensureTitleCase = (editedDisplayValue: string): string => {
   return editedDisplayValue.replace(titleCaseRegex, match => match.toUpperCase());
 };
 
-const removedUnrequiredWords = (companyTypeKey: string, editedDisplayValue: string, displayValue: string): string => {
+const removeUnrequiredWords = (companyTypeKey: string, editedDisplayValue: string, displayValue: string): string => {
   const displayValueArray: string[] = editedDisplayValue.split(" ");
   const alphanumerickey: string = companyTypeKey.replace(nonAlphanumericRegex, " ");
   for (let index = 0; index < displayValueArray.length; index++) {
