@@ -8,9 +8,9 @@
                 Registered office address
             </a>
         </span>
-        {% if taskList.roState === "CHECKED" %}
+        {% if taskList.registeredOfficeAddress.state === "CHECKED" %}
             {{ showChecked | safe }}
-        {% elseif taskList.roState === "IN_PROGRESS" %}
+        {% elseif taskList.registeredOfficeAddress.state === "IN_PROGRESS" %}
             {{ showInProgress | safe }}
         {% else %}
             {{ showNotChecked | safe }}
@@ -22,9 +22,9 @@
                 Register locations
             </a>
         </span>
-        {% if taskList.registerState === "CHECKED" %}
+        {% if taskList.registerLocations.state === "CHECKED" %}
             {{ showChecked | safe }}
-        {% elseif taskList.registerState === "IN_PROGRESS" %}
+        {% elseif taskList.registerLocations.state === "IN_PROGRESS" %}
             {{ showInProgress | safe }}
         {% else %}
             {{ showNotChecked | safe }}
