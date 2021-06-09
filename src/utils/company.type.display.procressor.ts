@@ -3,45 +3,45 @@ const titleCaseRegex = /(^\w{1})|(\s{1}\w{1})/g;
 const allowedCharacters = /[/]+/g;
 const multipleSpaces = /[\s]+/g;
 
-export const editCompanyTypeDisplay = (companyTypeKey: string, display: string): string => {
-  let editedDisplay: string = removeNonAlphanumericChars(display);
-  editedDisplay = removedUnrequiredWords(companyTypeKey, editedDisplay, display);
-  if (editedDisplay.length === 0) {
-    return display;
+export const editCompanyTypeDisplay = (companyTypeKey: string, displayValue: string): string => {
+  let editedDisplayValue: string = removeNonAlphanumericChars(displayValue);
+  editedDisplayValue = removedUnrequiredWords(companyTypeKey, editedDisplayValue, displayValue);
+  if (editedDisplayValue.length === 0) {
+    return displayValue;
   }
-  return ensureTitleCase(editedDisplay);
+  return ensureTitleCase(editedDisplayValue);
 };
 
-const removeNonAlphanumericChars = (display: string): string => {
-  return display.replace(nonAlphanumericRegex, " ");
+const removeNonAlphanumericChars = (displayValue: string): string => {
+  return displayValue.replace(nonAlphanumericRegex, " ");
 };
 
-const ensureTitleCase = (editedDisplay: string): string => {
-  return editedDisplay.replace(titleCaseRegex, match => match.toUpperCase());
+const ensureTitleCase = (editedDisplayValue: string): string => {
+  return editedDisplayValue.replace(titleCaseRegex, match => match.toUpperCase());
 };
 
-const removedUnrequiredWords = (companyTypeKey: string, editedDisplay: string, display: string): string => {
-  const displayArray: string[] = editedDisplay.split(" ");
+const removedUnrequiredWords = (companyTypeKey: string, editedDisplayValue: string, displayValue: string): string => {
+  const displayValueArray: string[] = editedDisplayValue.split(" ");
   const alphanumerickey: string = companyTypeKey.replace(nonAlphanumericRegex, " ");
-  for (let index = 0; index < displayArray.length; index++) {
-    const singleWord: string = displayArray[index];
+  for (let index = 0; index < displayValueArray.length; index++) {
+    const singleWord: string = displayValueArray[index];
     if (!alphanumerickey.toLowerCase().includes(singleWord.toLowerCase())) {
-      editedDisplay = handleAllowNonAlphanumericChars(singleWord, editedDisplay, display);
+      editedDisplayValue = handleAllowNonAlphanumericChars(singleWord, editedDisplayValue, displayValue);
     }
   }
-  return removeExcessWhitespaces(editedDisplay);
+  return removeExcessWhitespaces(editedDisplayValue);
 };
 
-const handleAllowNonAlphanumericChars = (singleWord: string, editedDisplay: string, display: string): string => {
-  if (display.match(allowedCharacters)){
-    return display.replace(singleWord, "");
+const handleAllowNonAlphanumericChars = (singleWord: string, editedDisplayValue: string, displayValue: string): string => {
+  if (displayValue.match(allowedCharacters)){
+    return displayValue.replace(singleWord, "");
   } else {
-    return editedDisplay.replace(singleWord, "");
+    return editedDisplayValue.replace(singleWord, "");
   }
 };
 
-const removeExcessWhitespaces = (editedDisplay: string): string => {
-  editedDisplay = editedDisplay.replace(multipleSpaces, " ");
-  return editedDisplay.trim();
+const removeExcessWhitespaces = (editedDisplayValue: string): string => {
+  editedDisplayValue = editedDisplayValue.replace(multipleSpaces, " ");
+  return editedDisplayValue.trim();
 };
 
