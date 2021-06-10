@@ -22,8 +22,6 @@
           You are not due to file a confirmation statement. If you file a confirmation statement today, it will show the date as
           <strong>{{notDueWarning.todaysDate}}</strong>
           and this will change your future review periods.
-          <br><br>You will not need to pay a fee if you file your confirmation statement before
-          <strong>{{company.confirmationStatement.nextMadeUpTo}}</strong>.
           <br><br>
           <a href="https://www.youtube.com/watch?v=dxN4djaAE3k">This video explains review periods and payment periods (opens in new tab).</a>
         </p>
@@ -92,7 +90,7 @@
                 text: "Date of next confirmation statement"
               },
               value: {
-                text: company.confirmationStatement.nextDue
+                text: company.confirmationStatement.nextMadeUpTo
               }
             },
             {
@@ -100,7 +98,7 @@
                 text: "To be filed by"
               },
               value: {
-                text: company.confirmationStatement.nextMadeUpTo
+                text: company.confirmationStatement.nextDue
               }
             }
           ]
