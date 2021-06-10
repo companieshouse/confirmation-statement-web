@@ -6,8 +6,10 @@ import { RADIO_BUTTON_VALUE, TRADING_STATUS_ERROR } from "../utils/constants";
 export const get = (req: Request, res: Response) => {
   const companyNumber =  req.params[urlParams.PARAM_COMPANY_NUMBER];
   const backLinkUrl = `${CONFIRM_COMPANY_PATH}?companyNumber=${companyNumber}`;
+  const tradingStatus = "0";
   return res.render(Templates.TRADING_STATUS, {
-    backLinkUrl
+    backLinkUrl,
+    tradingStatus
   });
 };
 
