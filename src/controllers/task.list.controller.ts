@@ -21,12 +21,8 @@ export const get = async (req: Request, res: Response) => {
 
 const calculateFilingDate = (recordDate: string, companyProfile: CompanyProfile): string => {
   const nextMadeUpToDate = companyProfile.confirmationStatement.nextMadeUpTo;
-  if (nextMadeUpToDate) {
-    if (isInFuture(nextMadeUpToDate)) {
-      return recordDate;
-    } else {
-      recordDate = toReadableFormat(companyProfile.confirmationStatement.nextDue);
-    }
+  if (nextMadeUpToDate && isInFuture(nextMadeUpToDate)) {
+    return recordDate;
   }
-  return recordDate;
+  return toReadableFormat(companyProfile.confirmationStatement.nextDue);
 };
