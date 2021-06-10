@@ -24,8 +24,10 @@ export const post = (req: Request, res: Response) => {
       backLinkUrl
     });
   } else {
+    const backLinkUrl = `${CONFIRM_COMPANY_PATH}?companyNumber=${companyNumber}`;
     return res.render(Templates.TRADING_STATUS, {
-      tradingStatusErrorMsg: TRADING_STATUS_ERROR
+      tradingStatusErrorMsg: TRADING_STATUS_ERROR,
+      backLinkUrl
     });
   }
 };
