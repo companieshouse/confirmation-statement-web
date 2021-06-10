@@ -8,9 +8,9 @@
                 SIC codes
             </a>
         </span>
-        {% if taskList.sicState === "CHECKED" %}
+        {% if taskList.tasks.sicCodes.state === "CHECKED" %}
             {{ showChecked | safe }}
-        {% elseif taskList.sicState === "IN_PROGRESS" %}
+        {% elseif taskList.tasks.sicCodes.state === "IN_PROGRESS" %}
             {{ showInProgress | safe }}
         {% else %}
             {{ showNotChecked | safe }}
@@ -22,9 +22,9 @@
                 Statement of capital
             </a>
         </span>
-        {% if taskList.statementOfCapitalState === "CHECKED" %}
+        {% if taskList.tasks.statementOfCapitalState.state === "CHECKED" %}
             {{ showChecked | safe }}
-        {% elseif taskList.statementOfCapitalState === "IN_PROGRESS" %}
+        {% elseif taskList.tasks.statementOfCapitalState.state === "IN_PROGRESS" %}
             {{ showInProgress | safe }}
         {% else %}
             {{ showNotChecked | safe }}

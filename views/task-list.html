@@ -31,7 +31,6 @@
       <p>You will need to check and confirm that the company information we have on record is correct as of
         {{ taskList.recordDate }}.
       </p>
-      {% if company.type === "Private limited company use of 'Limited' exemption" %}
         <p class="govuk-body govuk-!-margin-bottom-7">
           You have checked {{ taskList.tasksCompleted }} of 7 sections
         </p>
@@ -49,22 +48,6 @@
             {% include "includes/task-list/confirm-and-submit.html" %}
           </li>
         </ol>
-      {% elseif company.type === "LLP" %}
-        <p class="govuk-body govuk-!-margin-bottom-7">
-          You have checked {{ taskList.tasksCompleted }} of 4 sections
-        </p>
-        <ol class="app-task-list">
-          <li>
-            {% include "includes/task-list/people.html" %}
-          </li>
-          <li>
-            {% include "includes/task-list/addresses.html" %}
-          </li>
-          <li>
-            {% include "includes/task-list/confirm-and-submit.html" %}
-          </li>
-        </ol>
-      {% endif %}
     </div>
   </div>
 {% endblock %}

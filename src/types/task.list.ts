@@ -14,38 +14,55 @@ export enum TradingStatus {
 }
 
 export interface TaskList {
-    exemptionState: TaskState;
-    membersState: TaskState;
-    recordDate: string;
-    officersState: TaskState;
-    pscState: TaskState;
-    pscStatement: TaskState;
-    registerState: TaskState;
-    tasksCompleted: number;
-    roState: TaskState;
-    statementOfCapitalState: TaskState;
-    shareholdersState: TaskState;
-    sicState: TaskState;
-    tradingStatus: TradingStatus;
-    allTasksCompleted: boolean;
-    csDue: boolean;
+  tasks: {
+    sicCodes: {
+      state: TaskState;
+      isVisible: boolean;
+    };
+    statementOfCapital: {
+      state: TaskState;
+      isVisible: boolean;
+    };
+    officers: {
+      state: TaskState;
+      isVisible: boolean;
+    };
+    peopleSignificantControl: {
+      state: TaskState;
+      isVisible: boolean;
+    };
+    shareholders: {
+      state: TaskState;
+      isVisible: boolean;
+    };
+    registeredOfficeAddress: {
+      state: TaskState;
+      isVisible: boolean;
+    };
+    registerLocations: {
+      state: TaskState;
+      isVisible: boolean;
+    };
+  },
+  recordDate: string;
+  tasksCompleted: number;
+  allTasksCompleted: boolean;
+  csDue: boolean;
 }
 
 export const initTaskList = (): TaskList => {
   return {
-    exemptionState: TaskState.NOT_CHECKED,
-    membersState: TaskState.NOT_CHECKED,
+    tasks: {
+      officers: { isVisible: false, state: TaskState.NOT_CHECKED },
+      peopleSignificantControl: { isVisible: false, state: TaskState.NOT_CHECKED },
+      registerLocations: { isVisible: false, state: TaskState.NOT_CHECKED },
+      registeredOfficeAddress: { isVisible: false, state: TaskState.NOT_CHECKED },
+      shareholders: { isVisible: false, state: TaskState.NOT_CHECKED },
+      sicCodes: { isVisible: false, state: TaskState.NOT_CHECKED },
+      statementOfCapital: { isVisible: false, state: TaskState.NOT_CHECKED }
+    },
     recordDate: toReadableFormat(DateTime.now().toString()),
-    officersState: TaskState.NOT_CHECKED,
-    pscState: TaskState.NOT_CHECKED,
-    pscStatement: TaskState.NOT_CHECKED,
-    registerState: TaskState.NOT_CHECKED,
     tasksCompleted: 0,
-    roState: TaskState.NOT_CHECKED,
-    statementOfCapitalState: TaskState.NOT_CHECKED,
-    shareholdersState: TaskState.NOT_CHECKED,
-    sicState: TaskState.NOT_CHECKED,
-    tradingStatus: TradingStatus.ADMITTED,
     allTasksCompleted: false,
     csDue: false
   };
