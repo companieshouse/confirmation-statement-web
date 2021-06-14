@@ -162,6 +162,33 @@ describe("Confirm company controller tests", () => {
     expect(response.status).toEqual(200);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
     expect(response.text).toContain("You cannot use this service - File a confirmation statement");
+    expect(response.text).toContain("https://www.gov.uk/government/publications/confirmation-statement-cs01");
+  });
+
+  it("Should redirect to use paper stop screen when the eligibility status code is INVALID_COMPANY_TYPE_PAPER_FILING_ONLY, type scottish-partnership", async () => {
+    validCompanyProfile.type  = "scottish-partnership";
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY);
+    const response = await request(app)
+      .post(CONFIRM_COMPANY_PATH);
+    expect(response.status).toEqual(200);
+    expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
+    expect(response.text).toContain("You cannot use this service - File a confirmation statement");
+    expect(response.text).toContain("https://www.gov.uk/government/publications/confirmation-statement-for-a-scottish-qualifying-partnership-sqp-cs01");
+  });
+
+  it("Should redirect to use paper stop screen when the eligibility status code is INVALID_COMPANY_TYPE_PAPER_FILING_ONLY, type limited-partnership", async () => {
+    validCompanyProfile.type  = "limited-partnership";
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY);
+    const response = await request(app)
+      .post(CONFIRM_COMPANY_PATH);
+    expect(response.status).toEqual(200);
+    expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
+    expect(response.text).toContain("You cannot use this service - File a confirmation statement");
+    expect(response.text).toContain("https://www.gov.uk/government/publications/confirmation-statement-for-a-scottish-limited-partnership-slp-cs01");
   });
 
   it("Should redirect to use no filing required stop screen when the eligibility status code is INVALID_COMPANY_TYPE_CS01_FILING_NOT_REQUIRED", async () => {
