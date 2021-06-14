@@ -13,14 +13,14 @@
       <p>{{ company.companyName }} is a {{ company.type }}, which means it can only file confirmation statements using the
 
         {% if company.type === "limited-partnership" %}
-          <a href="https://www.gov.uk/government/publications/confirmation-statement-for-a-scottish-limited-partnership-slp-cs01"/>
+          <a href="https://www.gov.uk/government/publications/confirmation-statement-for-a-scottish-limited-partnership-slp-cs01"/>SLP CSO1 confirmation statement paper form</a>.
         {% elseif company.type === "scottish-partnership" %}
-          <a href="https://www.gov.uk/government/publications/confirmation-statement-for-a-scottish-qualifying-partnership-sqp-cs01"/>
+          <a href="https://www.gov.uk/government/publications/confirmation-statement-for-a-scottish-qualifying-partnership-sqp-cs01"/>SQP CSO1 confirmation statement paper form</a>.
         {% else %}
-           <a href="https://www.gov.uk/government/publications/confirmation-statement-cs01"/>
+           <a href="https://www.gov.uk/government/publications/confirmation-statement-cs01">CS01 confirmation statement paper form</a>.
         {% endif %}
 
-        CS01 confirmation statement paper form</a>. This can be submitted online using our <a href="https://find-and-update.company-information.service.gov.uk/efs-submission/start">Upload a document to Companies House</a> service.</p>
+        This can be submitted online using our <a href="https://find-and-update.company-information.service.gov.uk/efs-submission/start">Upload a document to Companies House</a> service.</p>
 
       <p><a href="https://www.gov.uk/government/organisations/companies-house/about/access-and-opening">Contact us if you think this information is wrong</a>.</p>
       <p>If this is the wrong company, start the <a href="/confirmation-statement">File a confirmation statement</a> service again.</p>
