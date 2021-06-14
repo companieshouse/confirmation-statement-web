@@ -27,12 +27,6 @@
         </p>
         {% endset %}
 
-        {% set coTypeWarningHTML %}
-          This company does not meet all the criteria, you will need to file a confirmation statement using our
-          <a href="https://ewf.companieshouse.gov.uk//seclogin?tc=1">WebFiling service</a>.<br><br>
-          This service can only be used to file confirmation statements for private limited companies of a certain size.
-        {% endset %}
-
         {% set registeredAddress %}
           {{company.registeredOfficeAddress.addressLineOne}}
           <br/>
@@ -110,25 +104,14 @@
             iconFallbackText: "Warning"
           }) }}
         {% endif %}
-        {% if company.type === "PLC" %}
-          {{ govukWarningText({
-            html: coTypeWarningHTML,
-            conFallbackText: "Warning"
-          }) }}
-        {% endif %}
-        {% if company.type === 'PLC' %}
-          {{ govukButton({
-            text: "Confirm and continue",
-            href: "/use-webfiling"
-          }) }}
-        {% else %}
-          {{ govukButton({
-            attributes: {
-              id: "submit"
-            },
-            text: "Confirm and continue"
-          }) }}
-        {% endif %}
+        
+        {{ govukButton({
+          attributes: {
+            id: "submit"
+          },
+          text: "Confirm and continue"
+        }) }}
+        
         <p>
           <a href="/confirmation-statement/company-number" data-event-id="choose-a-different-company-link">Choose a different company</a>
         </p>
