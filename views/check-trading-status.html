@@ -38,12 +38,7 @@
         {% endif %}
 
 
-        <h1 class="govuk-heading-xl">Check the trading status</h1>
-
-
-        {% if tradingStatus === '0' %}
-          <p>No company shares were traded on a market during this confirmation period.</p>
-        {% endif %}
+        <h1 class="govuk-heading-xl">Check the trading status of shares</h1>
 
           <br/>
         {{ govukRadios({
@@ -53,7 +48,7 @@
           errorMessage: tradingStatusError,
           fieldset: {
             legend: {
-              text: "Is the company trading status correct?",
+              text: "Is the trading status of shares correct?",
               isPageHeading: false,
               classes: "govuk-fieldset__legend--l"
             }
