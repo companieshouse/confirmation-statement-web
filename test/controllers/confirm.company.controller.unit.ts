@@ -166,12 +166,14 @@ describe("Confirm company controller tests", () => {
   });
 
   it("Should redirect to use paper stop screen when the eligibility status code is INVALID_COMPANY_TYPE_PAPER_FILING_ONLY, type scottish-partnership", async () => {
+    const originalType = validCompanyProfile.type;
     validCompanyProfile.type  = "scottish-partnership";
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockIsActiveFeature.mockReturnValueOnce(true);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
+    validCompanyProfile.type  = originalType;
     expect(response.status).toEqual(200);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
     expect(response.text).toContain("You cannot use this service - File a confirmation statement");
@@ -179,12 +181,14 @@ describe("Confirm company controller tests", () => {
   });
 
   it("Should redirect to use paper stop screen when the eligibility status code is INVALID_COMPANY_TYPE_PAPER_FILING_ONLY, type limited-partnership", async () => {
+    const originalType = validCompanyProfile.type;
     validCompanyProfile.type  = "limited-partnership";
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockIsActiveFeature.mockReturnValueOnce(true);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
+    validCompanyProfile.type  = originalType;
     expect(response.status).toEqual(200);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
     expect(response.text).toContain("You cannot use this service - File a confirmation statement");
