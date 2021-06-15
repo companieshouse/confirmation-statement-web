@@ -1,23 +1,8 @@
 {% extends "layout.html" %}
 
 {% block head %}
-<!--[if !IE 8]><!-->
-<link href="{{assetPath}}/stylesheets/govuk-frontend/v3.11.0/govuk-frontend-3.11.0.min.css" rel="stylesheet"/>
-<!--<![endif]-->
-
-{# For Internet Explorer 8, you need to compile specific stylesheet #}
-{# see https://github.com/alphagov/govuk-frontend/blob/master/docs/installation/supporting-internet-explorer-8.md #}
-<!--[if IE 8]>
-<link href="{{assetPath}}/stylesheets/govuk-frontend/v3.11.0/govuk-frontend-ie8-3.11.0.min.css" rel="stylesheet"/>
-<![endif]-->
-
-<script src="https://code.jquery.com/jquery-3.4.1.js"
-        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-        crossorigin="anonymous">
-</script>
-
+{{ super() }}
 {% include "includes/task-list/task-list-styles.html" %}
-
 {% endblock %}
 
 {% set showChecked %}
