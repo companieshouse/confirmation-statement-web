@@ -9,9 +9,9 @@ const apiConstantsFile = fs.readFileSync("api-enumerations/constants.yml", "utf8
 const apiConstants: ApiEnumerationsConstants = yaml.load(apiConstantsFile) as ApiEnumerationsConstants;
 
 export const lookupCompanyType = (companyTypeKey: string): string => {
-  // we actually use the 'company_summary' values from the yaml file to
+  // we actually use the 'company_type' values from the yaml file to
   //  display the company type (following the ch.gov.uk templates)
-  return apiConstants.company_summary[companyTypeKey] || companyTypeKey;
+  return apiConstants.company_type[companyTypeKey] || companyTypeKey;
 };
 
 export const lookupCompanyStatus = (companyStatusKey: string): string => {
