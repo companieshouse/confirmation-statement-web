@@ -11,7 +11,7 @@ jest.mock("js-yaml", () => {
         company_status: {
           [KEY_RECEIVERSHIP]: READABLE_COMPANY_STATUS,
         },
-        company_summary: {
+        company_type: {
           [KEY_LTD]: READABLE_COMPANY_TYPE,
         },
       };
