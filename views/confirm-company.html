@@ -22,8 +22,6 @@
           You are not due to file a confirmation statement. If you file a confirmation statement today, it will show the date as
           <strong>{{notDueWarning.todaysDate}}</strong>
           and this will change your future review periods.
-          <br><br>
-          <a href="https://www.youtube.com/watch?v=dxN4djaAE3k" target="_blank" rel="noopener noreferrer">This video explains review periods and payment periods (opens in new tab).</a>
         </p>
         {% endset %}
 
@@ -104,14 +102,14 @@
             iconFallbackText: "Warning"
           }) }}
         {% endif %}
-        
+
         {{ govukButton({
           attributes: {
             id: "submit"
           },
           text: "Confirm and continue"
         }) }}
-        
+
         <p>
           <a href="/confirmation-statement/company-number" data-event-id="choose-a-different-company-link">Choose a different company</a>
         </p>
