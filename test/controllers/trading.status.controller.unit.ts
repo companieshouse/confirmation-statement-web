@@ -23,6 +23,7 @@ describe("Trading status controller tests", () => {
     const url = TRADING_STATUS_PATH.replace(":companyNumber", COMPANY_NUMBER);
     const response = await request(app).get(url);
     expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain("No company shares were traded on a market during this confirmation period.");
   });
 
   it("Should navigate to the task list page when trading status is correct", async () => {
@@ -54,5 +55,6 @@ describe("Trading status controller tests", () => {
     expect(response.header.location).not.toEqual("/confirmation-statement/company/12345678/task-list");
     expect(response.text).toContain(PAGE_HEADING);
     expect(response.text).toContain(TRADING_STATUS_ERROR);
+    expect(response.text).toContain("No company shares were traded on a market during this confirmation period.");
   });
 });
