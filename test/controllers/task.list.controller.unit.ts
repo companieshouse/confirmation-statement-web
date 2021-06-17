@@ -57,14 +57,4 @@ describe("Task list controller tests", () => {
     expect(response.text).toContain(expectedDate);
   });
 
-  it("Should show throw an error when confirmationStatent is missing", async () => {
-    validCompanyProfile.confirmationStatement = undefined;
-    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-    mocks.mockAuthenticationMiddleware.mockClear();
-    const url = TASK_LIST_PATH.replace(":companyNumber", COMPANY_NUMBER);
-    const response = await request(app).get(url);
-    // expect(response.text).toContain(expectedDate);
-    expect(response.text).toContain("Sorry, the service is unavailable");
-  });
-
 });
