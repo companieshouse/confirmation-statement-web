@@ -96,12 +96,14 @@ describe("Confirm company controller tests", () => {
 
   it("Should render eligibility error page when company status is not valid", async () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_STATUS);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
     expect(response.status).toEqual(200);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
     expect(response.text).toContain("dissolved and struck off the register");
+    expect(response.text).toContain(`cannot be filed for ${validCompanyProfile.companyName}`);
   });
 
   it("Should redirect to error page when unrecognised eligibility code is returned", async () => {
