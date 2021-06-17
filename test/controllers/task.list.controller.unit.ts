@@ -29,7 +29,7 @@ describe("Task list controller tests", () => {
   });
 
   it("Should show recordDate as next due date when filing after nextMadeUpToDate", async () => {
-    const expectedDate = toReadableFormat(validCompanyProfile.confirmationStatement.nextDue);
+    const expectedDate = toReadableFormat(validCompanyProfile.confirmationStatement!.nextMadeUpTo);
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mocks.mockAuthenticationMiddleware.mockClear();
     const url = TASK_LIST_PATH.replace(":companyNumber", COMPANY_NUMBER);
@@ -37,9 +37,9 @@ describe("Task list controller tests", () => {
     expect(response.text).toContain(expectedDate);
   });
 
-  it("Should show recordDate as next due date when filing on the nextMadeUpToDate", async () => {
-    validCompanyProfile.confirmationStatement.nextMadeUpTo = DateTime.now().toString();
-    const expectedDate = toReadableFormat(validCompanyProfile.confirmationStatement.nextDue);
+  it("Should show recordDate as nextMadeUpTo date when filing on the nextMadeUpToDate", async () => {
+    validCompanyProfile.confirmationStatement!.nextMadeUpTo = DateTime.now().toString();
+    const expectedDate = toReadableFormat(validCompanyProfile.confirmationStatement!.nextMadeUpTo);
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mocks.mockAuthenticationMiddleware.mockClear();
     const url = TASK_LIST_PATH.replace(":companyNumber", COMPANY_NUMBER);
@@ -48,13 +48,23 @@ describe("Task list controller tests", () => {
   });
 
   it("Should show recordDate as sysdate when filing before the nextMadeUpToDate", async () => {
-    validCompanyProfile.confirmationStatement.nextMadeUpTo = DateTime.fromISO('2999-06-04T00:00:00.000Z').toString();
+    validCompanyProfile.confirmationStatement!.nextMadeUpTo = DateTime.fromISO('2999-06-04T00:00:00.000Z').toString();
     const expectedDate = toReadableFormat(DateTime.now().toString());
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mocks.mockAuthenticationMiddleware.mockClear();
     const url = TASK_LIST_PATH.replace(":companyNumber", COMPANY_NUMBER);
     const response = await request(app).get(url);
     expect(response.text).toContain(expectedDate);
+  });
+
+  it("Should show throw an error when confirmationStatent is missing", async () => {
+    validCompanyProfile.confirmationStatement = undefined;
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    mocks.mockAuthenticationMiddleware.mockClear();
+    const url = TASK_LIST_PATH.replace(":companyNumber", COMPANY_NUMBER);
+    const response = await request(app).get(url);
+    // expect(response.text).toContain(expectedDate);
+    expect(response.text).toContain("Sorry, the service is unavailable");
   });
 
 });
