@@ -63,7 +63,14 @@ describe("Task list controller tests", () => {
     mocks.mockAuthenticationMiddleware.mockClear();
     const url = TASK_LIST_PATH.replace(":companyNumber", COMPANY_NUMBER);
     const response = await request(app).get(url);
-    // expect(response.text).toContain(expectedDate);
+    expect(response.text).toContain("Sorry, the service is unavailable");
+  });
+
+  it("Should return error page if error is thrown when getting Company Profile", async () => {
+    const message = "Can't connect";
+    mockGetCompanyProfile.mockRejectedValueOnce(new Error(message));
+    const url = TASK_LIST_PATH.replace(":companyNumber", COMPANY_NUMBER);
+    const response = await request(app).get(url);
     expect(response.text).toContain("Sorry, the service is unavailable");
   });
 

@@ -11,9 +11,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER];
     const backLinkUrl = TRADING_STATUS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, companyNumber);
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
-    if (!company.confirmationStatement) {
-      throw new Error("No confirmation Statement data in company profile");
-    }
     const taskList: TaskList = initTaskList();
     taskList.recordDate = calculateFilingDate(taskList.recordDate, company);
     return res.render(Templates.TASK_LIST, {
