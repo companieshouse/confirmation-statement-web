@@ -4,32 +4,35 @@ import { CONFIRM_COMPANY_PATH, TASK_LIST_PATH, TRADING_STATUS_PATH, urlParams } 
 import { RADIO_BUTTON_VALUE, TRADING_STATUS_ERROR } from "../utils/constants";
 
 export const get = (req: Request, res: Response) => {
-  const companyNumber =  req.params[urlParams.PARAM_COMPANY_NUMBER];
-  const backLinkUrl = `${CONFIRM_COMPANY_PATH}?companyNumber=${companyNumber}`;
-  const tradingStatus = "0";
+  const companyNumber: string = getCompanyNumber(req);
   return res.render(Templates.TRADING_STATUS, {
-    backLinkUrl,
-    tradingStatus
+    backLinkUrl: getConfirmCompanyUrl(companyNumber)
   });
 };
 
 export const post = (req: Request, res: Response) => {
-  const tradingStatus: string = req.body.tradingStatus;
-  const companyNumber =  req.params[urlParams.PARAM_COMPANY_NUMBER];
+  const tradingStatusButtonValue = req.body.tradingStatus;
+  const companyNumber = getCompanyNumber(req);
 
-  if (tradingStatus === RADIO_BUTTON_VALUE.YES) {
-    const url = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, companyNumber);
-    return res.redirect(url);
-  } else if (tradingStatus === RADIO_BUTTON_VALUE.NO) {
-    const backLinkUrl = TRADING_STATUS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, companyNumber);
+  if (tradingStatusButtonValue === RADIO_BUTTON_VALUE.YES) {
+    return res.redirect(getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber));
+  }
+
+  if (tradingStatusButtonValue === RADIO_BUTTON_VALUE.NO) {
     return res.render(Templates.TRADING_STOP, {
-      backLinkUrl
-    });
-  } else {
-    const backLinkUrl = `${CONFIRM_COMPANY_PATH}?companyNumber=${companyNumber}`;
-    return res.render(Templates.TRADING_STATUS, {
-      tradingStatusErrorMsg: TRADING_STATUS_ERROR,
-      backLinkUrl
+      backLinkUrl: getUrlWithCompanyNumber(TRADING_STATUS_PATH, companyNumber)
     });
   }
+
+  return res.render(Templates.TRADING_STATUS, {
+    tradingStatusErrorMsg: TRADING_STATUS_ERROR,
+    backLinkUrl: getConfirmCompanyUrl(companyNumber),
+  });
 };
+
+const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];
+
+const getConfirmCompanyUrl = (companyNumber: string): string => `${CONFIRM_COMPANY_PATH}?companyNumber=${companyNumber}`;
+
+const getUrlWithCompanyNumber = (url: string, companyNumber: string): string =>
+  url.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, companyNumber);
