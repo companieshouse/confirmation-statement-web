@@ -34,7 +34,7 @@ describe("Task list controller tests", () => {
 
   it("Should show recordDate as next due date when filing after nextMadeUpToDate", async () => {
     if (validCompanyProfile.confirmationStatement === undefined) {
-      fail;
+      fail();
     } else {
       const expectedDate = toReadableFormat(validCompanyProfile.confirmationStatement.nextMadeUpTo);
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
@@ -47,7 +47,7 @@ describe("Task list controller tests", () => {
 
   it("Should show recordDate as nextMadeUpTo date when filing on the nextMadeUpToDate", async () => {
     if (validCompanyProfile.confirmationStatement === undefined) {
-      fail;
+      fail();
     } else {
       validCompanyProfile.confirmationStatement.nextMadeUpTo = DateTime.now().toString();
       const expectedDate = toReadableFormat(validCompanyProfile.confirmationStatement.nextMadeUpTo);
@@ -61,7 +61,7 @@ describe("Task list controller tests", () => {
 
   it("Should show recordDate as sysdate when filing before the nextMadeUpToDate", async () => {
     if (validCompanyProfile.confirmationStatement === undefined) {
-      fail;
+      fail();
     } else {
       validCompanyProfile.confirmationStatement.nextMadeUpTo = DateTime.fromISO('2999-06-04T00:00:00.000Z').toString();
       const expectedDate = toReadableFormat(DateTime.now().toString());
