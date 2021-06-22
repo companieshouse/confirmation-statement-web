@@ -5,6 +5,7 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { getCompanyProfile } from "../services/company.profile.service";
 import { TRADING_STATUS_PATH, urlParams } from "../types/page.urls";
 import { isInFuture, toReadableFormat } from "../utils/date";
+import { createAndLogError } from "../utils/logger";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -24,9 +25,13 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const calculateFilingDate = (recordDate: string, companyProfile: CompanyProfile): string => {
-  const nextMadeUpToDate = companyProfile.confirmationStatement!.nextMadeUpTo;
-  if (isInFuture(nextMadeUpToDate)) {
-    return recordDate;
+  const nextMadeUpToDate = companyProfile.confirmationStatement?.nextMadeUpTo;
+  if (nextMadeUpToDate) {
+    if (isInFuture(nextMadeUpToDate)) {
+      return recordDate;
+    } else {
+      return toReadableFormat(nextMadeUpToDate);
+    }
   }
-  return toReadableFormat(nextMadeUpToDate);
+  throw createAndLogError(`Company Profile is missing confirmationStatement info for company number: ${companyProfile.companyNumber}`);
 };
