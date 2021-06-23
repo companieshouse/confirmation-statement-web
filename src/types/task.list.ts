@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
 import { toReadableFormat } from "../utils/date";
+import { ACTIVE_PSCS_PATH, urlParams } from "./page.urls";
 
 export enum TaskState {
     NOT_CHECKED = "NOT_CHECKED",
@@ -30,6 +31,7 @@ export interface TaskList {
     peopleSignificantControl: {
       state: TaskState;
       isVisible: boolean;
+      url: string;
     };
     shareholders: {
       state: TaskState;
@@ -50,11 +52,11 @@ export interface TaskList {
   csDue: boolean;
 }
 
-export const initTaskList = (): TaskList => {
+export const initTaskList = (companyNumber: string): TaskList => {
   return {
     tasks: {
       officers: { isVisible: false, state: TaskState.NOT_CHECKED },
-      peopleSignificantControl: { isVisible: false, state: TaskState.NOT_CHECKED },
+      peopleSignificantControl: { isVisible: false, state: TaskState.NOT_CHECKED, url: addComapnyNumber(companyNumber, ACTIVE_PSCS_PATH) },
       registerLocations: { isVisible: false, state: TaskState.NOT_CHECKED },
       registeredOfficeAddress: { isVisible: false, state: TaskState.NOT_CHECKED },
       shareholders: { isVisible: false, state: TaskState.NOT_CHECKED },
@@ -66,4 +68,8 @@ export const initTaskList = (): TaskList => {
     allTasksCompleted: false,
     csDue: false
   };
+};
+
+const addComapnyNumber = (companyNumber: string, path: string) => {
+  return path.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, companyNumber);
 };

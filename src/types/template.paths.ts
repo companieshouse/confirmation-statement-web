@@ -11,5 +11,6 @@ export enum Templates {
     USE_PAPER = "paper-filing",
     USE_WEBFILING = "use-webfiling",
     TRADING_STOP = "trading-stop",
-    NO_FILING_REQUIRED = "no-filing-required"
+    NO_FILING_REQUIRED = "no-filing-required",
+    ACTIVE_PSCS = "confirmation-statement/active-pscs"
   }
