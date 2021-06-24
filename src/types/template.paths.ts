@@ -4,6 +4,7 @@ export enum Templates {
     ERROR_404 = "page-not-found",
     SERVICE_OFFLINE = "service-offline",
     SERVICE_OFFLINE_MID_JOURNEY = "service-offline-mid-journey",
+    SIC = "tasks/sic",
     START = "start",
     STATEMENT_OF_CAPITAL = "statement-of-capital",
     TRADING_STATUS  = "check-trading-status",
@@ -12,5 +13,6 @@ export enum Templates {
     USE_PAPER = "paper-filing",
     USE_WEBFILING = "use-webfiling",
     TRADING_STOP = "trading-stop",
-    NO_FILING_REQUIRED = "no-filing-required"
+    NO_FILING_REQUIRED = "no-filing-required",
+    ACTIVE_PSCS = "tasks/active-pscs"
   }
