@@ -13,7 +13,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER];
     const backLinkUrl = getUrlWithCompanyNumber(TRADING_STATUS_PATH, companyNumber);
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
-    const taskList: TaskList = initTaskList();
+    const taskList: TaskList = initTaskList(company.companyNumber);
     taskList.recordDate = calculateFilingDate(taskList.recordDate, company);
     return res.render(Templates.TASK_LIST, {
       backLinkUrl,
