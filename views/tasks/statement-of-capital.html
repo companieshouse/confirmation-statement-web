@@ -1,16 +1,16 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-{% if errorList.length > 0 %}
-Error:
-{% endif %}  Review the statement of capital
+  {% if errorList.length > 0 %}
+    Error:
+  {% endif %}  Review the statement of capital
 {% endblock %}
 
 {% block backLink %}
-{{ govukBackLink({
-text: "Back",
-href: backLinkUrl
-}) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLinkUrl
+  }) }}
 {% endblock %}
 
 {% block content %}
