@@ -1,6 +1,7 @@
 import { DateTime } from "luxon";
 import { toReadableFormat } from "../utils/date";
-import { ACTIVE_PSCS_PATH, urlParams } from "./page.urls";
+import { ACTIVE_PSCS_PATH } from "./page.urls";
+import { getUrlWithCompanyNumber } from "../utils/url";
 
 export enum TaskState {
     NOT_CHECKED = "NOT_CHECKED",
@@ -56,7 +57,7 @@ export const initTaskList = (companyNumber: string): TaskList => {
   return {
     tasks: {
       officers: { isVisible: false, state: TaskState.NOT_CHECKED },
-      peopleSignificantControl: { isVisible: false, state: TaskState.NOT_CHECKED, url: addComapnyNumber(companyNumber, ACTIVE_PSCS_PATH) },
+      peopleSignificantControl: { isVisible: false, state: TaskState.NOT_CHECKED, url: getUrlWithCompanyNumber(ACTIVE_PSCS_PATH, companyNumber) },
       registerLocations: { isVisible: false, state: TaskState.NOT_CHECKED },
       registeredOfficeAddress: { isVisible: false, state: TaskState.NOT_CHECKED },
       shareholders: { isVisible: false, state: TaskState.NOT_CHECKED },
@@ -70,6 +71,3 @@ export const initTaskList = (companyNumber: string): TaskList => {
   };
 };
 
-const addComapnyNumber = (companyNumber: string, path: string) => {
-  return path.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, companyNumber);
-};
