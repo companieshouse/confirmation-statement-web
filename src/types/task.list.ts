@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { toReadableFormat } from "../utils/date";
-import { ACTIVE_PSCS_PATH } from "./page.urls";
+import { ACTIVE_PSCS_PATH, SIC_PATH } from "./page.urls";
 import { getUrlWithCompanyNumber } from "../utils/url";
 
 export enum TaskState {
@@ -20,6 +20,7 @@ export interface TaskList {
     sicCodes: {
       state: TaskState;
       isVisible: boolean;
+      url: string;
     };
     statementOfCapital: {
       state: TaskState;
@@ -61,7 +62,7 @@ export const initTaskList = (companyNumber: string): TaskList => {
       registerLocations: { isVisible: false, state: TaskState.NOT_CHECKED },
       registeredOfficeAddress: { isVisible: false, state: TaskState.NOT_CHECKED },
       shareholders: { isVisible: false, state: TaskState.NOT_CHECKED },
-      sicCodes: { isVisible: false, state: TaskState.NOT_CHECKED },
+      sicCodes: { isVisible: false, state: TaskState.NOT_CHECKED, url: getUrlWithCompanyNumber(SIC_PATH, companyNumber) },
       statementOfCapital: { isVisible: false, state: TaskState.NOT_CHECKED }
     },
     recordDate: toReadableFormat(DateTime.now().toString()),
