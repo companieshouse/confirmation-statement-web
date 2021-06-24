@@ -1,7 +1,7 @@
 import mocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
-import { SIC_PATH, TASK_LIST_PATH } from "../../src/types/page.urls";
+import { SIC_PATH } from "../../src/types/page.urls";
 import { companyAuthenticationMiddleware } from "../../src/middleware/company.authentication.middleware";
 import { getUrlWithCompanyNumber } from "../../src/utils/url";
 
@@ -31,7 +31,7 @@ describe("Confirm sic code controller tests", () => {
 
   it("Should return an error page if error is thrown when Company Profile is missing confirmation statement", async () => {
     mockGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
-    const url = TASK_LIST_PATH.replace(":companyNumber", COMPANY_NUMBER);
+    const url = SIC_PATH.replace(":companyNumber", COMPANY_NUMBER);
     const response = await request(app).get(url);
     expect(response.text).toContain("Sorry, the service is unavailable");
   });
