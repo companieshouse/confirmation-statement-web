@@ -8,8 +8,8 @@
 
 {% block backLink %}
   {{ govukBackLink({
-    text: "Back",
-    href: backLinkUrl
+      text: "Back",
+      href: backLinkUrl
   }) }}
 {% endblock %}
 
@@ -21,13 +21,13 @@
 
         {% if errorList.length > 0 %}
         {{ govukErrorSummary({
-          titleText: "There is a problem",
-          errorList: [
-            {
-              text: "Select yes if the SIC codes are correct",
-              href: "#sic"
-            }
-          ]
+            titleText: "There is a problem",
+            errorList: [
+              {
+                text: "Select yes if the SIC codes are correct",
+                href: "#sic"
+              }
+            ]
         }) }}
         {% endif %}
 
@@ -40,91 +40,92 @@
 
         <h1 class="govuk-heading-l">Check the SIC codes</h1>
         {{ govukDetails({
-  summaryText: "What is a SIC code?",
-  html: sicDetails
-}) }}
+            summaryText: "What is a SIC code?",
+            html: sicDetails
+        }) }}
 
         {% include "includes/confirmation-statement-details/sic-details.html" %}
 
         {% if sic === 'yes' %}
           {{ govukRadios({
-          classes: "govuk-radios--inline",
-          idPrefix: "sic",
-          name: "sic",
-          errorMessage: sicError,
-          fieldset: {
-            legend: {
-              html: "Are the SIC codes correct?",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--l"
-            }
-          },
-          items: [
-            {
-              value: "yes",
-              text: "Yes",
-              checked: true
-            },
-            {
-              value: "no",
-              text: "No"
-            }
-          ]
-        }) }}
+              classes: "govuk-radios--inline",
+              idPrefix: "sic",
+              name: "sic",
+              errorMessage: sicError,
+              fieldset: {
+                legend: {
+                  html: "Are the SIC codes correct?",
+                  isPageHeading: false,
+                  classes: "govuk-fieldset__legend--l"
+                }
+              },
+              items: [
+                {
+                  value: "yes",
+                  text: "Yes",
+                  checked: true
+                },
+                {
+                  value: "no",
+                  text: "No"
+                }
+              ]
+          }) }}
         {% elseif sic === 'no' %}
           {{ govukRadios({
-        classes: "govuk-radios--inline",
-        idPrefix: "sic",
-        name: "sic",
-        errorMessage: sicError,
-        fieldset: {
-          legend: {
-            html: "Are the SIC codes correct?",
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--l"
-          }
-        },
-        items: [
-          {
-            value: "yes",
-            text: "Yes"
-          },
-          {
-            value: "no",
-            text: "No",
-            checked: true
-          }
-        ]
-      }) }}
+              classes: "govuk-radios--inline",
+              idPrefix: "sic",
+              name: "sic",
+              errorMessage: sicError,
+              fieldset: {
+                legend: {
+                  html: "Are the SIC codes correct?",
+                  isPageHeading: true,
+                  classes: "govuk-fieldset__legend--l"
+                }
+              },
+              items: [
+                {
+                  value: "yes",
+                  text: "Yes"
+                },
+                {
+                  value: "no",
+                  text: "No",
+                  checked: true
+                }
+              ]
+          }) }}
         {% else %}
           {{ govukRadios({
-      classes: "govuk-radios--inline",
-      idPrefix: "sic",
-      name: "sic",
-      errorMessage: sicError,
-      fieldset: {
-        legend: {
-          html: "Are the SIC codes correct?",
-          isPageHeading: true,
-          classes: "govuk-fieldset__legend--l"
-        }
-      },
-      items: [
-        {
-          value: "yes",
-          text: "Yes"
-        },
-        {
-          value: "no",
-          text: "No"
-        }
-      ]
-    }) }}
+              classes: "govuk-radios--inline",
+              idPrefix: "sic",
+              name: "sic",
+              errorMessage: sicError,
+              fieldset: {
+                legend: {
+                  html: "Are the SIC codes correct?",
+                  isPageHeading: true,
+                  classes: "govuk-fieldset__legend--l"
+                }
+              },
+              items: [
+                {
+                  value: "yes",
+                  text: "Yes"
+                },
+                {
+                  value: "no",
+                  text: "No"
+                }
+              ]
+          }) }}
         {% endif %}
 
         {{ govukButton({
-text: "Continue"
-}) }}
+            text: "Continue"
+          }) 
+        }}
       </form>
     </div>
   </div>
