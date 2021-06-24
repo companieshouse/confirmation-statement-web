@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { getUrlWithCompanyNumber } from "../utils/url";
-import { TASK_LIST_PATH, urlParams } from "../types/page.urls";
-import { Templates } from "../types/template.paths";
-import { lookupSicCodeDescription } from "../utils/api.enumerations";
+import { getUrlWithCompanyNumber } from "../../utils/url";
+import { TASK_LIST_PATH, urlParams } from "../../types/page.urls";
+import { Templates } from "../../types/template.paths";
+import { lookupSicCodeDescription } from "../../utils/api.enumerations";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { getCompanyProfile } from "../services/company.profile.service";
-import { SicCode } from "../types/sic.code";
+import { getCompanyProfile } from "../../services/company.profile.service";
+import { SicCode } from "../../types/sic.code";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {

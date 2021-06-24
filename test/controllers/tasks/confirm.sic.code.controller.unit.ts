@@ -1,12 +1,12 @@
-import mocks from "../mocks/all.middleware.mock";
+import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
-import app from "../../src/app";
-import { SIC_PATH } from "../../src/types/page.urls";
-import { companyAuthenticationMiddleware } from "../../src/middleware/company.authentication.middleware";
-import { getUrlWithCompanyNumber } from "../../src/utils/url";
+import app from "../../../src/app";
+import { SIC_PATH } from "../../../src/types/page.urls";
+import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
+import { getUrlWithCompanyNumber } from "../../../src/utils/url";
 
-jest.mock("../../src/middleware/company.authentication.middleware");
-jest.mock("../../src/utils/url");
+jest.mock("../../../src/middleware/company.authentication.middleware");
+jest.mock("../../../src/utils/url");
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
