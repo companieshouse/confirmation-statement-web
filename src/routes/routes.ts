@@ -38,8 +38,8 @@ router.get(urls.TRADING_STATUS, tradingStatusRoute.get);
 
 router.post(urls.TRADING_STATUS, tradingStatusRoute.post);
 
-router.get(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.get);
-
 router.get(urls.TASK_LIST, taskListRoute.get);
+
+router.get(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.get);
 
 router.get(urls.ACTIVE_PSCS, activePscsRoute.get);
