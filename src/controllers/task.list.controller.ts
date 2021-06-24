@@ -6,13 +6,14 @@ import { getCompanyProfile } from "../services/company.profile.service";
 import { TRADING_STATUS_PATH, urlParams } from "../types/page.urls";
 import { isInFuture, toReadableFormat } from "../utils/date";
 import { createAndLogError } from "../utils/logger";
+import { getUrlWithCompanyNumber } from "../utils/url";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER];
-    const backLinkUrl = TRADING_STATUS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, companyNumber);
+    const backLinkUrl = getUrlWithCompanyNumber(TRADING_STATUS_PATH, companyNumber);
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
-    const taskList: TaskList = initTaskList();
+    const taskList: TaskList = initTaskList(company.companyNumber);
     taskList.recordDate = calculateFilingDate(taskList.recordDate, company);
     return res.render(Templates.TASK_LIST, {
       backLinkUrl,
