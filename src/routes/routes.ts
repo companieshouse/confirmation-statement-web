@@ -3,7 +3,7 @@ import * as confirmCompanyRoute from "../controllers/confirm.company.controller"
 import * as companyNumberRoute from "../controllers/company.number.controller";
 import * as sicRoute from "../controllers/confirm.sic.code.controller";
 import * as startRoute from "../controllers/start.controller";
-import * as statementOfCapitalRoute from "../controllers/statement.of.capital.controller";
+import * as statementOfCapitalRoute from "../controllers/tasks/statement.of.capital.controller";
 import * as tradingStatusRoute from "../controllers/trading.status.controller";
 import * as taskListRoute from "../controllers/task.list.controller";
 import * as activePscsRoute from "../controllers/tasks/active.pscs.controller";
