@@ -8,7 +8,7 @@
 {% block backLink %}
   {{ govukBackLink({
     text: "Back",
-    href: "/confirmation-statement/company/{{companyNumber}}/task-list"
+    href: backLinkUrl
   }) }}
 {% endblock %}
 {% block content %}
@@ -70,6 +70,9 @@
                       text: "No, but I've recently filed an update"
                     }
                   ]
+                }) }}
+                {{ govukButton({
+                   text: "Continue"
                 }) }}
 
             </form>

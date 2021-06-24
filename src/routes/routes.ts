@@ -4,7 +4,7 @@ import * as companyNumberRoute from "../controllers/company.number.controller";
 import * as startRoute from "../controllers/start.controller";
 import * as tradingStatusRoute from "../controllers/trading.status.controller";
 import * as taskListRoute from "../controllers/task.list.controller";
-import * as activePscsRoute from "../controllers/confirmation-statement/active.pscs.controller";
+import * as activePscsRoute from "../controllers/tasks/active.pscs.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 
