@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Templates } from "../types/template.paths";
 import { CONFIRM_COMPANY_PATH, TASK_LIST_PATH, TRADING_STATUS_PATH, urlParams } from "../types/page.urls";
 import { RADIO_BUTTON_VALUE, TRADING_STATUS_ERROR } from "../utils/constants";
+import { getUrlWithCompanyNumber } from "../utils/url";
 
 export const get = (req: Request, res: Response) => {
   const companyNumber: string = getCompanyNumber(req);
@@ -33,6 +34,3 @@ export const post = (req: Request, res: Response) => {
 const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];
 
 const getConfirmCompanyUrl = (companyNumber: string): string => `${CONFIRM_COMPANY_PATH}?companyNumber=${companyNumber}`;
-
-const getUrlWithCompanyNumber = (url: string, companyNumber: string): string =>
-  url.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, companyNumber);
