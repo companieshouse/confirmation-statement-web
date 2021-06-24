@@ -15,3 +15,7 @@ export const lookupCompanyType = (companyTypeKey: string): string => {
 export const lookupCompanyStatus = (companyStatusKey: string): string => {
   return apiConstants.company_status[companyStatusKey] || companyStatusKey;
 };
+
+export const lookupSicCodeDescription = (sicCode: string): string => {
+  return apiConstants.sic_descriptions[sicCode] || sicCode;
+};
