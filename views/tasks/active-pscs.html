@@ -14,17 +14,6 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
-            {% if tradingStatusErrorMsg %}
-              {{ govukErrorSummary({
-                titleText: "There is a problem",
-                errorList: [
-                  {
-                     text: "Select yes if the active PSCs are correct",
-                     href: "#active-pscs"
-                  }
-               ]
-             }) }}
-            {% endif %}
             <form action="" method="post">
                 {% set pscDetails %}
                 <p>A person with significant control (PSC) is someone who owns or controls the company. For example, anyone with voting
@@ -54,22 +43,23 @@
                         ]
                     ]
                 }) }}
+
                 {{ govukRadios({
-                   classes: "govuk-radios",
-                   idPrefix: "active-pscs",
-                   name: "active-pscs",
-                   errorMessage: activePscsError,
-                   fieldset: {
-                     legend: {
-                       html: headingHTML,
-                       isPageHeading: false,
-                       classes: "govuk-fieldset__legend--l"
-                     }
+                  classes: "govuk-radios",
+                  idPrefix: "active-pscs",
+                  name: "active-pscs",
+                  fieldset: {
+                    legend: {
+                      html: headingHTML,
+                      isPageHeading: false,
+                      classes: "govuk-fieldset__legend--l"
+                    }
                   },
                   items: [
                     {
                       value: "yes",
-                      text: "Yes"
+                      text: "Yes",
+                      checked: true
                     },
                     {
                       value: "no",
