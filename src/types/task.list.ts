@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { toReadableFormat } from "../utils/date";
-import {getUrlWithCompanyNumber} from "../utils/url";
-import {STATEMENT_OF_CAPITAL_PATH, urlParams} from "./page.urls";
+import { getUrlWithCompanyNumber } from "../utils/url";
+import { STATEMENT_OF_CAPITAL_PATH, urlParams } from "./page.urls";
 
 export enum TaskState {
     NOT_CHECKED = "NOT_CHECKED",
