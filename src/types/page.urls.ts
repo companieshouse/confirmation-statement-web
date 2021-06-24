@@ -7,6 +7,7 @@ export enum urlParams {
 const SEPARATOR = "/";
 
 export const ACCESSIBILITY_STATEMENT = SEPARATOR + Templates.ACCESSIBILITY_STATEMENT;
+export const ACTIVE_OFFICERS = "/active-officers";
 export const CONFIRM_COMPANY = SEPARATOR + Templates.CONFIRM_COMPANY;
 export const CONFIRMATION_STATEMENT = "/confirmation-statement";
 export const COMPANY_NUMBER = "/company-number";
