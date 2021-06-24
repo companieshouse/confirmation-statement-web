@@ -1,4 +1,4 @@
-jest.mock("../../src/middleware/company.authentication.middleware");
+jest.mock("../../../src/middleware/company.authentication.middleware");
 
 import request from "supertest";
 import mocks from "../../mocks/all.middleware.mock";
