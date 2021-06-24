@@ -5,6 +5,7 @@ export enum Templates {
     SERVICE_OFFLINE = "service-offline",
     SERVICE_OFFLINE_MID_JOURNEY = "service-offline-mid-journey",
     START = "start",
+    STATEMENT_OF_CAPITAL = "statement-of-capital",
     TRADING_STATUS  = "check-trading-status",
     INVALID_COMPANY_STATUS = "invalid-company-status",
     TASK_LIST = "task-list",

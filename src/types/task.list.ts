@@ -1,5 +1,7 @@
 import { DateTime } from "luxon";
 import { toReadableFormat } from "../utils/date";
+import {getUrlWithCompanyNumber} from "../utils/url";
+import {STATEMENT_OF_CAPITAL_PATH, urlParams} from "./page.urls";
 
 export enum TaskState {
     NOT_CHECKED = "NOT_CHECKED",
@@ -22,6 +24,7 @@ export interface TaskList {
     statementOfCapital: {
       state: TaskState;
       isVisible: boolean;
+      url: string;
     };
     officers: {
       state: TaskState;
@@ -50,7 +53,7 @@ export interface TaskList {
   csDue: boolean;
 }
 
-export const initTaskList = (): TaskList => {
+export const initTaskList = (companyNumber: string): TaskList => {
   return {
     tasks: {
       officers: { isVisible: false, state: TaskState.NOT_CHECKED },
@@ -59,7 +62,8 @@ export const initTaskList = (): TaskList => {
       registeredOfficeAddress: { isVisible: false, state: TaskState.NOT_CHECKED },
       shareholders: { isVisible: false, state: TaskState.NOT_CHECKED },
       sicCodes: { isVisible: false, state: TaskState.NOT_CHECKED },
-      statementOfCapital: { isVisible: false, state: TaskState.NOT_CHECKED }
+      statementOfCapital: { isVisible: false, state: TaskState.NOT_CHECKED,
+        url: getUrlWithCompanyNumber(STATEMENT_OF_CAPITAL_PATH, companyNumber) }
     },
     recordDate: toReadableFormat(DateTime.now().toString()),
     tasksCompleted: 0,
