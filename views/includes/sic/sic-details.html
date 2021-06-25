@@ -1,7 +1,7 @@
 <p class="govuk-body-m">
 
-  <strong>82990</strong>
-  - Other business support service activities not elsewhere classified<br>
-  <strong>82110</strong>
-  - Combined office administrative service activities
+{% for sicCode in sicCodes %}
+  <strong>{{sicCode.code}}</strong> - {{sicCode.description}}<br>
+{% endfor %}
+
 </p>
