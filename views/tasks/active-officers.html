@@ -57,24 +57,27 @@
           errorMessage: activeDirectorsError,
           fieldset: {
             legend: {
-              html: "Is the director still active?",
               isPageHeading: false,
-              classes: "govuk-fieldset__legend--l"
+              classes: "govuk-fieldset__legend--l",
+              html: "Is the director still active?"
             }
           },
           items: [
             {
               value: "yes",
               text: "Yes",
-              checked: true
+              checked: true,
+              label: "active-officer Yes"
             },
             {
               value: "no",
-              text: "No"
+              text: "No",
+              label: "active-officer No"
             },
             {
               value: "yes",
-              text: "No, but I've recently filed an update"
+              text: "No, but I've recently filed an update",
+              label: "active-officer No, but I've recently filed an update"
             }
           ]
         }) }}
