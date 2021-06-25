@@ -1,0 +1,132 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+{% if errorList.length > 0 %}
+  Error:
+{% endif %} Review the SIC codes
+{% endblock %}
+
+{% block backLink %}
+  {{ govukBackLink({
+      text: "Back",
+      href: backLinkUrl
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form action="" method="post">
+
+        {% if errorList.length > 0 %}
+        {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: [
+              {
+                text: "Select yes if the SIC codes are correct",
+                href: "#sic"
+              }
+            ]
+        }) }}
+        {% endif %}
+
+        {% set sicDetails %}
+        <p>The SIC (Standard Industrial Classification) code indicates the nature of the company’s business. A company can have up to 4 SIC codes.
+        </p>
+        <p>Check the
+          <a href="http://resources.companieshouse.gov.uk/sic/" target="_blank" rel="noopener noreferrer">condensed SIC codes list (opens in a new tab)</a>.</p>
+        {% endset %}
+
+        <h1 class="govuk-heading-l">Check the SIC codes</h1>
+        {{ govukDetails({
+            summaryText: "What is a SIC code?",
+            html: sicDetails
+        }) }}
+
+        {% include "includes/sic/sic-details.html" %}
+
+        {% if sic === 'yes' %}
+          {{ govukRadios({
+              classes: "govuk-radios--inline",
+              idPrefix: "sic",
+              name: "sic",
+              errorMessage: sicError,
+              fieldset: {
+                legend: {
+                  html: "Are the SIC codes correct?",
+                  isPageHeading: false,
+                  classes: "govuk-fieldset__legend--l"
+                }
+              },
+              items: [
+                {
+                  value: "yes",
+                  text: "Yes",
+                  checked: true
+                },
+                {
+                  value: "no",
+                  text: "No"
+                }
+              ]
+          }) }}
+        {% elseif sic === 'no' %}
+          {{ govukRadios({
+              classes: "govuk-radios--inline",
+              idPrefix: "sic",
+              name: "sic",
+              errorMessage: sicError,
+              fieldset: {
+                legend: {
+                  html: "Are the SIC codes correct?",
+                  isPageHeading: true,
+                  classes: "govuk-fieldset__legend--l"
+                }
+              },
+              items: [
+                {
+                  value: "yes",
+                  text: "Yes"
+                },
+                {
+                  value: "no",
+                  text: "No",
+                  checked: true
+                }
+              ]
+          }) }}
+        {% else %}
+          {{ govukRadios({
+              classes: "govuk-radios--inline",
+              idPrefix: "sic",
+              name: "sic",
+              errorMessage: sicError,
+              fieldset: {
+                legend: {
+                  html: "Are the SIC codes correct?",
+                  isPageHeading: true,
+                  classes: "govuk-fieldset__legend--l"
+                }
+              },
+              items: [
+                {
+                  value: "yes",
+                  text: "Yes"
+                },
+                {
+                  value: "no",
+                  text: "No"
+                }
+              ]
+          }) }}
+        {% endif %}
+
+        {{ govukButton({
+            text: "Continue"
+          }) 
+        }}
+      </form>
+    </div>
+  </div>
+{% endblock %}
