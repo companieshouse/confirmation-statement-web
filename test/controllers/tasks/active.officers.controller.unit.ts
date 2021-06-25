@@ -6,11 +6,8 @@ import { companyAuthenticationMiddleware } from "../../../src/middleware/company
 import { urlUtils } from "../../../src/utils/url";
 
 jest.mock("../../../src/middleware/company.authentication.middleware");
-// jest.mock("../../../src/utils/url");
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
-// const mockGetUrlWithCompanyNumber = urlUtils.getUrlWithCompanyNumber as jest.Mock;
-
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 
 const COMPANY_NUMBER = "12345678";
