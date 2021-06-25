@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import * as activeOfficers from "../controllers/active.officers.controller";
+import * as activeOfficers from "../controllers/tasks/active.officers.controller";
 import * as confirmCompanyRoute from "../controllers/confirm.company.controller";
 import * as companyNumberRoute from "../controllers/company.number.controller";
 import * as sicRoute from "../controllers/confirm.sic.code.controller";
