@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import * as confirmCompanyRoute from "../controllers/confirm.company.controller";
 import * as companyNumberRoute from "../controllers/company.number.controller";
-import * as sicRoute from "../controllers/confirm.sic.code.controller";
+import * as sicRoute from "../controllers/tasks/confirm.sic.code.controller";
 import * as startRoute from "../controllers/start.controller";
 import * as tradingStatusRoute from "../controllers/trading.status.controller";
 import * as taskListRoute from "../controllers/task.list.controller";
