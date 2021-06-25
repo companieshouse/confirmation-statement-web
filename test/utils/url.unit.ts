@@ -1,5 +1,5 @@
 import { urlParams } from "../../src/types/page.urls";
-import { getUrlWithCompanyNumber } from "../../src/utils/url";
+import { urlUtils } from "../../src/utils/url";
 
 describe("url utils tests", () => {
 
@@ -8,7 +8,7 @@ describe("url utils tests", () => {
 
     it("should populate a url with a company number", () => {
       const url = `/something/:${urlParams.PARAM_COMPANY_NUMBER}/something`;
-      const populatedUrl = getUrlWithCompanyNumber(url, COMPANY_NUMBER);
+      const populatedUrl = urlUtils.getUrlWithCompanyNumber(url, COMPANY_NUMBER);
       expect(populatedUrl).toEqual(`/something/${COMPANY_NUMBER}/something`);
     });
   });

@@ -19,16 +19,21 @@
 
         <form action="" method="post">
 
-            {% if errorList.length > 0 %}
+            {% if statementOfCapitalErrorMsg %}
               {{ govukErrorSummary({
                 titleText: "There is a problem",
                 errorList: [
-                  {
-                  text: "Select yes if the statement of capital is correct",
-                  href: "#trading-status"
-                  }
-                ]
+                {
+                  text: statementOfCapitalErrorMsg,
+                  href: "#statement-of-capital"
+                }
+              ]
               }) }}
+              {% set statementOfCapitalError = {
+                text: statementOfCapitalErrorMsg
+              } %}
+            {% else %}
+              {% set statementOfCapitalError = false %}
             {% endif %}
 
             <h1 class="govuk-heading-l">Check the statement of capital</h1>
@@ -38,11 +43,11 @@
             {{ govukRadios({
               classes: "govuk-radios--inline",
               idPrefix: "statement-of-capital",
-              name: "statement-of-capital",
+              name: "statementOfCapital",
               errorMessage: statementOfCapitalError,
               fieldset: {
                 legend: {
-                  html: "Is the statement of capital correct?",
+                  text: "Is the statement of capital correct?",
                   isPageHeading: false,
                   classes: "govuk-fieldset__legend--l"
                 }
@@ -50,8 +55,7 @@
               items: [
                 {
                   value: "yes",
-                  text: "Yes",
-                  checked: true
+                  text: "Yes"
                 },
                 {
                   value: "no",

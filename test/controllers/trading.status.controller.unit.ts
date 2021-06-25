@@ -18,8 +18,11 @@ const COMPANY_NUMBER = "12345678";
 
 describe("Trading status controller tests", () => {
 
-  it("Should navigate to the trading status page", async () => {
+  beforeEach(() => {
     mocks.mockAuthenticationMiddleware.mockClear();
+  });
+
+  it("Should navigate to the trading status page", async () => {
     const url = TRADING_STATUS_PATH.replace(":companyNumber", COMPANY_NUMBER);
     const response = await request(app).get(url);
     expect(response.text).toContain(PAGE_HEADING);
@@ -27,7 +30,6 @@ describe("Trading status controller tests", () => {
   });
 
   it("Should navigate to the task list page when trading status is correct", async () => {
-    mocks.mockAuthenticationMiddleware.mockClear();
     const url = TRADING_STATUS_PATH.replace(":companyNumber", COMPANY_NUMBER);
     const response = await request(app)
       .post(url)
@@ -37,7 +39,6 @@ describe("Trading status controller tests", () => {
   });
 
   it("Should display stop page when trading status is not correct", async () => {
-    mocks.mockAuthenticationMiddleware.mockClear();
     const url = TRADING_STATUS_PATH.replace(":companyNumber", COMPANY_NUMBER);
     const response = await request(app)
       .post(url)
@@ -48,7 +49,6 @@ describe("Trading status controller tests", () => {
   });
 
   it("Should redisplay trading status page with error when trading status is not selected", async () => {
-    mocks.mockAuthenticationMiddleware.mockClear();
     const url = TRADING_STATUS_PATH.replace(":companyNumber", COMPANY_NUMBER);
     const response = await request(app).post(url);
     expect(response.status).toEqual(200);

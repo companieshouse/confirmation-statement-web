@@ -3,14 +3,14 @@ import request from "supertest";
 import app from "../../src/app";
 import { SIC_PATH } from "../../src/types/page.urls";
 import { companyAuthenticationMiddleware } from "../../src/middleware/company.authentication.middleware";
-import { getUrlWithCompanyNumber } from "../../src/utils/url";
+import { urlUtils } from "../../src/utils/url";
 
 jest.mock("../../src/middleware/company.authentication.middleware");
 jest.mock("../../src/utils/url");
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
-const mockGetUrlWithCompanyNumber = getUrlWithCompanyNumber as jest.Mock;
+const mockGetUrlWithCompanyNumber = urlUtils.getUrlWithCompanyNumber as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
 const EXPECTED_TEXT = "Check the SIC codes";

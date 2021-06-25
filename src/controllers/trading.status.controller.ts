@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { Templates } from "../types/template.paths";
 import { CONFIRM_COMPANY_PATH, TASK_LIST_PATH, TRADING_STATUS_PATH, urlParams } from "../types/page.urls";
 import { RADIO_BUTTON_VALUE, TRADING_STATUS_ERROR } from "../utils/constants";
-import { getUrlWithCompanyNumber } from "../utils/url";
+import { urlUtils } from "../utils/url";
 
 export const get = (req: Request, res: Response) => {
   const companyNumber: string = getCompanyNumber(req);
@@ -16,12 +16,12 @@ export const post = (req: Request, res: Response) => {
   const companyNumber = getCompanyNumber(req);
 
   if (tradingStatusButtonValue === RADIO_BUTTON_VALUE.YES) {
-    return res.redirect(getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber));
+    return res.redirect(urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber));
   }
 
   if (tradingStatusButtonValue === RADIO_BUTTON_VALUE.NO) {
     return res.render(Templates.TRADING_STOP, {
-      backLinkUrl: getUrlWithCompanyNumber(TRADING_STATUS_PATH, companyNumber)
+      backLinkUrl: urlUtils.getUrlWithCompanyNumber(TRADING_STATUS_PATH, companyNumber)
     });
   }
 

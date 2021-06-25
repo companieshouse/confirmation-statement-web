@@ -3,13 +3,13 @@ import request from "supertest";
 import app from "../../../src/app";
 import { ACTIVE_OFFICERS_PATH } from "../../../src/types/page.urls";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
-import { getUrlWithCompanyNumber } from "../../../src/utils/url";
+import { urlUtils } from "../../../src/utils/url";
 
 jest.mock("../../../src/middleware/company.authentication.middleware");
-jest.mock("../../../src/utils/url");
+// jest.mock("../../../src/utils/url");
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
-const mockGetUrlWithCompanyNumber = getUrlWithCompanyNumber as jest.Mock;
+// const mockGetUrlWithCompanyNumber = urlUtils.getUrlWithCompanyNumber as jest.Mock;
 
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 
@@ -30,9 +30,14 @@ describe("Active officers controller tests", () => {
   });
 
   it("Should return an error page if error is thrown when Company Profile is missing confirmation statement", async () => {
-    mockGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
+    const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlWithCompanyNumber");
+    spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
     const url = ACTIVE_OFFICERS_PATH.replace(":companyNumber", COMPANY_NUMBER);
     const response = await request(app).get(url);
+
     expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+
+    // restore original function so it is no longer mocked
+    spyGetUrlWithCompanyNumber.mockRestore();
   });
 });
