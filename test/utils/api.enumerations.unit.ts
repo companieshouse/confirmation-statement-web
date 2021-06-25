@@ -3,6 +3,8 @@ const READABLE_COMPANY_TYPE = "Private limited company";
 const KEY_RECEIVERSHIP = "receivership";
 const KEY_LTD = "ltd";
 const KEY = "key";
+const SIC_CODE_KEY = "00011";
+const SIC_CODE_DESCRIPTION = "Test sic-code description";
 
 jest.mock("js-yaml", () => {
   return {
@@ -14,12 +16,15 @@ jest.mock("js-yaml", () => {
         company_type: {
           [KEY_LTD]: READABLE_COMPANY_TYPE,
         },
+        sic_descriptions: {
+          [SIC_CODE_KEY]: SIC_CODE_DESCRIPTION
+        }
       };
     }),
   };
 });
 
-import { lookupCompanyStatus, lookupCompanyType } from "../../src/utils/api.enumerations";
+import { lookupCompanyStatus, lookupCompanyType, lookupSicCodeDescription } from "../../src/utils/api.enumerations";
 
 describe("api enumeration tests", () => {
 
@@ -41,5 +46,15 @@ describe("api enumeration tests", () => {
   it("should return original key when there is no match for the company status key", () => {
     const readableCompanyStatus: string = lookupCompanyStatus(KEY);
     expect(readableCompanyStatus).toEqual(KEY);
+  });
+
+  it("should return a readable company sic-code description when given a company sic-code", () => {
+    const readableCompanyStatus: string = lookupSicCodeDescription(SIC_CODE_KEY);
+    expect(readableCompanyStatus).toEqual(SIC_CODE_DESCRIPTION);
+  });
+
+  it("should return original sic-code when there is no match for the company sic-code", () => {
+    const readableCompanyStatus: string = lookupSicCodeDescription(SIC_CODE_DESCRIPTION);
+    expect(readableCompanyStatus).toEqual(SIC_CODE_DESCRIPTION);
   });
 });
