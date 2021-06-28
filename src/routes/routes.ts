@@ -36,6 +36,8 @@ router.post(urls.CONFIRM_COMPANY, confirmCompanyRoute.post);
 
 router.get(urls.SIC, sicRoute.get);
 
+router.post(urls.SIC, sicRoute.post);
+
 router.get(urls.TRADING_STATUS, tradingStatusRoute.get);
 router.post(urls.TRADING_STATUS, tradingStatusRoute.post);
 
