@@ -1,15 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import { getUrlWithCompanyNumber } from "../../utils/url";
-import { TASK_LIST_PATH, urlParams } from "../../types/page.urls";
+import { TASK_LIST_PATH, urlParams, SIC_PATH } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { lookupSicCodeDescription } from "../../utils/api.enumerations";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../../services/company.profile.service";
 import { SicCode } from "../../types/sic.code";
+import { RADIO_BUTTON_VALUE } from "../../utils/constants";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER];
+    const companyNumber = getCompanyNumber(req);
     const backLinkUrl = getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber);
     const companyProfile: CompanyProfile = await getCompanyProfile(companyNumber);
     const sicCodes: SicCode[] = getSicCodeDetails(companyProfile);
@@ -22,6 +23,17 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+export const post = (req: Request, res: Response) => {
+  const sicButtonValue = req.body.sic;
+  const companyNumber = getCompanyNumber(req);
+
+  if (sicButtonValue === RADIO_BUTTON_VALUE.NO) {
+    return res.render(Templates.WRONG_SIC, {
+      backLinkUrl: getUrlWithCompanyNumber(SIC_PATH, companyNumber)
+    });
+  }
+};
+
 function getSicCodeDetails (companyProfile: CompanyProfile): SicCode[] {
   const sicCodeList: SicCode[] = [];
 
@@ -31,3 +43,5 @@ function getSicCodeDetails (companyProfile: CompanyProfile): SicCode[] {
 
   return sicCodeList;
 }
+
+const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];

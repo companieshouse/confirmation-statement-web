@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  You cannot use this service - File a confirmation statement
+{% endblock %}
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLinkUrl
+  }) }}
+{% endblock %}
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form action="" method="post">
+        <h1 class="govuk-heading-xl">
+          You cannot use this service
+        </h1>
+        <p>Currently, changes to the company SIC codes can only be made by filing a confirmation statement through
+          <a target="_blank" href="https://ewf.companieshouse.gov.uk//seclogin?tc=1">our WebFiling service (opens in a new tab)</a>. You will need to sign in to or create a WebFiling account to do this.
+        </p>
+        <p>
+            <a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-wrongsiccode/">What did you think of this service?</a>
+            (takes 2 minutes)</p>
+      </form>
+    </div>
+  </div>
+{% endblock %}
