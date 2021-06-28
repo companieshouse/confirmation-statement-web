@@ -13,7 +13,7 @@ import {
 import { TRADING_STATUS_PATH } from "../types/page.urls";
 import { isInFuture, toReadableFormat } from "../utils/date";
 import { DateTime } from "luxon";
-import { getUrlWithCompanyNumber } from "../utils/url";
+import { urlUtils } from "../utils/url";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -63,7 +63,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     await createNewConfirmationStatement(session);
-    const nextPageUrl = getUrlWithCompanyNumber(TRADING_STATUS_PATH, companyNumber);
+    const nextPageUrl = urlUtils.getUrlWithCompanyNumber(TRADING_STATUS_PATH, companyNumber);
     return res.redirect(nextPageUrl);
   } catch (e) {
     return next(e);

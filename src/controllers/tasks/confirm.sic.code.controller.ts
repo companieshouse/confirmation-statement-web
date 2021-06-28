@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { getUrlWithCompanyNumber } from "../../utils/url";
+import { urlUtils } from "../../utils/url";
 import { TASK_LIST_PATH, urlParams, SIC_PATH } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { lookupSicCodeDescription } from "../../utils/api.enumerations";
@@ -11,7 +11,7 @@ import { RADIO_BUTTON_VALUE } from "../../utils/constants";
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const companyNumber = getCompanyNumber(req);
-    const backLinkUrl = getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber);
+    const backLinkUrl = urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber);
     const companyProfile: CompanyProfile = await getCompanyProfile(companyNumber);
     const sicCodes: SicCode[] = getSicCodeDetails(companyProfile);
     return res.render(Templates.SIC, {

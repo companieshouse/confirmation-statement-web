@@ -32,7 +32,6 @@ router.get(urls.ACCESSIBILITY_STATEMENT, renderTemplate(Templates.ACCESSIBILITY_
 router.get(urls.ACTIVE_OFFICERS, activeOfficers.get);
 
 router.get(urls.CONFIRM_COMPANY, confirmCompanyRoute.get);
-
 router.post(urls.CONFIRM_COMPANY, confirmCompanyRoute.post);
 
 router.get(urls.SIC, sicRoute.get);
@@ -40,11 +39,11 @@ router.get(urls.SIC, sicRoute.get);
 router.post(urls.SIC, sicRoute.post);
 
 router.get(urls.TRADING_STATUS, tradingStatusRoute.get);
-
 router.post(urls.TRADING_STATUS, tradingStatusRoute.post);
 
 router.get(urls.TASK_LIST, taskListRoute.get);
 
 router.get(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.get);
+router.post(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.post);
 
 router.get(urls.ACTIVE_PSCS, activePscsRoute.get);
