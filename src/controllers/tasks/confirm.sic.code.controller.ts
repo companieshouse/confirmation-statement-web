@@ -29,7 +29,7 @@ export const post = (req: Request, res: Response) => {
 
   if (sicButtonValue === RADIO_BUTTON_VALUE.NO) {
     return res.render(Templates.WRONG_SIC, {
-      backLinkUrl: getUrlWithCompanyNumber(SIC_PATH, companyNumber)
+      backLinkUrl: urlUtils.getUrlWithCompanyNumber(SIC_PATH, companyNumber)
     });
   }
 };
