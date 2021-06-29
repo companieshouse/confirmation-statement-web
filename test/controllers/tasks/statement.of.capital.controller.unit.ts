@@ -57,8 +57,8 @@ describe("Statement of Capital controller tests", () => {
 
     it("Should navigate to the statement of capital stop page when statement of capital is declared incorrect", async () => {
       const response = await request(app)
-          .post(STATEMENT_OF_CAPITAL_URL)
-          .send({ statementOfCapital: "no" });
+        .post(STATEMENT_OF_CAPITAL_URL)
+        .send({ statementOfCapital: "no" });
 
       expect(response.status).toEqual(200);
       expect(response.text).toContain(STOP_PAGE_HEADING);
