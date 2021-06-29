@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { RADIO_BUTTON_VALUE, STATEMENT_OF_CAPITAL_ERROR } from "../../utils/constants";
-import {STATEMENT_OF_CAPITAL_PATH, TASK_LIST_PATH, urlParams} from "../../types/page.urls";
+import { STATEMENT_OF_CAPITAL_PATH, TASK_LIST_PATH, urlParams } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
 
