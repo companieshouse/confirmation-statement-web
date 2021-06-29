@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { RADIO_BUTTON_VALUE, STATEMENT_OF_CAPITAL_ERROR } from "../../utils/constants";
-import { TASK_LIST_PATH, urlParams } from "../../types/page.urls";
+import { STATEMENT_OF_CAPITAL_PATH, TASK_LIST_PATH, urlParams } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
 
@@ -23,6 +23,11 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.YES) {
       return res.redirect(urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber));
+    } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO) {
+      return res.render(Templates.WRONG_STATEMENT_OF_CAPITAL, {
+        templateName: Templates.WRONG_STATEMENT_OF_CAPITAL,
+        backLinkUrl: urlUtils.getUrlWithCompanyNumber(STATEMENT_OF_CAPITAL_PATH, companyNumber)
+      });
     }
 
     return res.render(Templates.STATEMENT_OF_CAPITAL, {
