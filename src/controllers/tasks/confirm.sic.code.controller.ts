@@ -30,7 +30,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
   if (sicButtonValue === RADIO_BUTTON_VALUE.NO) {
     return res.render(Templates.WRONG_SIC, {
-      backLinkUrl: urlUtils.getUrlWithCompanyNumber(SIC_PATH, companyNumber)
+      backLinkUrl: urlUtils.getUrlWithCompanyNumber(SIC_PATH, companyNumber),
+      templateName: Templates.SIC
     });
   }
 
@@ -39,7 +40,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     return res.render(Templates.SIC, {
       backLinkUrl: urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber),
       sicCodes: getSicCodeDetails(companyProfile),
-      sicCodeErrorMsg: SIC_CODE_ERROR
+      sicCodeErrorMsg: SIC_CODE_ERROR,
+      templateName: Templates.SIC
     });
   } catch (e) {
     return next(e);
