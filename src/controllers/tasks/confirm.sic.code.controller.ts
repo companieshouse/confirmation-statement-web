@@ -14,7 +14,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const backLinkUrl = urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber);
     const companyProfile: CompanyProfile = await getCompanyProfile(companyNumber);
     const sicCodes: SicCode[] = getSicCodeDetails(companyProfile);
-    return res.render(Templates.SIC, { backLinkUrl, sicCodes });
+    return res.render(Templates.SIC, { backLinkUrl, sicCodes, templateName: Templates.SIC });
   } catch (e) {
     return next(e);
   }
@@ -31,7 +31,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   if (sicButtonValue === RADIO_BUTTON_VALUE.NO) {
     return res.render(Templates.WRONG_SIC, {
       backLinkUrl: urlUtils.getUrlWithCompanyNumber(SIC_PATH, companyNumber),
-      templateName: Templates.SIC
+      templateName: Templates.SIC,
+      sickCodeStatus: sicButtonValue
     });
   }
 
