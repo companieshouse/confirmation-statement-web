@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Review the registered office address
+{% endblock %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLinkUrl
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <form action="" method="post">
+      
+      <h1 class="govuk-heading-l">Check the registered office address</h1>
+      
+      {% include "includes/roa.html" %}
+
+      {{ govukRadios({
+        classes: "govuk-radios",
+        idPrefix: "registered-office-address",
+        name: "registeredOfficeAddress",
+        fieldset: {
+          legend: {
+            html: "Is the registered office address correct?",
+            isPageHeading: false,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        hint: {
+      html: roaHTML
+      },
+        items: [
+          {
+            value: "yes",
+            text: "Yes"
+          },
+          {
+            value: "no",
+            text: "No"
+          },
+          {
+            value: "yes",
+            text: "No, but I've recently filed an update"
+          }
+        ]
+      }) }}
+
+      {{ govukButton({
+        text: "Continue",
+        attributes: {
+          "data-event-id": "continue-button",
+          "id": "submit"
+        }
+      }) }}
+    </form>
+  </div>
+</div>
+{% endblock %}

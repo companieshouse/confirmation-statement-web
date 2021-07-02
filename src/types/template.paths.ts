@@ -8,7 +8,7 @@ export enum Templates {
     SIC = "tasks/sic",
     START = "start",
     STATEMENT_OF_CAPITAL = "tasks/statement-of-capital",
-    TRADING_STATUS  = "check-trading-status",
+    TRADING_STATUS = "check-trading-status",
     INVALID_COMPANY_STATUS = "invalid-company-status",
     TASK_LIST = "task-list",
     USE_PAPER = "paper-filing",
@@ -17,5 +17,6 @@ export enum Templates {
     NO_FILING_REQUIRED = "no-filing-required",
     ACTIVE_PSCS = "tasks/active-pscs",
     WRONG_SIC = "incorrect-information/wrong-sic",
-    WRONG_STATEMENT_OF_CAPITAL = "incorrect-information/wrong-statement-of-capital"
-  }
+    WRONG_STATEMENT_OF_CAPITAL = "incorrect-information/wrong-statement-of-capital",
+    REGISTERED_OFFICE_ADDRESS = "tasks/registered-office-address"
+}

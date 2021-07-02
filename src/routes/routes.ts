@@ -8,6 +8,7 @@ import * as statementOfCapitalRoute from "../controllers/tasks/statement.of.capi
 import * as tradingStatusRoute from "../controllers/trading.status.controller";
 import * as taskListRoute from "../controllers/task.list.controller";
 import * as activePscsRoute from "../controllers/tasks/active.pscs.controller";
+import * as registeredOfficeAddressRoute from "../controllers/tasks/registered.office.address.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 
@@ -35,7 +36,6 @@ router.get(urls.CONFIRM_COMPANY, confirmCompanyRoute.get);
 router.post(urls.CONFIRM_COMPANY, confirmCompanyRoute.post);
 
 router.get(urls.SIC, sicRoute.get);
-
 router.post(urls.SIC, sicRoute.post);
 
 router.get(urls.TRADING_STATUS, tradingStatusRoute.get);
@@ -47,3 +47,5 @@ router.get(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.get);
 router.post(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.post);
 
 router.get(urls.ACTIVE_PSCS, activePscsRoute.get);
+
+router.get(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.get);
