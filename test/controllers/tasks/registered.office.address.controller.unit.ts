@@ -57,7 +57,7 @@ describe("Registered Office Address controller tests", () => {
     expect(response.header.location).toEqual(TASK_LIST_URL);
   });
 
-  it("Should redisplay statement of capital page with error when radio button is not selected", async () => {
+  it("Should redisplay roa page with error when radio button is not selected", async () => {
     const response = await request(app).post(REGISTERED_OFFICE_ADDRESS_URL);
 
     expect(response.status).toEqual(200);
