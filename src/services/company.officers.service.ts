@@ -6,7 +6,8 @@ import { logger, createAndLogError } from "../utils/logger";
 export const getCompanyOfficers = async (companyNumber: string): Promise<CompanyOfficers> => {
   const apiClient = createApiClient(CHS_API_KEY);
 
-  logger.debug(`Looking for company officers with company number ${companyNumber}`);
+  logger.info(`Looking for company officers with company number ${companyNumber}`);
+
   const sdkResponse: Resource<CompanyOfficers> = await apiClient.companyOfficers.getCompanyOfficers(companyNumber);
 
   if (!sdkResponse) {
@@ -21,7 +22,7 @@ export const getCompanyOfficers = async (companyNumber: string): Promise<Company
     throw createAndLogError(`Company Officers API returned no resource for company number ${companyNumber}`);
   }
 
-  logger.debug(`Received company officers for company number ${companyNumber} : ${JSON.stringify(sdkResponse)}`);
+  logger.info(`Received company officers for company number ${companyNumber} : ${JSON.stringify(sdkResponse)}`);
 
   return sdkResponse.resource;
 };
