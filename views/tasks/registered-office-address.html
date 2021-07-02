@@ -15,6 +15,23 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     <form action="" method="post">
+
+      {% if roaErrorMsg %}
+            {{ govukErrorSummary({
+                titleText: "There is a problem",
+                errorList: [
+                  {
+                    text: roaErrorMsg,
+                    href: "#register-office-address"
+                  }
+                ]
+              }) }}
+            {% set roaErrorMsg = {
+                text: roaErrorMsg
+              } %}
+            {% else %}
+              {% set roaErrorMsg = false %}
+            {% endif %}
       
       <h1 class="govuk-heading-l">Check the registered office address</h1>
       
@@ -24,6 +41,7 @@
         classes: "govuk-radios",
         idPrefix: "registered-office-address",
         name: "registeredOfficeAddress",
+        errorMessage: roaErrorMsg,
         fieldset: {
           legend: {
             html: "Is the registered office address correct?",

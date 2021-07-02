@@ -49,3 +49,4 @@ router.post(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.post);
 router.get(urls.ACTIVE_PSCS, activePscsRoute.get);
 
 router.get(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.get);
+router.post(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.post);
