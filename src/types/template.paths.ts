@@ -18,5 +18,6 @@ export enum Templates {
     ACTIVE_PSCS = "tasks/active-pscs",
     WRONG_SIC = "incorrect-information/wrong-sic",
     WRONG_STATEMENT_OF_CAPITAL = "incorrect-information/wrong-statement-of-capital",
+    WRONG_RO = "incorrect-information/wrong-ro",
     REGISTERED_OFFICE_ADDRESS = "tasks/registered-office-address"
 }

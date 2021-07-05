@@ -17,6 +17,7 @@ const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 
 const PAGE_HEADING = "Review the registered office address";
 const COMPANY_NUMBER = "12345678";
+const STOP_PAGE_HEADING = "You need to update the company details";
 
 const REGISTERED_OFFICE_ADDRESS_URL = REGISTERED_OFFICE_ADDRESS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
@@ -55,6 +56,14 @@ describe("Registered Office Address controller tests", () => {
     const response = await request(app).post(REGISTERED_OFFICE_ADDRESS_URL).send({ registeredOfficeAddress: "yes" });
     expect(response.status).toEqual(302);
     expect(response.header.location).toEqual(TASK_LIST_URL);
+  });
+
+  it("Should display stop screen if roa details are incorrect", async () => {
+    const response = await request(app).post(REGISTERED_OFFICE_ADDRESS_URL).send({ registeredOfficeAddress: "no" });
+
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(STOP_PAGE_HEADING);
+    expect(response.text).not.toContain(REGISTERED_OFFICE_ADDRESS_ERROR);
   });
 
   it("Should redisplay roa page with error when radio button is not selected", async () => {
