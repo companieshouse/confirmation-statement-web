@@ -1,6 +1,6 @@
 jest.mock("../../src/utils/logger");
 
-import {createPrivateOAuthApiClient, createPublicOAuthApiClient} from "../../src/services/api.service";
+import { createPrivateOAuthApiClient, createPublicOAuthApiClient } from "../../src/services/api.service";
 import { getEmptySessionRequest, getSessionRequest } from "../mocks/session.mock";
 import { Session } from "@companieshouse/node-session-handler";
 import { createAndLogError } from "../../src/utils/logger";
