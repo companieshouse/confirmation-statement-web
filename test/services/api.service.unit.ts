@@ -8,7 +8,8 @@ import { createAndLogError } from "../../src/utils/logger";
 const mockCreateAndLogError = createAndLogError as jest.Mock;
 mockCreateAndLogError.mockReturnValue(new Error());
 
-const ERROR_MESSSAGE = "Error getting session keys for creating private api client";
+const PRIVATE_ERROR_MESSSAGE = "Error getting session keys for creating private api client";
+const PUBLIC_ERROR_MESSAGE = "Error getting session keys for creating public api client";
 
 describe ("Test node session handler authorization for private sdk", () => {
 
@@ -31,7 +32,7 @@ describe ("Test node session handler authorization for private sdk", () => {
       createPrivateOAuthApiClient({} as Session);
       fail();
     } catch (error) {
-      expect(mockCreateAndLogError).toBeCalledWith(ERROR_MESSSAGE);
+      expect(mockCreateAndLogError).toBeCalledWith(PRIVATE_ERROR_MESSSAGE);
     }
   });
 
@@ -42,7 +43,7 @@ describe ("Test node session handler authorization for private sdk", () => {
       createPrivateOAuthApiClient(session);
       fail();
     } catch (error) {
-      expect(mockCreateAndLogError).toBeCalledWith(ERROR_MESSSAGE);
+      expect(mockCreateAndLogError).toBeCalledWith(PRIVATE_ERROR_MESSSAGE);
     }
   });
 
@@ -51,7 +52,7 @@ describe ("Test node session handler authorization for private sdk", () => {
       createPrivateOAuthApiClient(getSessionRequest());
       fail();
     } catch (error) {
-      expect(mockCreateAndLogError).toBeCalledWith(ERROR_MESSSAGE);
+      expect(mockCreateAndLogError).toBeCalledWith(PRIVATE_ERROR_MESSSAGE);
     }
   });
 
@@ -60,7 +61,7 @@ describe ("Test node session handler authorization for private sdk", () => {
       createPublicOAuthApiClient({} as Session);
       fail();
     } catch (error) {
-      expect(mockCreateAndLogError).toBeCalledWith(ERROR_MESSSAGE);
+      expect(mockCreateAndLogError).toBeCalledWith(PUBLIC_ERROR_MESSAGE);
     }
   });
 
@@ -71,7 +72,7 @@ describe ("Test node session handler authorization for private sdk", () => {
       createPublicOAuthApiClient(session);
       fail();
     } catch (error) {
-      expect(mockCreateAndLogError).toBeCalledWith(ERROR_MESSSAGE);
+      expect(mockCreateAndLogError).toBeCalledWith(PUBLIC_ERROR_MESSAGE);
     }
   });
 
@@ -80,7 +81,7 @@ describe ("Test node session handler authorization for private sdk", () => {
       createPublicOAuthApiClient(getSessionRequest());
       fail();
     } catch (error) {
-      expect(mockCreateAndLogError).toBeCalledWith(ERROR_MESSSAGE);
+      expect(mockCreateAndLogError).toBeCalledWith(PUBLIC_ERROR_MESSAGE);
     }
   });
 });
