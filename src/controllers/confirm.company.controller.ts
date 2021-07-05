@@ -10,7 +10,7 @@ import { checkEligibility } from "../services/eligibility.service";
 import {
   EligibilityStatusCode
 } from "private-api-sdk-node/dist/services/confirmation-statement";
-import { TRADING_STATUS_PATH } from "../types/page.urls";
+import { CREATE_TRANSACTION_PATH } from "../types/page.urls";
 import { isInFuture, toReadableFormat } from "../utils/date";
 import { DateTime } from "luxon";
 import { urlUtils } from "../utils/url";
@@ -63,7 +63,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     await createNewConfirmationStatement(session);
-    const nextPageUrl = urlUtils.getUrlWithCompanyNumber(TRADING_STATUS_PATH, companyNumber);
+    const nextPageUrl = urlUtils.getUrlWithCompanyNumber(CREATE_TRANSACTION_PATH, companyNumber);
     return res.redirect(nextPageUrl);
   } catch (e) {
     return next(e);
