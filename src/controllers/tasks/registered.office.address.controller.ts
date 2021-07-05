@@ -8,7 +8,7 @@ import { RADIO_BUTTON_VALUE, REGISTERED_OFFICE_ADDRESS_ERROR } from "../../utils
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER];
+    const companyNumber = getCompanyNumber(req);
     const companyProfile: CompanyProfile = await getCompanyProfile(companyNumber);
     const backLinkUrl = urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber);
     return res.render(Templates.REGISTERED_OFFICE_ADDRESS, {
