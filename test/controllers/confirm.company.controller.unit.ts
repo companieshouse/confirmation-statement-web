@@ -73,7 +73,7 @@ describe("Confirm company controller tests", () => {
     expect(response.text).toContain("Sorry, the service is unavailable");
   });
 
-  it("Should call private sdk client and redirect to trading status using company number in query", async () => {
+  it("Should call private sdk client and redirect to transaction using company number in query", async () => {
     const companyNumber = "11111111";
     mockIsActiveFeature.mockReturnValueOnce(true);
     mockCreateConfirmationStatement.mockResolvedValueOnce(201);
@@ -81,7 +81,7 @@ describe("Confirm company controller tests", () => {
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH + "?companyNumber=" + companyNumber);
     expect(response.status).toEqual(302);
-    expect(response.header.location).toEqual("/confirmation-statement/company/" + companyNumber + "/trading-status");
+    expect(response.header.location).toEqual("/confirmation-statement/company/" + companyNumber + "/transaction");
     expect(mockCreateConfirmationStatement).toHaveBeenCalled();
   });
 

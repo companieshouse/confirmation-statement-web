@@ -6,11 +6,21 @@ import { AccessTokenKeys } from "@companieshouse/node-session-handler/lib/sessio
 import { createPrivateApiClient } from "private-api-sdk-node";
 import { INTERNAL_API_URL } from "../utils/properties";
 import { createAndLogError } from "../utils/logger";
+import { createApiClient } from "@companieshouse/api-sdk-node";
+import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 
-export const createOAuthApiClient = (session: Session): PrivateApiClient => {
+export const createPrivateOAuthApiClient = (session: Session): PrivateApiClient => {
   const oAuth = session.data?.[SessionKey.SignInInfo]?.[SignInInfoKeys.AccessToken]?.[AccessTokenKeys.AccessToken];
   if (oAuth) {
     return createPrivateApiClient(undefined, oAuth, INTERNAL_API_URL);
   }
-  throw createAndLogError("Error getting session keys for creating api client");
+  throw createAndLogError("Error getting session keys for creating private api client");
+};
+
+export const createPublicOAuthApiClient = (session: Session): ApiClient => {
+  const oAuth = session.data?.[SessionKey.SignInInfo]?.[SignInInfoKeys.AccessToken]?.[AccessTokenKeys.AccessToken];
+  if (oAuth) {
+    return createApiClient(undefined, oAuth, INTERNAL_API_URL);
+  }
+  throw createAndLogError("Error getting session keys for creating public api client");
 };

@@ -1,5 +1,3 @@
-import { TRADING_STATUS_ERROR } from "../../src/utils/constants";
-
 jest.mock("../../src/middleware/company.authentication.middleware");
 
 import request from "supertest";
@@ -7,6 +5,7 @@ import mocks from "../mocks/all.middleware.mock";
 import { companyAuthenticationMiddleware } from "../../src/middleware/company.authentication.middleware";
 import app from "../../src/app";
 import { TRADING_STATUS_PATH } from "../../src/types/page.urls";
+import { TRADING_STATUS_ERROR } from "../../src/utils/constants";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
