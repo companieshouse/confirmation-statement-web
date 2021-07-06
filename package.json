@@ -35,7 +35,7 @@
     "js-yaml": "^4.1.0",
     "luxon": "^1.27.0",
     "nunjucks": "^3.2.3",
-    "private-api-sdk-node": "git+ssh://git@github.com/companieshouse/private-api-sdk-node.git#0.1.21",
+    "private-api-sdk-node": "git+ssh://git@github.com/companieshouse/private-api-sdk-node.git#0.1.22",
     "yargs": "^15.3.1"
   },
   "devDependencies": {
