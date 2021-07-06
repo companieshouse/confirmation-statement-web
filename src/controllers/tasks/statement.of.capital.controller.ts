@@ -11,7 +11,7 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
   try {
     const companyNumber = getCompanyNumber(req);
     const session: Session = req.session as Session;
-    const transactionId: string = "018063-830516-255834";
+    const transactionId: string = "";
     const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, transactionId, companyNumber);
     return res.render(Templates.STATEMENT_OF_CAPITAL, {
       templateName: Templates.STATEMENT_OF_CAPITAL,
