@@ -5,13 +5,7 @@
 {% endblock %}
 
 {% block backLink %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLinkUrl,
-    attributes: {
-      "data-event-id": "back-link"
-    }
-  }) }}
+  {% include "includes/back-link.html" %}
 {% endblock %}
 
 {% block content %}

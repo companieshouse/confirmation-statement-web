@@ -8,10 +8,7 @@
 {% endblock %}
 
 {% block backLink %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLinkUrl
-   }) }}
+  {% include "includes/back-link.html" %}
 {% endblock %}
 
 {% block content %}
