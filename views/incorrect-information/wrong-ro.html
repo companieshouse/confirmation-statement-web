@@ -3,13 +3,7 @@
   Incorrect registered office address - File a confirmation statement
 {% endblock %}
 {% block backLink %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLinkUrl,
-    attributes: {
-      "data-event-id": "back-link"
-    }
-  }) }}
+  {% include "includes/back-link.html" %}
 {% endblock %}
 {% block content %}
   <div class="govuk-grid-row">
