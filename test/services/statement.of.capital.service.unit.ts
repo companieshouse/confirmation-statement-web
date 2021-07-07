@@ -1,5 +1,3 @@
-import { ApiError, ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
-
 jest.mock("private-api-sdk-node/dist/services/confirmation-statement");
 jest.mock("private-api-sdk-node/");
 
@@ -13,6 +11,7 @@ import { Resource } from "@companieshouse/api-sdk-node";
 import { getStatementOfCapitalData } from "../../src/services/statement.of.capital.service";
 import { getSessionRequest } from "../mocks/session.mock";
 import { mockStatementOfCapital } from "../mocks/statement.of.capital.mock";
+import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 
 const mockGetStatementOfCapital = ConfirmationStatementService.prototype.getStatementOfCapital as jest.Mock;
 const mockCreatePrivateApiClient = createPrivateApiClient as jest.Mock;
@@ -49,8 +48,7 @@ describe("Test statement of capital service", () => {
     };
     mockGetStatementOfCapital.mockResolvedValueOnce(errorResponse);
     const session =  getSessionRequest({ access_token: "token" });
-    const apiErrors = errorResponse.errors as ApiError[];
-    const expectedMessage = "Error retrieving statement of capital " + apiErrors[0].error;
+    const expectedMessage = "Error retrieving statement of capital " + JSON.stringify(errorResponse);
     let actualMessage;
     try {
       await getStatementOfCapitalData(session, companyNumber);
