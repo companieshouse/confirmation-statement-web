@@ -16,6 +16,7 @@ export enum Templates {
     TRADING_STOP = "trading-stop",
     NO_FILING_REQUIRED = "no-filing-required",
     ACTIVE_PSCS = "tasks/active-pscs",
+    WRONG_OFFICERS = "incorrect-information/wrong-officers",
     WRONG_SIC = "incorrect-information/wrong-sic",
     WRONG_STATEMENT_OF_CAPITAL = "incorrect-information/wrong-statement-of-capital",
     WRONG_RO = "incorrect-information/wrong-ro",
