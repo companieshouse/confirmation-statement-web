@@ -1,3 +1,5 @@
+import { ApiError, ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
+
 jest.mock("private-api-sdk-node/dist/services/confirmation-statement");
 jest.mock("private-api-sdk-node/");
 
@@ -22,7 +24,6 @@ mockCreatePrivateApiClient.mockReturnValue({
 describe("Test statement of capital service", () => {
 
   const companyNumber = "11111111";
-  const transactionId = "abc";
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -35,8 +36,28 @@ describe("Test statement of capital service", () => {
     };
     mockGetStatementOfCapital.mockResolvedValueOnce(resource);
     const session =  getSessionRequest({ access_token: "token" });
-    const response = await getStatementOfCapitalData(session, transactionId, companyNumber);
-    expect(mockGetStatementOfCapital).toBeCalledWith(transactionId, companyNumber);
+    const response = await getStatementOfCapitalData(session, companyNumber);
+    expect(mockGetStatementOfCapital).toBeCalledWith(companyNumber);
     expect(response).toEqual(mockStatementOfCapital);
+  });
+
+  it("should throw error when http error code is returned", async () => {
+    const errorMessage = "Oh no this has failed";
+    const errorResponse: ApiErrorResponse = {
+      httpStatusCode: 404,
+      errors: [{ error: errorMessage }]
+    };
+    mockGetStatementOfCapital.mockResolvedValueOnce(errorResponse);
+    const session =  getSessionRequest({ access_token: "token" });
+    const apiErrors = errorResponse.errors as ApiError[];
+    const expectedMessage = "Error retrieving statement of capital " + apiErrors[0].error;
+    let actualMessage;
+    try {
+      await getStatementOfCapitalData(session, companyNumber);
+    } catch (e) {
+      actualMessage = e.message;
+    }
+    expect(actualMessage).toBeTruthy();
+    expect(actualMessage).toEqual(expectedMessage);
   });
 });
