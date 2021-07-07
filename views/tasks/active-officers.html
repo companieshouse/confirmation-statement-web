@@ -7,10 +7,7 @@
 {% endblock %}
 
 {% block backLink %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLinkUrl
-  }) }}
+  {% include "includes/back-link.html" %}
 {% endblock %}
 
 {% block content %}
@@ -81,9 +78,9 @@
             }
           ]
         }) }}
-        {{ govukButton({
-          text: "Continue"
-        }) }}
+        
+        {% include "includes/continue-button.html" %}
+        
       </form>
     </div>
   </div>

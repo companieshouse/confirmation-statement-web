@@ -8,10 +8,7 @@
 {% endblock %}
 
 {% block backLink %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLinkUrl
-   }) }}
+  {% include "includes/back-link.html" %}
 {% endblock %}
 
 {% block content %}
@@ -72,14 +69,8 @@
           ]
         }) }}
 
-        {{ govukButton({
-          text: "Continue",
-            attributes: {
-              "data-event-id": "continue-button",
-              "id": "submit"
-            }
-          })
-        }}
+        {% include "includes/continue-button.html" %}
+        
       </form>
     </div>
 </div>

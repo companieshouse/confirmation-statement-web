@@ -1,10 +1,10 @@
 import { Session } from "@companieshouse/node-session-handler";
 import { ConfirmationStatementService } from "private-api-sdk-node/dist/services/confirmation-statement";
-import { createOAuthApiClient } from "./api.service";
+import { createPrivateOAuthApiClient } from "./api.service";
 
 export const createConfirmationStatement = async (session: Session,
                                                   transactionId: string): Promise<any> => {
-  const client = createOAuthApiClient(session);
+  const client = createPrivateOAuthApiClient(session);
   const csService: ConfirmationStatementService = client.confirmationStatementService;
   return await csService.postNewConfirmationStatement(transactionId);
 };

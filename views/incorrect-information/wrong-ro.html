@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block pageTitle %}
+  Incorrect registered office address - File a confirmation statement
+{% endblock %}
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form action="" method="post">
+        <h1 class="govuk-heading-xl">
+          You need to update the company details
+        </h1>
+        <p>You will need to
+          <a href= "{{changeRoaUrl}}" target="_blank" rel="noopener noreferrer" data-event-id="update-roa-link">update the registered office address (opens in a new tab)</a>
+          before you can file a confirmation statement.</p>
+        {{ govukInsetText({
+            text: "An update to the registered office address can take some time to process, so it may not be reflected immediately in the information displayed on this service. As long as the update has been submitted, you can still file the confirmation statement."
+        }) }}
+        <p>You can return to this confirmation statement by selecting <a href="/user/transactions" data-event-id="your-filings-link">Your Filings</a> in your Companies House account.</p>
+        {{ govukButton({
+          text: "Return to confirmation statement",
+          href: taskListUrl,
+          attributes: {
+            "data-event-id": "return-to-confirmation-statement-button"
+          }
+        }) }}
+        <p><a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-wrongro/">What did you think of this service?</a>
+        (takes 2 minutes)</p>
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -47,24 +47,8 @@ describe("Company profile service test", () => {
       });
     });
 
-    it("Should throw an error if status code == 400", async () => {
+    it("Should throw an error if status code >= 400", async () => {
       const HTTP_STATUS_CODE = 400;
-      mockGetCompanyProfile.mockResolvedValueOnce({
-        httpStatusCode: HTTP_STATUS_CODE
-      } as Resource<CompanyProfile>);
-
-      await getCompanyProfile(COMPANY_NUMBER)
-        .then(() => {
-          fail("Was expecting an error to be thrown.");
-        })
-        .catch(() => {
-          expect(createAndLogError).toHaveBeenCalledWith(expect.stringContaining(`${HTTP_STATUS_CODE}`));
-          expect(createAndLogError).toHaveBeenCalledWith(expect.stringContaining(`${COMPANY_NUMBER}`));
-        });
-    });
-
-    it("Should throw an error if status code > 400", async () => {
-      const HTTP_STATUS_CODE = 502;
       mockGetCompanyProfile.mockResolvedValueOnce({
         httpStatusCode: HTTP_STATUS_CODE
       } as Resource<CompanyProfile>);
@@ -113,11 +97,11 @@ describe("Company profile service test", () => {
       const formattedCompanyProfile: CompanyProfile = formatForDisplay(clone(validCompanyProfile));
 
       expect(mockToReadableFormat.mock.calls[0][0]).toEqual(validCompanyProfile.dateOfCreation);
-      expect(mockToReadableFormat.mock.calls[1][0]).toEqual(validCompanyProfile.confirmationStatement.nextDue);
-      expect(mockToReadableFormat.mock.calls[2][0]).toEqual(validCompanyProfile.confirmationStatement.nextMadeUpTo);
+      expect(mockToReadableFormat.mock.calls[1][0]).toEqual(validCompanyProfile.confirmationStatement?.nextDue);
+      expect(mockToReadableFormat.mock.calls[2][0]).toEqual(validCompanyProfile.confirmationStatement?.nextMadeUpTo);
       expect(formattedCompanyProfile.dateOfCreation).toEqual(formattedDate);
-      expect(formattedCompanyProfile.confirmationStatement.nextDue).toEqual(formattedDate);
-      expect(formattedCompanyProfile.confirmationStatement.nextMadeUpTo).toEqual(formattedDate);
+      expect(formattedCompanyProfile.confirmationStatement?.nextDue).toEqual(formattedDate);
+      expect(formattedCompanyProfile.confirmationStatement?.nextMadeUpTo).toEqual(formattedDate);
     });
 
     it("Should convert company type into readable format", () => {
@@ -151,11 +135,13 @@ describe("Company profile service test", () => {
     it("Should return empty strings for undefined dates", () => {
       mockToReadableFormat.mockReturnValue("30 April 2019");
       const clonedCompanyProfile: CompanyProfile = clone(validCompanyProfile);
-      clonedCompanyProfile.confirmationStatement.nextMadeUpTo = undefined;
+      if (clonedCompanyProfile.confirmationStatement) {
+        clonedCompanyProfile.confirmationStatement.nextMadeUpTo = undefined as unknown as string;
+      }
 
       const formattedCompanyProfile: CompanyProfile = formatForDisplay(clone(clonedCompanyProfile));
 
-      expect(formattedCompanyProfile.confirmationStatement.nextMadeUpTo).toEqual("");
+      expect(formattedCompanyProfile.confirmationStatement?.nextMadeUpTo).toEqual("");
     });
   });
 
