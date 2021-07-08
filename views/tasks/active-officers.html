@@ -1,5 +1,10 @@
 {% extends "layout.html" %}
 
+{% block head %}
+    {{ super() }}
+    {% include "includes/officers-styles.html" %}
+{% endblock %}
+
 {% block pageTitle %}
 {% if errorList.length > 0 %}
   Error:
@@ -25,18 +30,10 @@
           ]
           }) }}
         {% endif %}
-        <h1 class="govuk-heading-l">Check the active director</h1>
+        <h1 class="govuk-heading-l">Check the director's details</h1>
         <h2 class="govuk-heading-m">1 Director</h2>
         {% set directorHTML %}
-          Irving, Kyrie
-        {% endset %}
-        {% set director2HTML %}
-        <ul class="govuk-list govuk-list--bullet">
-          <li>Fran Francis</li>
-          <li>Appointed: 17 March 2012</li>
-          <li>Date of birth: May 1990</li>
-          <li>Correspondence address:<br>2 Nets Way<br>Newcastle<br>NE2 3BB</li>
-        </ul>
+          {% include "includes/officers.html" %}
         {% endset %}
         {{ govukTable({
           rows: [
