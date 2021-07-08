@@ -8,7 +8,7 @@ export const getStatementOfCapitalData = async (session: Session, companyNumber:
   const csService: ConfirmationStatementService = client.confirmationStatementService;
   const response: Resource<StatementOfCapital> | ApiErrorResponse = await csService.getStatementOfCapital(companyNumber);
   const status = response.httpStatusCode as number;
-  if (status >= 404) {
+  if (status >= 400) {
     const errorResponse = response as ApiErrorResponse;
     throw new Error("Error retrieving statement of capital " + JSON.stringify(errorResponse));
   }
