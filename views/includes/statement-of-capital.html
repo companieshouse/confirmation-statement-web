@@ -37,7 +37,7 @@
     ]
   ]
 }) }}
-<p>Each share has full rights in the company with respect to voting, dividends and distributions.</p>
+<p>{{statementOfCapital.prescribedParticulars}}</p>
 
 {{ govukTable({
   caption: "Statement of capital (totals)",
@@ -48,7 +48,7 @@
         text: "Currency"
       },
       {
-        text: statementOfCapital.totalCurrency
+        text: statementOfCapital.currency
       }
     ],
     [
