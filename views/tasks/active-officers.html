@@ -60,18 +60,26 @@
             {
               value: "yes",
               text: "Yes",
-              checked: true,
-              label: "active-officer Yes"
+              label: "active-officer Yes",
+              attributes: {
+                "data-event-id": "yes-radio-button"
+              }
             },
             {
               value: "no",
               text: "No",
-              label: "active-officer No"
+              label: "active-officer No",
+              attributes: {
+                "data-event-id": "no-radio-button"
+              }
             },
             {
               value: "yes",
               text: "No, but I've recently filed an update",
-              label: "active-officer No, but I've recently filed an update"
+              label: "active-officer No, but I've recently filed an update",
+              attributes: {
+                "data-event-id": "recently-filed-radio-button"
+              }
             }
           ]
         }) }}
