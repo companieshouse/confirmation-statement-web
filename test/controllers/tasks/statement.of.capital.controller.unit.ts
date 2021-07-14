@@ -1,4 +1,5 @@
 jest.mock("../../../src/middleware/company.authentication.middleware");
+jest.mock("../../../src/services/statement.of.capital.service");
 
 import request from "supertest";
 import mocks from "../../mocks/all.middleware.mock";
@@ -7,9 +8,13 @@ import { STATEMENT_OF_CAPITAL_PATH, TASK_LIST_PATH, urlParams } from "../../../s
 import { urlUtils } from "../../../src/utils/url";
 import app from "../../../src/app";
 import { STATEMENT_OF_CAPITAL_ERROR } from "../../../src/utils/constants";
+import { mockStatementOfCapital } from "../../mocks/statement.of.capital.mock";
+import { getStatementOfCapitalData } from "../../../src/services/statement.of.capital.service";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
+
+const mockGetStatementOfCapitalData = getStatementOfCapitalData as jest.Mock;
 
 const PAGE_HEADING = "Review the statement of capital";
 const STOP_PAGE_HEADING = "You cannot use this service - File a confirmation statement";
@@ -23,10 +28,12 @@ describe("Statement of Capital controller tests", () => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
+    mockGetStatementOfCapitalData.mockClear();
   });
 
   describe("get tests", () => {
     it("should navigate to the statement of capital page", async () => {
+      mockGetStatementOfCapitalData.mockReturnValueOnce(mockStatementOfCapital);
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
@@ -42,6 +49,12 @@ describe("Statement of Capital controller tests", () => {
 
       // restore original function so it is no longer mocked
       spyGetUrlWithCompanyNumber.mockRestore();
+    });
+
+    it("Should return an error page if error is thrown when service is called", async () => {
+      mockGetStatementOfCapitalData.mockImplementationOnce(() => { throw new Error(); });
+      const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
+      expect(response.text).toContain("Sorry, the service is unavailable");
     });
   });
 

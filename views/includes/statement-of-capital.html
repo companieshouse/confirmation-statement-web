@@ -8,7 +8,7 @@
         text: "Class of shares"
       },
       {
-        text: "Ordinary"
+        text: statementOfCapital.classOfShares
       }
     ],
     [
@@ -16,7 +16,7 @@
         text: "Currency"
       },
       {
-        text: "GBP"
+        text: statementOfCapital.currency
       }
     ],
     [
@@ -24,7 +24,7 @@
         text: "Number allotted"
       },
       {
-        text: "100"
+        text: statementOfCapital.numberAllotted
       }
     ],
     [
@@ -32,12 +32,12 @@
         text: "Aggregate nominal value"
       },
       {
-        text: "1000"
+        text: statementOfCapital.aggregateNominalValue
       }
     ]
   ]
 }) }}
-<p>Each share has full rights in the company with respect to voting, dividends and distributions.</p>
+<p>{{statementOfCapital.prescribedParticulars}}</p>
 
 {{ govukTable({
   caption: "Statement of capital (totals)",
@@ -48,7 +48,7 @@
         text: "Currency"
       },
       {
-        text: "GBP"
+        text: statementOfCapital.currency
       }
     ],
     [
@@ -56,7 +56,7 @@
         text: "Total number of shares"
       },
       {
-        text: "100"
+        text: statementOfCapital.totalNumberOfShares
       }
     ],
     [
@@ -64,7 +64,7 @@
         text: "Total aggregate nominal value"
       },
       {
-        text: "1000"
+        text: statementOfCapital.totalAggregateNominalValue
       }
     ]
   ]
