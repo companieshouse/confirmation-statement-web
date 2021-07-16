@@ -26,10 +26,33 @@ describe ("Confirmation statement api service unit tests", () => {
   });
 
   it ("should call create confirmation statement in the private sdk", async () => {
-    mockPostNewConfirmationStatement.mockResolvedValueOnce(201);
+    mockPostNewConfirmationStatement.mockResolvedValueOnce({
+      httpStatusCode: 201
+    });
     const response = await createConfirmationStatement(
       getSessionRequest({ access_token: "token" }), transactionId);
-    expect(response).toEqual(201);
+    expect(response.httpStatusCode).toEqual(201);
+    expect(mockPostNewConfirmationStatement).toBeCalledWith(transactionId);
+  });
+
+  it ("should call create confirmation statement in the private sdk (failed eligibility)", async () => {
+    mockPostNewConfirmationStatement.mockResolvedValueOnce({
+      httpStatusCode: 400
+    });
+    const response = await createConfirmationStatement(
+      getSessionRequest({ access_token: "token" }), transactionId);
+    expect(response.httpStatusCode).toEqual(400);
+    expect(mockPostNewConfirmationStatement).toBeCalledWith(transactionId);
+  });
+
+  it ("should throw error when failed post call", async () => {
+    mockPostNewConfirmationStatement.mockResolvedValueOnce({
+      httpStatusCode: 500
+    });
+    createConfirmationStatement(
+      getSessionRequest({ access_token: "token" }), transactionId).then(fail("Expecting error to be thrown")).catch(e=>{
+        expect(e.message).toEqual("Something went wrong creating confirmation statement ")
+    });
     expect(mockPostNewConfirmationStatement).toBeCalledWith(transactionId);
   });
 });

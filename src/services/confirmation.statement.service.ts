@@ -12,7 +12,7 @@ export const createConfirmationStatement = async (session: Session,
   const client = createPrivateOAuthApiClient(session);
   const csService: ConfirmationStatementService = client.confirmationStatementService;
   const response = await csService.postNewConfirmationStatement(transactionId);
-  if (response.httpStatusCode !== (201 || 400)) {
+  if (response.httpStatusCode !== 201 && response.httpStatusCode !== 400) {
     const castedResponse: ApiErrorResponse = response;
     throw new Error("Something went wrong creating confirmation statement " + JSON.stringify(castedResponse));
   } else {
