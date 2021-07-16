@@ -45,14 +45,15 @@ describe ("Confirmation statement api service unit tests", () => {
     expect(mockPostNewConfirmationStatement).toBeCalledWith(transactionId);
   });
 
-  it ("should throw error when failed post call", async () => {
+  it ("should throw error when failed post call", () => {
     mockPostNewConfirmationStatement.mockResolvedValueOnce({
       httpStatusCode: 500
     });
     createConfirmationStatement(
-      getSessionRequest({ access_token: "token" }), transactionId).then(fail("Expecting error to be thrown")).catch(e=>{
-        expect(e.message).toEqual("Something went wrong creating confirmation statement ")
-    });
+      getSessionRequest({ access_token: "token" }), transactionId)
+      .then(() => {fail("Expecting error to be thrown");}).catch(e => {
+        expect(e.message).toEqual("Something went wrong creating confirmation statement ");
+      });
     expect(mockPostNewConfirmationStatement).toBeCalledWith(transactionId);
   });
 });
