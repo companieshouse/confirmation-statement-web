@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { toReadableFormat } from "../utils/date";
-import { ACTIVE_PSCS_PATH, SIC_PATH, STATEMENT_OF_CAPITAL_PATH, ACTIVE_OFFICERS_PATH, REGISTERED_OFFICE_ADDRESS_PATH } from "./page.urls";
+import { ACTIVE_PSCS_PATH, SIC_PATH, STATEMENT_OF_CAPITAL_PATH, ACTIVE_OFFICERS_PATH, REGISTERED_OFFICE_ADDRESS_PATH, SHAREHOLDERS_PATH } from "./page.urls";
 import { urlUtils } from "../utils/url";
 
 export enum TaskState {
@@ -40,6 +40,7 @@ export interface TaskList {
     shareholders: {
       state: TaskState;
       isVisible: boolean;
+      url: string;
     };
     registeredOfficeAddress: {
       state: TaskState;
@@ -64,7 +65,7 @@ export const initTaskList = (companyNumber: string): TaskList => {
       peopleSignificantControl: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils.getUrlWithCompanyNumber(ACTIVE_PSCS_PATH, companyNumber) },
       registerLocations: { isVisible: false, state: TaskState.NOT_CHECKED },
       registeredOfficeAddress: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils.getUrlWithCompanyNumber(REGISTERED_OFFICE_ADDRESS_PATH, companyNumber) },
-      shareholders: { isVisible: false, state: TaskState.NOT_CHECKED },
+      shareholders: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils.getUrlWithCompanyNumber(SHAREHOLDERS_PATH, companyNumber) },
       sicCodes: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils.getUrlWithCompanyNumber(SIC_PATH, companyNumber) },
       statementOfCapital: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils.getUrlWithCompanyNumber(STATEMENT_OF_CAPITAL_PATH, companyNumber) }
     },
