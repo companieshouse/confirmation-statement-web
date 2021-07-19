@@ -19,7 +19,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       const nextPageUrl = urlUtils.getUrlWithCompanyNumber(TRADING_STATUS_PATH, companyNumber);
       return res.redirect(nextPageUrl);
     }
-    return next(new Error("Company is ineligible " + JSON.stringify(submissionResponse)));
+    next(new Error(`Unable to create Confirmation Statement, httpStatusCode = ${submissionResponse.httpStatusCode}, resource = ${JSON.stringify(submissionResponse.resource)}`));
   } catch (e) {
     return next(e);
   }
