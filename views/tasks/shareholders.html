@@ -20,6 +20,23 @@
 
       <form action="" method="post">
 
+        {% if shareholdersErrorMsg %}
+            {{ govukErrorSummary({
+                titleText: "There is a problem",
+                errorList: [
+                  {
+                    text: shareholdersErrorMsg,
+                    href: "#shareholders"
+                  }
+                ]
+              }) }}
+            {% set shareholdersErrorMsg = {
+                text: shareholdersErrorMsg
+              } %}
+          {% else %}
+            {% set shareholdersErrorMsg = false %}
+          {% endif %}
+
         <h1 class="govuk-heading-xl">Check the shareholder details</h1>
 
         <h2 class="govuk-heading-m">1 Shareholder</h2>
@@ -30,6 +47,7 @@
           classes: "govuk-radios--inline",
           idPrefix: "shareholders",
           name: "shareholders",
+          errorMessage: shareholdersErrorMsg,
           fieldset: {
             legend: {
               html: "Are the shareholder details correct?",
@@ -45,11 +63,7 @@
             {
               value: "no",
               text: "No"
-            },
-            {
-              value: "yes",
-              text: "No, but I've recently filed an update"
-          }
+            }
           ]
           }) }}
 
