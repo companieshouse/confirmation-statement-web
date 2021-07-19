@@ -57,3 +57,4 @@ router.get(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.get);
 router.post(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.post);
 
 router.get(urls.SHAREHOLDERS, shareholders.get);
+router.post(urls.SHAREHOLDERS, shareholders.post);
