@@ -9,11 +9,11 @@
             </a>
         </span>
         {% if taskList.tasks.sicCodes.state === "CHECKED" %}
-            {{ showChecked | safe }}
+            {{ showChecked | safe | replace("statusIdPlaceholder", "sicStatus")}}
         {% elseif taskList.tasks.sicCodes.state === "IN_PROGRESS" %}
-            {{ showInProgress | safe }}
+            {{ showInProgress | safe | replace("statusIdPlaceholder", "sicStatus")}}
         {% else %}
-            {{ showNotChecked | safe }}
+            {{ showNotChecked | safe | replace("statusIdPlaceholder", "sicStatus")}}
         {% endif %}
     </li>
     <li class="app-task-list__item">
@@ -23,11 +23,11 @@
             </a>
         </span>
         {% if taskList.tasks.statementOfCapitalState.state === "CHECKED" %}
-            {{ showChecked | safe }}
+            {{ showChecked | safe | replace("statusIdPlaceholder", "socStatus")}}
         {% elseif taskList.tasks.statementOfCapitalState.state === "IN_PROGRESS" %}
-            {{ showInProgress | safe }}
+            {{ showInProgress | safe | replace("statusIdPlaceholder", "socStatus")}}
         {% else %}
-            {{ showNotChecked | safe }}
+            {{ showNotChecked | safe | replace("statusIdPlaceholder", "socStatus")}}
         {% endif %}
     </li>
 </ul>
