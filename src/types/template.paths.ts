@@ -5,6 +5,7 @@ export enum Templates {
     ERROR_404 = "page-not-found",
     SERVICE_OFFLINE = "service-offline",
     SERVICE_OFFLINE_MID_JOURNEY = "service-offline-mid-journey",
+    SHAREHOLDERS = "tasks/shareholders",
     SIC = "tasks/sic",
     START = "start",
     STATEMENT_OF_CAPITAL = "tasks/statement-of-capital",
