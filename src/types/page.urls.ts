@@ -18,6 +18,8 @@ export const CONFIRMATION_STATEMENT = "/confirmation-statement";
 export const COMPANY_NUMBER = "/company-number";
 export const COMPANY_LOOKUP = "/company-lookup/search?forward=/confirmation-statement/confirm-company?companyNumber={companyNumber}";
 export const CONFIRM_COMPANY_PATH = CONFIRMATION_STATEMENT + CONFIRM_COMPANY;
+export const SHAREHOLDERS = COMPANY_AUTH_PROTECTED_BASE + "shareholders";
+export const SHAREHOLDERS_PATH = CONFIRMATION_STATEMENT + SHAREHOLDERS;
 export const SIC = ACTIVE_SUBMISSION_BASE + "sic";
 export const SIC_PATH = CONFIRMATION_STATEMENT + SIC;
 export const CREATE_TRANSACTION = COMPANY_AUTH_PROTECTED_BASE + "transaction";

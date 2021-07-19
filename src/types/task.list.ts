@@ -6,7 +6,7 @@ import {
   STATEMENT_OF_CAPITAL_PATH,
   ACTIVE_OFFICERS_PATH,
   REGISTERED_OFFICE_ADDRESS_PATH
-} from "./page.urls";
+  , SHAREHOLDERS_PATH } from "./page.urls";
 import { urlUtils } from "../utils/url";
 
 export enum TaskState {
@@ -46,6 +46,7 @@ export interface TaskList {
     shareholders: {
       state: TaskState;
       isVisible: boolean;
+      url: string;
     };
     registeredOfficeAddress: {
       state: TaskState;
@@ -73,7 +74,7 @@ export const initTaskList = (companyNumber: string, transactionId: string, submi
       registerLocations: { isVisible: false, state: TaskState.NOT_CHECKED },
       registeredOfficeAddress: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTERED_OFFICE_ADDRESS_PATH, companyNumber, transactionId, submissionId) },
-      shareholders: { isVisible: false, state: TaskState.NOT_CHECKED },
+      shareholders: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils.getUrlWithCompanyNumber(SHAREHOLDERS_PATH, companyNumber) },
       sicCodes: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(SIC_PATH, companyNumber, transactionId, submissionId) },
       statementOfCapital: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils

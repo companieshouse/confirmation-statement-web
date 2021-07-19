@@ -3,6 +3,7 @@ import * as activeOfficers from "../controllers/tasks/active.officers.controller
 import * as confirmCompanyRoute from "../controllers/confirm.company.controller";
 import * as companyNumberRoute from "../controllers/company.number.controller";
 import * as createTransactionRoute from "../controllers/create.transaction.controller";
+import * as shareholders from "../controllers/tasks/shareholders.controller";
 import * as sicRoute from "../controllers/tasks/confirm.sic.code.controller";
 import * as startRoute from "../controllers/start.controller";
 import * as statementOfCapitalRoute from "../controllers/tasks/statement.of.capital.controller";
@@ -32,6 +33,7 @@ router.get(urls.COMPANY_NUMBER, companyNumberRoute.get);
 router.get(urls.ACCESSIBILITY_STATEMENT, renderTemplate(Templates.ACCESSIBILITY_STATEMENT));
 
 router.get(urls.ACTIVE_OFFICERS, activeOfficers.get);
+router.post(urls.ACTIVE_OFFICERS, activeOfficers.post);
 
 router.get(urls.CONFIRM_COMPANY, confirmCompanyRoute.get);
 router.post(urls.CONFIRM_COMPANY, confirmCompanyRoute.post);
@@ -53,3 +55,5 @@ router.get(urls.ACTIVE_PSCS, activePscsRoute.get);
 
 router.get(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.get);
 router.post(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.post);
+
+router.get(urls.SHAREHOLDERS, shareholders.get);

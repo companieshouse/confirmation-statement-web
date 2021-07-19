@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    {{ super() }}
+    {% include "includes/shareholders-styles.html" %}
+{% endblock %}
+
+
+{% block pageTitle %}
+  Review the shareholders
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form action="" method="post">
+
+        <h1 class="govuk-heading-xl">Check the shareholder details</h1>
+
+        <h2 class="govuk-heading-m">1 Shareholder</h2>
+
+        {% include "includes/shareholders.html" %}
+
+          {{ govukRadios({
+          classes: "govuk-radios--inline",
+          idPrefix: "shareholders",
+          name: "shareholders",
+          fieldset: {
+            legend: {
+              html: "Are the shareholder details correct?",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes"
+            },
+            {
+              value: "no",
+              text: "No"
+            },
+            {
+              value: "yes",
+              text: "No, but I've recently filed an update"
+          }
+          ]
+          }) }}
+
+          {{ govukButton({
+              text: "Continue"
+          }) }}
+      </form>
+    </div>
+  </div>
+{% endblock %}
