@@ -14,7 +14,7 @@ export const createConfirmationStatement = async (session: Session,
   const response = await csService.postNewConfirmationStatement(transactionId);
   if (response.httpStatusCode !== 201 && response.httpStatusCode !== 400) {
     const castedResponse: ApiErrorResponse = response;
-    throw new Error("Something went wrong creating confirmation statement " + JSON.stringify(castedResponse));
+    throw new Error(`Something went wrong creating confirmation statement ${JSON.stringify(castedResponse)}`);
   } else {
     return response as Resource<ConfirmationStatementCreated | CompanyValidationResponse>;
   }
