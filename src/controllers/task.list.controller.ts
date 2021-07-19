@@ -11,9 +11,12 @@ import { urlUtils } from "../utils/url";
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER];
-    const backLinkUrl = urlUtils.getUrlWithCompanyNumber(TRADING_STATUS_PATH, companyNumber);
+    const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
+    const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
+    const backLinkUrl = urlUtils
+      .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TRADING_STATUS_PATH, companyNumber, transactionId, submissionId);
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
-    const taskList: TaskList = initTaskList(company.companyNumber);
+    const taskList: TaskList = initTaskList(company.companyNumber, transactionId, submissionId);
     taskList.recordDate = calculateFilingDate(taskList.recordDate, company);
     return res.render(Templates.TASK_LIST, {
       backLinkUrl,

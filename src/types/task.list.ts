@@ -1,6 +1,12 @@
 import { DateTime } from "luxon";
 import { toReadableFormat } from "../utils/date";
-import { ACTIVE_PSCS_PATH, SIC_PATH, STATEMENT_OF_CAPITAL_PATH, ACTIVE_OFFICERS_PATH, REGISTERED_OFFICE_ADDRESS_PATH } from "./page.urls";
+import {
+  ACTIVE_PSCS_PATH,
+  SIC_PATH,
+  STATEMENT_OF_CAPITAL_PATH,
+  ACTIVE_OFFICERS_PATH,
+  REGISTERED_OFFICE_ADDRESS_PATH
+} from "./page.urls";
 import { urlUtils } from "../utils/url";
 
 export enum TaskState {
@@ -57,16 +63,21 @@ export interface TaskList {
   csDue: boolean;
 }
 
-export const initTaskList = (companyNumber: string): TaskList => {
+export const initTaskList = (companyNumber: string, transactionId: string, submissionId: string): TaskList => {
   return {
     tasks: {
-      officers: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils.getUrlWithCompanyNumber(ACTIVE_OFFICERS_PATH, companyNumber) },
-      peopleSignificantControl: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils.getUrlWithCompanyNumber(ACTIVE_PSCS_PATH, companyNumber) },
+      officers: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils
+        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(ACTIVE_OFFICERS_PATH, companyNumber, transactionId, submissionId) },
+      peopleSignificantControl: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils
+        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(ACTIVE_PSCS_PATH, companyNumber, transactionId, submissionId) },
       registerLocations: { isVisible: false, state: TaskState.NOT_CHECKED },
-      registeredOfficeAddress: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils.getUrlWithCompanyNumber(REGISTERED_OFFICE_ADDRESS_PATH, companyNumber) },
+      registeredOfficeAddress: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils
+        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTERED_OFFICE_ADDRESS_PATH, companyNumber, transactionId, submissionId) },
       shareholders: { isVisible: false, state: TaskState.NOT_CHECKED },
-      sicCodes: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils.getUrlWithCompanyNumber(SIC_PATH, companyNumber) },
-      statementOfCapital: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils.getUrlWithCompanyNumber(STATEMENT_OF_CAPITAL_PATH, companyNumber) }
+      sicCodes: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils
+        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(SIC_PATH, companyNumber, transactionId, submissionId) },
+      statementOfCapital: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils
+        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, companyNumber, transactionId, submissionId) }
     },
     recordDate: toReadableFormat(DateTime.now().toString()),
     tasksCompleted: 0,

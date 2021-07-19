@@ -13,7 +13,7 @@ import { CREATE_TRANSACTION_PATH } from "../../src/types/page.urls";
 const mockPostTransaction = postTransaction as jest.Mock;
 const mockCreateConfirmationStatement = createConfirmationStatement as jest.Mock;
 
-const PAGE_HEADING = "Found. Redirecting to /confirmation-statement/company/12345678/trading-status";
+const PAGE_HEADING = "Found. Redirecting to /confirmation-statement/company/12345678/transaction/1234/submission/87654321/trading-status";
 const COMPANY_NUMBER = "12345678";
 const ERROR_PAGE_TEXT = "Service offline - File a confirmation statement";
 const TRANSACTION_ID = "1234";
@@ -32,7 +32,10 @@ describe("create transaction controller tests", () => {
     const url = CREATE_TRANSACTION_PATH.replace(":companyNumber", COMPANY_NUMBER);
     mockPostTransaction.mockResolvedValueOnce(dummyTransaction);
     mockCreateConfirmationStatement.mockResolvedValueOnce({
-      httpStatusCode: 201
+      httpStatusCode: 201,
+      resource: {
+        id: "87654321"
+      }
     });
     const response = await request(app)
       .get(url);
