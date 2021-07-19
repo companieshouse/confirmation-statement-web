@@ -6,6 +6,7 @@ import { DESCRIPTION, REFERENCE } from "../utils/constants";
 import { Session } from "@companieshouse/node-session-handler";
 import { createConfirmationStatement } from "../services/confirmation.statement.service";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
+import { ConfirmationStatementCreated } from "private-api-sdk-node/dist/services/confirmation-statement";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -16,7 +17,11 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const transactionId = transaction.id as string;
     const submissionResponse = await createConfirmationStatement(session, transactionId);
     if (submissionResponse.httpStatusCode === 201) {
-      const nextPageUrl = urlUtils.getUrlWithCompanyNumber(TRADING_STATUS_PATH, companyNumber);
+      const castedResponseResource: ConfirmationStatementCreated =
+        submissionResponse.resource as ConfirmationStatementCreated;
+      const nextPageUrl = urlUtils
+        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TRADING_STATUS_PATH, companyNumber,
+                                                             transactionId, castedResponseResource.id);
       return res.redirect(nextPageUrl);
     }
     next(new Error(`Unable to create Confirmation Statement, httpStatusCode = ${submissionResponse.httpStatusCode}, resource = ${JSON.stringify(submissionResponse.resource)}`));
