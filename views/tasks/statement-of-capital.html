@@ -33,10 +33,6 @@
               {% set statementOfCapitalError = false %}
             {% endif %}
 
-            {% set statementOfCapitalContent = {
-                statementOfCapital: statementOfCapital
-            } %}
-
             <h1 class="govuk-heading-l">Check the statement of capital</h1>
 
             {% include "includes/statement-of-capital.html" %}
@@ -66,10 +62,10 @@
             }) }}
 
             {{ govukInput({
-            id: "statement-of-capital-content",
-            name: "statementOfCapitalContent",
-            type: "hidden",
-            value: statementOfCapitalJSON
+              id: "statement-of-capital-content",
+              name: "statementOfCapitalContent",
+              type: "hidden",
+              value: statementOfCapitalJSON
             }) }}
 
             {% include "includes/continue-button.html" %}
