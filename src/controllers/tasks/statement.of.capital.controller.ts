@@ -16,6 +16,8 @@ import { updateConfirmationStatement } from "../../services/confirmation.stateme
 export const get = async(req: Request, res: Response, next: NextFunction) => {
   try {
     const companyNumber = getCompanyNumber(req);
+    const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
+    const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
     const session: Session = req.session as Session;
     const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, companyNumber);
     if (statementOfCapital.classOfShares) {
@@ -23,9 +25,10 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
     }
     return res.render(Templates.STATEMENT_OF_CAPITAL, {
       templateName: Templates.STATEMENT_OF_CAPITAL,
-      backLinkUrl: urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber),
       statementOfCapital: statementOfCapital,
-      statementOfCapitalJSON: JSON.stringify(statementOfCapital)
+      statementOfCapitalJSON: JSON.stringify(statementOfCapital),
+      backLinkUrl: urlUtils
+        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
     });
   } catch (e) {
     return next(e);
@@ -36,6 +39,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const statementOfCapitalButtonValue = req.body.statementOfCapital;
     const companyNumber = getCompanyNumber(req);
+    const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
+    const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
 
     if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.YES) {
       const transactionId = req.params.transactionId as string;
@@ -43,10 +48,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       await sendUpdate(transactionId, submissionId, req);
       return res.redirect(urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber,
                                                                                        transactionId, submissionId));
+      return res.redirect(urlUtils
+        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),);
     } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO) {
       return res.render(Templates.WRONG_STATEMENT_OF_CAPITAL, {
         templateName: Templates.WRONG_STATEMENT_OF_CAPITAL,
-        backLinkUrl: urlUtils.getUrlWithCompanyNumber(STATEMENT_OF_CAPITAL_PATH, companyNumber)
+        backLinkUrl: urlUtils
+          .getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, companyNumber, transactionId, submissionId),
       });
     }
 
@@ -68,7 +76,7 @@ const sendUpdate = async (transactionId: string, submissionId: string, req: Requ
 };
 
 const buildCsSubmission = (submissionId: string, transactionId: string, statementOfCapital: StatementOfCapital, status: SectionStatus):
-      ConfirmationStatementSubmission => {
+    ConfirmationStatementSubmission => {
   return {
     id: submissionId,
     data: {
@@ -82,6 +90,5 @@ const buildCsSubmission = (submissionId: string, transactionId: string, statemen
     }
   };
 };
-
 
 const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];
