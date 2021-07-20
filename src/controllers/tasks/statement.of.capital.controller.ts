@@ -11,12 +11,15 @@ import { formatTitleCase } from "../../utils/format";
 export const get = async(req: Request, res: Response, next: NextFunction) => {
   try {
     const companyNumber = getCompanyNumber(req);
+    const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
+    const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
     const session: Session = req.session as Session;
     const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, companyNumber);
     statementOfCapital.classOfShares = formatTitleCase(statementOfCapital.classOfShares);
     return res.render(Templates.STATEMENT_OF_CAPITAL, {
       templateName: Templates.STATEMENT_OF_CAPITAL,
-      backLinkUrl: urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber),
+      backLinkUrl: urlUtils
+        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
       statementOfCapital: statementOfCapital
     });
   } catch (e) {
@@ -28,13 +31,17 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     const statementOfCapitalButtonValue = req.body.statementOfCapital;
     const companyNumber = getCompanyNumber(req);
+    const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
+    const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
 
     if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.YES) {
-      return res.redirect(urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber));
+      return res.redirect(urlUtils
+        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),);
     } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO) {
       return res.render(Templates.WRONG_STATEMENT_OF_CAPITAL, {
         templateName: Templates.WRONG_STATEMENT_OF_CAPITAL,
-        backLinkUrl: urlUtils.getUrlWithCompanyNumber(STATEMENT_OF_CAPITAL_PATH, companyNumber)
+        backLinkUrl: urlUtils
+          .getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, companyNumber, transactionId, submissionId),
       });
     }
 
