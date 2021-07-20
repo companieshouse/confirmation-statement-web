@@ -12,6 +12,7 @@ import {
 } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { formatTitleCase } from "../../utils/format";
 import { updateConfirmationStatement } from "../../services/confirmation.statement.service";
+import Resource, { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 
 export const get = async(req: Request, res: Response, next: NextFunction) => {
   try {
@@ -32,14 +33,17 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const statementOfCapitalButtonValue = req.body.statementOfCapital;
     const companyNumber = getCompanyNumber(req);
 
     if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.YES) {
-      sendUpdate(req);
-      return res.redirect(urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber));
+      const transactionId = req.params.transactionId as string;
+      const submissionId = req.params.submissionId as string;
+      await sendUpdate(transactionId, submissionId, req);
+      return res.redirect(urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber,
+                                                                                       transactionId, submissionId));
     } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO) {
       return res.render(Templates.WRONG_STATEMENT_OF_CAPITAL, {
         templateName: Templates.WRONG_STATEMENT_OF_CAPITAL,
@@ -57,13 +61,12 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const sendUpdate = (req: Request) => {
+const sendUpdate = async (transactionId: string, submissionId: string, req: Request) => {
   const statementOfCapitalContent: StatementOfCapital = JSON.parse(req.body.statementOfCapitalContent);
-  const transactionId = req.params.transactionId as string;
-  const submissionId = req.params.submissionId as string;
   const session = req.session as Session;
   const csSubmission = buildCsSubmission(submissionId, statementOfCapitalContent, SectionStatus.CONFIRMED);
-  updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
+  const response: Resource<ConfirmationStatementSubmission> | ApiErrorResponse = await updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
+  console.log("SOC RESPONSE: " + JSON.stringify(response));
 };
 
 const buildCsSubmission = (submissionId: string, statementOfCapital: StatementOfCapital, status: SectionStatus):
