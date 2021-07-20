@@ -1,6 +1,6 @@
 import { Templates } from "../../types/template.paths";
 import { NextFunction, Request, Response } from "express";
-import { TASK_LIST_PATH, urlParams } from "../../types/page.urls";
+import { TASK_LIST_PATH, urlParams, SHAREHOLDERS_PATH } from "../../types/page.urls";
 import { urlUtils } from "../../utils/url";
 import { RADIO_BUTTON_VALUE, SHAREHOLDERS_ERROR } from "../../utils/constants";
 
@@ -23,7 +23,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber));
     }
 
-    if (shareholderButtonValue === RADIO_BUTTON_VALUE.NO) {
+    if (shareholdersButtonValue === RADIO_BUTTON_VALUE.NO) {
       return res.render(Templates.WRONG_SHAREHOLDERS, {
         backLinkUrl: urlUtils.getUrlWithCompanyNumber(SHAREHOLDERS_PATH, companyNumber),
         templateName: Templates.WRONG_SHAREHOLDERS,
