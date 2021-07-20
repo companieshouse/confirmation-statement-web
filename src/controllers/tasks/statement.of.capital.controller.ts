@@ -43,8 +43,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
 
     if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.YES) {
-      const transactionId = req.params.transactionId as string;
-      const submissionId = req.params.submissionId as string;
       await sendUpdate(transactionId, submissionId, req);
       return res.redirect(urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber,
                                                                                        transactionId, submissionId));
