@@ -46,8 +46,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       await sendUpdate(transactionId, submissionId, req);
       return res.redirect(urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber,
                                                                                        transactionId, submissionId));
-      return res.redirect(urlUtils
-        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),);
     } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO) {
       return res.render(Templates.WRONG_STATEMENT_OF_CAPITAL, {
         templateName: Templates.WRONG_STATEMENT_OF_CAPITAL,
