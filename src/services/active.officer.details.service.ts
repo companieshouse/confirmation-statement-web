@@ -12,7 +12,7 @@ export const getActiveOfficerDetailsData = async (session: Session, companyNumbe
 
   if (status >= 400) {
     const errorResponse = response as ApiErrorResponse;
-    throw new Error("Error retrieving active officer details: " + JSON.stringify(errorResponse));
+    throw new Error(`Error retrieving active officer details: ${JSON.stringify(errorResponse)}`);
   }
   const successfulResponse = response as Resource<ActiveOfficerDetails>;
   return successfulResponse.resource as ActiveOfficerDetails;
