@@ -1,13 +1,29 @@
-import { StatementOfCapital } from "private-api-sdk-node/dist/services/confirmation-statement";
+import {
+  ConfirmationStatementSubmission,
+  SectionStatus,
+  StatementOfCapital
+} from "private-api-sdk-node/dist/services/confirmation-statement";
 
 export const mockStatementOfCapital: StatementOfCapital = {
-  classOfShares: "Ordinary",
+  classOfShares: "ORDINARY",
   currency: "GBP",
-  numberAllotted: 10,
-  aggregateNominalValue: 1,
-  prescribedParticulars: "This is a test",
-  totalCurrency: "GBP",
-  totalNumberOfShares: 10,
-  totalAggregateNominalValue: 10,
-  totalAmountUnpaidForCurrency: 1
+  numberAllotted: "100",
+  aggregateNominalValue: "0.01",
+  prescribedParticulars: "THE QUICK BROWN FOX",
+  totalNumberOfShares: "100",
+  totalAggregateNominalValue: "1",
+  totalAmountUnpaidForCurrency: "2"
+};
+
+export const mockConfirmationStatementSubmission: ConfirmationStatementSubmission = {
+  id: "abc",
+  data: {
+    statementOfCapitalData: {
+      sectionStatus: SectionStatus.CONFIRMED,
+      statementOfCapital: mockStatementOfCapital
+    }
+  },
+  links: {
+    self: "self/link"
+  }
 };

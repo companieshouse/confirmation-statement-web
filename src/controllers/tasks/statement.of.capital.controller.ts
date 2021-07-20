@@ -34,17 +34,11 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const statementOfCapitalButtonValue = req.body.statementOfCapitalCorrect;
+    const statementOfCapitalButtonValue = req.body.statementOfCapital;
     const companyNumber = getCompanyNumber(req);
 
-    const statementOfCapitalContent: StatementOfCapital = JSON.parse(req.body.statementOfCapitalContent);
-    const transactionId = req.params.transactionId as string;
-    const submissionId = req.params.submissionId as string;
-
     if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.YES) {
-      const session = req.session as Session;
-      const csSubmission = buildCsSubmission(submissionId, statementOfCapitalContent, SectionStatus.CONFIRMED);
-      updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
+      sendUpdate(req);
       return res.redirect(urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber));
     } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO) {
       return res.render(Templates.WRONG_STATEMENT_OF_CAPITAL, {
@@ -61,6 +55,15 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   } catch (e) {
     return next(e);
   }
+};
+
+const sendUpdate = (req: Request) => {
+  const statementOfCapitalContent: StatementOfCapital = JSON.parse(req.body.statementOfCapitalContent);
+  const transactionId = req.params.transactionId as string;
+  const submissionId = req.params.submissionId as string;
+  const session = req.session as Session;
+  const csSubmission = buildCsSubmission(submissionId, statementOfCapitalContent, SectionStatus.CONFIRMED);
+  updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
 };
 
 const buildCsSubmission = (submissionId: string, statementOfCapital: StatementOfCapital, status: SectionStatus):

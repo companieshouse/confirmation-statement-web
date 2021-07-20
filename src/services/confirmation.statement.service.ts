@@ -24,7 +24,7 @@ export const createConfirmationStatement = async (session: Session,
 export const updateConfirmationStatement = async (session: Session,
                                                   transactionId: string,
                                                   confirmationStatementId: string,
-                                                  csSubmission: ConfirmationStatementSubmission): Promise<any> => {
+                                                  csSubmission: ConfirmationStatementSubmission): Promise<Resource<ConfirmationStatementSubmission> | ApiErrorResponse> => {
   const client = createPrivateOAuthApiClient(session);
   const csService: ConfirmationStatementService = client.confirmationStatementService;
   return await csService.postUpdateConfirmationStatement(transactionId, confirmationStatementId, csSubmission);
