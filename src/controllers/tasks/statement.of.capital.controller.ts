@@ -12,7 +12,6 @@ import {
 } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { formatTitleCase } from "../../utils/format";
 import { updateConfirmationStatement } from "../../services/confirmation.statement.service";
-import Resource, { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 
 export const get = async(req: Request, res: Response, next: NextFunction) => {
   try {
@@ -64,12 +63,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 const sendUpdate = async (transactionId: string, submissionId: string, req: Request) => {
   const statementOfCapitalContent: StatementOfCapital = JSON.parse(req.body.statementOfCapitalContent);
   const session = req.session as Session;
-  const csSubmission = buildCsSubmission(submissionId, statementOfCapitalContent, SectionStatus.CONFIRMED);
-  const response: Resource<ConfirmationStatementSubmission> | ApiErrorResponse = await updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
-  console.log("SOC RESPONSE: " + JSON.stringify(response));
+  const csSubmission = buildCsSubmission(submissionId, transactionId, statementOfCapitalContent, SectionStatus.CONFIRMED);
+  await updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
 };
 
-const buildCsSubmission = (submissionId: string, statementOfCapital: StatementOfCapital, status: SectionStatus):
+const buildCsSubmission = (submissionId: string, transactionId: string, statementOfCapital: StatementOfCapital, status: SectionStatus):
       ConfirmationStatementSubmission => {
   return {
     id: submissionId,
@@ -80,7 +78,7 @@ const buildCsSubmission = (submissionId: string, statementOfCapital: StatementOf
       }
     },
     links: {
-      self: ""
+      self: `/transactions/${transactionId}/confirmation-statement/${submissionId}`
     }
   };
 };
