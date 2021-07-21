@@ -15,6 +15,9 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
     const session: Session = req.session as Session;
     const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, companyNumber);
+
+    req.sessionCookie = { foo: "bar" };
+
     statementOfCapital.classOfShares = formatTitleCase(statementOfCapital.classOfShares);
     return res.render(Templates.STATEMENT_OF_CAPITAL, {
       templateName: Templates.STATEMENT_OF_CAPITAL,

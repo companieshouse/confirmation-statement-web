@@ -11,6 +11,7 @@ import { sessionMiddleware } from "./middleware/session.middleware";
 import cookieParser from "cookie-parser";
 import { logger } from "./utils/logger";
 import { companyAuthenticationMiddleware } from "./middleware/company.authentication.middleware";
+import cookieSessionMiddleware from "./middleware/cookie.session.middleware";
 
 const app = express();
 
@@ -37,6 +38,11 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "html");
 
 // apply middleware
+app.use(cookieSessionMiddleware({
+  keys: ["TO BE CHANGED"],
+  // Cookie Options
+  maxAge: 60 * 60 * 1000 // 1 hours
+} as any) as any);
 app.use(cookieParser());
 app.use(serviceAvailabilityMiddleware);
 app.use(`${urls.CONFIRMATION_STATEMENT}*`, sessionMiddleware);
