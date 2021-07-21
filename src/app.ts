@@ -38,6 +38,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "html");
 
 // apply middleware
+// TODO get key and timeout from config
 app.use(cookieSessionMiddleware({
   keys: ["TO BE CHANGED"],
   // Cookie Options
