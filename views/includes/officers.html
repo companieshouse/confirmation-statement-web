@@ -1,11 +1,11 @@
 <div class="govuk-summary-card govuk-!-margin-bottom-4">
     <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center; color: govuk-colour("light-grey")">
       <p class="govuk-!-font-weight-bold govuk-!-margin-0">
-        {{activeOfficerDetails.surnname}},
-        {{activeOfficerDetails.foreName1}}
+        {{activeOfficerDetails.surname}},
+        &nbsp; {{activeOfficerDetails.foreName1}}
         {% if activeOfficerDetails.foreName2 %}
-          {{ activeOfficerDetails.foreName2}}
-        {% endif %}}
+          &nbsp; {{activeOfficerDetails.foreName2}}
+        {% endif %}
       </p>
       {{govukTag({
         text: "Active",
@@ -38,16 +38,14 @@
             <p>{{activeOfficerDetails.serviceAddressLine1}}, {{activeOfficerDetails.serviceAddressPostTown}}, {{activeOfficerDetails.serviceAddressPostCode}}</p>
           </dd>
         </div>
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">Usual residential address</dt>
-          <dd class="govuk-summary-list__value">
-          {% if activeOfficerDetails.uraLine1 %}
+        {% if activeOfficerDetails.uraLine1 %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Usual residential address</dt>
+            <dd class="govuk-summary-list__value">
             <p>{{activeOfficerDetails.uraLine1}}, {{activeOfficerDetails.uraPostTown}}, {{activeOfficerDetails.uraPostCode}}</p>
-          {% else}
-            <p>{{activeOfficerDetails.serviceAddressLine1}}, {{activeOfficerDetails.serviceAddressPostTown}}, {{activeOfficerDetails.serviceAddressPostCode}}</p>           
-          {% endif %}}
-          </dd>
-        </div>
+            </dd>
+          </div>
+        {% endif %}
       </dl>
     </div>
 </div>
