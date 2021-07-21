@@ -27,12 +27,12 @@ export const getConfirmationStatement = async (session: Session, transactionId: 
   const response = await csService.getConfirmationStatementSubmission(transactionId, confirmationStatementId);
 
   if (response.httpStatusCode !== 200) {
-    throw new Error(`Error getting confirmation statement from api with confirmationStatementId = ${confirmationStatementId}, transactionID = ${transactionId} - ${JSON.stringify(response)}`);
+    throw new Error(`Error getting confirmation statement from api with confirmationStatementId = ${confirmationStatementId}, transactionId = ${transactionId} - ${JSON.stringify(response)}`);
   }
 
   const csSubmissionResource = response as Resource<ConfirmationStatementSubmission>;
   if (!csSubmissionResource.resource) {
-    throw new Error(`Error No resource returned when getting confirmation statement from api with confirmationStatementId = ${confirmationStatementId}, transactionID = ${transactionId}`);
+    throw new Error(`Error No resource returned when getting confirmation statement from api with confirmationStatementId = ${confirmationStatementId}, transactionId = ${transactionId}`);
   }
 
   return csSubmissionResource.resource;
