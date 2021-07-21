@@ -18,11 +18,11 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       activeOfficerDetails.foreName2 = formatTitleCase(activeOfficerDetails.foreName2);
     }
 
-    console.log("------------------>" + activeOfficerDetails.foreName1  + ", " + activeOfficerDetails.foreName2 + ", "  + activeOfficerDetails.surname);
-
-    const backLinkUrl = urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber);
-
-    return res.render(Templates.ACTIVE_OFFICERS, { backLinkUrl, activeOfficerDetails });
+    return res.render(Templates.ACTIVE_OFFICERS, {
+      templateName: Templates.ACTIVE_OFFICERS,
+      backLinkUrl: urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber),
+      activeOfficerDetails
+    });
   } catch (e) {
     return next(e);
   }
@@ -30,10 +30,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const activeOfficerButtonValue = req.body.activeDirectors;
-    const companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER];
+    const activeOfficerDetailsBtnValue = req.body.activeDirectors;
+    const companyNumber = getCompanyNumber(req);
 
-    if (activeOfficerButtonValue === RADIO_BUTTON_VALUE.YES) {
+    if (activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.YES) {
       return res.redirect(urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber));
     } else {
       return res.render(Templates.ACTIVE_OFFICERS, {
