@@ -52,7 +52,7 @@ describe ("Confirmation statement api service unit tests", () => {
     createConfirmationStatement(
       getSessionRequest({ access_token: "token" }), transactionId)
       .then(() => {fail("Expecting error to be thrown");}).catch(e => {
-        expect(e.message).toEqual("Something went wrong creating confirmation statement ");
+        expect(e.message).toContain("Something went wrong creating confirmation statement ");
       });
     expect(mockPostNewConfirmationStatement).toBeCalledWith(transactionId);
   });
