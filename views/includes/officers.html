@@ -1,41 +1,51 @@
 <div class="govuk-summary-card govuk-!-margin-bottom-4">
     <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center; color: govuk-colour("light-grey")">
-      <p class="govuk-!-font-weight-bold govuk-!-margin-0">IRVING, Kyrie</p>
-        {{govukTag({
-            text: "Active",
-            classes: "govuk-tag--green"
-          })}}
+      <p class="govuk-!-font-weight-bold govuk-!-margin-0">
+        {{activeOfficerDetails.surnname}},
+        {{activeOfficerDetails.foreName1}}
+        {% if activeOfficerDetails.foreName2 %}
+          {{ activeOfficerDetails.foreName2}}
+        {% endif %}}
+      </p>
+      {{govukTag({
+        text: "Active",
+        classes: "govuk-tag--green"
+      })}}
     </div>
     <div style="display: flex" class="govuk-!-padding-1 govuk-summary-list__row--no-border">
       <dl style="display: block" class="govuk-summary-list govuk-!-margin-3">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Nationality</dt>
           <dd class="govuk-summary-list__value">
-            <p>British</p>
+            <p>{{activeOfficerDetails.nationality}}</p>
           </dd>
         </div>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Date of birth</dt>
           <dd class="govuk-summary-list__value">
-            <p>1 January 1988</p>
+            <p>{{activeOfficerDetails.dateOfBirth}}</p>
           </dd>
         </div>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Occupation</dt>
           <dd class="govuk-summary-list__value">
-            <p>Director</p>
+            <p>{{activeOfficerDetails.occupation}}</p>
           </dd>
         </div>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Correspondence address</dt>
           <dd class="govuk-summary-list__value">
-            <p>2 Nets Way, Newcastle, NE2 3BB</p>
+            <p>{{activeOfficerDetails.serviceAddressLine1}}, {{activeOfficerDetails.serviceAddressPostTown}}, {{activeOfficerDetails.serviceAddressPostCode}}</p>
           </dd>
         </div>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Usual residential address</dt>
           <dd class="govuk-summary-list__value">
-            <p>2 Nets Way, Newcastle, NE2 3BB</p>
+          {% if activeOfficerDetails.uraLine1 %}
+            <p>{{activeOfficerDetails.uraLine1}}, {{activeOfficerDetails.uraPostTown}}, {{activeOfficerDetails.uraPostCode}}</p>
+          {% else}
+            <p>{{activeOfficerDetails.serviceAddressLine1}}, {{activeOfficerDetails.serviceAddressPostTown}}, {{activeOfficerDetails.serviceAddressPostCode}}</p>           
+          {% endif %}}
           </dd>
         </div>
       </dl>

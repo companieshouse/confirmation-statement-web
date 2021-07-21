@@ -2,24 +2,20 @@ import { NextFunction, Request, Response } from "express";
 import { Templates } from "../../types/template.paths";
 import { TASK_LIST_PATH, urlParams } from "../../types/page.urls";
 import { urlUtils } from "../../utils/url";
-import { FEATURE_FLAG_ACTIVE_OFFICERS_01072021 } from "../../utils/properties";
-import { isActiveFeature } from "../../utils/feature.flag";
-import { validDummyCompanyOfficers } from "../../utils/dummy.company.officers";
-import { CompanyOfficers } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
-import { getCompanyOfficers } from "../../services/company.officers.service";
 import { OFFICER_DETAILS_ERROR, RADIO_BUTTON_VALUE } from "../../utils/constants";
+import { Session } from "@companieshouse/node-session-handler";
+import { ActiveOfficerDetails } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { getActiveOfficerDetailsData } from "../../services/active.officer.details.service";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER];
+    const companyNumber = getCompanyNumber(req);
+    const session: Session = req.session as Session;
+    const activeOfficerDetails: ActiveOfficerDetails = await getActiveOfficerDetailsData(session, companyNumber);
+
     const backLinkUrl = urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber);
-    let companyOfficers: CompanyOfficers;
-    if (isActiveFeature(FEATURE_FLAG_ACTIVE_OFFICERS_01072021)){
-      companyOfficers = await getCompanyOfficers(companyNumber);
-    } else {
-      companyOfficers = validDummyCompanyOfficers;
-    }
-    return res.render(Templates.ACTIVE_OFFICERS, { backLinkUrl, companyOfficers });
+
+    return res.render(Templates.ACTIVE_OFFICERS, { backLinkUrl, activeOfficerDetails });
   } catch (e) {
     return next(e);
   }
@@ -43,3 +39,5 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     return next(e);
   }
 };
+
+const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];
