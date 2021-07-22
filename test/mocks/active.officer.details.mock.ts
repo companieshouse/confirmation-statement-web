@@ -3,7 +3,7 @@ import { ActiveOfficerDetails } from "private-api-sdk-node/dist/services/confirm
 
 export const mockActiveOfficerDetails: ActiveOfficerDetails = {
   foreName1: "John",
-  foreName2: "middle name",
+  foreName2: "MiddleName",
   surname: "Doe",
   occupation: "singer",
   nationality: "British",
