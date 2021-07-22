@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Templates } from "../types/template.paths";
-import { initTaskList, TaskList } from "../types/task.list";
+import { TaskList } from "../types/task.list";
+import { initTaskList } from "../services/task.list.service";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../services/company.profile.service";
 import { TRADING_STATUS_PATH, urlParams } from "../types/page.urls";
