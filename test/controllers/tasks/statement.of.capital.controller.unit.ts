@@ -10,8 +10,11 @@ import { STATEMENT_OF_CAPITAL_PATH, TASK_LIST_PATH } from "../../../src/types/pa
 import { urlUtils } from "../../../src/utils/url";
 import app from "../../../src/app";
 import { STATEMENT_OF_CAPITAL_ERROR } from "../../../src/utils/constants";
-import { mockConfirmationStatementSubmission, mockStatementOfCapital } from "../../mocks/statement.of.capital.mock";
 import { getStatementOfCapitalData } from "../../../src/services/statement.of.capital.service";
+import {
+  mockConfirmationStatementSubmission,
+  mockStatementOfCapital
+} from "../../mocks/confirmation.statement.submission.mock";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());

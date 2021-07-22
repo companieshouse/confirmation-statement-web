@@ -128,9 +128,8 @@ describe ("updateConfirmationStatement unit tests", () => {
       httpStatusCode: 200
     });
     const csSubmission: ConfirmationStatementSubmission = mockConfirmationStatementSubmission;
-    const response = await updateConfirmationStatement(
+    await updateConfirmationStatement(
       getSessionRequest({ access_token: "token" }), TRANSACTION_ID, SUBMISSION_ID, csSubmission);
-    expect(response.httpStatusCode).toEqual(200);
     expect(mockPostUpdateConfirmationStatement).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID, csSubmission);
   });
 

@@ -41,14 +41,12 @@ export const getConfirmationStatement = async (session: Session, transactionId: 
 export const updateConfirmationStatement = async (session: Session,
                                                   transactionId: string,
                                                   submitId: string,
-                                                  csSubmission: ConfirmationStatementSubmission): Promise<Resource<ConfirmationStatementSubmission> | ApiErrorResponse> => {
+                                                  csSubmission: ConfirmationStatementSubmission) => {
   const client = createPrivateOAuthApiClient(session);
   const csService: ConfirmationStatementService = client.confirmationStatementService;
   const response = await csService.postUpdateConfirmationStatement(transactionId, submitId, csSubmission);
   if (response.httpStatusCode !== 200) {
     const castedResponse: ApiErrorResponse = response;
-    throw new Error(`Something went wrong updating confirmation statement ${JSON.stringify(castedResponse)}`);
-  } else {
-    return response as Resource<ConfirmationStatementSubmission>;
+    throw new Error(`Trasnaction Id ${transactionId}, Submit Id ${submitId}, Something went wrong updating confirmation statement ${JSON.stringify(castedResponse)}`);
   }
 };
