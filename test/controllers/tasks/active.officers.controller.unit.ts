@@ -46,6 +46,7 @@ describe("Active officers controller tests", () => {
       expect(response.text).toContain(mockActiveOfficerDetails.foreName2);
       expect(response.text).toContain(mockActiveOfficerDetails.dateOfBirth);
       expect(response.text).toContain(mockActiveOfficerDetails.nationality);
+      expect(response.text).toContain(mockActiveOfficerDetails.uraLine1);
     });
 
     it("Should navigate to director's details page with no middle name", async () => {
@@ -60,8 +61,27 @@ describe("Active officers controller tests", () => {
       expect(response.text).toContain(mockActiveOfficerDetails.foreName1);
       expect(response.text).toContain(mockActiveOfficerDetails.dateOfBirth);
       expect(response.text).toContain(mockActiveOfficerDetails.nationality);
+      expect(response.text).toContain(mockActiveOfficerDetails.uraLine1);
+      expect(response.text).not.toContain(fName2);
 
       mockActiveOfficerDetails.foreName2 = fName2;
+    });
+
+    it("Should navigate to director's details page for secure officer", async () => {
+      mockActiveOfficerDetails.secureIndicator = 'Y';
+
+      mockGetActiveOfficerDetails.mockResolvedValueOnce(mockActiveOfficerDetails);
+      const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
+
+      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain("Is the director still active?");
+      expect(response.text).toContain(mockActiveOfficerDetails.foreName1);
+      expect(response.text).toContain(mockActiveOfficerDetails.dateOfBirth);
+      expect(response.text).toContain(mockActiveOfficerDetails.nationality);
+      expect(response.text).not.toContain("Usual residential address");
+      expect(response.text).not.toContain(mockActiveOfficerDetails.uraLine1);
+
+      mockActiveOfficerDetails.secureIndicator = 'N';
     });
 
     it("Should navigate to an error page if the function throws an error", async () => {
