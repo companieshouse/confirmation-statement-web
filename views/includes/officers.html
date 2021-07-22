@@ -38,7 +38,7 @@
             <p>{{activeOfficerDetails.serviceAddressLine1}}, {{activeOfficerDetails.serviceAddressPostTown}}, {{activeOfficerDetails.serviceAddressPostCode}}</p>
           </dd>
         </div>
-        {% if activeOfficerDetails.uraLine1 %}
+        {% if activeOfficerDetails.secureIndicator === "N" %}
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Usual residential address</dt>
             <dd class="govuk-summary-list__value">
