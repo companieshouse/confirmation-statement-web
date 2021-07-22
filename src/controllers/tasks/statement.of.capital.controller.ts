@@ -15,6 +15,7 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
     const session: Session = req.session as Session;
     const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, companyNumber);
+    req.sessionCookie = { statementOfCapital: statementOfCapital };
     statementOfCapital.classOfShares = formatTitleCase(statementOfCapital.classOfShares);
     return res.render(Templates.STATEMENT_OF_CAPITAL, {
       templateName: Templates.STATEMENT_OF_CAPITAL,
@@ -33,7 +34,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = getCompanyNumber(req);
     const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
-
     if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.YES) {
       return res.redirect(urlUtils
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),);
