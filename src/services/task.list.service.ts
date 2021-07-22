@@ -17,7 +17,10 @@ import { urlUtils } from "../utils/url";
 import { toTaskState } from "../utils/task/task.state.mapper";
 import { getTaskCompletedCount } from "../utils/task/task.counter";
 
-export const initTaskList = (companyNumber: string, transactionId: string, submissionId: string, csSubmission: ConfirmationStatementSubmission): TaskList => {
+export const initTaskList = (companyNumber: string,
+                             transactionId: string,
+                             submissionId: string,
+                             csSubmission: ConfirmationStatementSubmission): TaskList => {
   return {
     tasks: {
       officers: {
