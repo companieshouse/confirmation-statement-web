@@ -43,8 +43,25 @@ describe("Active officers controller tests", () => {
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Is the director still active?");
       expect(response.text).toContain(mockActiveOfficerDetails.foreName1);
+      expect(response.text).toContain(mockActiveOfficerDetails.foreName2);
       expect(response.text).toContain(mockActiveOfficerDetails.dateOfBirth);
       expect(response.text).toContain(mockActiveOfficerDetails.nationality);
+    });
+
+    it("Should navigate to director's details page with no middle name", async () => {
+      const fName2 = mockActiveOfficerDetails.foreName2;
+      mockActiveOfficerDetails.foreName2 = undefined;
+
+      mockGetActiveOfficerDetails.mockResolvedValueOnce(mockActiveOfficerDetails);
+      const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
+
+      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain("Is the director still active?");
+      expect(response.text).toContain(mockActiveOfficerDetails.foreName1);
+      expect(response.text).toContain(mockActiveOfficerDetails.dateOfBirth);
+      expect(response.text).toContain(mockActiveOfficerDetails.nationality);
+
+      mockActiveOfficerDetails.foreName2 = fName2;
     });
 
     it("Should navigate to an error page if the function throws an error", async () => {
