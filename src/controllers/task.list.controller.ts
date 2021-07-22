@@ -7,17 +7,25 @@ import { TRADING_STATUS_PATH, urlParams } from "../types/page.urls";
 import { isInFuture, toReadableFormat } from "../utils/date";
 import { createAndLogError } from "../utils/logger";
 import { urlUtils } from "../utils/url";
+import { getConfirmationStatement } from "../services/confirmation.statement.service";
+import { Session } from "@companieshouse/node-session-handler";
+import { ConfirmationStatementSubmission } from "private-api-sdk-node/dist/services/confirmation-statement";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const session = req.session as Session;
     const companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER];
     const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
     const backLinkUrl = urlUtils
       .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TRADING_STATUS_PATH, companyNumber, transactionId, submissionId);
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
-    const taskList: TaskList = initTaskList(company.companyNumber, transactionId, submissionId);
+
+    const confirmationStatement: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
+
+    const taskList: TaskList = initTaskList(company.companyNumber, transactionId, submissionId, confirmationStatement);
     taskList.recordDate = calculateFilingDate(taskList.recordDate, company);
+
     return res.render(Templates.TASK_LIST, {
       backLinkUrl,
       company,

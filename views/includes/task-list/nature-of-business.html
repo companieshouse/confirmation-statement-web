@@ -22,9 +22,9 @@
                 Statement of capital
             </a>
         </span>
-        {% if taskList.tasks.statementOfCapitalState.state === "CHECKED" %}
+        {% if taskList.tasks.statementOfCapital.state === "CHECKED" %}
             {{ showChecked | safe | replace("statusIdPlaceholder", "socStatus")}}
-        {% elseif taskList.tasks.statementOfCapitalState.state === "IN_PROGRESS" %}
+        {% elseif taskList.tasks.statementOfCapital.state === "IN_PROGRESS" %}
             {{ showInProgress | safe | replace("statusIdPlaceholder", "socStatus")}}
         {% else %}
             {{ showNotChecked | safe | replace("statusIdPlaceholder", "socStatus")}}
