@@ -1,26 +1,31 @@
 jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/statement.of.capital.service");
+jest.mock("../../../src/services/confirmation.statement.service");
 
+import { updateConfirmationStatement } from "../../../src/services/confirmation.statement.service";
 import request from "supertest";
 import mocks from "../../mocks/all.middleware.mock";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
-import { STATEMENT_OF_CAPITAL_PATH, TASK_LIST_PATH, urlParams } from "../../../src/types/page.urls";
+import { STATEMENT_OF_CAPITAL_PATH, TASK_LIST_PATH } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
 import app from "../../../src/app";
 import { STATEMENT_OF_CAPITAL_ERROR } from "../../../src/utils/constants";
-import { mockStatementOfCapital } from "../../mocks/statement.of.capital.mock";
+import { mockConfirmationStatementSubmission, mockStatementOfCapital } from "../../mocks/statement.of.capital.mock";
 import { getStatementOfCapitalData } from "../../../src/services/statement.of.capital.service";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 
 const mockGetStatementOfCapitalData = getStatementOfCapitalData as jest.Mock;
+const mockUpdateConfirmationStatement =  updateConfirmationStatement as jest.Mock;
 
 const PAGE_HEADING = "Review the statement of capital";
 const STOP_PAGE_HEADING = "You cannot use this service - File a confirmation statement";
 const COMPANY_NUMBER = "12345678";
-const STATEMENT_OF_CAPITAL_URL = STATEMENT_OF_CAPITAL_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
-const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+const SUBMISSION_ID = "a80f09e2";
+const TRANSACTION_ID = "111-111-111";
+const STATEMENT_OF_CAPITAL_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
+const TASK_LIST_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 
 describe("Statement of Capital controller tests", () => {
 
@@ -29,6 +34,7 @@ describe("Statement of Capital controller tests", () => {
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
     mockGetStatementOfCapitalData.mockClear();
+    mockUpdateConfirmationStatement.mockClear();
   });
 
   describe("get tests", () => {
@@ -60,12 +66,15 @@ describe("Statement of Capital controller tests", () => {
 
   describe("post tests", () => {
     it("Should navigate to the task list page when statement of capital confirmed", async () => {
+      mockUpdateConfirmationStatement.mockReturnValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(STATEMENT_OF_CAPITAL_URL)
+        .send({ sessionCookie: `{ statementOfCapital: ${mockStatementOfCapital} }` })
         .send({ statementOfCapital: "yes" });
 
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
+      expect(mockUpdateConfirmationStatement).toBeCalled();
     });
 
     it("Should navigate to the statement of capital stop page when statement of capital is declared incorrect", async () => {
