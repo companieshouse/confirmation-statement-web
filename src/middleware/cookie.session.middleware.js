@@ -17,6 +17,7 @@
 const Buffer = require('safe-buffer').Buffer
 const Cookies = require('cookies')
 const onHeaders = require('on-headers')
+const { logger } = require("../utils/logger");
 
 /**
  * Module exports.
@@ -46,7 +47,7 @@ function cookieSession (options) {
   const name = opts.name || 'confirmationStatementUserJourney'
 
   // secrets
-  const keys = opts.keys
+  let keys = opts.keys
   if (!keys && opts.secret) keys = [opts.secret]
 
   // defaults
@@ -124,13 +125,13 @@ function cookieSession (options) {
           cookies.set(name, Session.serialize(sess), req.sessionOptions)
         }
       } catch (e) {
-        console.error(`error saving session ${e.message}`)
+        logger.error(`error saving session ${e.message}`)
       }
     })
 
     next()
   }
-};
+}
 
 /**
  * Session model.
