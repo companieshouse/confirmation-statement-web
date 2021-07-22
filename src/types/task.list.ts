@@ -1,12 +1,13 @@
 import { DateTime } from "luxon";
 import { toReadableFormat } from "../utils/date";
 import {
-  ACTIVE_PSCS_PATH,
   SIC_PATH,
   STATEMENT_OF_CAPITAL_PATH,
   ACTIVE_OFFICERS_PATH,
-  REGISTERED_OFFICE_ADDRESS_PATH
-  , SHAREHOLDERS_PATH } from "./page.urls";
+  REGISTERED_OFFICE_ADDRESS_PATH,
+  SHAREHOLDERS_PATH,
+  PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH
+} from "./page.urls";
 import { urlUtils } from "../utils/url";
 import { ConfirmationStatementSubmission, ConfirmationStatementSubmissionData, SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
 
@@ -119,7 +120,7 @@ export const initTaskList = (companyNumber: string, transactionId: string, submi
       peopleSignificantControl: {
         isVisible: false,
         state: TaskState.NOT_CHECKED,
-        url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(ACTIVE_PSCS_PATH, companyNumber, transactionId, submissionId)
+        url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, companyNumber, transactionId, submissionId)
       },
       registerLocations: {
         isVisible: false,

@@ -4,9 +4,10 @@ jest.mock("private-api-sdk-node/");
 import { getSessionRequest } from "../mocks/session.mock";
 import {
   createConfirmationStatement,
-  getConfirmationStatement }
+  getConfirmationStatement, updateConfirmationStatement
+}
   from "../../src/services/confirmation.statement.service";
-import { ConfirmationStatementService }
+import { ConfirmationStatementService, ConfirmationStatementSubmission }
   from "private-api-sdk-node/dist/services/confirmation-statement";
 import PrivateApiClient from "private-api-sdk-node/dist/client";
 import { createPrivateApiClient } from "private-api-sdk-node";
@@ -14,6 +15,9 @@ import { mockConfirmationStatementSubmission } from "../mocks/confirmation.state
 
 const mockPostNewConfirmationStatement
     = ConfirmationStatementService.prototype.postNewConfirmationStatement as jest.Mock;
+
+const mockPostUpdateConfirmationStatement
+    = ConfirmationStatementService.prototype.postUpdateConfirmationStatement as jest.Mock;
 
 const mockCreatePrivateApiClient = createPrivateApiClient as jest.Mock;
 
@@ -25,7 +29,7 @@ mockCreatePrivateApiClient.mockReturnValue({
 } as PrivateApiClient);
 
 const TRANSACTION_ID = "12345";
-const CONFIRMATION_STATEMENT_ID = "14566";
+const SUBMISSION_ID = "14566";
 
 describe ("Confirmation statement api service unit tests", () => {
 
@@ -78,9 +82,9 @@ describe ("Confirmation statement api service unit tests", () => {
       });
 
       const response = await getConfirmationStatement(
-        getSessionRequest({ access_token: "token" }), TRANSACTION_ID, CONFIRMATION_STATEMENT_ID);
+        getSessionRequest({ access_token: "token" }), TRANSACTION_ID, SUBMISSION_ID);
 
-      expect(mockGetConfirmationStatementSubmission).toBeCalledWith(TRANSACTION_ID, CONFIRMATION_STATEMENT_ID);
+      expect(mockGetConfirmationStatementSubmission).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID);
       expect(response).toBe(mockConfirmationStatementSubmission);
     });
 
@@ -90,12 +94,12 @@ describe ("Confirmation statement api service unit tests", () => {
       });
 
       await getConfirmationStatement(
-        getSessionRequest({ access_token: "token" }), TRANSACTION_ID, CONFIRMATION_STATEMENT_ID)
+        getSessionRequest({ access_token: "token" }), TRANSACTION_ID, SUBMISSION_ID)
         .then(() => {
           fail("Expecting error to be thrown");
         }).catch(e => {
           expect(e.message).toContain("Error getting confirmation statement from api");
-          expect(e.message).toContain(CONFIRMATION_STATEMENT_ID);
+          expect(e.message).toContain(SUBMISSION_ID);
           expect(e.message).toContain(TRANSACTION_ID);
         });
     });
@@ -106,14 +110,60 @@ describe ("Confirmation statement api service unit tests", () => {
       });
 
       await getConfirmationStatement(
-        getSessionRequest({ access_token: "token" }), TRANSACTION_ID, CONFIRMATION_STATEMENT_ID)
+        getSessionRequest({ access_token: "token" }), TRANSACTION_ID, SUBMISSION_ID)
         .then(() => {
           fail("Expecting error to be thrown");
         }).catch(e => {
           expect(e.message).toContain("Error No resource returned when getting confirmation statement");
-          expect(e.message).toContain(CONFIRMATION_STATEMENT_ID);
+          expect(e.message).toContain(SUBMISSION_ID);
           expect(e.message).toContain(TRANSACTION_ID);
         });
     });
+  });
+});
+
+describe ("updateConfirmationStatement unit tests", () => {
+  it("should call update confirmation statement in the private sdk", async () => {
+    mockPostUpdateConfirmationStatement.mockResolvedValueOnce({
+      httpStatusCode: 200
+    });
+    const csSubmission: ConfirmationStatementSubmission = mockConfirmationStatementSubmission;
+    await updateConfirmationStatement(
+      getSessionRequest({ access_token: "token" }), TRANSACTION_ID, SUBMISSION_ID, csSubmission);
+    expect(mockPostUpdateConfirmationStatement).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID, csSubmission);
+  });
+
+  it("should should throw error when not found", async () => {
+    mockPostUpdateConfirmationStatement.mockResolvedValueOnce({
+      httpStatusCode: 404
+    });
+    const csSubmission: ConfirmationStatementSubmission = mockConfirmationStatementSubmission;
+    await updateConfirmationStatement(
+      getSessionRequest({ access_token: "token" }), TRANSACTION_ID, SUBMISSION_ID, csSubmission)
+      .then(() => {
+        fail("Expecting error to be thrown");
+      }).catch(e => {
+        expect(e.message).toContain("Something went wrong updating confirmation statement");
+        expect(e.message).toContain("404");
+      });
+
+    expect(mockPostUpdateConfirmationStatement).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID, csSubmission);
+  });
+
+  it("should should throw error when other http code is returned", async () => {
+    mockPostUpdateConfirmationStatement.mockResolvedValueOnce({
+      httpStatusCode: 500
+    });
+    const csSubmission: ConfirmationStatementSubmission = mockConfirmationStatementSubmission;
+    await updateConfirmationStatement(
+      getSessionRequest({ access_token: "token" }), TRANSACTION_ID, SUBMISSION_ID, csSubmission)
+      .then(() => {
+        fail("Expecting error to be thrown");
+      }).catch(e => {
+        expect(e.message).toContain("Something went wrong updating confirmation statement");
+        expect(e.message).toContain("500");
+      });
+
+    expect(mockPostUpdateConfirmationStatement).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID, csSubmission);
   });
 });
