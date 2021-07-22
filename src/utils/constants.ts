@@ -7,6 +7,11 @@ export const REGISTERED_OFFICE_ADDRESS_ERROR = "Select yes if the Registered Off
 export const OFFICER_DETAILS_ERROR = "Select yes if director details are correct";
 export const SHAREHOLDERS_ERROR = "Select yes if the active shareholders are correct";
 
+
+export const sessionCookieConstants = {
+  STATEMENT_OF_CAPITAL_KEY: "statementOfCapital"
+};
+
 export enum RADIO_BUTTON_VALUE {
   NO = "no",
   YES = "yes",

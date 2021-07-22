@@ -1,12 +1,17 @@
 import { NextFunction, Request, Response } from "express";
-import { RADIO_BUTTON_VALUE, STATEMENT_OF_CAPITAL_ERROR } from "../../utils/constants";
+import { RADIO_BUTTON_VALUE, sessionCookieConstants, STATEMENT_OF_CAPITAL_ERROR } from "../../utils/constants";
 import { STATEMENT_OF_CAPITAL_PATH, TASK_LIST_PATH, urlParams } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
 import { getStatementOfCapitalData } from "../../services/statement.of.capital.service";
 import { Session } from "@companieshouse/node-session-handler";
-import { StatementOfCapital } from "private-api-sdk-node/dist/services/confirmation-statement";
+import {
+  ConfirmationStatementSubmission,
+  SectionStatus,
+  StatementOfCapital
+} from "private-api-sdk-node/dist/services/confirmation-statement";
 import { formatTitleCase } from "../../utils/format";
+import { updateConfirmationStatement } from "../../services/confirmation.statement.service";
 
 export const get = async(req: Request, res: Response, next: NextFunction) => {
   try {
@@ -28,13 +33,14 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const statementOfCapitalButtonValue = req.body.statementOfCapital;
     const companyNumber = getCompanyNumber(req);
     const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
     if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.YES) {
+      await sendUpdate(transactionId, submissionId, req);
       return res.redirect(urlUtils
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),);
     } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO) {
@@ -53,6 +59,29 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   } catch (e) {
     return next(e);
   }
+};
+
+const sendUpdate = async (transactionId: string, submissionId: string, req: Request) => {
+  const statementOfCapital: StatementOfCapital = req.sessionCookie[sessionCookieConstants.STATEMENT_OF_CAPITAL_KEY];
+  const session = req.session as Session;
+  const csSubmission = buildCsSubmission(submissionId, transactionId, statementOfCapital, SectionStatus.CONFIRMED);
+  await updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
+};
+
+const buildCsSubmission = (submissionId: string, transactionId: string, statementOfCapital: StatementOfCapital, status: SectionStatus):
+    ConfirmationStatementSubmission => {
+  return {
+    id: submissionId,
+    data: {
+      statementOfCapitalData: {
+        sectionStatus: status,
+        statementOfCapital: statementOfCapital
+      }
+    },
+    links: {
+      self: `/transactions/${transactionId}/confirmation-statement/${submissionId}`
+    }
+  };
 };
 
 const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];

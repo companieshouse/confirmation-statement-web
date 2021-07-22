@@ -10,8 +10,8 @@ import PrivateApiClient from "private-api-sdk-node/dist/client";
 import { Resource } from "@companieshouse/api-sdk-node";
 import { getStatementOfCapitalData } from "../../src/services/statement.of.capital.service";
 import { getSessionRequest } from "../mocks/session.mock";
-import { mockStatementOfCapital } from "../mocks/statement.of.capital.mock";
 import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
+import { mockStatementOfCapital } from "../mocks/confirmation.statement.submission.mock";
 
 const mockGetStatementOfCapital = ConfirmationStatementService.prototype.getStatementOfCapital as jest.Mock;
 const mockCreatePrivateApiClient = createPrivateApiClient as jest.Mock;
