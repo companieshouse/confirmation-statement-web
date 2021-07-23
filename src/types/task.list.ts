@@ -1,15 +1,3 @@
-import { DateTime } from "luxon";
-import { toReadableFormat } from "../utils/date";
-import {
-  SIC_PATH,
-  STATEMENT_OF_CAPITAL_PATH,
-  ACTIVE_OFFICERS_PATH,
-  REGISTERED_OFFICE_ADDRESS_PATH,
-  SHAREHOLDERS_PATH,
-  PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH
-} from "./page.urls";
-import { urlUtils } from "../utils/url";
-
 export enum TaskState {
     NOT_CHECKED = "NOT_CHECKED",
     IN_PROGRESS = "IN_PROGRESS",
@@ -60,30 +48,7 @@ export interface TaskList {
     };
   },
   recordDate: string;
-  tasksCompleted: number;
+  tasksCompletedCount: number;
   allTasksCompleted: boolean;
   csDue: boolean;
 }
-
-export const initTaskList = (companyNumber: string, transactionId: string, submissionId: string): TaskList => {
-  return {
-    tasks: {
-      officers: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils
-        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(ACTIVE_OFFICERS_PATH, companyNumber, transactionId, submissionId) },
-      peopleSignificantControl: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils
-        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, companyNumber, transactionId, submissionId) },
-      registerLocations: { isVisible: false, state: TaskState.NOT_CHECKED },
-      registeredOfficeAddress: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils
-        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTERED_OFFICE_ADDRESS_PATH, companyNumber, transactionId, submissionId) },
-      shareholders: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils.getUrlWithCompanyNumber(SHAREHOLDERS_PATH, companyNumber) },
-      sicCodes: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils
-        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(SIC_PATH, companyNumber, transactionId, submissionId) },
-      statementOfCapital: { isVisible: false, state: TaskState.NOT_CHECKED, url: urlUtils
-        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, companyNumber, transactionId, submissionId) }
-    },
-    recordDate: toReadableFormat(DateTime.now().toString()),
-    tasksCompleted: 0,
-    allTasksCompleted: false,
-    csDue: false
-  };
-};

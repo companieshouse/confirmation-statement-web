@@ -1,6 +1,7 @@
 jest.mock("../../src/services/company.profile.service");
 jest.mock("../../src/middleware/company.authentication.middleware");
 jest.mock("../../src/utils/logger");
+jest.mock("../../src/services/confirmation.statement.service");
 
 import mocks from "../mocks/all.middleware.mock";
 import { TASK_LIST_PATH } from "../../src/types/page.urls";
@@ -12,12 +13,18 @@ import { validCompanyProfile } from "../mocks/company.profile.mock";
 import { toReadableFormat } from "../../src/utils/date";
 import { DateTime } from "luxon";
 import { createAndLogError } from "../../src/utils/logger";
+import { getConfirmationStatement } from "../../src/services/confirmation.statement.service";
+import { mockConfirmationStatementSubmission } from "../mocks/confirmation.statement.submission.mock";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
+
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockCreateAndLogError = createAndLogError as jest.Mock;
 mockCreateAndLogError.mockReturnValue(new Error());
+
+const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
+mockGetConfirmationStatement.mockResolvedValue(mockConfirmationStatementSubmission);
 
 const COMPANY_NUMBER = "12345678";
 

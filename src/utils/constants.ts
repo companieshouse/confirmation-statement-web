@@ -16,3 +16,7 @@ export enum RADIO_BUTTON_VALUE {
   NO = "no",
   YES = "yes",
 }
+
+export const taskKeys = {
+  SECTION_STATUS_KEY: "sectionStatus"
+};
