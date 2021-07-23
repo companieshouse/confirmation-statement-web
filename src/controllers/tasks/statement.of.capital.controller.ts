@@ -54,7 +54,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     return res.render(Templates.STATEMENT_OF_CAPITAL, {
       templateName: Templates.STATEMENT_OF_CAPITAL,
       statementOfCapitalErrorMsg: STATEMENT_OF_CAPITAL_ERROR,
-      backLinkUrl: urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber),
+      backLinkUrl: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
     });
   } catch (e) {
     return next(e);

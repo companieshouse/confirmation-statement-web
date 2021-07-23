@@ -99,14 +99,14 @@ describe("Statement of Capital controller tests", () => {
     });
 
     it("Should return an error page if error is thrown in post function", async () => {
-      const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlWithCompanyNumber");
-      spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
+      const spyGetUrlWithCompanyNumberTransactionIdAndSubmissionId = jest.spyOn(urlUtils, "getUrlWithCompanyNumberTransactionIdAndSubmissionId");
+      spyGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mockImplementationOnce(() => { throw new Error(); });
       const response = await request(app).post(STATEMENT_OF_CAPITAL_URL);
 
       expect(response.text).toContain("Sorry, the service is unavailable");
 
       // restore original function so it is no longer mocked
-      spyGetUrlWithCompanyNumber.mockRestore();
+      spyGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mockRestore();
     });
   });
 });
