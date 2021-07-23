@@ -12,8 +12,6 @@ import { mockActiveOfficerDetails } from "../../mocks/active.officer.details.moc
 import { getActiveOfficerDetailsData } from "../../../src/services/active.officer.details.service";
 
 jest.mock("../../../src/middleware/company.authentication.middleware");
-jest.mock("../../../src/services/company.officers.service");
-jest.mock("../../../src/utils/feature.flag");
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
