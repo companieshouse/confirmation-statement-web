@@ -2,7 +2,10 @@ jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/statement.of.capital.service");
 jest.mock("../../../src/services/confirmation.statement.service");
 
-import { updateConfirmationStatement } from "../../../src/services/confirmation.statement.service";
+import {
+  getConfirmationStatement,
+  updateConfirmationStatement
+} from "../../../src/services/confirmation.statement.service";
 import request from "supertest";
 import mocks from "../../mocks/all.middleware.mock";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
@@ -21,6 +24,8 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next(
 
 const mockGetStatementOfCapitalData = getStatementOfCapitalData as jest.Mock;
 const mockUpdateConfirmationStatement =  updateConfirmationStatement as jest.Mock;
+
+const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 
 const PAGE_HEADING = "Review the statement of capital";
 const STOP_PAGE_HEADING = "You cannot use this service - File a confirmation statement";
@@ -69,7 +74,7 @@ describe("Statement of Capital controller tests", () => {
 
   describe("post tests", () => {
     it("Should navigate to the task list page when statement of capital confirmed", async () => {
-      mockUpdateConfirmationStatement.mockReturnValueOnce(mockConfirmationStatementSubmission);
+      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(STATEMENT_OF_CAPITAL_URL)
         .send({ sessionCookie: `{ statementOfCapital: ${mockStatementOfCapital} }` })
@@ -81,6 +86,7 @@ describe("Statement of Capital controller tests", () => {
     });
 
     it("Should navigate to the statement of capital stop page when statement of capital is declared incorrect", async () => {
+      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(STATEMENT_OF_CAPITAL_URL)
         .send({ statementOfCapital: "no" });
