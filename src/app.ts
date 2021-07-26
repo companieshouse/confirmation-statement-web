@@ -12,6 +12,7 @@ import cookieParser from "cookie-parser";
 import { logger } from "./utils/logger";
 import { companyAuthenticationMiddleware } from "./middleware/company.authentication.middleware";
 import cookieSessionMiddleware from "./middleware/cookie.session.middleware";
+import { COOKIE_SECRET } from "./utils/properties";
 
 const app = express();
 
@@ -40,7 +41,7 @@ app.set("view engine", "html");
 // apply middleware
 // TODO get key and timeout from config
 app.use(cookieSessionMiddleware({
-  keys: ["TO BE CHANGED"],
+  keys: [COOKIE_SECRET],
   // Cookie Options
   maxAge: 60 * 60 * 1000 // 1 hours
 } as any) as any);
