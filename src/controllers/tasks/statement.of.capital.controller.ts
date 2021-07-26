@@ -11,8 +11,8 @@ import {
   StatementOfCapital
 } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { formatTitleCase } from "../../utils/format";
-import { updateConfirmationStatement } from "../../services/confirmation.statement.service";
-import { ConfirmationStatementSubmissionBuilder } from "../../types/builders/confirmation.statement.submission.builder";
+import { getConfirmationStatement, updateConfirmationStatement } from "../../services/confirmation.statement.service";
+import { StatementOfCapitalData } from "private-api-sdk-node/dist/services/confirmation-statement/types";
 
 export const get = async(req: Request, res: Response, next: NextFunction) => {
   try {
@@ -65,18 +65,24 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 const sendUpdate = async (transactionId: string, submissionId: string, req: Request) => {
   const statementOfCapital: StatementOfCapital = req.sessionCookie[sessionCookieConstants.STATEMENT_OF_CAPITAL_KEY];
   const session = req.session as Session;
-  const csSubmission = buildCsSubmission(submissionId, transactionId, statementOfCapital, SectionStatus.CONFIRMED);
+  const currentCsSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
+  const csSubmission = updateCsSubmission(currentCsSubmission, statementOfCapital, SectionStatus.CONFIRMED);
   await updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
 };
 
-const buildCsSubmission = (submissionId: string, transactionId: string, statementOfCapital: StatementOfCapital, status: SectionStatus):
+const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission, statementOfCapital: StatementOfCapital, status: SectionStatus):
     ConfirmationStatementSubmission => {
-  return new ConfirmationStatementSubmissionBuilder(transactionId, submissionId)
-    .withStatementOfCapitalData({
-      sectionStatus: status,
-      statementOfCapital: statementOfCapital
-    })
-    .build();
+  const socData: StatementOfCapitalData = {
+    sectionStatus: status,
+    statementOfCapital: statementOfCapital
+  };
+  if (!currentCsSubmission.data) {
+    currentCsSubmission.data = {};
+  }
+
+  currentCsSubmission.data.statementOfCapitalData = socData;
+
+  return currentCsSubmission;
 };
 
 const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];

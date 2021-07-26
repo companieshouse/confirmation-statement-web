@@ -47,6 +47,6 @@ export const updateConfirmationStatement = async (session: Session,
   const response = await csService.postUpdateConfirmationStatement(transactionId, submitId, csSubmission);
   if (response.httpStatusCode !== 200) {
     const castedResponse: ApiErrorResponse = response;
-    throw new Error(`Trasnaction Id ${transactionId}, Submit Id ${submitId}, Something went wrong updating confirmation statement ${JSON.stringify(castedResponse)}`);
+    throw new Error(`Transaction Id ${transactionId}, Submit Id ${submitId}, Something went wrong updating confirmation statement ${JSON.stringify(castedResponse)}`);
   }
 };
