@@ -12,6 +12,7 @@ import {
 } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { formatTitleCase } from "../../utils/format";
 import { updateConfirmationStatement } from "../../services/confirmation.statement.service";
+import { ConfirmationStatementSubmissionBuilder } from "../../types/builders/confirmation.statement.submission.builder";
 
 export const get = async(req: Request, res: Response, next: NextFunction) => {
   try {
@@ -70,18 +71,12 @@ const sendUpdate = async (transactionId: string, submissionId: string, req: Requ
 
 const buildCsSubmission = (submissionId: string, transactionId: string, statementOfCapital: StatementOfCapital, status: SectionStatus):
     ConfirmationStatementSubmission => {
-  return {
-    id: submissionId,
-    data: {
-      statementOfCapitalData: {
-        sectionStatus: status,
-        statementOfCapital: statementOfCapital
-      }
-    },
-    links: {
-      self: `/transactions/${transactionId}/confirmation-statement/${submissionId}`
-    }
-  };
+  return new ConfirmationStatementSubmissionBuilder(transactionId, submissionId)
+    .withStatementOfCapitalData({
+      sectionStatus: status,
+      statementOfCapital: statementOfCapital
+    })
+    .build();
 };
 
 const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];
