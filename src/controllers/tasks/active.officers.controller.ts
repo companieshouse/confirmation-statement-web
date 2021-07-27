@@ -9,12 +9,15 @@ import { getActiveOfficerDetailsData } from "../../services/active.officer.detai
 import { formatTitleCase } from "../../utils/format";
 
 let activeOfficerDetails: ActiveOfficerDetails;
+let companyNumber: string;
+let transactionId: string;
+let submissionId: string;
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const companyNumber = getCompanyNumber(req);
-    const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
-    const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
+    companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER];
+    transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
+    submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
     const session: Session = req.session as Session;
     activeOfficerDetails = await getActiveOfficerDetailsData(session, companyNumber);
     activeOfficerDetails.foreName1 = formatTitleCase(activeOfficerDetails.foreName1);
@@ -35,10 +38,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     const activeOfficerDetailsBtnValue = req.body.activeDirectors;
-    const companyNumber = getCompanyNumber(req);
-    const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
-    const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
-
     if (activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.YES) {
       return res.redirect(urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId));
     } else {
@@ -53,5 +52,3 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     return next(e);
   }
 };
-
-const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];
