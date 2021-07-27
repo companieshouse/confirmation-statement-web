@@ -20,28 +20,33 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
 
-      {% if pscErrorMsg %}
-        {{ govukErrorSummary({
-          titleText: "There is a problem",
-          errorList: [
-            {
-              text: "Select yes if the PSC details are correct",
-              href: "#psc"
-            }
-          ]
-        }) }}
-      {% endif %}
-
       <form action="" method="post">
-        <h1 class="govuk-heading-l">Check the people with significant control (PSC)</h1>
 
-        <h2 class="govuk-heading-m">1 individual person</h2>
+        {% if peopleWithSignificantControlErrorMsg %}
+          {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: [
+              {
+                text: "Select yes if the PSC details are correct",
+                href: "#psc"
+              }
+            ]
+          }) }}
+          {% set peopleWithSignificantControlError = {
+            text: peopleWithSignificantControlErrorMsg
+          } %}
+          {% else %}
+            {% set peopleWithSignificantControlError = false %}
+        {% endif %}
+
+        <h1 class="govuk-heading-l">Check the people with significant control (PSC)</h1>
 
         {{ govukDetails({
           summaryText: "More about people with significant control",
           html: pscDetails
         }) }}
 
+        <h2 class="govuk-heading-m">1 individual person</h2>
         {{ govukTable({
           rows: [
             [
@@ -56,11 +61,11 @@
           classes: "govuk-radios",
           idPrefix: "psc",
           name: "psc",
-          errorMessage: pscDetailsError,
+          errorMessage: peopleWithSignificantControlError,
           fieldset: {
             legend: {
               html: "Are the PSC details correct?",
-              isPageHeading: true,
+              isPageHeading: false,
               classes: "govuk-fieldset__legend--l"
             }
           },
@@ -93,7 +98,6 @@
         }) }}
 
         {% include "includes/continue-button.html" %}
-
       </form>
     </div>
   </div>
