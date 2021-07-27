@@ -1,10 +1,5 @@
 {% extends "layout.html" %}
 
-{% block head %}
-    {{ super() }}
-    {% include "includes/task-list/task-list-styles.html" %}
-{% endblock %}
-
 {% set showChecked %}
     <strong class="govuk-tag app-task-list__tag" id="statusIdPlaceholder">Checked</strong>
 {% endset %}
