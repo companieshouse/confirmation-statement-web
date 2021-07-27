@@ -50,5 +50,16 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain(PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR);
       expect(response.text).toContain(PAGE_HEADING);
     });
+
+    it("Should return an error page if error is thrown in post function", async () => {
+      const spyGetUrlWithCompanyNumberTransactionIdAndSubmissionId = jest.spyOn(urlUtils, "getUrlWithCompanyNumberTransactionIdAndSubmissionId");
+      spyGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mockImplementationOnce(() => { throw new Error(); });
+      const response = await request(app).post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+
+      expect(response.text).toContain("Sorry, the service is unavailable");
+
+      // restore original function so it is no longer mocked
+      spyGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mockRestore();
+    });
   });
 });
