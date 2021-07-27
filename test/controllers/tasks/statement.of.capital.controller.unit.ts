@@ -23,7 +23,7 @@ const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as j
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 
 const mockGetStatementOfCapitalData = getStatementOfCapitalData as jest.Mock;
-const mockUpdateConfirmationStatement =  updateConfirmationStatement as jest.Mock;
+const mockUpdateConfirmationStatement = updateConfirmationStatement as jest.Mock;
 
 const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 
