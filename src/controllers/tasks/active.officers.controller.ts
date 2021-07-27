@@ -39,7 +39,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const activeOfficerDetailsBtnValue = req.body.activeDirectors;
     if (activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.YES) {
       return res.redirect(urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId));
-    } else if (activeDirectorsButtonValue === RADIO_BUTTON_VALUE.NO) {
+    } else if (activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.NO) {
         return res.render(Templates.WRONG_OFFICERS, {
           backLinkUrl: urlUtils.getUrlWithCompanyNumber(ACTIVE_OFFICERS_PATH, companyNumber),
           templateName: Templates.WRONG_OFFICERS,
