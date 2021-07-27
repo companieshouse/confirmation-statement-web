@@ -2,9 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
 import { TASK_LIST_PATH, urlParams } from "../../types/page.urls";
-import {
-  PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR
-} from "../../utils/constants";
+import { PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR } from "../../utils/constants";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -30,7 +28,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
       templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
       peopleWithSignificantControlErrorMsg: PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
-      backLinkUrl: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
+      backLinkUrl: urlUtils
+        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
     });
   } catch (e) {
     return next(e);
