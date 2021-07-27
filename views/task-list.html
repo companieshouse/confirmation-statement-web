@@ -1,18 +1,13 @@
 {% extends "layout.html" %}
 
-{% block head %}
-    {{ super() }}
-    {% include "includes/task-list/task-list-styles.html" %}
-{% endblock %}
-
 {% set showChecked %}
-    <strong class="govuk-tag app-task-list__tag">Checked</strong>
+    <strong class="govuk-tag app-task-list__tag" id="statusIdPlaceholder">Checked</strong>
 {% endset %}
 {% set showInProgress %}
-    <strong class="govuk-tag govuk-tag--blue app-task-list__tag">In progress</strong>
+    <strong class="govuk-tag govuk-tag--blue app-task-list__tag" id="statusIdPlaceholder">In progress</strong>
 {% endset %}
 {% set showNotChecked %}
-    <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not checked</strong>
+    <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="statusIdPlaceholder">Not checked</strong>
 {% endset %}
 
 {% block pageTitle %}
@@ -34,7 +29,7 @@
             {{ taskList.recordDate }}.
         </p>
         <p class="govuk-body govuk-!-margin-bottom-7">
-            You have checked {{ taskList.tasksCompleted }} of 7 sections
+            You have checked {{ taskList.tasksCompletedCount }} of 7 sections
         </p>
         <ol class="app-task-list">
             <li>

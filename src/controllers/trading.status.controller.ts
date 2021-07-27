@@ -14,14 +14,20 @@ export const get = (req: Request, res: Response) => {
 export const post = (req: Request, res: Response) => {
   const tradingStatusButtonValue = req.body.tradingStatus;
   const companyNumber = getCompanyNumber(req);
+  const transactionId = getTransactionId(req);
+  const submissionId = getSubmissionId(req);
 
   if (tradingStatusButtonValue === RADIO_BUTTON_VALUE.YES) {
-    return res.redirect(urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber));
+    return res.redirect(urlUtils
+      .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber,
+                                                           transactionId, submissionId));
   }
 
   if (tradingStatusButtonValue === RADIO_BUTTON_VALUE.NO) {
     return res.render(Templates.TRADING_STOP, {
-      backLinkUrl: urlUtils.getUrlWithCompanyNumber(TRADING_STATUS_PATH, companyNumber)
+      backLinkUrl: urlUtils
+        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TRADING_STATUS_PATH, companyNumber,
+                                                             transactionId, submissionId)
     });
   }
 
@@ -32,5 +38,7 @@ export const post = (req: Request, res: Response) => {
 };
 
 const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];
+const getTransactionId = (req: Request): string => req.params[urlParams.PARAM_TRANSACTION_ID];
+const getSubmissionId = (req: Request): string => req.params[urlParams.PARAM_SUBMISSION_ID];
 
 const getConfirmCompanyUrl = (companyNumber: string): string => `${CONFIRM_COMPANY_PATH}?companyNumber=${companyNumber}`;

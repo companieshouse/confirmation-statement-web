@@ -9,11 +9,11 @@
                 </a>
             </span>
         {% if taskList.officers.state === "CHECKED" %}
-            {{ showChecked | safe }}
+            {{ showChecked | safe | replace("statusIdPlaceholder", "officersStatus")}}
         {% elseif taskList.officers.state === "IN_PROGRESS" %}
-            {{ showInProgress | safe }}
+            {{ showInProgress | safe | replace("statusIdPlaceholder", "officersStatus")}}
         {% else %}
-            {{ showNotChecked | safe }}
+            {{ showNotChecked | safe | replace("statusIdPlaceholder", "officersStatus")}}
         {% endif %}
     </li>
     <li class="app-task-list__item">
@@ -23,25 +23,25 @@
                 </a>
             </span>
         {% if taskList.peopleSignificantControl.state === "CHECKED" %}
-            {{ showChecked | safe }}
+            {{ showChecked | safe | replace("statusIdPlaceholder", "pscStatus")}}
         {% elseif taskList.peopleSignificantControl.state === "IN_PROGRESS" %}
-            {{ showInProgress | safe }}
+            {{ showInProgress | safe | replace("statusIdPlaceholder", "pscStatus")}}
         {% else %}
-            {{ showNotChecked | safe }}
+            {{ showNotChecked | safe | replace("statusIdPlaceholder", "pscStatus")}}
         {% endif %}
     </li>
     <li class="app-task-list__item">
             <span class="app-task-list__task-name">
-                <a href="/confirmation-statement/shareholders">
+                <a href="{{taskList.tasks.shareholders.url}}">
                     Shareholders
                 </a>
             </span>
         {% if taskList.shareholders.state === "CHECKED" %}
-            {{ showChecked | safe }}
+            {{ showChecked | safe | replace("statusIdPlaceholder", "shareholdersStatus")}}
         {% elseif taskList.shareholders.state === "IN_PROGRESS" %}
-            {{ showInProgress | safe }}
+            {{ showInProgress | safe | replace("statusIdPlaceholder", "shareholdersStatus")}}
         {% else %}
-            {{ showNotChecked | safe }}
+            {{ showNotChecked | safe | replace("statusIdPlaceholder", "shareholdersStatus")}}
         {% endif %}
     </li>
 </ul>

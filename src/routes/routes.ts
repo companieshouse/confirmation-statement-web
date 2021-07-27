@@ -3,12 +3,13 @@ import * as activeOfficers from "../controllers/tasks/active.officers.controller
 import * as confirmCompanyRoute from "../controllers/confirm.company.controller";
 import * as companyNumberRoute from "../controllers/company.number.controller";
 import * as createTransactionRoute from "../controllers/create.transaction.controller";
+import * as peopleWithSignificantControlRoute from "../controllers/tasks/people.with.significant.control.controller";
+import * as shareholders from "../controllers/tasks/shareholders.controller";
 import * as sicRoute from "../controllers/tasks/confirm.sic.code.controller";
 import * as startRoute from "../controllers/start.controller";
 import * as statementOfCapitalRoute from "../controllers/tasks/statement.of.capital.controller";
 import * as tradingStatusRoute from "../controllers/trading.status.controller";
 import * as taskListRoute from "../controllers/task.list.controller";
-import * as activePscsRoute from "../controllers/tasks/active.pscs.controller";
 import * as registeredOfficeAddressRoute from "../controllers/tasks/registered.office.address.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
@@ -50,7 +51,10 @@ router.get(urls.TASK_LIST, taskListRoute.get);
 router.get(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.get);
 router.post(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.post);
 
-router.get(urls.ACTIVE_PSCS, activePscsRoute.get);
+router.get(urls.PEOPLE_WITH_SIGNIFICANT_CONTROL, peopleWithSignificantControlRoute.get);
 
 router.get(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.get);
 router.post(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.post);
+
+router.get(urls.SHAREHOLDERS, shareholders.get);
+router.post(urls.SHAREHOLDERS, shareholders.post);
