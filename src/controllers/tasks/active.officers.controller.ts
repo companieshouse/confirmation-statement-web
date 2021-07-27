@@ -11,6 +11,8 @@ import { formatTitleCase } from "../../utils/format";
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const companyNumber = getCompanyNumber(req);
+    const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
+    const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
     const session: Session = req.session as Session;
     const activeOfficerDetails: ActiveOfficerDetails = await getActiveOfficerDetailsData(session, companyNumber);
     activeOfficerDetails.foreName1 = formatTitleCase(activeOfficerDetails.foreName1);
@@ -20,7 +22,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(Templates.ACTIVE_OFFICERS, {
       templateName: Templates.ACTIVE_OFFICERS,
-      backLinkUrl: urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber),
+      backLinkUrl: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
       activeOfficerDetails
     });
   } catch (e) {
@@ -32,12 +34,14 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     const activeOfficerDetailsBtnValue = req.body.activeDirectors;
     const companyNumber = getCompanyNumber(req);
+    const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
+    const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
 
     if (activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.YES) {
-      return res.redirect(urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber));
+      return res.redirect(urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId));
     } else {
       return res.render(Templates.ACTIVE_OFFICERS, {
-        backLinkUrl: urlUtils.getUrlWithCompanyNumber(TASK_LIST_PATH, companyNumber),
+        backLinkUrl: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
         officerErrorMsg: OFFICER_DETAILS_ERROR,
         templateName: Templates.ACTIVE_OFFICERS
       });
