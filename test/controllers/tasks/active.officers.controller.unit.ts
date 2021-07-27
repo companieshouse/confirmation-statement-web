@@ -83,14 +83,14 @@ describe("Active officers controller tests", () => {
     });
 
     it("Should navigate to an error page if the function throws an error", async () => {
-      const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlWithCompanyNumber");
-      spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
+      const spyGetUrl = jest.spyOn(urlUtils, "getUrlWithCompanyNumberTransactionIdAndSubmissionId");
+      spyGetUrl.mockImplementationOnce(() => { throw new Error(); });
 
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
 
       expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
-      spyGetUrlWithCompanyNumber.mockRestore();
+      spyGetUrl.mockRestore();
     });
 
     it("Should navigate to an error page if the called service throws an error", async () => {
@@ -122,14 +122,14 @@ describe("Active officers controller tests", () => {
     });
 
     it("Should return an error page if error is thrown in post function", async () => {
-      const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlWithCompanyNumber");
-      spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
+      const spyGetUrl = jest.spyOn(urlUtils, "getUrlWithCompanyNumberTransactionIdAndSubmissionId");
+      spyGetUrl.mockImplementationOnce(() => { throw new Error(); });
       const response = await request(app).post(ACTIVE_OFFICER_DETAILS_URL);
 
       expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
       // restore original function so it is no longer mocked
-      spyGetUrlWithCompanyNumber.mockRestore();
+      spyGetUrl.mockRestore();
     });
   });
 });
