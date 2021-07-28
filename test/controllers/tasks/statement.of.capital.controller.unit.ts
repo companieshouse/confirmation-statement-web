@@ -18,12 +18,13 @@ import {
   mockConfirmationStatementSubmission,
   mockStatementOfCapital
 } from "../../mocks/confirmation.statement.submission.mock";
+import { ConfirmationStatementSubmission, SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 
 const mockGetStatementOfCapitalData = getStatementOfCapitalData as jest.Mock;
-const mockUpdateConfirmationStatement =  updateConfirmationStatement as jest.Mock;
+const mockUpdateConfirmationStatement = updateConfirmationStatement as jest.Mock;
 
 const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 
@@ -32,6 +33,7 @@ const STOP_PAGE_HEADING = "You cannot use this service - File a confirmation sta
 const COMPANY_NUMBER = "12345678";
 const SUBMISSION_ID = "a80f09e2";
 const TRANSACTION_ID = "111-111-111";
+const LINK_SELF = "/something";
 const STATEMENT_OF_CAPITAL_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 const TASK_LIST_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 
@@ -113,6 +115,26 @@ describe("Statement of Capital controller tests", () => {
 
       // restore original function so it is no longer mocked
       spyGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mockRestore();
+    });
+
+    it("Should create a new data block if Yes selected and current csSubmission has no data", async () => {
+      const submissionWithNoData: ConfirmationStatementSubmission = {
+        id: SUBMISSION_ID,
+        links: {
+          self: LINK_SELF
+        }
+      };
+      mockGetConfirmationStatement.mockResolvedValueOnce(submissionWithNoData);
+      const response = await request(app)
+        .post(STATEMENT_OF_CAPITAL_URL)
+        .send({ statementOfCapital: "yes" });
+
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(TASK_LIST_URL);
+      const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
+      expect(csSubmission.id).toBe(SUBMISSION_ID);
+      expect(csSubmission.links.self).toBe(LINK_SELF);
+      expect(csSubmission.data?.statementOfCapitalData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
     });
   });
 });

@@ -21,8 +21,10 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
     const session: Session = req.session as Session;
     const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, companyNumber);
-    req.sessionCookie = { statementOfCapital: statementOfCapital };
+
+    req.sessionCookie[sessionCookieConstants.STATEMENT_OF_CAPITAL_KEY] = statementOfCapital;
     statementOfCapital.classOfShares = formatTitleCase(statementOfCapital.classOfShares);
+
     return res.render(Templates.STATEMENT_OF_CAPITAL, {
       templateName: Templates.STATEMENT_OF_CAPITAL,
       backLinkUrl: urlUtils
@@ -40,8 +42,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = getCompanyNumber(req);
     const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
+
     if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.YES) {
-      await sendUpdate(transactionId, submissionId, req, SectionStatus.CONFIRMED);
+      const statementOfCapital: StatementOfCapital = req.sessionCookie[sessionCookieConstants.STATEMENT_OF_CAPITAL_KEY];
+      await sendUpdate(transactionId, submissionId, req, SectionStatus.CONFIRMED, statementOfCapital);
       return res.redirect(urlUtils
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),);
     } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO) {
@@ -63,25 +67,25 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const sendUpdate = async (transactionId: string, submissionId: string, req: Request, status: SectionStatus) => {
-  const statementOfCapital: StatementOfCapital = req.sessionCookie[sessionCookieConstants.STATEMENT_OF_CAPITAL_KEY];
+const sendUpdate = async (transactionId: string, submissionId: string, req: Request, status: SectionStatus, statementOfCapital?: StatementOfCapital) => {
   const session = req.session as Session;
   const currentCsSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
-  const csSubmission = updateCsSubmission(currentCsSubmission, statementOfCapital, status);
+  const csSubmission = updateCsSubmission(currentCsSubmission, status, statementOfCapital);
   await updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
 };
 
-const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission, statementOfCapital: StatementOfCapital, status: SectionStatus):
+const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission, status: SectionStatus, statementOfCapital?: StatementOfCapital):
     ConfirmationStatementSubmission => {
-  const socData: StatementOfCapitalData = {
+  const newSocData: StatementOfCapitalData = {
     sectionStatus: status,
-    statementOfCapital: statementOfCapital
+    ...(statementOfCapital && { statementOfCapital: statementOfCapital })
   };
+
   if (!currentCsSubmission.data) {
     currentCsSubmission.data = {};
   }
 
-  currentCsSubmission.data.statementOfCapitalData = socData;
+  currentCsSubmission.data.statementOfCapitalData = newSocData;
 
   return currentCsSubmission;
 };
