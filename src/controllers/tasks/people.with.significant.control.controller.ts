@@ -13,7 +13,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = getCompanyNumber(req);
     const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
-    const template: string = getTemplate(true);
+    const template: string = getTemplate(false);
     return res.render(template, {
       templateName: template,
       backLinkUrl: urlUtils
@@ -35,10 +35,11 @@ const getTemplate = (isRle): string => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     const pscButtonValue = req.body.pscRadioValue;
+    console.log("PSC BUTON VALUE " + pscButtonValue);
     const companyNumber = getCompanyNumber(req);
     const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
-    const template: string = getTemplate(true);
+    const template: string = getTemplate(false);
     if (pscButtonValue === RADIO_BUTTON_VALUE.NO) {
       return res.render(Templates.WRONG_PSC_DETAILS, {
         templateName: Templates.WRONG_PSC_DETAILS,

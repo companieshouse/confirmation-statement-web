@@ -52,7 +52,7 @@ router.get(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.get);
 router.post(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.post);
 
 router.get(urls.PEOPLE_WITH_SIGNIFICANT_CONTROL, peopleWithSignificantControlRoute.get);
-router.post(urls.PEOPLE_WITH_SIGNIFICANT_CONTROL, peopleWithSignificantControlRoute.get);
+router.post(urls.PEOPLE_WITH_SIGNIFICANT_CONTROL, peopleWithSignificantControlRoute.post);
 
 router.get(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.get);
 router.post(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.post);
