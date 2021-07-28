@@ -14,6 +14,7 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next(
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Check the people with significant control (PSC)";
+const STOP_PAGE_HEADING = "Update the people with significant control (PSC) details";
 const COMPANY_NUMBER = "12345678";
 const PEOPLE_WITH_SIGNIFICANT_CONTROL_URL = PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH.replace(":companyNumber", COMPANY_NUMBER);
 
@@ -49,6 +50,15 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain(PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR);
       expect(response.text).toContain(PAGE_HEADING);
+    });
+
+    it("Should display wrong psc data page when no radio button is selected", async () => {
+      const response = await request(app)
+        .post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL)
+        .send({ pscRadioValue: "no" });
+
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(STOP_PAGE_HEADING);
     });
 
     it("Should return an error page if error is thrown in post function", async () => {
