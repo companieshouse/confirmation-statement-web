@@ -12,8 +12,8 @@ import { getSessionRequest } from "../mocks/session.mock";
 import { createPrivateApiClient } from "private-api-sdk-node";
 import PrivateApiClient from "private-api-sdk-node/dist/client";
 
-const mockGetEligiblity
-    = ConfirmationStatementService.prototype.getEligiblity as jest.Mock;
+const mockGetEligibility
+    = ConfirmationStatementService.prototype.getEligibility as jest.Mock;
 const mockCreatePrivateApiClient = createPrivateApiClient as jest.Mock;
 
 mockCreatePrivateApiClient.mockReturnValue({
@@ -36,9 +36,9 @@ describe("Test eligibility checks", () => {
       httpStatusCode: 200,
       resource: companyValidationResponse
     };
-    mockGetEligiblity.mockResolvedValueOnce(resource);
+    mockGetEligibility.mockResolvedValueOnce(resource);
     const response = await checkEligibility(getSessionRequest({ access_token: "token" }), companyNumber);
-    expect(mockGetEligiblity).toBeCalledWith(companyNumber);
+    expect(mockGetEligibility).toBeCalledWith(companyNumber);
     expect(response).toEqual(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
   });
 
