@@ -19,6 +19,7 @@ const mockGetActiveOfficerDetails = getActiveOfficerDetailsData as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
 const PAGE_HEADING = "Check the director's details";
+const WRONG_OFFICER_PAGE_HEADING = "Update officers - File a confirmation statement";
 const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 const ACTIVE_OFFICER_DETAILS_URL = ACTIVE_OFFICERS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
@@ -112,6 +113,15 @@ describe("Active officers controller tests", () => {
 
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
+    });
+
+    it("Should go to stop page when officer details radio button is no", async () => {
+      const response = await request(app)
+        .post(ACTIVE_OFFICER_DETAILS_URL)
+        .send({ activeDirectors: "no" });
+
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(WRONG_OFFICER_PAGE_HEADING);
     });
 
     it("Should redisplay active officers page with error when radio button is not selected", async () => {
