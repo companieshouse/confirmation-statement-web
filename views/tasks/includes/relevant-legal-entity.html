@@ -1,0 +1,64 @@
+{% set pscHTML %}
+<div class="govuk-summary-card govuk-!-margin-bottom-4">
+    <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center">
+        <p class="govuk-!-font-weight-bold govuk-!-margin-0">BROOKLYN NETS LIMITED</p>
+        {{govukTag({
+        text: "Active",
+        classes: "govuk-tag--green"
+        })}}
+    </div>
+    <div style="display: flex" class="govuk-!-padding-1" style="border-bottom: 0px">
+        <dl style="display: block" class="govuk-summary-list govuk-!-margin-3">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Registration number</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>00112233</p>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Correspondence address</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>2 Nets Way, Newcastle, NE2 3BB</p>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Country of residence</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>UK</p>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Law governed</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>Company law</p>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Legal form</dt>
+                <dd class="govuk-summary-list__value">
+                    <p>Limited company</p>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Nature of control</dt>
+                <dd class="govuk-summary-list__value">
+                    <ul class="govuk-bullet__list">
+                        <li>
+                            <p>Ownership of voting rights - more than 75%</p></li>
+                    </ul>
+                </dd>
+            </div>
+        </dl>
+    </div>
+</div>
+{% endset %}
+
+{{ govukTable({
+  rows: [
+    [
+      {
+        html: pscHTML
+      }
+    ]
+  ]
+}) }}
