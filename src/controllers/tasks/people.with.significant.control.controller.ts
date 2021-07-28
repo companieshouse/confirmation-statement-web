@@ -35,7 +35,6 @@ const getTemplate = (isRle): string => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     const pscButtonValue = req.body.pscRadioValue;
-    console.log("PSC BUTON VALUE " + pscButtonValue);
     const companyNumber = getCompanyNumber(req);
     const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
