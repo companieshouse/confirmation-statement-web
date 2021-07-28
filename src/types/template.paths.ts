@@ -18,6 +18,7 @@ export enum Templates {
     USE_WEBFILING = "use-webfiling",
     TRADING_STOP = "trading-stop",
     NO_FILING_REQUIRED = "no-filing-required",
+    WRONG_PSC_DETAILS = "incorrect-information/wrong-psc-details",
     WRONG_SHAREHOLDERS = "incorrect-information/wrong-shareholders",
     WRONG_SIC = "incorrect-information/wrong-sic",
     WRONG_STATEMENT_OF_CAPITAL = "incorrect-information/wrong-statement-of-capital",

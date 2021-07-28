@@ -9,7 +9,7 @@ import Resource from "@companieshouse/api-sdk-node/dist/services/resource";
 export const checkEligibility = async (session: Session, companyNumber: string): Promise<EligibilityStatusCode> => {
   const client = createPrivateOAuthApiClient(session);
   const csService: ConfirmationStatementService = client.confirmationStatementService;
-  const response: Resource<CompanyValidationResponse> = await csService.getEligiblity(companyNumber);
+  const response: Resource<CompanyValidationResponse> = await csService.getEligibility(companyNumber);
   const companyValidationResponse: CompanyValidationResponse = response.resource as CompanyValidationResponse;
   return companyValidationResponse.eligibilityStatusCode;
 };
