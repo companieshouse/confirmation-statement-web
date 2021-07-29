@@ -46,16 +46,11 @@
           html: pscDetails
         }) }}
 
-        <h2 class="govuk-heading-m">1 individual person</h2>
-        {{ govukTable({
-          rows: [
-            [
-              {
-                html: pscHTML
-              }
-            ]
-          ]
-        }) }}
+        {% if rle %}
+           {% include "tasks/includes/relevant-legal-entity.html" %}
+        {% else %}
+           {% include "tasks/includes/normal-psc.html" %}
+        {% endif %}
 
         {{ govukRadios({
           classes: "govuk-radios",

@@ -37,7 +37,11 @@
 
       {{ govukButton({
         text: "Return to confirmation statement",
-        href: returnToTaskListUrl
+        href: returnToTaskListUrl,
+        attributes: {
+          "data-event-id": "return-to-task-list-button",
+          "id": "submit"
+        }
       }) }}
 
       <p>
