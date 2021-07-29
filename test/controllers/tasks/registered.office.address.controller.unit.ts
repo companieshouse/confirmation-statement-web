@@ -42,14 +42,14 @@ describe("Registered Office Address controller tests", () => {
   });
 
   it("Should redirect to an error page when error is thrown", async () => {
-    const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlWithCompanyNumber");
-    spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
+    const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
+    spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
     const response = await request(app).get(REGISTERED_OFFICE_ADDRESS_URL);
 
     expect(response.text).toContain("Sorry, the service is unavailable");
 
     // restore original function so it is no longer mocked
-    spyGetUrlWithCompanyNumber.mockRestore();
+    spyGetUrlToPath.mockRestore();
   });
 
   it("Should return to task list page when roa is confirmed", async () => {
@@ -76,14 +76,14 @@ describe("Registered Office Address controller tests", () => {
   });
 
   it("Should return an error page if error is thrown in post function", async () => {
-    const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlWithCompanyNumber");
-    spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
+    const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
+    spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
     const response = await request(app).post(REGISTERED_OFFICE_ADDRESS_URL);
 
     expect(response.text).toContain("Sorry, the service is unavailable");
 
     // restore original function so it is no longer mocked
-    spyGetUrlWithCompanyNumber.mockRestore();
+    spyGetUrlToPath.mockRestore();
   });
 
 });
