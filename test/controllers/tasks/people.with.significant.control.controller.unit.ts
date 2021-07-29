@@ -41,14 +41,14 @@ describe("People with significant control controller tests", () => {
     });
 
     it("Should navigate to an error page if the function throws an error", async () => {
-      const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlWithCompanyNumberTransactionIdAndSubmissionId");
-      spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
+      const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
+      spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
 
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
 
       expect(response.text).toContain("Sorry, the service is unavailable");
 
-      spyGetUrlWithCompanyNumber.mockRestore();
+      spyGetUrlToPath.mockRestore();
     });
   });
 
@@ -84,14 +84,14 @@ describe("People with significant control controller tests", () => {
     });
 
     it("Should return an error page if error is thrown in post function", async () => {
-      const spyGetUrlWithCompanyNumberTransactionIdAndSubmissionId = jest.spyOn(urlUtils, "getUrlWithCompanyNumberTransactionIdAndSubmissionId");
-      spyGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mockImplementationOnce(() => { throw new Error(); });
+      const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
+      spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
       const response = await request(app).post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
 
       expect(response.text).toContain("Sorry, the service is unavailable");
 
       // restore original function so it is no longer mocked
-      spyGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mockRestore();
+      spyGetUrlToPath.mockRestore();
     });
   });
 });
