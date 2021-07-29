@@ -29,6 +29,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = getCompanyNumber(req);
     const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
+
     if (pscButtonValue === RADIO_BUTTON_VALUE.NO) {
       return res.render(Templates.WRONG_PSC_DETAILS, {
         templateName: Templates.WRONG_PSC_DETAILS,
