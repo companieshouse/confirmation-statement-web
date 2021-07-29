@@ -84,14 +84,13 @@ describe("People with significant control controller tests", () => {
     });
 
     it("Should return an error page if error is thrown in post function", async () => {
-      const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
-      spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
-      const response = await request(app).post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      mockGetConfirmationStatement.mockImplementationOnce(() => {throw new Error();});
+      const response = await request(app)
+        .post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL)
+        .send({ pscRadioValue: "yes" });
 
       expect(response.text).toContain("Sorry, the service is unavailable");
 
-      // restore original function so it is no longer mocked
-      spyGetUrlToPath.mockRestore();
     });
   });
 });
