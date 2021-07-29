@@ -25,7 +25,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const pscButtonValue = req.body.pscRadioValue;
-    const companyNumber = getCompanyNumber(req);
     const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
 
@@ -33,8 +32,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
         templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
         peopleWithSignificantControlErrorMsg: PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
-        backLinkUrl: urlUtils
-          .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
+        backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req)
       });
     }
 
@@ -53,7 +51,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     await sendUpdate(transactionId, submissionId, req, sectionStatus);
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
       templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
-      peopleWithSignificantControlErrorMsg: PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req)
     });
   } catch (e) {
@@ -83,5 +80,3 @@ const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission
 
   return currentCsSubmission;
 };
-
-const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];
