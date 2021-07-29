@@ -13,22 +13,13 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = getCompanyNumber(req);
     const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
-    const template: string = getTemplate(false);
-    return res.render(template, {
-      templateName: template,
+    return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
+      templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
       backLinkUrl: urlUtils
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
     });
   } catch (e) {
     return next(e);
-  }
-};
-
-const getTemplate = (isRle): string => {
-  if (isRle) {
-    return Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL_RLE;
-  } else {
-    return Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL;
   }
 };
 
@@ -38,7 +29,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = getCompanyNumber(req);
     const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
-    const template: string = getTemplate(false);
     if (pscButtonValue === RADIO_BUTTON_VALUE.NO) {
       return res.render(Templates.WRONG_PSC_DETAILS, {
         templateName: Templates.WRONG_PSC_DETAILS,
@@ -49,8 +39,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
-    return res.render(template, {
-      templateName: template,
+    return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
+      templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
       peopleWithSignificantControlErrorMsg: PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
       backLinkUrl: urlUtils
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
