@@ -18,6 +18,7 @@ export const sessionCookieConstants = {
 export enum RADIO_BUTTON_VALUE {
   NO = "no",
   YES = "yes",
+  RECENTLY_FILED = "recently_filed"
 }
 
 export const taskKeys = {
