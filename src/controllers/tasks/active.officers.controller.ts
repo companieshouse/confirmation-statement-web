@@ -43,6 +43,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
         return res.render(Templates.WRONG_OFFICERS, {
           backLinkUrl: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(ACTIVE_OFFICERS_PATH, companyNumber, transactionId, submissionId),
           templateName: Templates.WRONG_OFFICERS,
+          returnToTaskListUrl: urlUtils
+          .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
         });
     } else {
       const activeOfficerDetails: ActiveOfficerDetails = req.sessionCookie[sessionCookieConstants.ACTIVE_OFFICER_DETAILS_KEY];
