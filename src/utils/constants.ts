@@ -11,6 +11,7 @@ export const SHAREHOLDERS_ERROR = "Select yes if the active shareholders are cor
 
 export const sessionCookieConstants = {
   ACTIVE_OFFICER_DETAILS_KEY: "activeOfficerDetails",
+  REGISTERED_OFFICE_ADDRESS_KEY: "registeredOfficeAddress",
   STATEMENT_OF_CAPITAL_KEY: "statementOfCapital"
 };
 
