@@ -1,18 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
-import {
-  PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH,
-  TASK_LIST_PATH
-} from "../../types/page.urls";
+import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, TASK_LIST_PATH } from "../../types/page.urls";
 import { PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR, RADIO_BUTTON_VALUE } from "../../utils/constants";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
       templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
-      backLinkUrl: urlUtils
-        .getUrlToPath(TASK_LIST_PATH, req),
+      backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
     });
   } catch (e) {
     return next(e);
