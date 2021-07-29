@@ -76,22 +76,22 @@ describe("Confirm sic code controller tests", () => {
 
   it("Should return an error page if error is thrown on submission", async () => {
 
-    const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlWithCompanyNumber");
-    spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
+    const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
+    spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
     const response = await request(app).post(SIC_CODE_URL).send();
     expect(response.status).toEqual(500);
     expect(response.text).toContain("Sorry, the service is unavailable");
   });
 
   it("Should return an error page if error is thrown when Company Profile is missing confirmation statement", async () => {
-    const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlWithCompanyNumber");
-    spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
+    const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
+    spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
     const response = await request(app).get(SIC_CODE_URL);
     expect(response.status).toEqual(500);
     expect(response.text).toContain("Sorry, the service is unavailable");
 
     // restore original function so it is no longer mocked
-    spyGetUrlWithCompanyNumber.mockRestore();
+    spyGetUrlToPath.mockRestore();
   });
 
 });
