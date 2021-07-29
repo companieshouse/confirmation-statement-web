@@ -1,6 +1,7 @@
 import { urlUtils } from "../../../src/utils/url";
 
 jest.mock("../../../src/middleware/company.authentication.middleware");
+jest.mock("../../../src/services/confirmation.statement.service");
 
 import mocks from "../../mocks/all.middleware.mock";
 import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH } from "../../../src/types/page.urls";
@@ -8,6 +9,14 @@ import request from "supertest";
 import app from "../../../src/app";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
 import { PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR } from "../../../src/utils/constants";
+import {
+  getConfirmationStatement,
+  updateConfirmationStatement
+} from "../../../src/services/confirmation.statement.service";
+import { mockConfirmationStatementSubmission } from "../../mocks/confirmation.statement.submission.mock";
+
+const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
+const mockUpdateConfirmationStatement = updateConfirmationStatement as jest.Mock;
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
@@ -22,6 +31,7 @@ describe("People with significant control controller tests", () => {
 
   beforeEach(() => {
     mocks.mockAuthenticationMiddleware.mockClear();
+    mockUpdateConfirmationStatement.mockReset();
   });
 
   describe("get tests", function () {
@@ -53,12 +63,24 @@ describe("People with significant control controller tests", () => {
     });
 
     it("Should display wrong psc data page when no radio button is selected", async () => {
+      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL)
         .send({ pscRadioValue: "no" });
 
+      expect(mockUpdateConfirmationStatement).toHaveBeenCalledTimes(1);
       expect(response.status).toEqual(200);
       expect(response.text).toContain(STOP_PAGE_HEADING);
+    });
+
+    it("Should return 200 when yes radio button is selected", async () => {
+      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
+      const response = await request(app)
+        .post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL)
+        .send({ pscRadioValue: "yes" });
+
+      expect(mockUpdateConfirmationStatement).toHaveBeenCalledTimes(1);
+      expect(response.status).toEqual(200);
     });
 
     it("Should return an error page if error is thrown in post function", async () => {
