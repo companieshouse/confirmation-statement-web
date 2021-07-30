@@ -30,7 +30,7 @@ export const initTaskList = (companyNumber: string,
       },
       peopleSignificantControl: {
         isVisible: false,
-        state: TaskState.NOT_CHECKED,
+        state: toTaskState(csSubmission.data?.personsSignificantControlData?.sectionStatus),
         url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, companyNumber, transactionId, submissionId)
       },
       registerLocations: {
