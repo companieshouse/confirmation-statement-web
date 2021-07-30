@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { Templates } from "../../types/template.paths";
-import { TASK_LIST_PATH, urlParams } from "../../types/page.urls";
+import { TASK_LIST_PATH } from "../../types/page.urls";
 import { urlUtils } from "../../utils/url";
 import { OFFICER_DETAILS_ERROR, RADIO_BUTTON_VALUE, sessionCookieConstants } from "../../utils/constants";
 import { Session } from "@companieshouse/node-session-handler";
@@ -10,9 +10,7 @@ import { formatTitleCase } from "../../utils/format";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const companyNumber = getCompanyNumber(req);
-    const transactionId = getTransactionId(req);
-    const submissionId = getSubmissionId(req);
+    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const session: Session = req.session as Session;
     const activeOfficerDetails: ActiveOfficerDetails = await getActiveOfficerDetailsData(session, companyNumber);
     req.sessionCookie[sessionCookieConstants.ACTIVE_OFFICER_DETAILS_KEY] = activeOfficerDetails;
@@ -23,7 +21,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(Templates.ACTIVE_OFFICERS, {
       templateName: Templates.ACTIVE_OFFICERS,
-      backLinkUrl: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
+      backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       activeOfficerDetails
     });
   } catch (e) {
@@ -32,17 +30,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  const companyNumber = getCompanyNumber(req);
-  const transactionId = getTransactionId(req);
-  const submissionId = getSubmissionId(req);
   try {
     const activeOfficerDetailsBtnValue = req.body.activeDirectors;
     if (activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.YES) {
-      return res.redirect(urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId));
+      return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     } else {
       const activeOfficerDetails: ActiveOfficerDetails = req.sessionCookie[sessionCookieConstants.ACTIVE_OFFICER_DETAILS_KEY];
       return res.render(Templates.ACTIVE_OFFICERS, {
-        backLinkUrl: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
+        backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
         officerErrorMsg: OFFICER_DETAILS_ERROR,
         templateName: Templates.ACTIVE_OFFICERS,
         activeOfficerDetails
@@ -52,7 +47,3 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     return next(e);
   }
 };
-
-const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];
-const getTransactionId = (req: Request): string => req.params[urlParams.PARAM_TRANSACTION_ID];
-const getSubmissionId = (req: Request): string => req.params[urlParams.PARAM_SUBMISSION_ID];
