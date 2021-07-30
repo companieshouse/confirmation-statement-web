@@ -48,7 +48,7 @@ describe("Task List Service tests", () => {
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[0][0]).toBe(ACTIVE_OFFICERS_PATH);
 
       expect(taskList.tasks.peopleSignificantControl.isVisible).toBe(false);
-      expect(taskList.tasks.peopleSignificantControl.state).toBe(TaskState.NOT_CHECKED);
+      expect(taskList.tasks.peopleSignificantControl.state).toBe(TaskState.CHECKED);
       expect(taskList.tasks.peopleSignificantControl.url).toBe(TASK_URL);
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[1][0]).toBe(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH);
 
