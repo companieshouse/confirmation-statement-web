@@ -49,7 +49,7 @@ export const initTaskList = (companyNumber: string,
       },
       sicCodes: {
         isVisible: false,
-        state: TaskState.NOT_CHECKED,
+        state: toTaskState(csSubmission.data?.sicCodeData?.sectionStatus),
         url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(SIC_PATH, companyNumber, transactionId, submissionId)
       },
       statementOfCapital: {
