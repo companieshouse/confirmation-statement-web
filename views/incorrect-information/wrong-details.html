@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
+  {{pageHeading}}
   Incorrect people with significant control - File a confirmation statement
 {% endblock %}
 
@@ -27,7 +28,7 @@
                 </span>
               </span>
               <span class="js-step-title">
-                Update the people with significant control (PSC) details
+                {{stepOneHeading}}
               </span>
             </h2>
           </div>
@@ -36,12 +37,12 @@
             <ol class="app-step-nav__list " data-length="1">
               <li class="app-step-nav__list-item js-list-item">
                 <p>You can update these details online using the relevant form on our
-                  <a rel="noopener noreferrer" href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" data-event-id="webfiling-link" target="_blank">WebFiling service (opens in a new tab)</a>.
+                  <a href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" data-event-id="webfiling-link" target="_blank" rel="noopener noreferrer">WebFiling service (opens in a new tab)</a>.
                 </p>
               </li>
             </ol>
           </div>
-
+          
           <li class="app-step-nav__step js-step">
             <div class="app-step-nav__header js-toggle-panel" data-position="2">
               <h2 class="app-step-nav__title">
@@ -53,11 +54,11 @@
                   </span>
                 </span>
                 <span class="js-step-title">
-                  Return to this service
+                    Return to this service
                 </span>
               </h2>
             </div>
-
+          
             <div>
               <ol class="app-step-nav__list " data-length="1">
                 <li class="app-step-nav__list-item js-list-item ">

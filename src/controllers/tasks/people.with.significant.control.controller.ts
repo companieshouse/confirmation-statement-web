@@ -38,10 +38,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     if (pscButtonValue === RADIO_BUTTON_VALUE.NO) {
       await sendUpdate(transactionId, submissionId, req, SectionStatus.NOT_CONFIRMED);
-      return res.render(Templates.WRONG_PSC_DETAILS, {
-        templateName: Templates.WRONG_PSC_DETAILS,
+      return res.render(Templates.WRONG_DETAILS, {
+        templateName: Templates.WRONG_DETAILS,
         backLinkUrl: urlUtils.getUrlToPath(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, req),
         returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+        stepOneHeading: "Update the people with significant control (PSC) details",
+        pageHeading: "Incorrect people with significant control - File a confirmation statement",
       });
     }
 
