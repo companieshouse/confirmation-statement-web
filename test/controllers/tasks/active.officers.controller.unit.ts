@@ -84,7 +84,7 @@ describe("Active officers controller tests", () => {
     });
 
     it("Should navigate to an error page if the function throws an error", async () => {
-      const spyGetUrl = jest.spyOn(urlUtils, "getUrlWithCompanyNumberTransactionIdAndSubmissionId");
+      const spyGetUrl = jest.spyOn(urlUtils, "getUrlToPath");
       spyGetUrl.mockImplementationOnce(() => { throw new Error(); });
 
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
@@ -132,7 +132,7 @@ describe("Active officers controller tests", () => {
     });
 
     it("Should return an error page if error is thrown in post function", async () => {
-      const spyGetUrl = jest.spyOn(urlUtils, "getUrlWithCompanyNumberTransactionIdAndSubmissionId");
+      const spyGetUrl = jest.spyOn(urlUtils, "getUrlToPath");
       spyGetUrl.mockImplementationOnce(() => { throw new Error(); });
       const response = await request(app).post(ACTIVE_OFFICER_DETAILS_URL);
 
