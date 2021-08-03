@@ -24,3 +24,9 @@ export enum RADIO_BUTTON_VALUE {
 export const taskKeys = {
   SECTION_STATUS_KEY: "sectionStatus"
 };
+
+export const appointmentTypes = {
+  INDIVIDUAL_PSC: "5007",
+  RLE_PSC: "5008",
+  LEGAL_PERSON_PSC: "5009"
+};

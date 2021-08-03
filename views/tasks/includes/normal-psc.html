@@ -1,10 +1,50 @@
-<h2 class="govuk-heading-m">1 individual person</h2>
-{{ govukTable({
-  rows: [
-    [
-      {
-        html: pscHTML
-      }
-    ]
-  ]
-}) }}
+<div class="govuk-summary-card govuk-!-margin-bottom-4">
+  <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center">
+    <p class="govuk-!-font-weight-bold govuk-!-margin-0">{{ psc.nameElements.surname }},  {{ psc.nameElements.forename }}</p>
+    {{govukTag({
+        text: "Active",
+        classes: "govuk-tag--green"
+      })}}
+  </div>
+  <div style="display: flex" class="govuk-!-padding-1" style="border-bottom: 0px">
+    <dl style="display: block" class="govuk-summary-list govuk-!-margin-3">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Nationality</dt>
+        <dd class="govuk-summary-list__value">
+          <p>{{ psc.nationality }}</p>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Date of birth</dt>
+        <dd class="govuk-summary-list__value">
+          <p>{{ psc.dateOfBirth.month }} / {{ psc.dateOfBirth.year }}</p>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Correspondence address</dt>
+        <dd class="govuk-summary-list__value">
+          <p>{{ psc.serviceAddressLine_1 }}, {{ psc.serviceAddressPostTown }}, {{ psc.serviceAddressPostCode }}</p>
+        </dd>
+      </div>
+      {% if psc.address %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Usual residential address</dt>
+          <dd class="govuk-summary-list__value">
+            <p>{{ psc.address.addressLine1 }}, {{ psc.address.locality }}, {{ psc.address.postalCode }}</p>
+          </dd>
+        </div>
+      {% endif %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Nature of control</dt>
+        <dd class="govuk-summary-list__value">
+          <ul class="govuk-bullet__list">
+            {% for noc in psc.naturesOfControl %}
+              <li>
+                <p>{{ noc }}</p>
+              </li>
+            {% endfor %} 
+        </dd>
+      </div>
+    </dl>
+  </div>
+  </div>

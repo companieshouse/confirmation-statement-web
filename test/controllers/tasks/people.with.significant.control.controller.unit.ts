@@ -2,6 +2,7 @@ import { urlUtils } from "../../../src/utils/url";
 
 jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/confirmation.statement.service");
+jest.mock("../../../src/services/psc.service");
 
 import mocks from "../../mocks/all.middleware.mock";
 import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH } from "../../../src/types/page.urls";
@@ -14,12 +15,19 @@ import {
   updateConfirmationStatement
 } from "../../../src/services/confirmation.statement.service";
 import { mockConfirmationStatementSubmission } from "../../mocks/confirmation.statement.submission.mock";
+import { getPscs } from "../../../src/services/psc.service";
 
 const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 const mockUpdateConfirmationStatement = updateConfirmationStatement as jest.Mock;
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
+
+const mockGetPscs = getPscs as jest.Mock;
+mockGetPscs.mockResolvedValue([{
+  appointmentType: "5007"
+}]);
+
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Check the people with significant control (PSC)";
@@ -32,12 +40,15 @@ describe("People with significant control controller tests", () => {
   beforeEach(() => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mockUpdateConfirmationStatement.mockReset();
+    mockGetPscs.mockClear();
   });
 
   describe("get tests", function () {
     it("should navigate to the active pscs page", async () => {
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.text).toContain(PAGE_HEADING);
+      expect(mockGetPscs).toBeCalledTimes(1);
+      expect(mockGetPscs.mock.calls[0][1]).toBe(COMPANY_NUMBER);
     });
 
     it("Should navigate to an error page if the function throws an error", async () => {
@@ -49,6 +60,24 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain("Sorry, the service is unavailable");
 
       spyGetUrlToPath.mockRestore();
+    });
+
+    it("should navigate to error page if more than one psc is found", async () => {
+      mockGetPscs.mockResolvedValueOnce([ {}, {} ]);
+      const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(response.text).toContain("Sorry, the service is unavailable");
+    });
+
+    it("should navigate to error page if no psc is found", async () => {
+      mockGetPscs.mockResolvedValueOnce([ ]);
+      const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(response.text).toContain("Sorry, the service is unavailable");
+    });
+
+    it("should navigate to error page psc is not Individual type", async () => {
+      mockGetPscs.mockResolvedValueOnce([ { appointmentType: "5009" } ]);
+      const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(response.text).toContain("Sorry, the service is unavailable");
     });
   });
 
