@@ -43,6 +43,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (roaButtonValue === RADIO_BUTTON_VALUE.NO) {
+      await sendUpdate(transactionId, submissionId, req, SectionStatus.NOT_CONFIRMED);
       return res.render(Templates.WRONG_RO, {
         backLinkUrl: urlUtils.getUrlToPath(REGISTERED_OFFICE_ADDRESS_PATH, req),
         taskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
