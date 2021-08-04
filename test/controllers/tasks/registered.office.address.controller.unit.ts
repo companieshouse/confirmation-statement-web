@@ -1,5 +1,6 @@
 jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/company.profile.service");
+jest.mock("../../../src/services/confirmation.statement.service");
 
 import request from "supertest";
 import mocks from "../../mocks/all.middleware.mock";
@@ -10,10 +11,13 @@ import { urlUtils } from "../../../src/utils/url";
 import { getCompanyProfile } from "../../../src/services/company.profile.service";
 import { validCompanyProfile } from "../../mocks/company.profile.mock";
 import { REGISTERED_OFFICE_ADDRESS_ERROR } from "../../../src/utils/constants";
+import { getConfirmationStatement } from "../../../src/services/confirmation.statement.service";
+import { mockConfirmationStatementSubmission } from "../../mocks/confirmation.statement.submission.mock";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
+const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 
 const PAGE_HEADING = "Review the registered office address";
 const COMPANY_NUMBER = "12345678";
@@ -53,12 +57,14 @@ describe("Registered Office Address controller tests", () => {
   });
 
   it("Should return to task list page when roa is confirmed", async () => {
+    mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
     const response = await request(app).post(REGISTERED_OFFICE_ADDRESS_URL).send({ registeredOfficeAddress: "yes" });
     expect(response.status).toEqual(302);
     expect(response.header.location).toEqual(TASK_LIST_URL);
   });
 
   it("Should display stop screen if roa details are incorrect", async () => {
+    mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
     const response = await request(app).post(REGISTERED_OFFICE_ADDRESS_URL).send({ registeredOfficeAddress: "no" });
 
     expect(response.status).toEqual(200);
