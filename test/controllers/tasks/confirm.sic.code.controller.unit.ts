@@ -15,8 +15,11 @@ import { urlUtils } from "../../../src/utils/url";
 import { getCompanyProfile } from "../../../src/services/company.profile.service";
 import { validCompanyProfile } from "../../mocks/company.profile.mock";
 import { SIC_CODE_ERROR } from "../../../src/utils/constants";
+import { getConfirmationStatement } from "../../../src/services/confirmation.statement.service";
+import { mockConfirmationStatementSubmission } from "../../mocks/confirmation.statement.submission.mock";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
+const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
@@ -24,6 +27,7 @@ const SIC_CODE_URL = SIC_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMP
 
 jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/company.profile.service");
+jest.mock("../../../src/services/confirmation.statement.service");
 jest.mock("js-yaml", () => {
   return {
     load: jest.fn(() => {
@@ -53,8 +57,10 @@ describe("Confirm sic code controller tests", () => {
 
   it("should display sic code stop screen if sic code details are incorrect", async () => {
     mocks.mockAuthenticationMiddleware.mockClear();
+    mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-    const response = await request(app).post(SIC_CODE_URL).send({ sicCodeStatus: "no" });
+    const response = await request(app).post(SIC_CODE_URL)
+      .send({ sicCodeStatus: "no" });
     expect(response.status).toEqual(200);
     expect(response.text).toContain(STOP_PAGE_TEXT);
     expect(response.text).not.toContain(SIC_CODE_DETAILS);
@@ -62,7 +68,9 @@ describe("Confirm sic code controller tests", () => {
   });
 
   it("Should return to task list page when Sic code is confirmed", async () => {
-    const response = await request(app).post(SIC_CODE_URL).send({ sicCodeStatus: "yes" });
+    mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
+    const response = await request(app).post(SIC_CODE_URL)
+      .send({ sicCodeStatus: "yes" });
     expect(response.status).toEqual(302);
     expect(response.header.location).toEqual(TASK_LIST_URL);
   });

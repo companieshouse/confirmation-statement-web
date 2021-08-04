@@ -2,20 +2,44 @@ import { NextFunction, Request, Response } from "express";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
 import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, TASK_LIST_PATH, urlParams } from "../../types/page.urls";
-import { PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR, RADIO_BUTTON_VALUE } from "../../utils/constants";
+import { appointmentTypes, PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR, RADIO_BUTTON_VALUE } from "../../utils/constants";
 import {
   ConfirmationStatementSubmission,
-  PSCData,
+  PersonOfSignificantControl,
+  PersonsOfSignificantControlData,
   SectionStatus
 } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { Session } from "@companieshouse/node-session-handler";
 import { getConfirmationStatement, updateConfirmationStatement } from "../../services/confirmation.statement.service";
+import { getPscs } from "../../services/psc.service";
+import { createAndLogError } from "../../utils/logger";
+import { toReadableFormatMonthYear } from "../../utils/date";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+    const pscs: PersonOfSignificantControl[] = await getPscs(req.session as Session, companyNumber);
+
+    if (pscs.length > 1) {
+      return next(createAndLogError(`More than one (${pscs.length}) PSC returned for company ${companyNumber}`));
+    }
+
+    if (pscs.length === 0) {
+      return next(createAndLogError(`No PSC returned for company ${companyNumber}`));
+    }
+
+    const psc: PersonOfSignificantControl = pscs[0];
+    const pscAppointmentType = psc.appointmentType;
+
+    if (pscAppointmentType !== appointmentTypes.INDIVIDUAL_PSC) {
+      return next(createAndLogError(`Incorrect PSC type ${pscAppointmentType} returned for company ${companyNumber}`));
+    }
+
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
-      templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+      dob: toReadableFormatMonthYear(psc.dateOfBirth.month, psc.dateOfBirth.year),
+      psc,
+      templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
     });
   } catch (e) {
     return next(e);
@@ -70,7 +94,7 @@ const sendUpdate = async (transactionId: string, submissionId: string, req: Requ
 
 const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission, status: SectionStatus):
   ConfirmationStatementSubmission => {
-  const newPSCData: PSCData = {
+  const newPSCData: PersonsOfSignificantControlData = {
     sectionStatus: status
   };
 
