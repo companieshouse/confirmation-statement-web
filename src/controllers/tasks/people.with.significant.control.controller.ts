@@ -13,6 +13,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { getConfirmationStatement, updateConfirmationStatement } from "../../services/confirmation.statement.service";
 import { getPscs } from "../../services/psc.service";
 import { createAndLogError } from "../../utils/logger";
+import { toReadableFormatMonthYear } from "../../utils/date";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -34,9 +35,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       return next(createAndLogError(`Incorrect PSC type ${pscAppointmentType} returned for company ${companyNumber}`));
     }
 
-    // TODO format DOB into readable format
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+      dob: toReadableFormatMonthYear(psc.dateOfBirth.month, psc.dateOfBirth.year),
       psc,
       templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
     });
