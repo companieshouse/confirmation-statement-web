@@ -46,10 +46,11 @@
           html: pscDetails
         }) }}
 
-        {% if rle %}
+        {% if pscTemplateType === "rle" %}
            {% include "tasks/includes/relevant-legal-entity.html" %}
-        {% else %}
+        {% elif pscTemplateType === "psc" %}
            {% include "tasks/includes/normal-psc.html" %}
+        {% else %}
         {% endif %}
 
         {{ govukRadios({
