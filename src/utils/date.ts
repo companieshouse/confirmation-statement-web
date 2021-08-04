@@ -23,3 +23,14 @@ export const isInFuture = (dateToCheckISO: string): boolean => {
 
   return dateToCheck.startOf(timeUnitDay) > today.startOf(timeUnitDay);
 };
+
+export const toReadableFormatMonthYear = (monthNum: number, year: number): string => {
+  const datetime = DateTime.fromObject({ month: monthNum });
+  const convertedMonth = datetime.toFormat("MMMM");
+
+  if (convertedMonth === "Invalid DateTime") {
+    throw createAndLogError(`toReadableFormatMonthYear() - Unable to convert provided month ${monthNum}`);
+  }
+
+  return `${convertedMonth} ${year}`;
+};
