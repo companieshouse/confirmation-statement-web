@@ -1,6 +1,6 @@
 jest.mock("../../src/utils/logger");
 
-import { isInFuture, toReadableFormat } from "../../src/utils/date";
+import { isInFuture, toReadableFormat, toReadableFormatMonthYear } from "../../src/utils/date";
 import { createAndLogError } from "../../src/utils/logger";
 import { Settings as luxonSettings } from "luxon";
 
@@ -91,6 +91,24 @@ describe("Date tests", () => {
 
     it("Should return false for non date string", () => {
       expect(isInFuture("house")).toBeFalsy();
+    });
+  });
+
+  describe("toReadableFormatMonthYear tests", () => {
+    it("Should return readdable string", () => {
+      expect(toReadableFormatMonthYear(1, 1965)).toBe("January 1965");
+      expect(toReadableFormatMonthYear(12, 2006)).toBe("December 2006");
+    });
+
+    it("Should log and throw an error for invalid month", () => {
+      const badMonth = 0;
+
+      try {
+        toReadableFormatMonthYear(badMonth, 1975);
+        fail();
+      } catch (e) {
+        expect(mockCreateAndLogError).toHaveBeenCalledWith(expect.stringContaining(badMonth.toString()));
+      }
     });
   });
 });
