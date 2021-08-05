@@ -14,6 +14,7 @@ import { getConfirmationStatement, updateConfirmationStatement } from "../../ser
 import { getPscs } from "../../services/psc.service";
 import { createAndLogError } from "../../utils/logger";
 import { toReadableFormatMonthYear } from "../../utils/date";
+import { formatTitleCase } from "../../utils/format";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -35,10 +36,12 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       return next(createAndLogError(`Incorrect PSC type ${pscAppointmentType} returned for company ${companyNumber}`));
     }
 
+    const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);
+
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       dob: toReadableFormatMonthYear(psc.dateOfBirth.month, psc.dateOfBirth.year),
-      psc,
+      psc: formattedPsc,
       templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
     });
   } catch (e) {
@@ -105,4 +108,24 @@ const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission
   currentCsSubmission.data.personsSignificantControlData = newPSCData;
 
   return currentCsSubmission;
+};
+
+const formatPSCForDisplay = (psc: PersonOfSignificantControl): PersonOfSignificantControl => {
+  const clonedPsc: PersonOfSignificantControl = JSON.parse(JSON.stringify(psc));
+  if (psc.nameElements) {
+    clonedPsc.nameElements.forename = formatTitleCase(psc.nameElements.forename);
+  }
+
+  if (psc.address) {
+    Object.keys(psc.address).forEach(function (key) {
+      if (key !== "postalCode") {
+        clonedPsc.address[key] = formatTitleCase(psc.address[key]);
+      }
+    });
+  }
+
+  clonedPsc.serviceAddressLine_1 = formatTitleCase(psc.serviceAddressLine_1);
+  clonedPsc.serviceAddressPostTown = formatTitleCase(psc.serviceAddressPostTown);
+
+  return clonedPsc;
 };
