@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { urlUtils } from "../../utils/url";
-import { TASK_LIST_PATH, REGISTERED_OFFICE_ADDRESS_PATH, CHANGE_ROA_PATH, urlParams } from "../../types/page.urls";
+import { TASK_LIST_PATH, REGISTERED_OFFICE_ADDRESS_PATH, CHANGE_ROA_PATH } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { CompanyProfile, RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../../services/company.profile.service";
@@ -33,8 +33,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const roaButtonValue = req.body.registeredOfficeAddress;
-    const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
-    const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
+    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const registeredOfficeAddress: RegisteredOfficeAddress = req.sessionCookie[sessionCookieConstants.REGISTERED_OFFICE_ADDRESS_KEY];
 
     if (roaButtonValue === RADIO_BUTTON_VALUE.YES) {
