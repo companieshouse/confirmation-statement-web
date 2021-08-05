@@ -56,7 +56,7 @@ describe("Task List Service tests", () => {
       expect(taskList.tasks.registerLocations.state).toBe(TaskState.NOT_CHECKED);
 
       expect(taskList.tasks.registeredOfficeAddress.isVisible).toBe(false);
-      expect(taskList.tasks.registeredOfficeAddress.state).toBe(TaskState.NOT_CHECKED);
+      expect(taskList.tasks.registeredOfficeAddress.state).toBe(TASK_STATE);
       expect(taskList.tasks.registeredOfficeAddress.url).toBe(TASK_URL);
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[2][0]).toBe(REGISTERED_OFFICE_ADDRESS_PATH);
 
