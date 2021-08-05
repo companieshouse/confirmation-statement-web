@@ -90,14 +90,23 @@ describe("People with significant control controller tests", () => {
     });
 
     it("should navigate to individual psc page if psc is individual", async () => {
-      mockGetPscs.mockResolvedValueOnce([ { appointmentType: "5007" } ]);
+      mockGetPscs.mockResolvedValueOnce([ { dateOfBirth: {
+        month: 3,
+        year: 1956
+      }, appointmentType: "5007" } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(response.statusCode).toBe(200);
       expect(response.text).toContain("1 individual person");
     });
 
     it("should navigate to rle page if psc is rle type", async () => {
-      mockGetPscs.mockResolvedValueOnce([ { appointmentType: "5008" } ]);
+      mockGetPscs.mockResolvedValueOnce([ { dateOfBirth: {
+        month: 3,
+        year: 1956
+      },
+      appointmentType: "5008" } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(response.statusCode).toBe(200);
       expect(response.text).toContain("1 relevant legal entity");
     });
 
