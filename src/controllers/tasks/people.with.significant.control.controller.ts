@@ -31,14 +31,13 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const psc: PersonOfSignificantControl = pscs[0];
     const pscAppointmentType = psc.appointmentType;
 
-    if (pscAppointmentType !== appointmentTypes.INDIVIDUAL_PSC) {
-      return next(createAndLogError(`Incorrect PSC type ${pscAppointmentType} returned for company ${companyNumber}`));
-    }
+    const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
 
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       dob: toReadableFormatMonthYear(psc.dateOfBirth.month, psc.dateOfBirth.year),
       psc,
+      pscTemplateType,
       templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
     });
   } catch (e) {
@@ -105,4 +104,12 @@ const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission
   currentCsSubmission.data.personsSignificantControlData = newPSCData;
 
   return currentCsSubmission;
+};
+
+const getPscTypeTemplate = (pscAppointmentType: string): string => {
+  switch (pscAppointmentType) {
+      case appointmentTypes.INDIVIDUAL_PSC: return "psc";
+      case appointmentTypes.RLE_PSC: return "rle";
+      default: throw createAndLogError(`Unknown PSC type: ${pscAppointmentType}`);
+  }
 };

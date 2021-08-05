@@ -89,7 +89,19 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain("Sorry, the service is unavailable");
     });
 
-    it("should navigate to error page psc is not Individual type", async () => {
+    it("should navigate to individual psc page if psc is individual", async () => {
+      mockGetPscs.mockResolvedValueOnce([ { appointmentType: "5007" } ]);
+      const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(response.text).toContain("1 individual person");
+    });
+
+    it("should navigate to rle page if psc is rle type", async () => {
+      mockGetPscs.mockResolvedValueOnce([ { appointmentType: "5008" } ]);
+      const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(response.text).toContain("1 relevant legal entity");
+    });
+
+    it("should navigate to error page if psc is unknown type", async () => {
       mockGetPscs.mockResolvedValueOnce([ { appointmentType: "5009" } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.text).toContain("Sorry, the service is unavailable");
