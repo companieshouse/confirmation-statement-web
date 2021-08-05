@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block pageTitle %}
+    Review the people with significant control statement
+{% endblock %}
+{% block backLink %}
+    {{ govukBackLink({
+      text: "Back",
+      href: "/confirmation-statement/people-with-significant-control"
+  }) }}
+{% endblock %}
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form action="" method="post">
+                {% set pscStatementTypesHTML %}
+                <p>If a company has no PSCs, or is currently investigating who its PSCs are, it needs to file a statement to explain why
+                    its full PSC information is not yet on the public register. For example, if there is a PSC that has not yet been
+                    identified, or if a PSC has been identified but their details have not yet been confirmed.</p>
+                <p>
+                    <a href="https://ewf.companieshouse.gov.uk/help/en/stdwf/faqHelp.html#psc">Read the guidance for a full list of PSC
+                        statements.</a>
+                </p>
+                {% endset %}
+                {% set pscStatementHTML %}
+                   <p>No additional statements relating to PSCs are currently held on the public register.</p>
+                   {{ govukDetails({
+                      summaryText: "What are PSC statements?",
+                      html: pscStatementTypesHTML
+                    }) }}
+                {% endset %}
+                {% if pscStatement === 'yes' %}
+                  {% set yesChecked = true %}
+                  {% include "tasks/includes/psc-statement-options.html" %}
+                {% elseif pscStatement === 'no' %}
+                  {% set noChecked = true %}
+                  {% include "tasks/includes/psc-statement-options.html" %}
+                {% else %}
+                    {% include "tasks/includes/psc-statement-options.html" %}
+                {% endif %}
+                {{ govukButton({
+                  text: "Continue"
+                }) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

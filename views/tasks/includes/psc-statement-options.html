@@ -1,0 +1,61 @@
+{% if recentFiling === "yes" %}
+    {{ govukRadios({
+        classes: "govuk-radios",
+        idPrefix: "psc-statement",
+        name: "psc-statement",
+        fieldset: {
+        legend: {
+            html: "Is the PSC statement correct?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+            }
+        },
+        hint: {
+        html: pscStatementHTML
+        },
+        items: [
+            {
+                value: "yes",
+                text: "Yes",
+                checked: yesChecked
+            },
+            {
+                value: "no",
+                text: "No",
+                checked: noChecked
+            },
+            {
+                value: "yes",
+                text: "No, but I've recently filed an update"
+            }
+        ]
+    }) }}
+{% else %}
+    {{ govukRadios({
+        classes: "govuk-radios",
+        idPrefix: "psc-statement",
+        name: "psc-statement",
+        fieldset: {
+        legend: {
+            html: "Is the PSC statement correct?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+            }
+        },
+        hint: {
+        html: pscStatementHTML
+        },
+        items: [
+            {
+                value: "yes",
+                text: "Yes",
+                checked: yesChecked
+            },
+            {
+                value: "no",
+                text: "No",
+                checked: noChecked
+            }
+        ]
+    }) }}
+{% endif %}
