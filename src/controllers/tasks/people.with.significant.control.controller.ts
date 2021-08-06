@@ -1,19 +1,19 @@
-import {NextFunction, Request, Response} from "express";
-import {Templates} from "../../types/template.paths";
-import {urlUtils} from "../../utils/url";
-import {PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, TASK_LIST_PATH, urlParams} from "../../types/page.urls";
-import {appointmentTypes, PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR, RADIO_BUTTON_VALUE} from "../../utils/constants";
+import { NextFunction, Request, Response } from "express";
+import { Templates } from "../../types/template.paths";
+import { urlUtils } from "../../utils/url";
+import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, TASK_LIST_PATH, urlParams } from "../../types/page.urls";
+import { appointmentTypes, PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR, RADIO_BUTTON_VALUE } from "../../utils/constants";
 import {
   ConfirmationStatementSubmission,
   PersonOfSignificantControl,
   PersonsOfSignificantControlData,
   SectionStatus
 } from "private-api-sdk-node/dist/services/confirmation-statement";
-import {Session} from "@companieshouse/node-session-handler";
-import {getConfirmationStatement, updateConfirmationStatement} from "../../services/confirmation.statement.service";
-import {getPscs} from "../../services/psc.service";
-import {createAndLogError} from "../../utils/logger";
-import {toReadableFormatMonthYear} from "../../utils/date";
+import { Session } from "@companieshouse/node-session-handler";
+import { getConfirmationStatement, updateConfirmationStatement } from "../../services/confirmation.statement.service";
+import { getPscs } from "../../services/psc.service";
+import { createAndLogError } from "../../utils/logger";
+import { toReadableFormatMonthYear } from "../../utils/date";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
