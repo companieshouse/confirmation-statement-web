@@ -45,7 +45,7 @@ export const initTaskList = (companyNumber: string,
       shareholders: {
         isVisible: false,
         state: TaskState.NOT_CHECKED,
-        url: urlUtils.getUrlWithCompanyNumber(SHAREHOLDERS_PATH, companyNumber)
+        url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(SHAREHOLDERS_PATH, companyNumber, transactionId, submissionId)
       },
       sicCodes: {
         isVisible: false,
