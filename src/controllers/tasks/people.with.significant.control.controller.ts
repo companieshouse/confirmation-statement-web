@@ -19,8 +19,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const psc: PersonOfSignificantControl = await getPscData(req);
     const pscAppointmentType = psc.appointmentType;
-
     const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
+
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       dob: toReadableFormatMonthYear(psc.dateOfBirth.month, psc.dateOfBirth.year),
