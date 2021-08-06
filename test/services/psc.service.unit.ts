@@ -1,26 +1,39 @@
+jest.mock("@companieshouse/api-sdk-node");
 jest.mock("private-api-sdk-node/dist/services/confirmation-statement");
 jest.mock("private-api-sdk-node/");
 
+import { CompanyPersonsWithSignificantControlStatements } from "@companieshouse/api-sdk-node/dist/services/company-psc-statements";
 import {
   ConfirmationStatementService,
   PersonOfSignificantControl,
 } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { createPrivateApiClient } from "private-api-sdk-node";
 import PrivateApiClient from "private-api-sdk-node/dist/client";
-import { Resource } from "@companieshouse/api-sdk-node";
+import { createApiClient, Resource } from "@companieshouse/api-sdk-node";
 import { getSessionRequest } from "../mocks/session.mock";
 import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
-import { mockPersonsOfSignificantControl } from "../mocks/person.of.significant.control.mock";
-import { getPscs } from "../../src/services/psc.service";
+import {
+  mockCompanyPscStatementResource,
+  mockPersonsOfSignificantControl
+} from "../mocks/person.of.significant.control.mock";
+import { getPscs, getPscStatement } from "../../src/services/psc.service";
 
 const mockGetPersonsOfSignificantControl = ConfirmationStatementService.prototype.getPersonsOfSignificantControl as jest.Mock;
+const mockCreateApiClient = createApiClient as jest.Mock;
+const mockGetCompanyPscStatements = jest.fn();
 const mockCreatePrivateApiClient = createPrivateApiClient as jest.Mock;
 
 mockCreatePrivateApiClient.mockReturnValue({
   confirmationStatementService: ConfirmationStatementService.prototype
 } as PrivateApiClient);
 
-describe("Test statement of capital service", () => {
+mockCreateApiClient.mockReturnValue({
+  companyPscStatements: {
+    getCompanyPscStatements: mockGetCompanyPscStatements
+  }
+});
+
+describe("Test psc service", () => {
 
   const companyNumber = "11111111";
 
@@ -57,5 +70,18 @@ describe("Test statement of capital service", () => {
     }
     expect(actualMessage).toBeTruthy();
     expect(actualMessage).toEqual(expectedMessage);
+  });
+
+  it("should call sdk to get psc statements", async () => {
+    const resource: Resource<CompanyPersonsWithSignificantControlStatements> = {
+      httpStatusCode: 200,
+      resource: mockCompanyPscStatementResource
+    };
+
+    mockGetCompanyPscStatements.mockResolvedValueOnce(resource);
+    const session =  getSessionRequest({ access_token: "token" });
+    const response = await getPscStatement(session, companyNumber, 25, 0);
+    expect(mockGetCompanyPscStatements).toBeCalledWith(companyNumber, 25, 0);
+    expect(response).toEqual(mockCompanyPscStatementResource);
   });
 });

@@ -35,13 +35,13 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     if (activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.YES) {
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     } else if (activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.NO) {
-        return res.render(Templates.WRONG_DETAILS, {
-          templateName: Templates.WRONG_DETAILS,
-          backLinkUrl: urlUtils.getUrlToPath(ACTIVE_OFFICERS_PATH, req),
-          returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-          stepOneHeading: "Update the director details",
-          pageHeading: "Update officers - File a confirmation statement",
-        });
+      return res.render(Templates.WRONG_DETAILS, {
+        templateName: Templates.WRONG_DETAILS,
+        backLinkUrl: urlUtils.getUrlToPath(ACTIVE_OFFICERS_PATH, req),
+        returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+        stepOneHeading: "Update the director details",
+        pageHeading: "Update officers - File a confirmation statement",
+      });
     } else {
       const activeOfficerDetails: ActiveOfficerDetails = req.sessionCookie[sessionCookieConstants.ACTIVE_OFFICER_DETAILS_KEY];
       return res.render(Templates.ACTIVE_OFFICERS, {
