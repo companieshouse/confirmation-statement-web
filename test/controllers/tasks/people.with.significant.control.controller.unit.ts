@@ -28,6 +28,7 @@ const APPOINTMENT_TYPE_5007 = "5007";
 const DOB_MONTH = 3;
 const DOB_YEAR = 1955;
 const FORMATTED_DATE = "March 1955";
+const ADDRESS = "2 Nets Way, Newcastle, NE2 3BB";
 
 const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 const mockUpdateConfirmationStatement = updateConfirmationStatement as jest.Mock;
@@ -106,7 +107,7 @@ describe("People with significant control controller tests", () => {
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.statusCode).toBe(200);
       expect(response.text).toContain("1 relevant legal entity");
-      expect(response.text).toContain(FORMATTED_DATE);
+      expect(response.text).toContain(ADDRESS);
     });
 
     it("should navigate to error page if psc is unknown type", async () => {
