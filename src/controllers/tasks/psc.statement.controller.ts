@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { PSC_STATEMENT_NOT_FOUND } from "../../utils/constants";
 import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
@@ -6,7 +7,7 @@ import { urlUtils } from "../../utils/url";
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
 
-    const pscStatement = undefined;
+    const pscStatement = PSC_STATEMENT_NOT_FOUND;
 
     return res.render(Templates.PSC_STATEMENT, {
       backLinkUrl: urlUtils.getUrlToPath(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, req),

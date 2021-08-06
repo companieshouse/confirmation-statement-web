@@ -13,26 +13,19 @@
     <div class="govuk-grid-column-two-thirds">
       <form action="" method="post">
         {% set pscStatementTypesHTML %}
-          <p>If a company has no PSCs, or is currently investigating who its PSCs are, it needs to file a statement to
+          <p>
+            If a company has no PSCs, or is currently investigating who its PSCs are, it needs to file a statement to
             explain why
             its full PSC information is not yet on the public register. For example, if there is a PSC that has not yet been
             identified, or if a PSC has been identified but their details have not yet been confirmed.
           </p>
           <p>
-            <a href="https://ewf.companieshouse.gov.uk/help/en/stdwf/faqHelp.html#psc">Read the guidance for a full list of
-              PSC
-              statements.
-            </a>
+            <a href="https://ewf.companieshouse.gov.uk/help/en/stdwf/faqHelp.html#psc">Read the guidance for a full list of PSC statements.</a>
           </p>
         {% endset %}
 
         {% set pscStatementHTML %}
-          {% if pscStatement %}
-            <p>{{ pscStatement }}</p>
-          {% else %}
-            <p>No additional statements relating to PSCs are currently held on the public register.</p>
-          {% endif %}
-            
+          <p>{{ pscStatement }}</p> 
           {{ govukDetails({
             summaryText: "What are PSC statements?",
             html: pscStatementTypesHTML

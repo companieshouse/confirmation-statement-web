@@ -7,6 +7,7 @@ export const PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR = "Select yes if the PSC deta
 export const REGISTERED_OFFICE_ADDRESS_ERROR = "Select yes if the Registered Office Address is correct";
 export const OFFICER_DETAILS_ERROR = "Select yes if director details are correct";
 export const SHAREHOLDERS_ERROR = "Select yes if the active shareholders are correct";
+export const PSC_STATEMENT_NOT_FOUND = "No additional statements relating to PSCs are currently held on the public register.";
 
 
 export const sessionCookieConstants = {
