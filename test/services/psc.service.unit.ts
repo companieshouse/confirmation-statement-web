@@ -84,4 +84,23 @@ describe("Test psc service", () => {
     expect(mockGetCompanyPscStatements).toBeCalledWith(companyNumber, 25, 0);
     expect(response).toEqual(mockCompanyPscStatementResource);
   });
+
+  it("should throw error when http error code is returned for statement request", async () => {
+    const errorMessage = "Oh no this has failed";
+    const errorResponse: ApiErrorResponse = {
+      httpStatusCode: 404,
+      errors: [{ error: errorMessage }]
+    };
+    mockGetCompanyPscStatements.mockResolvedValueOnce(errorResponse);
+    const session =  getSessionRequest({ access_token: "token" });
+    const expectedMessage = "Error retrieving psc statement from psc statement api " + JSON.stringify(errorResponse);
+    let actualMessage: any;
+    try {
+      await getPscStatement(session, companyNumber, 25, 0);
+    } catch (e) {
+      actualMessage = e.message;
+    }
+    expect(actualMessage).toBeTruthy();
+    expect(actualMessage).toEqual(expectedMessage);
+  });
 });
