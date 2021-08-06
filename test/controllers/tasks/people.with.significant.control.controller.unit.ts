@@ -25,8 +25,10 @@ const STOP_PAGE_HEADING = "Update the people with significant control (PSC) deta
 const COMPANY_NUMBER = "12345678";
 const PEOPLE_WITH_SIGNIFICANT_CONTROL_URL = PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH.replace(":companyNumber", COMPANY_NUMBER);
 const APPOINTMENT_TYPE_5007 = "5007";
-const DOB_MONTH = 10;
-const DOB_YEAR = 1965;
+const APPOINTMENT_TYPE_5008 = "5008";
+const DOB_MONTH = 3;
+const DOB_YEAR = 1955;
+const FORMATTED_DATE = "March 1955";
 
 const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 const mockUpdateConfirmationStatement = updateConfirmationStatement as jest.Mock;
@@ -44,7 +46,7 @@ mockGetPscs.mockResolvedValue([{
 }]);
 
 const mockToReadableFormatMonthYear = toReadableFormatMonthYear as jest.Mock;
-mockToReadableFormatMonthYear.mockReturnValue("March 1955");
+mockToReadableFormatMonthYear.mockReturnValue(FORMATTED_DATE);
 
 describe("People with significant control controller tests", () => {
 
@@ -90,14 +92,20 @@ describe("People with significant control controller tests", () => {
     });
 
     it("should navigate to individual psc page if psc is individual", async () => {
-      mockGetPscs.mockResolvedValueOnce([ { appointmentType: "5007" } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(response.statusCode).toBe(200);
       expect(response.text).toContain("1 individual person");
+      expect(response.text).toContain(FORMATTED_DATE);
     });
 
     it("should navigate to rle page if psc is rle type", async () => {
-      mockGetPscs.mockResolvedValueOnce([ { appointmentType: "5008" } ]);
+      mockGetPscs.mockResolvedValueOnce([ { dateOfBirth: {
+        month: 3,
+        year: 1955
+      },
+      appointmentType: APPOINTMENT_TYPE_5008 } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(response.statusCode).toBe(200);
       expect(response.text).toContain("1 relevant legal entity");
     });
 
@@ -105,6 +113,54 @@ describe("People with significant control controller tests", () => {
       mockGetPscs.mockResolvedValueOnce([ { appointmentType: "5009" } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.text).toContain("Sorry, the service is unavailable");
+    });
+
+    it("should populate rle page with psc data", async () => {
+      const COMPANY_NAME = "name";
+      const REG_NO = "36363";
+      const SERV_ADD_LINE_1 = "line1";
+      const COUNTRY_RESIDENCE = "UK";
+
+      mockGetPscs.mockResolvedValueOnce([ {
+        dateOfBirth: {
+          month: DOB_MONTH,
+          year: DOB_YEAR
+        },
+        appointmentType: APPOINTMENT_TYPE_5008,
+        companyName: COMPANY_NAME,
+        registrationNumber: REG_NO,
+        serviceAddressLine_1: SERV_ADD_LINE_1,
+        countryOfResidence: COUNTRY_RESIDENCE
+      } ]);
+      const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(response.statusCode).toBe(200);
+      expect(response.text).toContain("1 relevant legal entity");
+      expect(response.text).toContain(COMPANY_NAME);
+      expect(response.text).toContain(REG_NO);
+      expect(response.text).toContain(SERV_ADD_LINE_1);
+      expect(response.text).toContain(COUNTRY_RESIDENCE);
+    });
+
+    it("should not populate rle page with non mandatory data", async () => {
+      const COMPANY_NAME = "name";
+      const SERV_ADD_LINE_1 = "line1";
+
+      mockGetPscs.mockResolvedValueOnce([ {
+        dateOfBirth: {
+          month: DOB_MONTH,
+          year: DOB_YEAR
+        },
+        appointmentType: APPOINTMENT_TYPE_5008,
+        companyName: COMPANY_NAME,
+        serviceAddressLine_1: SERV_ADD_LINE_1,
+      } ]);
+      const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(response.statusCode).toBe(200);
+      expect(response.text).toContain("1 relevant legal entity");
+      expect(response.text).toContain(COMPANY_NAME);
+      expect(response.text).not.toContain("Registration number");
+      expect(response.text).toContain(SERV_ADD_LINE_1);
+      expect(response.text).not.toContain("Country of residence");
     });
   });
 
@@ -116,6 +172,8 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain(PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR);
       expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain("1 individual person");
+      expect(response.text).toContain(FORMATTED_DATE);
     });
 
     it("Should display wrong psc data page when no radio button is selected", async () => {

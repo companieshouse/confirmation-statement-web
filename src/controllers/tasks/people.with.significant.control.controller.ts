@@ -17,20 +17,8 @@ import { toReadableFormatMonthYear } from "../../utils/date";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
-    const pscs: PersonOfSignificantControl[] = await getPscs(req.session as Session, companyNumber);
-
-    if (pscs.length > 1) {
-      return next(createAndLogError(`More than one (${pscs.length}) PSC returned for company ${companyNumber}`));
-    }
-
-    if (pscs.length === 0) {
-      return next(createAndLogError(`No PSC returned for company ${companyNumber}`));
-    }
-
-    const psc: PersonOfSignificantControl = pscs[0];
+    const psc: PersonOfSignificantControl = await getPscData(req);
     const pscAppointmentType = psc.appointmentType;
-
     const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
 
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
@@ -52,10 +40,16 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
 
     if (!pscButtonValue) {
+      const psc: PersonOfSignificantControl = await getPscData(req);
+      const pscAppointmentType = psc.appointmentType;
+      const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
       return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
-        templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
+        backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+        dob: toReadableFormatMonthYear(psc.dateOfBirth.month, psc.dateOfBirth.year),
         peopleWithSignificantControlErrorMsg: PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
-        backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req)
+        psc,
+        pscTemplateType,
+        templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL
       });
     }
 
@@ -83,6 +77,20 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const getPscData = async (req: Request): Promise<PersonOfSignificantControl> => {
+  const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+  const pscs: PersonOfSignificantControl[] = await getPscs(req.session as Session, companyNumber);
+
+  if (pscs.length > 1) {
+    createAndLogError(`More than one (${pscs.length}) PSC returned for company ${companyNumber}`);
+  }
+
+  if (pscs.length === 0) {
+    createAndLogError(`No PSC returned for company ${companyNumber}`);
+  }
+
+  return pscs[0];
+};
 
 const sendUpdate = async (transactionId: string, submissionId: string, req: Request, status: SectionStatus) => {
   const session = req.session as Session;
