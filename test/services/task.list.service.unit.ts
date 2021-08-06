@@ -63,17 +63,17 @@ describe("Task List Service tests", () => {
       expect(taskList.tasks.shareholders.isVisible).toBe(false);
       expect(taskList.tasks.shareholders.state).toBe(TaskState.NOT_CHECKED);
       expect(taskList.tasks.shareholders.url).toBe(TASK_URL);
-      expect(mockGetUrlWithCompanyNumber.mock.calls[0][0]).toBe(SHAREHOLDERS_PATH);
+      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[3][0]).toBe(SHAREHOLDERS_PATH);
 
       expect(taskList.tasks.sicCodes.isVisible).toBe(false);
       expect(taskList.tasks.sicCodes.state).toBe(TaskState.CHECKED);
       expect(taskList.tasks.sicCodes.url).toBe(TASK_URL);
-      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[3][0]).toBe(SIC_PATH);
+      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[4][0]).toBe(SIC_PATH);
 
       expect(taskList.tasks.statementOfCapital.isVisible).toBe(false);
       expect(taskList.tasks.statementOfCapital.state).toBe(TASK_STATE);
       expect(taskList.tasks.statementOfCapital.url).toBe(TASK_URL);
-      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[4][0]).toBe(STATEMENT_OF_CAPITAL_PATH);
+      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[5][0]).toBe(STATEMENT_OF_CAPITAL_PATH);
 
       expect(taskList.recordDate).toBe(RECORD_DATE);
       expect(taskList.tasksCompletedCount).toBe(TASK_COMPLETED_COUNT);

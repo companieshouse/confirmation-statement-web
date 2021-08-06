@@ -29,7 +29,7 @@ describe("Shareholders controller tests", () => {
   });
 
   it("Should return an error page if error is thrown in get function", async () => {
-    const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlWithCompanyNumber");
+    const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlToPath");
     spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
     const response = await request(app).get(SHAREHOLDERS_URL);
 
@@ -58,7 +58,7 @@ describe("Shareholders controller tests", () => {
   });
 
   it("Should return an error page if error is thrown in post function", async () => {
-    const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlWithCompanyNumber");
+    const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlToPath");
     spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
     const response = await request(app).post(SHAREHOLDERS_URL);
 
