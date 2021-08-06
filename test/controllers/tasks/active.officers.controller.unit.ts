@@ -9,13 +9,14 @@ import { companyAuthenticationMiddleware } from "../../../src/middleware/company
 import { OFFICER_DETAILS_ERROR } from "../../../src/utils/constants";
 import { urlUtils } from "../../../src/utils/url";
 import { mockActiveOfficerDetails } from "../../mocks/active.officer.details.mock";
-import { getActiveOfficerDetailsData } from "../../../src/services/active.officer.details.service";
+import { getActiveOfficerDetailsData, formatOfficerDetails } from "../../../src/services/active.officer.details.service";
 
 jest.mock("../../../src/middleware/company.authentication.middleware");
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 const mockGetActiveOfficerDetails = getActiveOfficerDetailsData as jest.Mock;
+const mockformatOfficerDetails = formatOfficerDetails as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
 const PAGE_HEADING = "Check the director's details";
@@ -31,12 +32,14 @@ describe("Active officers controller tests", () => {
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
     mockGetActiveOfficerDetails.mockClear();
+    mockformatOfficerDetails.mockClear();
   });
 
   describe("get tests", () => {
 
     it("Should navigate to director's details page", async () => {
       mockGetActiveOfficerDetails.mockResolvedValueOnce(mockActiveOfficerDetails);
+      mockformatOfficerDetails.mockReturnValueOnce(mockActiveOfficerDetails);
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
@@ -53,6 +56,7 @@ describe("Active officers controller tests", () => {
       mockActiveOfficerDetails.foreName2 = undefined;
 
       mockGetActiveOfficerDetails.mockResolvedValueOnce(mockActiveOfficerDetails);
+      mockformatOfficerDetails.mockReturnValueOnce(mockActiveOfficerDetails);
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
@@ -70,6 +74,7 @@ describe("Active officers controller tests", () => {
       mockActiveOfficerDetails.secureIndicator = 'Y';
 
       mockGetActiveOfficerDetails.mockResolvedValueOnce(mockActiveOfficerDetails);
+      mockformatOfficerDetails.mockReturnValueOnce(mockActiveOfficerDetails);
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
