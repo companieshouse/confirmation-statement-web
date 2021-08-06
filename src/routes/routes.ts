@@ -4,6 +4,7 @@ import * as confirmCompanyRoute from "../controllers/confirm.company.controller"
 import * as companyNumberRoute from "../controllers/company.number.controller";
 import * as createTransactionRoute from "../controllers/create.transaction.controller";
 import * as peopleWithSignificantControlRoute from "../controllers/tasks/people.with.significant.control.controller";
+import * as pscStatementRoute from "../controllers/tasks/psc.statement.controller";
 import * as shareholders from "../controllers/tasks/shareholders.controller";
 import * as sicRoute from "../controllers/tasks/confirm.sic.code.controller";
 import * as startRoute from "../controllers/start.controller";
@@ -53,6 +54,8 @@ router.post(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.post);
 
 router.get(urls.PEOPLE_WITH_SIGNIFICANT_CONTROL, peopleWithSignificantControlRoute.get);
 router.post(urls.PEOPLE_WITH_SIGNIFICANT_CONTROL, peopleWithSignificantControlRoute.post);
+
+router.get(urls.PSC_STATEMENT, pscStatementRoute.get);
 
 router.get(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.get);
 router.post(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.post);

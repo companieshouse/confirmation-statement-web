@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
-import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, TASK_LIST_PATH, urlParams } from "../../types/page.urls";
+import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, PSC_STATEMENT_PATH, TASK_LIST_PATH, urlParams } from "../../types/page.urls";
 import { appointmentTypes, PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR, RADIO_BUTTON_VALUE } from "../../utils/constants";
 import {
   ConfirmationStatementSubmission,
@@ -68,10 +68,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       SectionStatus.CONFIRMED : SectionStatus.RECENT_FILING;
 
     await sendUpdate(transactionId, submissionId, req, sectionStatus);
-    return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
-      templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
-      backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req)
-    });
+    return res.redirect(urlUtils.getUrlToPath(PSC_STATEMENT_PATH, req));
   } catch (e) {
     return next(e);
   }
