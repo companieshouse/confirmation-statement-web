@@ -1,5 +1,3 @@
-import { urlUtils } from "../../../src/utils/url";
-
 jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/confirmation.statement.service");
 jest.mock("../../../src/services/psc.service");
@@ -18,6 +16,7 @@ import {
 import { mockConfirmationStatementSubmission } from "../../mocks/confirmation.statement.submission.mock";
 import { getPscs } from "../../../src/services/psc.service";
 import { toReadableFormatMonthYear } from "../../../src/utils/date";
+import { urlUtils } from "../../../src/utils/url";
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Check the people with significant control (PSC)";
@@ -27,6 +26,11 @@ const TRANSACTION_ID = "66544";
 const SUBMISSION_ID = "6464647";
 const PEOPLE_WITH_SIGNIFICANT_CONTROL_URL =
   urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH,
+                                                               COMPANY_NUMBER,
+                                                               TRANSACTION_ID,
+                                                               SUBMISSION_ID);
+const PSC_STATEMENT_URL =
+  urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(PSC_STATEMENT_PATH,
                                                                COMPANY_NUMBER,
                                                                TRANSACTION_ID,
                                                                SUBMISSION_ID);
@@ -201,11 +205,6 @@ describe("People with significant control controller tests", () => {
 
       expect(mockUpdateConfirmationStatement).toHaveBeenCalledTimes(1);
       expect(response.status).toEqual(302);
-      const PSC_STATEMENT_URL =
-        urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(PSC_STATEMENT_PATH,
-                                                                     COMPANY_NUMBER,
-                                                                     TRANSACTION_ID,
-                                                                     SUBMISSION_ID);
       expect(response.header.location).toEqual(PSC_STATEMENT_URL);
     });
 
@@ -217,11 +216,6 @@ describe("People with significant control controller tests", () => {
 
       expect(mockUpdateConfirmationStatement).toHaveBeenCalledTimes(1);
       expect(response.status).toEqual(302);
-      const PSC_STATEMENT_URL =
-        urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(PSC_STATEMENT_PATH,
-                                                                     COMPANY_NUMBER,
-                                                                     TRANSACTION_ID,
-                                                                     SUBMISSION_ID);
       expect(response.header.location).toEqual(PSC_STATEMENT_URL);
     });
 
@@ -229,7 +223,7 @@ describe("People with significant control controller tests", () => {
       mockGetConfirmationStatement.mockImplementationOnce(() => {throw new Error();});
       const response = await request(app)
         .post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL)
-        .send({ pscRadioValue: "yes" });
+        .send({ pscRadioValue: RADIO_BUTTON_VALUE.YES });
 
       expect(response.text).toContain("Sorry, the service is unavailable");
     });
