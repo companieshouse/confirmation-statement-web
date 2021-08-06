@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  {% if errorList.length > 0 %}
+  {% if peopleWithSignificantControlErrorMsg %}
     Error:
-  {% endif %}  Review the people with significant control
+  {% endif %}
+  Review the people with significant control
 {% endblock %}
 
 {% block backLink %}
@@ -28,7 +29,7 @@
             errorList: [
               {
                 text: "Select yes if the PSC details are correct",
-                href: "#psc"
+                href: "#psc-radio-value"
               }
             ]
           }) }}
