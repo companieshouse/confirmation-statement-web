@@ -25,8 +25,10 @@ const STOP_PAGE_HEADING = "Update the people with significant control (PSC) deta
 const COMPANY_NUMBER = "12345678";
 const PEOPLE_WITH_SIGNIFICANT_CONTROL_URL = PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH.replace(":companyNumber", COMPANY_NUMBER);
 const APPOINTMENT_TYPE_5007 = "5007";
-const DOB_MONTH = 10;
-const DOB_YEAR = 1965;
+const DOB_MONTH = 3;
+const DOB_YEAR = 1955;
+const FORMATTED_DATE = "March 1955";
+const ADDRESS = "2 Nets Way, Newcastle, NE2 3BB";
 
 const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 const mockUpdateConfirmationStatement = updateConfirmationStatement as jest.Mock;
@@ -44,7 +46,7 @@ mockGetPscs.mockResolvedValue([{
 }]);
 
 const mockToReadableFormatMonthYear = toReadableFormatMonthYear as jest.Mock;
-mockToReadableFormatMonthYear.mockReturnValue("March 1955");
+mockToReadableFormatMonthYear.mockReturnValue(FORMATTED_DATE);
 
 describe("People with significant control controller tests", () => {
 
@@ -90,24 +92,22 @@ describe("People with significant control controller tests", () => {
     });
 
     it("should navigate to individual psc page if psc is individual", async () => {
-      mockGetPscs.mockResolvedValueOnce([ { dateOfBirth: {
-        month: 3,
-        year: 1956
-      }, appointmentType: "5007" } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.statusCode).toBe(200);
       expect(response.text).toContain("1 individual person");
+      expect(response.text).toContain(FORMATTED_DATE);
     });
 
     it("should navigate to rle page if psc is rle type", async () => {
       mockGetPscs.mockResolvedValueOnce([ { dateOfBirth: {
         month: 3,
-        year: 1956
+        year: 1955
       },
       appointmentType: "5008" } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.statusCode).toBe(200);
       expect(response.text).toContain("1 relevant legal entity");
+      expect(response.text).toContain(ADDRESS);
     });
 
     it("should navigate to error page if psc is unknown type", async () => {
@@ -125,6 +125,8 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain(PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR);
       expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain("1 individual person");
+      expect(response.text).toContain(FORMATTED_DATE);
     });
 
     it("Should display wrong psc data page when no radio button is selected", async () => {
