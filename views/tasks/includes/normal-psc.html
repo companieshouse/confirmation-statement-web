@@ -27,7 +27,7 @@
           <p>{{ psc.serviceAddressLine_1 }}, {{ psc.serviceAddressPostTown }}, {{ psc.serviceAddressPostCode }}</p>
         </dd>
       </div>
-      {% if psc.address %}
+      {% if psc.address|length > 0 %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Usual residential address</dt>
           <dd class="govuk-summary-list__value">
@@ -48,4 +48,4 @@
       </div>
     </dl>
   </div>
-  </div>
+</div>
