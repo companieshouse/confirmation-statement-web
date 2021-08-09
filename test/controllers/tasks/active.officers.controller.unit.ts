@@ -4,25 +4,25 @@ jest.mock("../../../src/services/active.officer.details.service");
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
-import { ACTIVE_OFFICERS_PATH, TASK_LIST_PATH, urlParams } from "../../../src/types/page.urls";
+import { ACTIVE_DIRECTORS_PATH, TASK_LIST_PATH, urlParams } from "../../../src/types/page.urls";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
 import { OFFICER_DETAILS_ERROR } from "../../../src/utils/constants";
 import { urlUtils } from "../../../src/utils/url";
-import { mockActiveOfficerDetails } from "../../mocks/active.officer.details.mock";
-import { getActiveOfficerDetailsData, formatOfficerDetails } from "../../../src/services/active.officer.details.service";
+import { mockActiveDirectorDetails, mockSecureActiveDirectorDetails } from "../../mocks/active.officer.details.mock";
+import { getActiveDirectorDetailsData, formatOfficerDetails } from "../../../src/services/active.officer.details.service";
 
 jest.mock("../../../src/middleware/company.authentication.middleware");
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
-const mockGetActiveOfficerDetails = getActiveOfficerDetailsData as jest.Mock;
+const mockGetActiveDirectorDetails = getActiveDirectorDetailsData as jest.Mock;
 const mockformatOfficerDetails = formatOfficerDetails as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
 const PAGE_HEADING = "Check the director's details";
 const WRONG_OFFICER_PAGE_HEADING = "Update officers - File a confirmation statement";
 const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
-const ACTIVE_OFFICER_DETAILS_URL = ACTIVE_OFFICERS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+const ACTIVE_OFFICER_DETAILS_URL = ACTIVE_DIRECTORS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
 describe("Active officers controller tests", () => {
@@ -31,61 +31,58 @@ describe("Active officers controller tests", () => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
-    mockGetActiveOfficerDetails.mockClear();
+    mockGetActiveDirectorDetails.mockClear();
     mockformatOfficerDetails.mockClear();
   });
 
   describe("get tests", () => {
 
     it("Should navigate to director's details page", async () => {
-      mockGetActiveOfficerDetails.mockResolvedValueOnce(mockActiveOfficerDetails);
-      mockformatOfficerDetails.mockReturnValueOnce(mockActiveOfficerDetails);
+      mockGetActiveDirectorDetails.mockResolvedValueOnce(mockActiveDirectorDetails);
+      mockformatOfficerDetails.mockReturnValueOnce(mockActiveDirectorDetails);
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Is the director still active?");
-      expect(response.text).toContain(mockActiveOfficerDetails.foreName1);
-      expect(response.text).toContain(mockActiveOfficerDetails.foreName2);
-      expect(response.text).toContain(mockActiveOfficerDetails.dateOfBirth);
-      expect(response.text).toContain(mockActiveOfficerDetails.nationality);
-      expect(response.text).toContain(mockActiveOfficerDetails.uraLine1);
+      expect(response.text).toContain(mockActiveDirectorDetails.foreName1);
+      expect(response.text).toContain(mockActiveDirectorDetails.foreName2);
+      expect(response.text).toContain(mockActiveDirectorDetails.dateOfBirth);
+      expect(response.text).toContain(mockActiveDirectorDetails.nationality);
+      expect(response.text).toContain(mockActiveDirectorDetails.uraLine1);
     });
 
     it("Should navigate to director's details page with no middle name", async () => {
-      const fName2 = mockActiveOfficerDetails.foreName2;
-      mockActiveOfficerDetails.foreName2 = undefined;
+      const fName2 = mockActiveDirectorDetails.foreName2;
+      mockActiveDirectorDetails.foreName2 = undefined;
 
-      mockGetActiveOfficerDetails.mockResolvedValueOnce(mockActiveOfficerDetails);
-      mockformatOfficerDetails.mockReturnValueOnce(mockActiveOfficerDetails);
+      mockGetActiveDirectorDetails.mockResolvedValueOnce(mockActiveDirectorDetails);
+      mockformatOfficerDetails.mockReturnValueOnce(mockActiveDirectorDetails);
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Is the director still active?");
-      expect(response.text).toContain(mockActiveOfficerDetails.foreName1);
-      expect(response.text).toContain(mockActiveOfficerDetails.dateOfBirth);
-      expect(response.text).toContain(mockActiveOfficerDetails.nationality);
-      expect(response.text).toContain(mockActiveOfficerDetails.uraLine1);
+      expect(response.text).toContain(mockActiveDirectorDetails.foreName1);
+      expect(response.text).toContain(mockActiveDirectorDetails.dateOfBirth);
+      expect(response.text).toContain(mockActiveDirectorDetails.nationality);
+      expect(response.text).toContain(mockActiveDirectorDetails.uraLine1);
       expect(response.text).not.toContain(fName2);
 
-      mockActiveOfficerDetails.foreName2 = fName2;
+      mockActiveDirectorDetails.foreName2 = fName2;
     });
 
     it("Should navigate to director's details page for secure officer", async () => {
-      mockActiveOfficerDetails.secureIndicator = 'Y';
 
-      mockGetActiveOfficerDetails.mockResolvedValueOnce(mockActiveOfficerDetails);
-      mockformatOfficerDetails.mockReturnValueOnce(mockActiveOfficerDetails);
+      mockGetActiveDirectorDetails.mockResolvedValueOnce(mockSecureActiveDirectorDetails);
+      mockformatOfficerDetails.mockReturnValueOnce(mockSecureActiveDirectorDetails);
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Is the director still active?");
-      expect(response.text).toContain(mockActiveOfficerDetails.foreName1);
-      expect(response.text).toContain(mockActiveOfficerDetails.dateOfBirth);
-      expect(response.text).toContain(mockActiveOfficerDetails.nationality);
-      expect(response.text).not.toContain("Usual residential address");
-      expect(response.text).not.toContain(mockActiveOfficerDetails.uraLine1);
-
-      mockActiveOfficerDetails.secureIndicator = 'N';
+      expect(response.text).toContain(mockSecureActiveDirectorDetails.foreName1);
+      expect(response.text).toContain(mockSecureActiveDirectorDetails.dateOfBirth);
+      expect(response.text).toContain(mockSecureActiveDirectorDetails.nationality);
+      expect(response.text).toContain("Usual residential address");
+      expect(response.text).toContain(mockSecureActiveDirectorDetails.uraLine1);
     });
 
     it("Should navigate to an error page if the function throws an error", async () => {
@@ -100,7 +97,7 @@ describe("Active officers controller tests", () => {
     });
 
     it("Should navigate to an error page if the called service throws an error", async () => {
-      mockGetActiveOfficerDetails.mockImplementationOnce(() => {throw new Error(); });
+      mockGetActiveDirectorDetails.mockImplementationOnce(() => {throw new Error(); });
 
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
 

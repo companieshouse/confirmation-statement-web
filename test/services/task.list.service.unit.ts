@@ -5,7 +5,7 @@ jest.mock("../../src/utils/url");
 
 import { ConfirmationStatementSubmission } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { initTaskList } from "../../src/services/task.list.service";
-import { ACTIVE_OFFICERS_PATH, PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, REGISTERED_OFFICE_ADDRESS_PATH, SHAREHOLDERS_PATH, SIC_PATH, STATEMENT_OF_CAPITAL_PATH } from "../../src/types/page.urls";
+import { ACTIVE_DIRECTORS_PATH, PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, REGISTERED_OFFICE_ADDRESS_PATH, SHAREHOLDERS_PATH, SIC_PATH, STATEMENT_OF_CAPITAL_PATH } from "../../src/types/page.urls";
 import { TaskList, TaskState } from "../../src/types/task.list";
 import { toReadableFormat } from "../../src/utils/date";
 import { getTaskCompletedCount } from "../../src/utils/task/task.counter";
@@ -45,7 +45,7 @@ describe("Task List Service tests", () => {
       expect(taskList.tasks.officers.isVisible).toBe(false);
       expect(taskList.tasks.officers.state).toBe(TaskState.NOT_CHECKED);
       expect(taskList.tasks.officers.url).toBe(TASK_URL);
-      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[0][0]).toBe(ACTIVE_OFFICERS_PATH);
+      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[0][0]).toBe(ACTIVE_DIRECTORS_PATH);
 
       expect(taskList.tasks.peopleSignificantControl.isVisible).toBe(false);
       expect(taskList.tasks.peopleSignificantControl.state).toBe(TaskState.CHECKED);
