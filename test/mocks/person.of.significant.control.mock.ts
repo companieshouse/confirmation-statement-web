@@ -36,17 +36,63 @@ export const mockPersonsOfSignificantControl: PersonOfSignificantControl[] = [
 ];
 
 export const mockCompanyPscStatementResource: CompanyPersonsWithSignificantControlStatements = {
-  activeCount: "1",
-  ceasedCount: "0",
+  activeCount: "3",
+  ceasedCount: "4",
   items: [
+    {
+      etag: "ETAG",
+      ceasedOn: "2019-11-22",
+      kind: "KIND",
+      links: { self: "SELF" },
+      notifiedOn: "2019-10-23",
+      statement: "STATEMENT1"
+    },
+    {
+      etag: "ETAG",
+      ceasedOn: "2019-12-25",
+      kind: "KIND",
+      links: { self: "SELF" },
+      notifiedOn: "2019-05-13",
+      statement: "STATEMENT2"
+    },
     {
       etag: "ETAG",
       kind: "KIND",
       links: { self: "SELF" },
-      notifiedOn: "NOTIFIED",
-      statement: "STATEMENT"
+      notifiedOn: "2020-05-13",
+      statement: "STATEMENT3"
+    },
+    {
+      etag: "ETAG",
+      ceasedOn: "2019-12-25",
+      kind: "KIND",
+      links: { self: "SELF" },
+      notifiedOn: "2019-05-13",
+      statement: "STATEMENT4"
+    },
+    {
+      etag: "ETAG",
+      kind: "KIND",
+      links: { self: "SELF" },
+      notifiedOn: "2017-02-03",
+      statement: "STATEMENT5"
+    },
+    {
+      etag: "ETAG",
+      ceasedOn: "2019-12-25",
+      kind: "KIND",
+      links: { self: "SELF" },
+      notifiedOn: "2019-05-13",
+      statement: "STATEMENT6"
+    },
+    {
+      etag: "ETAG",
+      kind: "KIND",
+      links: { self: "SELF" },
+      notifiedOn: "2021-07-13",
+      statement: "STATEMENT7"
     }
   ],
   links: { self: "SELF" },
-  totalResults: "1"
+  totalResults: "7"
 };
