@@ -15,7 +15,7 @@ import {
   mockCompanyPscStatementResource,
   mockPersonsOfSignificantControl
 } from "../mocks/person.of.significant.control.mock";
-import { getPscs, getCompanyPscStatements, getMostRecentActivePscStatement } from "../../src/services/psc.service";
+import { getPscs, getPscStatements, getMostRecentActivePscStatement } from "../../src/services/psc.service";
 import { CompanyPersonsWithSignificantControlStatements, CompanyPersonWithSignificantControlStatement } from "@companieshouse/api-sdk-node/dist/services/company-psc-statements";
 
 const mockGetPersonsOfSignificantControl = ConfirmationStatementService.prototype.getPersonsOfSignificantControl as jest.Mock;
@@ -74,7 +74,7 @@ describe("Test psc service", () => {
     });
   });
 
-  describe("getCompanyPscStatements tests", () => {
+  describe("getPscStatements tests", () => {
     it("should call sdk to get psc statements", async () => {
       const resource: Resource<CompanyPersonsWithSignificantControlStatements> = {
         httpStatusCode: 200,
@@ -82,7 +82,7 @@ describe("Test psc service", () => {
       };
 
       mockGetCompanyPscStatements.mockResolvedValueOnce(resource);
-      const response = await getCompanyPscStatements(session, companyNumber, 25, 0);
+      const response = await getPscStatements(session, companyNumber, 25, 0);
       expect(mockGetCompanyPscStatements).toBeCalledWith(companyNumber, 25, 0);
       expect(response).toEqual(mockCompanyPscStatementResource);
     });
@@ -97,7 +97,7 @@ describe("Test psc service", () => {
       const expectedMessage = "Error retrieving psc statement from psc statement api " + JSON.stringify(errorResponse);
       let actualMessage: any;
       try {
-        await getCompanyPscStatements(session, companyNumber, 25, 0);
+        await getPscStatements(session, companyNumber, 25, 0);
       } catch (e) {
         actualMessage = e.message;
       }
@@ -111,7 +111,7 @@ describe("Test psc service", () => {
         errors: [{ error: "Resource Not Found" }]
       };
       mockGetCompanyPscStatements.mockResolvedValueOnce(errorResponse);
-      const pscStatement = await getCompanyPscStatements(session, companyNumber, 25, 0);
+      const pscStatement = await getPscStatements(session, companyNumber, 25, 0);
 
       expect(pscStatement).toStrictEqual({
         activeCount: "0",

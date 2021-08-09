@@ -19,7 +19,7 @@ export const getPscs = async (session: Session, companyNumber: string): Promise<
   return successfulResponse.resource as PersonOfSignificantControl[];
 };
 
-export const getCompanyPscStatements = async (session: Session, companyNumber: string, pageSize: number, pageIndex: number): Promise<CompanyPersonsWithSignificantControlStatements> => {
+export const getPscStatements = async (session: Session, companyNumber: string, pageSize: number, pageIndex: number): Promise<CompanyPersonsWithSignificantControlStatements> => {
   const client = createPublicOAuthApiClient(session);
   logger.info(`Calling SDK getCompanyPscStatements with pageSize = ${pageSize}, pageIndex = ${pageIndex}`);
 
@@ -49,7 +49,7 @@ export const getCompanyPscStatements = async (session: Session, companyNumber: s
 
 export const getMostRecentActivePscStatement = async (session: Session, companyNumber: string): Promise<CompanyPersonWithSignificantControlStatement> => {
   const pageSize = 100;
-  const pscStatements: CompanyPersonsWithSignificantControlStatements = await getCompanyPscStatements(session, companyNumber, pageSize, 0);
+  const pscStatements: CompanyPersonsWithSignificantControlStatements = await getPscStatements(session, companyNumber, pageSize, 0);
 
   logger.info(`Extracting most recent active PSC statement from ${pageSize} returned items`);
   return pscStatements.items
