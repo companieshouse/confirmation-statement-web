@@ -5,6 +5,7 @@ import Resource, { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/se
 import { CompanyPersonsWithSignificantControlStatements, CompanyPersonWithSignificantControlStatement } from "@companieshouse/api-sdk-node/dist/services/company-psc-statements";
 import { DateTime } from "luxon";
 import { logger } from "../utils/logger";
+import { PSC_STATEMENTS_API_PAGE_SIZE } from "../utils/properties";
 
 export const getPscs = async (session: Session, companyNumber: string): Promise<PersonOfSignificantControl[]> => {
   const client = createPrivateOAuthApiClient(session);
@@ -48,7 +49,7 @@ export const getPscStatements = async (session: Session, companyNumber: string, 
 };
 
 export const getMostRecentActivePscStatement = async (session: Session, companyNumber: string): Promise<CompanyPersonWithSignificantControlStatement> => {
-  const pageSize = 100;
+  const pageSize = parseInt(PSC_STATEMENTS_API_PAGE_SIZE);
   const pscStatements: CompanyPersonsWithSignificantControlStatements = await getPscStatements(session, companyNumber, pageSize, 0);
 
   logger.info(`Extracting most recent active PSC statement from ${pscStatements?.totalResults} returned items`);
