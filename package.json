@@ -39,7 +39,7 @@
     "on-headers": "^1.0.2",
     "private-api-sdk-node": "git+ssh://git@github.com/companieshouse/private-api-sdk-node.git#0.1.45",
     "safe-buffer": "^5.2.1",
-    "yargs": "^15.3.1"
+    "yargs": "^17.1.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.1",
