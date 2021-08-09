@@ -1,16 +1,14 @@
-import { urlUtils } from "../../../src/utils/url";
-
 jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/confirmation.statement.service");
 jest.mock("../../../src/services/psc.service");
 jest.mock("../../../src/utils/date");
 
 import mocks from "../../mocks/all.middleware.mock";
-import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH } from "../../../src/types/page.urls";
+import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, PSC_STATEMENT_PATH } from "../../../src/types/page.urls";
 import request from "supertest";
 import app from "../../../src/app";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
-import { PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR } from "../../../src/utils/constants";
+import { PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR, RADIO_BUTTON_VALUE } from "../../../src/utils/constants";
 import {
   getConfirmationStatement,
   updateConfirmationStatement
@@ -18,12 +16,24 @@ import {
 import { mockConfirmationStatementSubmission } from "../../mocks/confirmation.statement.submission.mock";
 import { getPscs } from "../../../src/services/psc.service";
 import { toReadableFormatMonthYear } from "../../../src/utils/date";
+import { urlUtils } from "../../../src/utils/url";
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Check the people with significant control (PSC)";
 const STOP_PAGE_HEADING = "Update the people with significant control (PSC) details";
 const COMPANY_NUMBER = "12345678";
-const PEOPLE_WITH_SIGNIFICANT_CONTROL_URL = PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH.replace(":companyNumber", COMPANY_NUMBER);
+const TRANSACTION_ID = "66544";
+const SUBMISSION_ID = "6464647";
+const PEOPLE_WITH_SIGNIFICANT_CONTROL_URL =
+  urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH,
+                                                               COMPANY_NUMBER,
+                                                               TRANSACTION_ID,
+                                                               SUBMISSION_ID);
+const PSC_STATEMENT_URL =
+  urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(PSC_STATEMENT_PATH,
+                                                               COMPANY_NUMBER,
+                                                               TRANSACTION_ID,
+                                                               SUBMISSION_ID);
 const APPOINTMENT_TYPE_5007 = "5007";
 const APPOINTMENT_TYPE_5008 = "5008";
 const DOB_MONTH = 3;
@@ -180,28 +190,40 @@ describe("People with significant control controller tests", () => {
       mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL)
-        .send({ pscRadioValue: "no" });
+        .send({ pscRadioValue: RADIO_BUTTON_VALUE.NO });
 
       expect(mockUpdateConfirmationStatement).toHaveBeenCalledTimes(1);
       expect(response.status).toEqual(200);
       expect(response.text).toContain(STOP_PAGE_HEADING);
     });
 
-    it("Should return 200 when yes radio button is selected", async () => {
+    it("Should redirect to psc statement page when yes radio button is selected", async () => {
       mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL)
-        .send({ pscRadioValue: "yes" });
+        .send({ pscRadioValue: RADIO_BUTTON_VALUE.YES });
 
       expect(mockUpdateConfirmationStatement).toHaveBeenCalledTimes(1);
-      expect(response.status).toEqual(200);
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(PSC_STATEMENT_URL);
+    });
+
+    it("Should redirect to psc statement page when Recently Filed radio button is selected", async () => {
+      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
+      const response = await request(app)
+        .post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL)
+        .send({ pscRadioValue: RADIO_BUTTON_VALUE.RECENTLY_FILED });
+
+      expect(mockUpdateConfirmationStatement).toHaveBeenCalledTimes(1);
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(PSC_STATEMENT_URL);
     });
 
     it("Should return an error page if error is thrown in post function", async () => {
       mockGetConfirmationStatement.mockImplementationOnce(() => {throw new Error();});
       const response = await request(app)
         .post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL)
-        .send({ pscRadioValue: "yes" });
+        .send({ pscRadioValue: RADIO_BUTTON_VALUE.YES });
 
       expect(response.text).toContain("Sorry, the service is unavailable");
     });
