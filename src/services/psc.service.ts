@@ -51,7 +51,7 @@ export const getMostRecentActivePscStatement = async (session: Session, companyN
   const pageSize = 100;
   const pscStatements: CompanyPersonsWithSignificantControlStatements = await getPscStatements(session, companyNumber, pageSize, 0);
 
-  logger.info(`Extracting most recent active PSC statement from ${pageSize} returned items`);
+  logger.info(`Extracting most recent active PSC statement from ${pscStatements?.totalResults} returned items`);
   return pscStatements.items
     .filter(statement => !statement.ceasedOn)
     .sort((statement1, statement2) => DateTime.fromISO(statement2.notifiedOn).toMillis() - DateTime.fromISO(statement1.notifiedOn).toMillis())

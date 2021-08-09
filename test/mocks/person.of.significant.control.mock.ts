@@ -1,5 +1,5 @@
 import { PersonOfSignificantControl } from "private-api-sdk-node/dist/services/confirmation-statement";
-import { CompanyPersonsWithSignificantControlStatements } from "@companieshouse/api-sdk-node/dist/services/company-psc-statements";
+import { CompanyPersonsWithSignificantControlStatements, CompanyPersonWithSignificantControlStatement } from "@companieshouse/api-sdk-node/dist/services/company-psc-statements";
 
 export const mockPersonsOfSignificantControl: PersonOfSignificantControl[] = [
   {
@@ -95,4 +95,15 @@ export const mockCompanyPscStatementResource: CompanyPersonsWithSignificantContr
   ],
   links: { self: "SELF" },
   totalResults: "7"
+};
+
+export const mockSingleActivePsc: CompanyPersonWithSignificantControlStatement = {
+  etag: "etag",
+  kind: "kind",
+  links: {
+    self: "self"
+  },
+  notifiedOn: "2020-05-03",
+  statement: "Active Psc Statement",
+  linkedPscName: "Bob"
 };
