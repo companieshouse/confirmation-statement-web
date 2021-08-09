@@ -54,5 +54,18 @@ describe("PSC Statement controller tests", () => {
       expect(response.text).toContain(PSC_STATEMENT_CONTROL_ERROR);
       expect(response.text).toContain(PAGE_HEADING);
     });
+
+
+    it("Should return an error page if error is thrown", async () => {
+      const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
+      spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
+      const response = await request(app).post(PSC_STATEMENT_URL);
+
+      expect(response.status).toEqual(500);
+      expect(response.text).toContain("Sorry, the service is unavailable");
+
+      // restore original function so it is no longer mocked
+      spyGetUrlToPath.mockRestore();
+    });
   });
 });
