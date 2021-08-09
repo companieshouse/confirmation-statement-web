@@ -20,16 +20,20 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response) => {
-  const pscButtonValue = req.body.pscStatementValue;
+export const post = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const pscButtonValue = req.body.pscStatementValue;
 
-  if (!pscButtonValue) {
-    const pscStatement = PSC_STATEMENT_NOT_FOUND;
-    return res.render(Templates.PSC_STATEMENT, {
-      backLinkUrl: urlUtils.getUrlToPath(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, req),
-      pscStatementControlErrorMsg: PSC_STATEMENT_CONTROL_ERROR,
-      pscStatement,
-      templateName: Templates.PSC_STATEMENT,
-    });
+    if (!pscButtonValue) {
+      const pscStatement = PSC_STATEMENT_NOT_FOUND;
+      return res.render(Templates.PSC_STATEMENT, {
+        backLinkUrl: urlUtils.getUrlToPath(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, req),
+        pscStatementControlErrorMsg: PSC_STATEMENT_CONTROL_ERROR,
+        pscStatement,
+        templateName: Templates.PSC_STATEMENT,
+      });
+    }
+  } catch (e) {
+    return next(e);
   }
 };
