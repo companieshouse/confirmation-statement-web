@@ -12,6 +12,24 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <form action="" method="post">
+
+        {% if pscStatementControlErrorMsg %}
+          {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: [
+              {
+                text: "Select yes if the company PSC Statement is correct",
+                href: "#psc-statement-value"
+              }
+            ]
+          }) }}
+          {% set pscStatementControlError = {
+            text: pscStatementControlErrorMsg
+           } %}
+        {% else %}
+          {% set pscStatementControlError = false %}
+        {% endif %}
+
         {% set pscStatementTypesHTML %}
           <p>
             If a company has no PSCs, or is currently investigating who its PSCs are, it needs to file a statement to
@@ -25,7 +43,7 @@
         {% endset %}
 
         {% set pscStatementHTML %}
-          <p>{{ pscStatement }}</p> 
+          <p>{{ pscStatement }}</p>
           {{ govukDetails({
             summaryText: "What are PSC statements?",
             html: pscStatementTypesHTML
@@ -34,8 +52,9 @@
 
         {{ govukRadios({
           classes: "govuk-radios",
-          idPrefix: "psc-statement",
-          name: "psc-statement",
+          idPrefix: "psc-statement-value",
+          name: "pscStatementValue",
+          errorMessage: pscStatementControlError,
           fieldset: {
             legend: {
               html: "Is the PSC statement correct?",
