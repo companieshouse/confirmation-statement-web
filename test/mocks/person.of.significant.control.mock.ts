@@ -15,10 +15,14 @@ export const mockPersonsOfSignificantControl: PersonOfSignificantControl[] = [
       region: "region"
     },
     appointmentType: "5007",
+    companyName: "comp name",
+    countryOfResidence: "UK",
     dateOfBirth: {
       month: 3,
       year: 1956
     },
+    lawGoverned: "law governed",
+    legalForm: "legal form",
     nameElements: {
       forename: "Fred",
       middleName: "middle",
@@ -28,10 +32,10 @@ export const mockPersonsOfSignificantControl: PersonOfSignificantControl[] = [
     },
     nationality: "nationality",
     naturesOfControl: [ "noc1", "noc2" ],
+    registrationNumber: "reg no",
     serviceAddressLine_1: "serv line 1",
     serviceAddressPostCode: "serv post code",
-    serviceAddressPostTown: "serv town",
-    companyName: "comp name"
+    serviceAddressPostTown: "serv town"
   }
 ];
 
