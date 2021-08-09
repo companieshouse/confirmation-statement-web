@@ -56,6 +56,7 @@ router.get(urls.PEOPLE_WITH_SIGNIFICANT_CONTROL, peopleWithSignificantControlRou
 router.post(urls.PEOPLE_WITH_SIGNIFICANT_CONTROL, peopleWithSignificantControlRoute.post);
 
 router.get(urls.PSC_STATEMENT, pscStatementRoute.get);
+router.post(urls.PSC_STATEMENT, pscStatementRoute.post);
 
 router.get(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.get);
 router.post(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.post);
