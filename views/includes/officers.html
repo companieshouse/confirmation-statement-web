@@ -1,10 +1,10 @@
 <div class="govuk-summary-card govuk-!-margin-bottom-4">
     <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center; color: govuk-colour("light-grey")">
       <p class="govuk-!-font-weight-bold govuk-!-margin-0">
-        {{activeOfficerDetails.surname}},
-        &nbsp; {{activeOfficerDetails.foreName1}}
-        {% if activeOfficerDetails.foreName2 %}
-          &nbsp; {{activeOfficerDetails.foreName2}}
+        {{activeDirectorDetails.surname}},
+        &nbsp; {{activeDirectorDetails.foreName1}}
+        {% if activeDirectorDetails.foreName2 %}
+          &nbsp; {{activeDirectorDetails.foreName2}}
         {% endif %}
       </p>
       {{govukTag({
@@ -17,35 +17,37 @@
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Nationality</dt>
           <dd class="govuk-summary-list__value">
-            <p>{{activeOfficerDetails.nationality}}</p>
+            <p>{{activeDirectorDetails.nationality}}</p>
           </dd>
         </div>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Date of birth</dt>
           <dd class="govuk-summary-list__value">
-            <p>{{activeOfficerDetails.dateOfBirth}}</p>
+            <p>{{activeDirectorDetails.dateOfBirth}}</p>
           </dd>
         </div>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Occupation</dt>
           <dd class="govuk-summary-list__value">
-            <p>{{activeOfficerDetails.occupation}}</p>
+            <p>{{activeDirectorDetails.occupation}}</p>
           </dd>
         </div>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Correspondence address</dt>
           <dd class="govuk-summary-list__value">
-            <p>{{activeOfficerDetails.serviceAddressLine1}}, {{activeOfficerDetails.serviceAddressPostTown}}, {{activeOfficerDetails.serviceAddressPostcode}}</p>
+            <p>{{activeDirectorDetails.serviceAddressLine1}}, {{activeDirectorDetails.serviceAddressPostTown}}, {{activeDirectorDetails.serviceAddressPostcode}}</p>
           </dd>
         </div>
-        {% if activeOfficerDetails.secureIndicator === "N" %}
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Usual residential address</dt>
-            <dd class="govuk-summary-list__value">
-            <p>{{activeOfficerDetails.uraLine1}}, {{activeOfficerDetails.uraPostTown}}, {{activeOfficerDetails.uraPostcode}}</p>
-            </dd>
-          </div>
-        {% endif %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Usual residential address</dt>
+          <dd class="govuk-summary-list__value">
+          <p>{{activeDirectorDetails.uraLine1}}
+          {% if activeDirectorDetails.uraPostTown %}
+            , {{activeDirectorDetails.uraPostTown}}, {{activeDirectorDetails.uraPostcode}}
+          {% endif %}
+          </p>
+          </dd>
+        </div>
       </dl>
     </div>
 </div>
