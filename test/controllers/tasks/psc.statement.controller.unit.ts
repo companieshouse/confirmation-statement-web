@@ -11,7 +11,7 @@ import { mockSingleActivePsc } from "../../mocks/person.of.significant.control.m
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Is the PSC statement correct?";
-const STOP_PAGE_HEADING = "";
+const STOP_PAGE_HEADING = "Update the people with significant control (PSC) details";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66544";
 const SUBMISSION_ID = "6464647";
