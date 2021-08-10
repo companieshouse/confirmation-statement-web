@@ -4,9 +4,9 @@ jest.mock("private-api-sdk-node/");
 import { Resource } from "@companieshouse/api-sdk-node";
 import { createPrivateApiClient } from "private-api-sdk-node";
 import PrivateApiClient from "private-api-sdk-node/dist/client";
-import { getActiveDirectorDetailsData, formatOfficerDetails } from "../../src/services/active.officer.details.service";
+import { getActiveDirectorDetailsData, formatDirectorDetails } from "../../src/services/active.director.details.service";
 import { ActiveDirectorDetails, ConfirmationStatementService } from "private-api-sdk-node/dist/services/confirmation-statement";
-import { mockActiveDirectorDetails, mockActiveDirectorDetailsFormatted } from "../mocks/active.officer.details.mock";
+import { mockActiveDirectorDetails, mockActiveDirectorDetailsFormatted } from "../mocks/active.director.details.mock";
 import { getSessionRequest } from "../mocks/session.mock";
 import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 
@@ -22,7 +22,7 @@ const clone = (objectToClone: any): any => {
   return JSON.parse(JSON.stringify(objectToClone));
 };
 
-describe("Test active officer details service", () => {
+describe("Test active director details service", () => {
 
   const companyNumber = "12345678";
 
@@ -30,7 +30,7 @@ describe("Test active officer details service", () => {
     jest.clearAllMocks();
   });
 
-  it("Should call the sdk and get the active officer details data", async () => {
+  it("Should call the sdk and get the active director details data", async () => {
 
     const resource: Resource<ActiveDirectorDetails> = {
       httpStatusCode: 200,
@@ -56,7 +56,7 @@ describe("Test active officer details service", () => {
 
     mockGetActiveDirectorDetails.mockReturnValueOnce(errorResponse);
     const session =  getSessionRequest({ access_token: "token" });
-    const expectedMessage = "Error retrieving active officer details: " + JSON.stringify(errorResponse);
+    const expectedMessage = "Error retrieving active director details: " + JSON.stringify(errorResponse);
     let actualMessage;
 
     try {
@@ -72,20 +72,20 @@ describe("Test active officer details service", () => {
 
 });
 
-describe("Format officer details test", () => {
-  it ("should convert officer details to presentible format ", () => {
-    const formattedOfficerDetails: ActiveDirectorDetails = formatOfficerDetails(clone(mockActiveDirectorDetails));
-    expect(formattedOfficerDetails.foreName1).toEqual(mockActiveDirectorDetailsFormatted.foreName1);
-    expect(formattedOfficerDetails.foreName2).toEqual(mockActiveDirectorDetailsFormatted.foreName2);
-    expect(formattedOfficerDetails.surname).toEqual(mockActiveDirectorDetailsFormatted.surname);
-    expect(formattedOfficerDetails.nationality).toEqual(mockActiveDirectorDetailsFormatted.nationality);
-    expect(formattedOfficerDetails.occupation).toEqual(mockActiveDirectorDetailsFormatted.occupation);
-    expect(formattedOfficerDetails.serviceAddressLine1).toEqual(mockActiveDirectorDetailsFormatted.serviceAddressLine1);
-    expect(formattedOfficerDetails.serviceAddressPostTown).toEqual(mockActiveDirectorDetailsFormatted.serviceAddressPostTown);
-    expect(formattedOfficerDetails.serviceAddressPostcode).toEqual(mockActiveDirectorDetailsFormatted.serviceAddressPostcode);
-    expect(formattedOfficerDetails.uraLine1).toEqual(mockActiveDirectorDetailsFormatted.uraLine1);
-    expect(formattedOfficerDetails.uraPostTown).toEqual(mockActiveDirectorDetailsFormatted.uraPostTown);
-    expect(formattedOfficerDetails.uraPostcode).toEqual(mockActiveDirectorDetailsFormatted.uraPostcode);
+describe("Format director details test", () => {
+  it ("should convert director details to presentible format ", () => {
+    const formattedDirectorDetails: ActiveDirectorDetails = formatDirectorDetails(clone(mockActiveDirectorDetails));
+    expect(formattedDirectorDetails.foreName1).toEqual(mockActiveDirectorDetailsFormatted.foreName1);
+    expect(formattedDirectorDetails.foreName2).toEqual(mockActiveDirectorDetailsFormatted.foreName2);
+    expect(formattedDirectorDetails.surname).toEqual(mockActiveDirectorDetailsFormatted.surname);
+    expect(formattedDirectorDetails.nationality).toEqual(mockActiveDirectorDetailsFormatted.nationality);
+    expect(formattedDirectorDetails.occupation).toEqual(mockActiveDirectorDetailsFormatted.occupation);
+    expect(formattedDirectorDetails.serviceAddressLine1).toEqual(mockActiveDirectorDetailsFormatted.serviceAddressLine1);
+    expect(formattedDirectorDetails.serviceAddressPostTown).toEqual(mockActiveDirectorDetailsFormatted.serviceAddressPostTown);
+    expect(formattedDirectorDetails.serviceAddressPostcode).toEqual(mockActiveDirectorDetailsFormatted.serviceAddressPostcode);
+    expect(formattedDirectorDetails.uraLine1).toEqual(mockActiveDirectorDetailsFormatted.uraLine1);
+    expect(formattedDirectorDetails.uraPostTown).toEqual(mockActiveDirectorDetailsFormatted.uraPostTown);
+    expect(formattedDirectorDetails.uraPostcode).toEqual(mockActiveDirectorDetailsFormatted.uraPostcode);
   });
 
 });

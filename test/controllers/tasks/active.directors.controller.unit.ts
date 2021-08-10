@@ -1,46 +1,46 @@
 jest.mock("../../../src/middleware/company.authentication.middleware");
-jest.mock("../../../src/services/active.officer.details.service");
+jest.mock("../../../src/services/active.director.details.service");
 
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
 import { ACTIVE_DIRECTORS_PATH, TASK_LIST_PATH, urlParams } from "../../../src/types/page.urls";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
-import { OFFICER_DETAILS_ERROR } from "../../../src/utils/constants";
+import { DIRECTOR_DETAILS_ERROR } from "../../../src/utils/constants";
 import { urlUtils } from "../../../src/utils/url";
-import { mockActiveDirectorDetails, mockSecureActiveDirectorDetails } from "../../mocks/active.officer.details.mock";
-import { getActiveDirectorDetailsData, formatOfficerDetails } from "../../../src/services/active.officer.details.service";
+import { mockActiveDirectorDetails, mockSecureActiveDirectorDetails } from "../../mocks/active.director.details.mock";
+import { getActiveDirectorDetailsData, formatDirectorDetails } from "../../../src/services/active.director.details.service";
 
 jest.mock("../../../src/middleware/company.authentication.middleware");
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 const mockGetActiveDirectorDetails = getActiveDirectorDetailsData as jest.Mock;
-const mockformatOfficerDetails = formatOfficerDetails as jest.Mock;
+const mockformatDirectorDetails = formatDirectorDetails as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
 const PAGE_HEADING = "Check the director's details";
 const WRONG_OFFICER_PAGE_HEADING = "Update officers - File a confirmation statement";
 const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
-const ACTIVE_OFFICER_DETAILS_URL = ACTIVE_DIRECTORS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+const ACTIVE_DIRECTOR_DETAILS_URL = ACTIVE_DIRECTORS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
-describe("Active officers controller tests", () => {
+describe("Active directors controller tests", () => {
 
   beforeEach(() => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
     mockGetActiveDirectorDetails.mockClear();
-    mockformatOfficerDetails.mockClear();
+    mockformatDirectorDetails.mockClear();
   });
 
   describe("get tests", () => {
 
     it("Should navigate to director's details page", async () => {
       mockGetActiveDirectorDetails.mockResolvedValueOnce(mockActiveDirectorDetails);
-      mockformatOfficerDetails.mockReturnValueOnce(mockActiveDirectorDetails);
-      const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
+      mockformatDirectorDetails.mockReturnValueOnce(mockActiveDirectorDetails);
+      const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Is the director still active?");
@@ -56,8 +56,8 @@ describe("Active officers controller tests", () => {
       mockActiveDirectorDetails.foreName2 = undefined;
 
       mockGetActiveDirectorDetails.mockResolvedValueOnce(mockActiveDirectorDetails);
-      mockformatOfficerDetails.mockReturnValueOnce(mockActiveDirectorDetails);
-      const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
+      mockformatDirectorDetails.mockReturnValueOnce(mockActiveDirectorDetails);
+      const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Is the director still active?");
@@ -70,11 +70,11 @@ describe("Active officers controller tests", () => {
       mockActiveDirectorDetails.foreName2 = fName2;
     });
 
-    it("Should navigate to director's details page for secure officer", async () => {
+    it("Should navigate to director's details page for secure director", async () => {
 
       mockGetActiveDirectorDetails.mockResolvedValueOnce(mockSecureActiveDirectorDetails);
-      mockformatOfficerDetails.mockReturnValueOnce(mockSecureActiveDirectorDetails);
-      const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
+      mockformatDirectorDetails.mockReturnValueOnce(mockSecureActiveDirectorDetails);
+      const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Is the director still active?");
@@ -89,7 +89,7 @@ describe("Active officers controller tests", () => {
       const spyGetUrl = jest.spyOn(urlUtils, "getUrlToPath");
       spyGetUrl.mockImplementationOnce(() => { throw new Error(); });
 
-      const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
+      const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
@@ -99,7 +99,7 @@ describe("Active officers controller tests", () => {
     it("Should navigate to an error page if the called service throws an error", async () => {
       mockGetActiveDirectorDetails.mockImplementationOnce(() => {throw new Error(); });
 
-      const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
+      const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(EXPECTED_ERROR_TEXT);
     });
@@ -108,35 +108,35 @@ describe("Active officers controller tests", () => {
 
   describe("post tests", () => {
 
-    it("Should return to task list page when officer details is confirmed", async () => {
+    it("Should return to task list page when director details is confirmed", async () => {
       const response = await request(app)
-        .post(ACTIVE_OFFICER_DETAILS_URL)
+        .post(ACTIVE_DIRECTOR_DETAILS_URL)
         .send({ activeDirectors: "yes" });
 
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
     });
 
-    it("Should go to stop page when officer details radio button is no", async () => {
+    it("Should go to stop page when director details radio button is no", async () => {
       const response = await request(app)
-        .post(ACTIVE_OFFICER_DETAILS_URL)
+        .post(ACTIVE_DIRECTOR_DETAILS_URL)
         .send({ activeDirectors: "no" });
 
       expect(response.status).toEqual(200);
       expect(response.text).toContain(WRONG_OFFICER_PAGE_HEADING);
     });
 
-    it("Should redisplay active officers page with error when radio button is not selected", async () => {
-      const response = await request(app).post(ACTIVE_OFFICER_DETAILS_URL);
+    it("Should redisplay active directors page with error when radio button is not selected", async () => {
+      const response = await request(app).post(ACTIVE_DIRECTOR_DETAILS_URL);
       expect(response.status).toEqual(200);
       expect(response.text).toContain(PAGE_HEADING);
-      expect(response.text).toContain(OFFICER_DETAILS_ERROR);
+      expect(response.text).toContain(DIRECTOR_DETAILS_ERROR);
     });
 
     it("Should return an error page if error is thrown in post function", async () => {
       const spyGetUrl = jest.spyOn(urlUtils, "getUrlToPath");
       spyGetUrl.mockImplementationOnce(() => { throw new Error(); });
-      const response = await request(app).post(ACTIVE_OFFICER_DETAILS_URL);
+      const response = await request(app).post(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 

@@ -13,13 +13,13 @@ export const getActiveDirectorDetailsData = async (session: Session, companyNumb
 
   if (status >= 400) {
     const errorResponse = response as ApiErrorResponse;
-    throw new Error(`Error retrieving active officer details: ${JSON.stringify(errorResponse)}`);
+    throw new Error(`Error retrieving active director details: ${JSON.stringify(errorResponse)}`);
   }
   const successfulResponse = response as Resource<ActiveDirectorDetails>;
   return successfulResponse.resource as ActiveDirectorDetails;
 };
 
-export const formatOfficerDetails = ( activeDirectorDetails: ActiveDirectorDetails ): ActiveDirectorDetails => {
+export const formatDirectorDetails = ( activeDirectorDetails: ActiveDirectorDetails ): ActiveDirectorDetails => {
   activeDirectorDetails.foreName1 = formatTitleCase(activeDirectorDetails.foreName1);
   activeDirectorDetails.nationality = formatTitleCase(activeDirectorDetails.nationality);
   activeDirectorDetails.occupation = formatTitleCase(activeDirectorDetails.occupation);
