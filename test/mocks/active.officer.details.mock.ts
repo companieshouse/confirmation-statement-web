@@ -1,7 +1,7 @@
-import { ActiveOfficerDetails } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { ActiveDirectorDetails } from "private-api-sdk-node/dist/services/confirmation-statement";
 
 
-export const mockActiveOfficerDetails: ActiveOfficerDetails = {
+export const mockActiveDirectorDetails: ActiveDirectorDetails = {
   foreName1: "JOHN",
   foreName2: "MiddleName",
   surname: "DOE",
@@ -13,11 +13,25 @@ export const mockActiveOfficerDetails: ActiveOfficerDetails = {
   serviceAddressPostcode: "OX7 3PE",
   uraLine1: "Llanishen Library Hub",
   uraPostTown: "Llanishen",
-  uraPostcode: "CF14 5LS",
-  secureIndicator: "N"
+  uraPostcode: "CF14 5LS"
 };
 
-export const mockActiveOfficerDetailsFormatted: ActiveOfficerDetails = {
+export const mockSecureActiveDirectorDetails: ActiveDirectorDetails = {
+  foreName1: "JOHN",
+  foreName2: "MiddleName",
+  surname: "DOE",
+  occupation: "singer",
+  nationality: "British",
+  dateOfBirth: "1 January 1960",
+  serviceAddressLine1: "Diddly squat farm shop",
+  serviceAddressPostTown: "Chadlington",
+  serviceAddressPostcode: "OX7 3PE",
+  uraLine1: "Companies House Cannot Disclose this Home Address",
+  uraPostTown: undefined,
+  uraPostcode: undefined
+};
+
+export const mockActiveDirectorDetailsFormatted: ActiveDirectorDetails = {
   foreName1: "John",
   foreName2: "Middlename",
   surname: "DOE",
@@ -29,6 +43,5 @@ export const mockActiveOfficerDetailsFormatted: ActiveOfficerDetails = {
   serviceAddressPostcode: "OX7 3PE",
   uraLine1: "Llanishen Library Hub",
   uraPostTown: "Llanishen",
-  uraPostcode: "CF14 5LS",
-  secureIndicator: "N"
+  uraPostcode: "CF14 5LS"
 };
