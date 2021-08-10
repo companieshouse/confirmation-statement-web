@@ -59,7 +59,7 @@ describe("PSC Statement controller tests", () => {
     it("Should display wrong psc data page when no radio button is selected", async () => {
       const response = await request(app)
         .post(PSC_STATEMENT_URL)
-        .send({ pscRadioValue: RADIO_BUTTON_VALUE.NO });
+        .send({ pscStatementValue: RADIO_BUTTON_VALUE.NO });
 
       expect(response.status).toEqual(200);
       expect(response.text).toContain(STOP_PAGE_HEADING);
