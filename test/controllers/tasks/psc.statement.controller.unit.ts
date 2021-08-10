@@ -5,12 +5,13 @@ import request from "supertest";
 import app from "../../../src/app";
 import { urlUtils } from "../../../src/utils/url";
 import { PSC_STATEMENT_PATH } from "../../../src/types/page.urls";
-import { PSC_STATEMENT_CONTROL_ERROR, PSC_STATEMENT_NOT_FOUND } from "../../../src/utils/constants";
+import { PSC_STATEMENT_CONTROL_ERROR, RADIO_BUTTON_VALUE, PSC_STATEMENT_NOT_FOUND } from "../../../src/utils/constants";
 import { getMostRecentActivePscStatement } from "../../../src/services/psc.service";
 import { mockSingleActivePsc } from "../../mocks/person.of.significant.control.mock";
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Is the PSC statement correct?";
+const STOP_PAGE_HEADING = "Update the people with significant control (PSC) details";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66544";
 const SUBMISSION_ID = "6464647";
@@ -77,6 +78,15 @@ describe("PSC Statement controller tests", () => {
       expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain(PSC_STATEMENT_CONTROL_ERROR);
       expect(response.text).toContain(PAGE_HEADING);
+    });
+
+    it("Should display wrong psc data page when no radio button is selected", async () => {
+      const response = await request(app)
+        .post(PSC_STATEMENT_URL)
+        .send({ pscStatementValue: RADIO_BUTTON_VALUE.NO });
+
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(STOP_PAGE_HEADING);
     });
 
 
