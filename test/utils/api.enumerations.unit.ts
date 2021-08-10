@@ -69,7 +69,7 @@ describe("api enumeration tests", () => {
   });
 
   it("should return original psc statement key when there is no match for the psc statement key", () => {
-    const readablePscStatement: string = lookupSicCodeDescription(PSC_STATEMENT_DESCRIPTION);
-    expect(readablePscStatement).toEqual(PSC_STATEMENT_DESCRIPTION);
+    const readablePscStatement: string = lookupSicCodeDescription(KEY);
+    expect(readablePscStatement).toEqual(KEY);
   });
 });
