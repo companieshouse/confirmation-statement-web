@@ -3,7 +3,9 @@ import {
   PSC_STATEMENT_CONTROL_ERROR,
   PSC_STATEMENT_NOT_FOUND,
   RADIO_BUTTON_VALUE,
-  sessionCookieConstants } from "../../utils/constants";
+  sessionCookieConstants,
+  WRONG_DETAILS_INCORRECT_PSC,
+  WRONG_DETAILS_UPDATE_PSC } from "../../utils/constants";
 import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, PSC_STATEMENT_PATH } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
@@ -34,8 +36,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       return res.render(Templates.WRONG_DETAILS, {
         templateName: Templates.WRONG_DETAILS,
         backLinkUrl: urlUtils.getUrlToPath(PSC_STATEMENT_PATH, req),
-        stepOneHeading: "Update the people with significant control (PSC) details",
-        pageHeading: "Incorrect people with significant control - File a confirmation statement",
+        stepOneHeading: WRONG_DETAILS_UPDATE_PSC,
+        pageHeading: WRONG_DETAILS_INCORRECT_PSC,
       });
     }
 
