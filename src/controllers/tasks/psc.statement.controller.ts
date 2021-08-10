@@ -1,5 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { PSC_STATEMENT_CONTROL_ERROR, PSC_STATEMENT_NOT_FOUND, RADIO_BUTTON_VALUE } from "../../utils/constants";
+import {
+  PSC_STATEMENT_CONTROL_ERROR,
+  PSC_STATEMENT_NOT_FOUND,
+  RADIO_BUTTON_VALUE,
+  sessionCookieConstants } from "../../utils/constants";
 import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, PSC_STATEMENT_PATH } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
@@ -10,11 +14,12 @@ import { lookupPscStatementDescription } from "../../utils/api.enumerations";
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
-    const pscStatementText = await getPscStatementText(req);
+    const pscStatement = await getPscStatementText(req);
+    req.sessionCookie[sessionCookieConstants.PSC_STATEMENT_KEY] = pscStatement;
 
     return res.render(Templates.PSC_STATEMENT, {
       backLinkUrl: urlUtils.getUrlToPath(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, req),
-      pscStatement: pscStatementText,
+      pscStatement,
       templateName: Templates.PSC_STATEMENT,
     });
   } catch (e) {
@@ -35,15 +40,13 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
-    if (!pscButtonValue) {
-      const pscStatement = PSC_STATEMENT_NOT_FOUND;
-      return res.render(Templates.PSC_STATEMENT, {
-        backLinkUrl: urlUtils.getUrlToPath(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, req),
-        pscStatementControlErrorMsg: PSC_STATEMENT_CONTROL_ERROR,
-        pscStatement,
-        templateName: Templates.PSC_STATEMENT,
-      });
-    }
+    const pscStatement: string = req.sessionCookie[sessionCookieConstants.PSC_STATEMENT_KEY];
+    return res.render(Templates.PSC_STATEMENT, {
+      backLinkUrl: urlUtils.getUrlToPath(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, req),
+      pscStatementControlErrorMsg: PSC_STATEMENT_CONTROL_ERROR,
+      pscStatement,
+      templateName: Templates.PSC_STATEMENT,
+    });
   } catch (e) {
     return next(e);
   }

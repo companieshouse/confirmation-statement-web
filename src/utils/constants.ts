@@ -13,6 +13,7 @@ export const PSC_STATEMENT_NOT_FOUND = "No additional statements relating to PSC
 
 export const sessionCookieConstants = {
   ACTIVE_DIRECTOR_DETAILS_KEY: "activeDirectorDetails",
+  PSC_STATEMENT_KEY: "pscStatement",
   REGISTERED_OFFICE_ADDRESS_KEY: "registeredOfficeAddress",
   STATEMENT_OF_CAPITAL_KEY: "statementOfCapital"
 };
