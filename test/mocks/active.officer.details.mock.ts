@@ -27,8 +27,8 @@ export const mockSecureActiveDirectorDetails: ActiveDirectorDetails = {
   serviceAddressPostTown: "Chadlington",
   serviceAddressPostcode: "OX7 3PE",
   uraLine1: "Companies House Cannot Disclose this Home Address",
-  uraPostTown: null,
-  uraPostcode: null
+  uraPostTown: undefined,
+  uraPostcode: undefined
 };
 
 export const mockActiveDirectorDetailsFormatted: ActiveDirectorDetails = {

@@ -1,9 +1,13 @@
+jest.mock("../../../src/services/psc.service");
+
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
 import { urlUtils } from "../../../src/utils/url";
 import { PSC_STATEMENT_PATH } from "../../../src/types/page.urls";
-import { PSC_STATEMENT_CONTROL_ERROR } from "../../../src/utils/constants";
+import { PSC_STATEMENT_CONTROL_ERROR, PSC_STATEMENT_NOT_FOUND } from "../../../src/utils/constants";
+import { getMostRecentActivePscStatement } from "../../../src/services/psc.service";
+import { mockSingleActivePsc } from "../../mocks/person.of.significant.control.mock";
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Is the PSC statement correct?";
@@ -16,10 +20,14 @@ const PSC_STATEMENT_URL =
                                                                      TRANSACTION_ID,
                                                                      SUBMISSION_ID);
 
+const mockGetMostRecentActivePscStatement = getMostRecentActivePscStatement as jest.Mock;
+mockGetMostRecentActivePscStatement.mockResolvedValue(mockSingleActivePsc);
+
 describe("PSC Statement controller tests", () => {
 
   beforeEach(() => {
     mocks.mockAuthenticationMiddleware.mockClear();
+    mockGetMostRecentActivePscStatement.mockClear();
   });
 
   describe("get tests", () => {
@@ -29,6 +37,22 @@ describe("PSC Statement controller tests", () => {
 
       expect(response.statusCode).toBe(200);
       expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain(mockSingleActivePsc.statement);
+    });
+
+    it("Should show the psc statement text", async () => {
+      const response = await request(app)
+        .get(PSC_STATEMENT_URL);
+
+      expect(response.text).toContain(mockSingleActivePsc.statement);
+    });
+
+    it("Should show the not found psc statement text", async () => {
+      mockGetMostRecentActivePscStatement.mockResolvedValueOnce(undefined);
+      const response = await request(app)
+        .get(PSC_STATEMENT_URL);
+
+      expect(response.text).toContain(PSC_STATEMENT_NOT_FOUND);
     });
 
     it("Should return an error page if error is thrown", async () => {
