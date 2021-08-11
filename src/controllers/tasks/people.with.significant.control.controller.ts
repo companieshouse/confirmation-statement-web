@@ -3,6 +3,7 @@ import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
 import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, PSC_STATEMENT_PATH, TASK_LIST_PATH, urlParams } from "../../types/page.urls";
 import {
+  appointmentTypeNames,
   appointmentTypes,
   PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
   RADIO_BUTTON_VALUE,
@@ -25,10 +26,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const psc: PersonOfSignificantControl = await getPscData(req);
     const pscAppointmentType = psc.appointmentType;
     const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
-
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-      dob: toReadableFormatMonthYear(psc.dateOfBirth.month, psc.dateOfBirth.year),
+      dob: handleDateOfBirth(pscTemplateType, psc),
       psc,
       pscTemplateType,
       templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
@@ -50,7 +50,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
       return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
         backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        dob: toReadableFormatMonthYear(psc.dateOfBirth.month, psc.dateOfBirth.year),
+        dob: handleDateOfBirth(pscTemplateType, psc),
         peopleWithSignificantControlErrorMsg: PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
         psc,
         pscTemplateType,
@@ -118,8 +118,18 @@ const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission
 
 const getPscTypeTemplate = (pscAppointmentType: string): string => {
   switch (pscAppointmentType) {
-      case appointmentTypes.INDIVIDUAL_PSC: return "psc";
-      case appointmentTypes.RLE_PSC: return "rle";
+      case appointmentTypes.INDIVIDUAL_PSC: return appointmentTypeNames.PSC;
+      case appointmentTypes.RLE_PSC: return appointmentTypeNames.RLE;
       default: throw createAndLogError(`Unknown PSC type: ${pscAppointmentType}`);
   }
+};
+
+const handleDateOfBirth = (pscAppointmentType: string, psc: PersonOfSignificantControl): string => {
+  if (pscAppointmentType === appointmentTypeNames.RLE) {
+    return "";
+  }
+  if (psc.dateOfBirth) {
+    return toReadableFormatMonthYear(psc.dateOfBirth.month, psc.dateOfBirth.year);
+  }
+  throw createAndLogError(`Date of birth missing for individual psc ${psc.nameElements?.surname}`);
 };

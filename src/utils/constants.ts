@@ -37,3 +37,8 @@ export const appointmentTypes = {
   RLE_PSC: "5008",
   LEGAL_PERSON_PSC: "5009"
 };
+
+export const appointmentTypeNames = {
+  PSC: "psc",
+  RLE: "rle"
+};
