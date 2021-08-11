@@ -177,9 +177,16 @@ describe("People with significant control controller tests", () => {
     });
 
     it("should navigate to error page if no date of birth is found for individual psc", async () => {
+      const FORENAME = "Fred";
+      const SURNAME = "Smith";
+
       mockGetPscs.mockResolvedValueOnce([ {
         appointmentType: APPOINTMENT_TYPE_5007,
         companyName: COMPANY_NAME,
+        nameElements: {
+          forename: FORENAME,
+          surname: SURNAME
+        },
         serviceAddressLine1: SERV_ADD_LINE_1,
       } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
@@ -221,7 +228,7 @@ describe("People with significant control controller tests", () => {
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.text).toContain(ERROR_PAGE_TEXT);
       expect(mockCreateAndLogError).toHaveBeenCalledTimes(1);
-      expect(mockCreateAndLogError).toHaveBeenCalledWith(expect.stringContaining("psc undefined"));
+      expect(mockCreateAndLogError).toHaveBeenCalledWith(expect.stringContaining("psc name undefined undefined"));
     });
 
     it("should not navigate to error page if no date of birth is found for rle", async () => {
