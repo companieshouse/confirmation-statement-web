@@ -6,8 +6,9 @@ import {
   appointmentTypeNames,
   appointmentTypes,
   PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
-  RADIO_BUTTON_VALUE
-} from "../../utils/constants";
+  RADIO_BUTTON_VALUE,
+  WRONG_DETAILS_INCORRECT_PSC,
+  WRONG_DETAILS_UPDATE_PSC } from "../../utils/constants";
 import {
   ConfirmationStatementSubmission,
   PersonOfSignificantControl,
@@ -63,8 +64,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         templateName: Templates.WRONG_DETAILS,
         backLinkUrl: urlUtils.getUrlToPath(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, req),
         returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        stepOneHeading: "Update the people with significant control (PSC) details",
-        pageHeading: "Incorrect people with significant control - File a confirmation statement",
+        stepOneHeading: WRONG_DETAILS_UPDATE_PSC,
+        pageHeading: WRONG_DETAILS_INCORRECT_PSC,
       });
     }
 

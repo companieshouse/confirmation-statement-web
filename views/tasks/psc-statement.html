@@ -1,6 +1,9 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
+  {% if pscStatementControlError %}
+    Error:
+  {% endif %}
   Review the people with significant control statement
 {% endblock %}
 
@@ -38,7 +41,7 @@
             identified, or if a PSC has been identified but their details have not yet been confirmed.
           </p>
           <p>
-            <a href="https://ewf.companieshouse.gov.uk/help/en/stdwf/faqHelp.html#psc">Read the guidance for a full list of PSC statements.</a>
+            <a href="https://ewf.companieshouse.gov.uk/help/en/stdwf/faqHelp.html#psc" data-event-id="psc-statements-guidance-link">Read the guidance for a full list of PSC statements.</a>
           </p>
         {% endset %}
 
@@ -46,7 +49,10 @@
           <p>{{ pscStatement }}</p>
           {{ govukDetails({
             summaryText: "What are PSC statements?",
-            html: pscStatementTypesHTML
+            html: pscStatementTypesHTML,
+            attributes: {
+              "data-event-id": "what-are-psc-statements-info"
+            }
           }) }}
         {% endset %}
 

@@ -2,17 +2,22 @@ import { NextFunction, Request, Response } from "express";
 import { Templates } from "../../types/template.paths";
 import { ACTIVE_DIRECTORS_PATH, TASK_LIST_PATH } from "../../types/page.urls";
 import { urlUtils } from "../../utils/url";
-import { OFFICER_DETAILS_ERROR, RADIO_BUTTON_VALUE, sessionCookieConstants } from "../../utils/constants";
+import {
+  DIRECTOR_DETAILS_ERROR,
+  RADIO_BUTTON_VALUE,
+  sessionCookieConstants,
+  WRONG_DETAILS_UPDATE_DIRECTOR,
+  WRONG_DETAILS_UPDATE_OFFICERS } from "../../utils/constants";
 import { Session } from "@companieshouse/node-session-handler";
 import { ActiveDirectorDetails } from "private-api-sdk-node/dist/services/confirmation-statement";
-import { getActiveDirectorDetailsData, formatOfficerDetails } from "../../services/active.officer.details.service";
+import { getActiveDirectorDetailsData, formatDirectorDetails } from "../../services/active.director.details.service";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const session: Session = req.session as Session;
-    const officerDetails: ActiveDirectorDetails = await getActiveDirectorDetailsData(session, companyNumber);
-    const activeDirectorDetails = formatOfficerDetails(officerDetails);
+    const directorDetails: ActiveDirectorDetails = await getActiveDirectorDetailsData(session, companyNumber);
+    const activeDirectorDetails = formatDirectorDetails(directorDetails);
     req.sessionCookie[sessionCookieConstants.ACTIVE_DIRECTOR_DETAILS_KEY] = activeDirectorDetails;
 
     return res.render(Templates.ACTIVE_DIRECTORS, {
@@ -35,14 +40,14 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
         templateName: Templates.WRONG_DETAILS,
         backLinkUrl: urlUtils.getUrlToPath(ACTIVE_DIRECTORS_PATH, req),
         returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        stepOneHeading: "Update the director details",
-        pageHeading: "Update officers - File a confirmation statement",
+        stepOneHeading: WRONG_DETAILS_UPDATE_DIRECTOR,
+        pageHeading: WRONG_DETAILS_UPDATE_OFFICERS,
       });
     } else {
       const activeDirectorDetails: ActiveDirectorDetails = req.sessionCookie[sessionCookieConstants.ACTIVE_DIRECTOR_DETAILS_KEY];
       return res.render(Templates.ACTIVE_DIRECTORS, {
         backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        officerErrorMsg: OFFICER_DETAILS_ERROR,
+        directorErrorMsg: DIRECTOR_DETAILS_ERROR,
         templateName: Templates.ACTIVE_DIRECTORS,
         activeDirectorDetails
       });

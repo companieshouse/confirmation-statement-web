@@ -6,13 +6,18 @@ export const REFERENCE = "ConfirmationStatementReference";
 export const PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR = "Select yes if the PSC details are correct";
 export const PSC_STATEMENT_CONTROL_ERROR = "Select yes if the company PSC Statement is correct";
 export const REGISTERED_OFFICE_ADDRESS_ERROR = "Select yes if the Registered Office Address is correct";
-export const OFFICER_DETAILS_ERROR = "Select yes if director details are correct";
+export const DIRECTOR_DETAILS_ERROR = "Select yes if director details are correct";
 export const SHAREHOLDERS_ERROR = "Select yes if the active shareholders are correct";
 export const PSC_STATEMENT_NOT_FOUND = "No additional statements relating to PSCs are currently held on the public register.";
+export const WRONG_DETAILS_UPDATE_PSC = "Update the people with significant control (PSC) details";
+export const WRONG_DETAILS_INCORRECT_PSC = "Incorrect people with significant control - File a confirmation statement";
+export const WRONG_DETAILS_UPDATE_DIRECTOR = "Update the director details";
+export const WRONG_DETAILS_UPDATE_OFFICERS = "Update officers - File a confirmation statement";
 
 
 export const sessionCookieConstants = {
   ACTIVE_DIRECTOR_DETAILS_KEY: "activeDirectorDetails",
+  PSC_STATEMENT_KEY: "pscStatement",
   REGISTERED_OFFICE_ADDRESS_KEY: "registeredOfficeAddress",
   STATEMENT_OF_CAPITAL_KEY: "statementOfCapital"
 };

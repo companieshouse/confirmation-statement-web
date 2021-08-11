@@ -5,6 +5,8 @@ const KEY_LTD = "ltd";
 const KEY = "key";
 const SIC_CODE_KEY = "00011";
 const SIC_CODE_DESCRIPTION = "Test sic-code description";
+const PSC_STATEMENT_KEY = "psc-details-not-confirmed";
+const PSC_STATEMENT_DESCRIPTION = "Test psc-details-not-confirmed description";
 
 jest.mock("js-yaml", () => {
   return {
@@ -18,13 +20,16 @@ jest.mock("js-yaml", () => {
         },
         sic_descriptions: {
           [SIC_CODE_KEY]: SIC_CODE_DESCRIPTION
+        },
+        statement_description: {
+          [PSC_STATEMENT_KEY]: PSC_STATEMENT_DESCRIPTION
         }
       };
     }),
   };
 });
 
-import { lookupCompanyStatus, lookupCompanyType, lookupSicCodeDescription } from "../../src/utils/api.enumerations";
+import { lookupCompanyStatus, lookupCompanyType, lookupPscStatementDescription, lookupSicCodeDescription } from "../../src/utils/api.enumerations";
 
 describe("api enumeration tests", () => {
 
@@ -49,12 +54,22 @@ describe("api enumeration tests", () => {
   });
 
   it("should return a readable company sic-code description when given a company sic-code", () => {
-    const readableCompanyStatus: string = lookupSicCodeDescription(SIC_CODE_KEY);
-    expect(readableCompanyStatus).toEqual(SIC_CODE_DESCRIPTION);
+    const readableSicCode: string = lookupSicCodeDescription(SIC_CODE_KEY);
+    expect(readableSicCode).toEqual(SIC_CODE_DESCRIPTION);
   });
 
   it("should return original sic-code when there is no match for the company sic-code", () => {
-    const readableCompanyStatus: string = lookupSicCodeDescription(SIC_CODE_DESCRIPTION);
-    expect(readableCompanyStatus).toEqual(SIC_CODE_DESCRIPTION);
+    const readableSicCode: string = lookupSicCodeDescription(SIC_CODE_DESCRIPTION);
+    expect(readableSicCode).toEqual(SIC_CODE_DESCRIPTION);
+  });
+
+  it("should return a readable psc statement description when given a psc statement key", () => {
+    const readablePscStatement: string = lookupPscStatementDescription(PSC_STATEMENT_KEY);
+    expect(readablePscStatement).toEqual(PSC_STATEMENT_DESCRIPTION);
+  });
+
+  it("should return original psc statement key when there is no match for the psc statement key", () => {
+    const readablePscStatement: string = lookupPscStatementDescription(KEY);
+    expect(readablePscStatement).toEqual(KEY);
   });
 });
