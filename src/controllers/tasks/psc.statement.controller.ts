@@ -9,6 +9,7 @@ import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
 import { getMostRecentActivePscStatement } from "../../services/psc.service";
 import { Session } from "@companieshouse/node-session-handler";
+import { lookupPscStatementDescription } from "../../utils/api.enumerations";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -54,5 +55,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 const getPscStatementText = async (req: Request): Promise<string> => {
   const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
   const pscStatement = await getMostRecentActivePscStatement(req.session as Session, companyNumber);
-  return pscStatement?.statement || PSC_STATEMENT_NOT_FOUND;
+
+  const pscStatementDescriptionKey = pscStatement?.statement;
+  return pscStatementDescriptionKey ? lookupPscStatementDescription(pscStatementDescriptionKey) : PSC_STATEMENT_NOT_FOUND;
 };

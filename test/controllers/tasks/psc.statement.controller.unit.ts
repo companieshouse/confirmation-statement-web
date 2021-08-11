@@ -1,4 +1,5 @@
 jest.mock("../../../src/services/psc.service");
+jest.mock("../../../src/utils/api.enumerations");
 
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
@@ -8,6 +9,7 @@ import { PSC_STATEMENT_PATH } from "../../../src/types/page.urls";
 import { PSC_STATEMENT_CONTROL_ERROR, RADIO_BUTTON_VALUE, PSC_STATEMENT_NOT_FOUND } from "../../../src/utils/constants";
 import { getMostRecentActivePscStatement } from "../../../src/services/psc.service";
 import { mockSingleActivePsc } from "../../mocks/person.of.significant.control.mock";
+import { lookupPscStatementDescription } from "../../../src/utils/api.enumerations";
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Is the PSC statement correct?";
@@ -15,6 +17,7 @@ const STOP_PAGE_HEADING = "Update the people with significant control (PSC) deta
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66544";
 const SUBMISSION_ID = "6464647";
+const PSC_STATEMENT_TEXT = "this is a psc statement";
 const PSC_STATEMENT_URL =
         urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(PSC_STATEMENT_PATH,
                                                                      COMPANY_NUMBER,
@@ -24,11 +27,15 @@ const PSC_STATEMENT_URL =
 const mockGetMostRecentActivePscStatement = getMostRecentActivePscStatement as jest.Mock;
 mockGetMostRecentActivePscStatement.mockResolvedValue(mockSingleActivePsc);
 
+const mockLookupPscStatementDescription = lookupPscStatementDescription as jest.Mock;
+mockLookupPscStatementDescription.mockReturnValue(PSC_STATEMENT_TEXT);
+
 describe("PSC Statement controller tests", () => {
 
   beforeEach(() => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mockGetMostRecentActivePscStatement.mockClear();
+    mockLookupPscStatementDescription.mockClear();
   });
 
   describe("get tests", () => {
@@ -38,14 +45,14 @@ describe("PSC Statement controller tests", () => {
 
       expect(response.statusCode).toBe(200);
       expect(response.text).toContain(PAGE_HEADING);
-      expect(response.text).toContain(mockSingleActivePsc.statement);
     });
 
     it("Should show the psc statement text", async () => {
       const response = await request(app)
         .get(PSC_STATEMENT_URL);
 
-      expect(response.text).toContain(mockSingleActivePsc.statement);
+      expect(response.text).toContain(PSC_STATEMENT_TEXT);
+      expect(mockLookupPscStatementDescription).toBeCalledWith(mockSingleActivePsc.statement);
     });
 
     it("Should show the not found psc statement text", async () => {
@@ -54,6 +61,7 @@ describe("PSC Statement controller tests", () => {
         .get(PSC_STATEMENT_URL);
 
       expect(response.text).toContain(PSC_STATEMENT_NOT_FOUND);
+      expect(mockLookupPscStatementDescription).not.toHaveBeenCalled();
     });
 
     it("Should return an error page if error is thrown", async () => {
