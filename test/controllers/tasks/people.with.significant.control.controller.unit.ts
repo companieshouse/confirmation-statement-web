@@ -139,7 +139,7 @@ describe("People with significant control controller tests", () => {
         appointmentType: APPOINTMENT_TYPE_5008,
         companyName: COMPANY_NAME,
         registrationNumber: REG_NO,
-        serviceAddressLine_1: SERV_ADD_LINE_1,
+        serviceAddressLine1: SERV_ADD_LINE_1,
         countryOfResidence: COUNTRY_RESIDENCE
       } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
@@ -162,7 +162,7 @@ describe("People with significant control controller tests", () => {
         },
         appointmentType: APPOINTMENT_TYPE_5008,
         companyName: COMPANY_NAME,
-        serviceAddressLine_1: SERV_ADD_LINE_1,
+        serviceAddressLine1: SERV_ADD_LINE_1,
       } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.statusCode).toBe(200);
@@ -180,7 +180,7 @@ describe("People with significant control controller tests", () => {
       mockGetPscs.mockResolvedValueOnce([ {
         appointmentType: APPOINTMENT_TYPE_5007,
         companyName: COMPANY_NAME,
-        serviceAddressLine_1: SERV_ADD_LINE_1,
+        serviceAddressLine1: SERV_ADD_LINE_1,
       } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.text).toContain("Sorry, the service is unavailable");
@@ -193,7 +193,7 @@ describe("People with significant control controller tests", () => {
       mockGetPscs.mockResolvedValueOnce([ {
         appointmentType: APPOINTMENT_TYPE_5008,
         companyName: COMPANY_NAME,
-        serviceAddressLine_1: SERV_ADD_LINE_1,
+        serviceAddressLine1: SERV_ADD_LINE_1,
       } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.statusCode).toBe(200);
