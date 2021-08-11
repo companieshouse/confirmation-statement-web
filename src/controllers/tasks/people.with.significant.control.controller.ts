@@ -131,5 +131,5 @@ const handleDateOfBirth = (pscAppointmentType: string, psc: PersonOfSignificantC
   if (psc.dateOfBirth) {
     return toReadableFormatMonthYear(psc.dateOfBirth.month, psc.dateOfBirth.year);
   }
-  throw createAndLogError(`Date of birth missing for individual psc ${psc.nameElements.surname}`);
+  throw createAndLogError(`Date of birth missing for individual psc ${psc.nameElements?.surname}`);
 };
