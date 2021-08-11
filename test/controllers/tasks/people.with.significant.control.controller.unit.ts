@@ -172,6 +172,37 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain(SERV_ADD_LINE_1);
       expect(response.text).not.toContain("Country of residence");
     });
+
+    it("should navigate to error page if no date of birth is found for individual psc", async () => {
+      const COMPANY_NAME = "name";
+      const SERV_ADD_LINE_1 = "line1";
+
+      mockGetPscs.mockResolvedValueOnce([ {
+        appointmentType: APPOINTMENT_TYPE_5007,
+        companyName: COMPANY_NAME,
+        serviceAddressLine_1: SERV_ADD_LINE_1,
+      } ]);
+      const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(response.text).toContain("Sorry, the service is unavailable");
+    });
+
+    it("should not navigate to error page if no date of birth is found for rle", async () => {
+      const COMPANY_NAME = "name";
+      const SERV_ADD_LINE_1 = "line1";
+
+      mockGetPscs.mockResolvedValueOnce([ {
+        appointmentType: APPOINTMENT_TYPE_5008,
+        companyName: COMPANY_NAME,
+        serviceAddressLine_1: SERV_ADD_LINE_1,
+      } ]);
+      const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(response.statusCode).toBe(200);
+      expect(response.text).toContain("1 relevant legal entity");
+      expect(response.text).toContain(COMPANY_NAME);
+      expect(response.text).not.toContain("Registration number");
+      expect(response.text).toContain(SERV_ADD_LINE_1);
+      expect(response.text).not.toContain("Country of residence");
+    });
   });
 
   describe("post tests", function () {
