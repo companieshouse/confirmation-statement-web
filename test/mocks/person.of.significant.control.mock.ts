@@ -33,7 +33,7 @@ export const mockPersonsOfSignificantControl: PersonOfSignificantControl[] = [
     nationality: "nationality",
     naturesOfControl: [ "noc1", "noc2" ],
     registrationNumber: "reg no",
-    serviceAddressLine_1: "serv line 1",
+    serviceAddressLine1: "serv line 1",
     serviceAddressPostCode: "serv post code",
     serviceAddressPostTown: "serv town"
   }
