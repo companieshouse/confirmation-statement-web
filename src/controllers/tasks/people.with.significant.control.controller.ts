@@ -87,7 +87,7 @@ const getPscData = async (req: Request): Promise<PersonOfSignificantControl | un
   const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
   const pscs: PersonOfSignificantControl[] = await getPscs(req.session as Session, companyNumber);
 
-  if (pscs?.length === 0) {
+  if (!pscs || pscs.length ===0) {
     return undefined
   }
 

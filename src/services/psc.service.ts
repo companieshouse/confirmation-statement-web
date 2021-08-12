@@ -8,17 +8,16 @@ import { logger } from "../utils/logger";
 import { PSC_STATEMENTS_API_PAGE_SIZE } from "../utils/properties";
 
 export const getPscs = async (session: Session, companyNumber: string): Promise<PersonOfSignificantControl[]> => {
-  return undefined as unknown as PersonOfSignificantControl[];
-  // const client = createPrivateOAuthApiClient(session);
-  // const csService: ConfirmationStatementService = client.confirmationStatementService;
-  // const response: Resource<PersonOfSignificantControl[]> | ApiErrorResponse = await csService.getPersonsOfSignificantControl(companyNumber);
-  // const status = response.httpStatusCode as number;
-  // if (status >= 400) {
-  //   const errorResponse = response as ApiErrorResponse;
-  //   throw new Error("Error retrieving pscs from confirmation-statement-api " + JSON.stringify(errorResponse));
-  // }
-  // const successfulResponse = response as Resource<PersonOfSignificantControl[]>;
-  // return successfulResponse.resource as PersonOfSignificantControl[];
+  const client = createPrivateOAuthApiClient(session);
+  const csService: ConfirmationStatementService = client.confirmationStatementService;
+  const response: Resource<PersonOfSignificantControl[]> | ApiErrorResponse = await csService.getPersonsOfSignificantControl(companyNumber);
+  const status = response.httpStatusCode as number;
+  if (status >= 400) {
+    const errorResponse = response as ApiErrorResponse;
+    throw new Error("Error retrieving pscs from confirmation-statement-api " + JSON.stringify(errorResponse));
+  }
+  const successfulResponse = response as Resource<PersonOfSignificantControl[]>;
+  return successfulResponse.resource as PersonOfSignificantControl[];
 };
 
 export const getPscStatements = async (session: Session, companyNumber: string, pageSize: number, pageIndex: number): Promise<CompanyPersonsWithSignificantControlStatements> => {
