@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import {
   PSC_STATEMENT_CONTROL_ERROR,
+  PSC_STATEMENT_NAME_PLACEHOLDER,
   PSC_STATEMENT_NOT_FOUND,
   RADIO_BUTTON_VALUE,
   sessionCookieConstants,
@@ -12,6 +13,7 @@ import { urlUtils } from "../../utils/url";
 import { getMostRecentActivePscStatement } from "../../services/psc.service";
 import { Session } from "@companieshouse/node-session-handler";
 import { lookupPscStatementDescription } from "../../utils/api.enumerations";
+import { createAndLogError } from "../../utils/logger";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -58,6 +60,18 @@ const getPscStatementText = async (req: Request): Promise<string> => {
   const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
   const pscStatement = await getMostRecentActivePscStatement(req.session as Session, companyNumber);
 
-  const pscStatementDescriptionKey = pscStatement?.statement;
-  return pscStatementDescriptionKey ? lookupPscStatementDescription(pscStatementDescriptionKey) : PSC_STATEMENT_NOT_FOUND;
+  if (!pscStatement || !pscStatement.statement) {
+    return PSC_STATEMENT_NOT_FOUND;
+  }
+  const pscStatementDescriptionKey: string = pscStatement.statement;
+
+  let pscStatementText: string = lookupPscStatementDescription(pscStatementDescriptionKey);
+  if (!pscStatementText) {
+    throw createAndLogError(`Unable to convert psc statement ${pscStatementDescriptionKey} using api enumerations`);
+  }
+
+  if (pscStatementText.includes(PSC_STATEMENT_NAME_PLACEHOLDER) && pscStatement.linkedPscName) {
+    pscStatementText = pscStatementText.replace(PSC_STATEMENT_NAME_PLACEHOLDER,  pscStatement.linkedPscName);
+  }
+  return pscStatementText;
 };
