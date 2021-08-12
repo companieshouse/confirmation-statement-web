@@ -26,7 +26,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const psc: PersonOfSignificantControl = await getPscData(req);
     const pscAppointmentType = psc.appointmentType;
     const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
-    console.log("PSC " + JSON.stringify(psc));
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       dob: handleDateOfBirth(pscTemplateType, psc),
