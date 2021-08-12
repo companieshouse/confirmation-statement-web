@@ -42,3 +42,10 @@ export const appointmentTypeNames = {
   PSC: "psc",
   RLE: "rle"
 };
+
+export enum SECTIONS {
+  ACTIVE_DIRECTOR = "ActiveDirectorDetails",
+  PSC = "PeopleWithSignificantControl",
+  ROA = "RegisteredOfficeAddress",
+  SIC = "SicCodeData"
+}
