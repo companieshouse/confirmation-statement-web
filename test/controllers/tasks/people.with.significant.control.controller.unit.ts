@@ -2,6 +2,7 @@ jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/confirmation.statement.service");
 jest.mock("../../../src/services/psc.service");
 jest.mock("../../../src/utils/date");
+jest.mock("../../../src/utils/logger");
 
 import mocks from "../../mocks/all.middleware.mock";
 import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, PSC_STATEMENT_PATH } from "../../../src/types/page.urls";
@@ -17,6 +18,7 @@ import { mockConfirmationStatementSubmission } from "../../mocks/confirmation.st
 import { getPscs } from "../../../src/services/psc.service";
 import { toReadableFormatMonthYear } from "../../../src/utils/date";
 import { urlUtils } from "../../../src/utils/url";
+import { createAndLogError } from "../../../src/utils/logger";
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Check the people with significant control (PSC)";
@@ -24,6 +26,11 @@ const STOP_PAGE_HEADING = "Update the people with significant control (PSC) deta
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66544";
 const SUBMISSION_ID = "6464647";
+const COMPANY_NAME = "name";
+const REG_NO = "36363";
+const SERV_ADD_LINE_1 = "line1";
+const COUNTRY_RESIDENCE = "UK";
+const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
 const PEOPLE_WITH_SIGNIFICANT_CONTROL_URL =
   urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH,
                                                                COMPANY_NUMBER,
@@ -58,6 +65,9 @@ mockGetPscs.mockResolvedValue([{
 const mockToReadableFormatMonthYear = toReadableFormatMonthYear as jest.Mock;
 mockToReadableFormatMonthYear.mockReturnValue(FORMATTED_DATE);
 
+const mockCreateAndLogError = createAndLogError as jest.Mock;
+mockCreateAndLogError.mockReturnValue(new Error());
+
 describe("People with significant control controller tests", () => {
 
   beforeEach(() => {
@@ -65,6 +75,7 @@ describe("People with significant control controller tests", () => {
     mockUpdateConfirmationStatement.mockReset();
     mockGetPscs.mockClear();
     mockToReadableFormatMonthYear.mockClear();
+    mockCreateAndLogError.mockClear();
   });
 
   describe("get tests", function () {
@@ -84,7 +95,7 @@ describe("People with significant control controller tests", () => {
 
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
 
-      expect(response.text).toContain("Sorry, the service is unavailable");
+      expect(response.text).toContain(ERROR_PAGE_TEXT);
 
       spyGetUrlToPath.mockRestore();
     });
@@ -92,13 +103,13 @@ describe("People with significant control controller tests", () => {
     it("should navigate to error page if more than one psc is found", async () => {
       mockGetPscs.mockResolvedValueOnce([ {}, {} ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
-      expect(response.text).toContain("Sorry, the service is unavailable");
+      expect(response.text).toContain(ERROR_PAGE_TEXT);
     });
 
     it("should navigate to error page if no psc is found", async () => {
       mockGetPscs.mockResolvedValueOnce([ ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
-      expect(response.text).toContain("Sorry, the service is unavailable");
+      expect(response.text).toContain(ERROR_PAGE_TEXT);
     });
 
     it("should navigate to individual psc page if psc is individual", async () => {
@@ -122,15 +133,10 @@ describe("People with significant control controller tests", () => {
     it("should navigate to error page if psc is unknown type", async () => {
       mockGetPscs.mockResolvedValueOnce([ { appointmentType: "5009" } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
-      expect(response.text).toContain("Sorry, the service is unavailable");
+      expect(response.text).toContain(ERROR_PAGE_TEXT);
     });
 
     it("should populate rle page with psc data", async () => {
-      const COMPANY_NAME = "name";
-      const REG_NO = "36363";
-      const SERV_ADD_LINE_1 = "line1";
-      const COUNTRY_RESIDENCE = "UK";
-
       mockGetPscs.mockResolvedValueOnce([ {
         dateOfBirth: {
           month: DOB_MONTH,
@@ -139,7 +145,7 @@ describe("People with significant control controller tests", () => {
         appointmentType: APPOINTMENT_TYPE_5008,
         companyName: COMPANY_NAME,
         registrationNumber: REG_NO,
-        serviceAddressLine_1: SERV_ADD_LINE_1,
+        serviceAddressLine1: SERV_ADD_LINE_1,
         countryOfResidence: COUNTRY_RESIDENCE
       } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
@@ -152,9 +158,6 @@ describe("People with significant control controller tests", () => {
     });
 
     it("should not populate rle page with non mandatory data", async () => {
-      const COMPANY_NAME = "name";
-      const SERV_ADD_LINE_1 = "line1";
-
       mockGetPscs.mockResolvedValueOnce([ {
         dateOfBirth: {
           month: DOB_MONTH,
@@ -162,7 +165,7 @@ describe("People with significant control controller tests", () => {
         },
         appointmentType: APPOINTMENT_TYPE_5008,
         companyName: COMPANY_NAME,
-        serviceAddressLine_1: SERV_ADD_LINE_1,
+        serviceAddressLine1: SERV_ADD_LINE_1,
       } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.statusCode).toBe(200);
@@ -174,26 +177,65 @@ describe("People with significant control controller tests", () => {
     });
 
     it("should navigate to error page if no date of birth is found for individual psc", async () => {
-      const COMPANY_NAME = "name";
-      const SERV_ADD_LINE_1 = "line1";
+      const FORENAME = "Fred";
+      const SURNAME = "Smith";
 
       mockGetPscs.mockResolvedValueOnce([ {
         appointmentType: APPOINTMENT_TYPE_5007,
         companyName: COMPANY_NAME,
-        serviceAddressLine_1: SERV_ADD_LINE_1,
+        nameElements: {
+          forename: FORENAME,
+          surname: SURNAME
+        },
+        serviceAddressLine1: SERV_ADD_LINE_1,
       } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
-      expect(response.text).toContain("Sorry, the service is unavailable");
+      expect(response.text).toContain(ERROR_PAGE_TEXT);
+    });
+
+    it("should navigate to error page if no date of birth month is found for individual psc", async () => {
+      mockGetPscs.mockResolvedValueOnce([ {
+        appointmentType: APPOINTMENT_TYPE_5007,
+        dateOfBirth: {
+          year: DOB_YEAR
+        },
+        companyName: COMPANY_NAME,
+        serviceAddressLine1: SERV_ADD_LINE_1,
+      } ]);
+      const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(response.text).toContain(ERROR_PAGE_TEXT);
+    });
+
+    it("should navigate to error page if no date of birth year is found for individual psc", async () => {
+      mockGetPscs.mockResolvedValueOnce([ {
+        appointmentType: APPOINTMENT_TYPE_5007,
+        dateOfBirth: {
+          month: DOB_MONTH
+        },
+        companyName: COMPANY_NAME,
+        serviceAddressLine1: SERV_ADD_LINE_1,
+      } ]);
+      const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(response.text).toContain(ERROR_PAGE_TEXT);
+    });
+
+    it("should navigate to error page if no date of birth and no name is found for individual psc", async () => {
+      mockGetPscs.mockResolvedValueOnce([ {
+        appointmentType: APPOINTMENT_TYPE_5007,
+        companyName: COMPANY_NAME,
+        serviceAddressLine1: SERV_ADD_LINE_1,
+      } ]);
+      const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(response.text).toContain(ERROR_PAGE_TEXT);
+      expect(mockCreateAndLogError).toHaveBeenCalledTimes(1);
+      expect(mockCreateAndLogError).toHaveBeenCalledWith(expect.stringContaining("psc name undefined undefined"));
     });
 
     it("should not navigate to error page if no date of birth is found for rle", async () => {
-      const COMPANY_NAME = "name";
-      const SERV_ADD_LINE_1 = "line1";
-
       mockGetPscs.mockResolvedValueOnce([ {
         appointmentType: APPOINTMENT_TYPE_5008,
         companyName: COMPANY_NAME,
-        serviceAddressLine_1: SERV_ADD_LINE_1,
+        serviceAddressLine1: SERV_ADD_LINE_1,
       } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.statusCode).toBe(200);
@@ -256,7 +298,7 @@ describe("People with significant control controller tests", () => {
         .post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL)
         .send({ pscRadioValue: RADIO_BUTTON_VALUE.YES });
 
-      expect(response.text).toContain("Sorry, the service is unavailable");
+      expect(response.text).toContain(ERROR_PAGE_TEXT);
     });
   });
 });

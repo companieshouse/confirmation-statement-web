@@ -9,7 +9,7 @@ import {
   WRONG_DETAILS_UPDATE_DIRECTOR,
   WRONG_DETAILS_UPDATE_OFFICERS } from "../../utils/constants";
 import { Session } from "@companieshouse/node-session-handler";
-import { 
+import {
   ActiveDirectorDetails,
   ConfirmationStatementSubmission,
   ActiveDirectorDetailsData,
