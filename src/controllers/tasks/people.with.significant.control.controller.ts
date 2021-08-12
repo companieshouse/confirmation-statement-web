@@ -18,12 +18,16 @@ import {
 import { Session } from "@companieshouse/node-session-handler";
 import { getConfirmationStatement, updateConfirmationStatement } from "../../services/confirmation.statement.service";
 import { getPscs } from "../../services/psc.service";
-import { createAndLogError } from "../../utils/logger";
+import { createAndLogError, logger } from "../../utils/logger";
 import { toReadableFormatMonthYear } from "../../utils/date";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const psc: PersonOfSignificantControl = await getPscData(req);
+    const psc: PersonOfSignificantControl | undefined = await getPscData(req);
+    if (!psc) {
+      logger.info("No PSC data returned, redirecting to PSC Statement page")
+       return res.redirect(urlUtils.getUrlToPath(PSC_STATEMENT_PATH, req));
+    }
     const pscAppointmentType = psc.appointmentType;
     const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
@@ -45,7 +49,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
 
     if (!pscButtonValue) {
-      const psc: PersonOfSignificantControl = await getPscData(req);
+      const psc: PersonOfSignificantControl = await getPscData(req) as PersonOfSignificantControl;
       const pscAppointmentType = psc.appointmentType;
       const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
       return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
@@ -79,16 +83,16 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getPscData = async (req: Request): Promise<PersonOfSignificantControl> => {
+const getPscData = async (req: Request): Promise<PersonOfSignificantControl | undefined> => {
   const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
   const pscs: PersonOfSignificantControl[] = await getPscs(req.session as Session, companyNumber);
 
-  if (pscs.length > 1) {
-    createAndLogError(`More than one (${pscs.length}) PSC returned for company ${companyNumber}`);
+  if (pscs?.length === 0) {
+    return undefined
   }
 
-  if (pscs.length === 0) {
-    createAndLogError(`No PSC returned for company ${companyNumber}`);
+  if (pscs.length > 1) {
+    throw createAndLogError(`More than one (${pscs.length}) PSC returned for company ${companyNumber}`);
   }
 
   return pscs[0];
