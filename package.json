@@ -37,7 +37,7 @@
     "luxon": "^1.27.0",
     "nunjucks": "^3.2.3",
     "on-headers": "^1.0.2",
-    "private-api-sdk-node": "git+ssh://git@github.com/companieshouse/private-api-sdk-node.git#0.1.46",
+    "private-api-sdk-node": "git+ssh://git@github.com/companieshouse/private-api-sdk-node.git#0.1.47",
     "safe-buffer": "^5.2.1",
     "yargs": "^15.3.1"
   },
