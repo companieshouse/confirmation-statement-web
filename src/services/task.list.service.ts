@@ -25,7 +25,7 @@ export const initTaskList = (companyNumber: string,
     tasks: {
       officers: {
         isVisible: false,
-        state: TaskState.NOT_CHECKED,
+        state: toTaskState(csSubmission.data?.activeDirectorDetailsData?.sectionStatus),
         url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(ACTIVE_DIRECTORS_PATH, companyNumber, transactionId, submissionId)
       },
       peopleSignificantControl: {

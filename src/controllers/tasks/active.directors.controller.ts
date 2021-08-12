@@ -9,8 +9,13 @@ import {
   WRONG_DETAILS_UPDATE_DIRECTOR,
   WRONG_DETAILS_UPDATE_OFFICERS } from "../../utils/constants";
 import { Session } from "@companieshouse/node-session-handler";
-import { ActiveDirectorDetails } from "private-api-sdk-node/dist/services/confirmation-statement";
+import {
+  ActiveDirectorDetails,
+  ConfirmationStatementSubmission,
+  ActiveDirectorDetailsData,
+  SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { getActiveDirectorDetailsData, formatDirectorDetails } from "../../services/active.director.details.service";
+import { getConfirmationStatement, updateConfirmationStatement } from "../../services/confirmation.statement.service";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -30,12 +35,16 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const activeDirectorDetailsBtnValue = req.body.activeDirectors;
+    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     if (activeDirectorDetailsBtnValue === RADIO_BUTTON_VALUE.YES) {
+      await sendUpdate(transactionId, submissionId, req, SectionStatus.CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     } else if (activeDirectorDetailsBtnValue === RADIO_BUTTON_VALUE.NO) {
+      await sendUpdate(transactionId, submissionId, req, SectionStatus.NOT_CONFIRMED);
       return res.render(Templates.WRONG_DETAILS, {
         templateName: Templates.WRONG_DETAILS,
         backLinkUrl: urlUtils.getUrlToPath(ACTIVE_DIRECTORS_PATH, req),
@@ -55,4 +64,25 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   } catch (e) {
     return next(e);
   }
+};
+
+const sendUpdate = async (transactionId: string, submissionId: string, req: Request, status: SectionStatus ) => {
+  const session = req.session as Session;
+  const currentCsSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
+  const csSubmission = updateCsSubmission(currentCsSubmission, status);
+  await updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
+};
+
+const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission, status: SectionStatus ):
+    ConfirmationStatementSubmission => {
+  const newActiveDirectorDetailsData: ActiveDirectorDetailsData = {
+    sectionStatus: status,
+  };
+  if (!currentCsSubmission.data) {
+    currentCsSubmission.data = {};
+  }
+
+  currentCsSubmission.data.activeDirectorDetailsData = newActiveDirectorDetailsData;
+
+  return currentCsSubmission;
 };
