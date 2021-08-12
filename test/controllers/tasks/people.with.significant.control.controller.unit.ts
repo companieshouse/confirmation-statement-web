@@ -31,6 +31,7 @@ const REG_NO = "36363";
 const SERV_ADD_LINE_1 = "line1";
 const COUNTRY_RESIDENCE = "UK";
 const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
+const TEST_RLE_NAME = "Test Rle Name";
 const PEOPLE_WITH_SIGNIFICANT_CONTROL_URL =
   urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH,
                                                                COMPANY_NUMBER,
@@ -233,12 +234,16 @@ describe("People with significant control controller tests", () => {
 
     it("should not navigate to error page if no date of birth is found for rle", async () => {
       mockGetPscs.mockResolvedValueOnce([ {
+        nameElements: {
+          surname: TEST_RLE_NAME
+        },
         appointmentType: APPOINTMENT_TYPE_5008,
         companyName: COMPANY_NAME,
         serviceAddressLine1: SERV_ADD_LINE_1,
       } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.statusCode).toBe(200);
+      expect(response.text).toContain(TEST_RLE_NAME);
       expect(response.text).toContain("1 relevant legal entity");
       expect(response.text).toContain(COMPANY_NAME);
       expect(response.text).not.toContain("Registration number");
