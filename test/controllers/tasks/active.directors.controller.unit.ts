@@ -1,5 +1,6 @@
 jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/active.director.details.service");
+jest.mock("../../../src/services/confirmation.statement.service");
 
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
@@ -10,6 +11,8 @@ import { DIRECTOR_DETAILS_ERROR } from "../../../src/utils/constants";
 import { urlUtils } from "../../../src/utils/url";
 import { mockActiveDirectorDetails, mockSecureActiveDirectorDetails } from "../../mocks/active.director.details.mock";
 import { getActiveDirectorDetailsData, formatDirectorDetails } from "../../../src/services/active.director.details.service";
+import { getConfirmationStatement } from "../../../src/services/confirmation.statement.service";
+import { mockConfirmationStatementSubmission } from "../../mocks/confirmation.statement.submission.mock";
 
 jest.mock("../../../src/middleware/company.authentication.middleware");
 
@@ -17,6 +20,7 @@ const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as j
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 const mockGetActiveDirectorDetails = getActiveDirectorDetailsData as jest.Mock;
 const mockformatDirectorDetails = formatDirectorDetails as jest.Mock;
+const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
 const PAGE_HEADING = "Check the director's details";
@@ -109,6 +113,7 @@ describe("Active directors controller tests", () => {
   describe("post tests", () => {
 
     it("Should return to task list page when director details is confirmed", async () => {
+      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(ACTIVE_DIRECTOR_DETAILS_URL)
         .send({ activeDirectors: "yes" });
@@ -118,6 +123,7 @@ describe("Active directors controller tests", () => {
     });
 
     it("Should go to stop page when director details radio button is no", async () => {
+      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(ACTIVE_DIRECTOR_DETAILS_URL)
         .send({ activeDirectors: "no" });

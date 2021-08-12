@@ -43,7 +43,7 @@ describe("Task List Service tests", () => {
       const taskList: TaskList = initTaskList(COMPANY_NUMBER, TRANSACTION_ID, CS_SUBMISSION_ID, mockConfirmationStatementSubmission);
 
       expect(taskList.tasks.officers.isVisible).toBe(false);
-      expect(taskList.tasks.officers.state).toBe(TaskState.NOT_CHECKED);
+      expect(taskList.tasks.officers.state).toBe(TASK_STATE);
       expect(taskList.tasks.officers.url).toBe(TASK_URL);
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[0][0]).toBe(ACTIVE_DIRECTORS_PATH);
 
