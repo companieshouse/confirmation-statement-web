@@ -6,7 +6,11 @@ import request from "supertest";
 import app from "../../../src/app";
 import { urlUtils } from "../../../src/utils/url";
 import { PSC_STATEMENT_PATH } from "../../../src/types/page.urls";
-import { PSC_STATEMENT_CONTROL_ERROR, RADIO_BUTTON_VALUE, PSC_STATEMENT_NOT_FOUND } from "../../../src/utils/constants";
+import {
+  PSC_STATEMENT_CONTROL_ERROR,
+  RADIO_BUTTON_VALUE,
+  PSC_STATEMENT_NOT_FOUND,
+  PSC_STATEMENT_NAME_PLACEHOLDER } from "../../../src/utils/constants";
 import { getMostRecentActivePscStatement } from "../../../src/services/psc.service";
 import { mockSingleActivePsc } from "../../mocks/person.of.significant.control.mock";
 import { lookupPscStatementDescription } from "../../../src/utils/api.enumerations";
@@ -62,6 +66,41 @@ describe("PSC Statement controller tests", () => {
 
       expect(response.text).toContain(PSC_STATEMENT_NOT_FOUND);
       expect(mockLookupPscStatementDescription).not.toHaveBeenCalled();
+    });
+
+    it("Should replace the name placeholder in psc statement text", async () => {
+      mockLookupPscStatementDescription.mockReturnValueOnce(`test ${PSC_STATEMENT_NAME_PLACEHOLDER} test`);
+      const response = await request(app)
+        .get(PSC_STATEMENT_URL);
+
+      expect(response.text).toContain(`test ${mockSingleActivePsc.linkedPscName} test`);
+    });
+
+    it("Should not replace the name placeholder in psc statement text if name not supplied", async () => {
+      mockLookupPscStatementDescription.mockReturnValueOnce(`test ${PSC_STATEMENT_NAME_PLACEHOLDER} test`);
+      mockGetMostRecentActivePscStatement.mockResolvedValueOnce({
+        etag: "etag",
+        kind: "kind",
+        links: {
+          self: "self"
+        },
+        notifiedOn: "2020-05-03",
+        statement: "api-enumeration-key",
+        linkedPscName: undefined
+      });
+      const response = await request(app)
+        .get(PSC_STATEMENT_URL);
+
+      expect(response.text).toContain(`test ${PSC_STATEMENT_NAME_PLACEHOLDER} test`);
+    });
+
+    it("Should return error page if unable to lookup statement description", async () => {
+      mockLookupPscStatementDescription.mockReturnValueOnce(undefined);
+      const response = await request(app)
+        .get(PSC_STATEMENT_URL);
+
+      expect(response.status).toEqual(500);
+      expect(response.text).toContain("Sorry, the service is unavailable");
     });
 
     it("Should return an error page if error is thrown", async () => {
