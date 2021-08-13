@@ -107,10 +107,11 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain(ERROR_PAGE_TEXT);
     });
 
-    it("should navigate to error page if no psc is found", async () => {
+    it("should navigate to psc statement page if no psc is found", async () => {
       mockGetPscs.mockResolvedValueOnce([ ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
-      expect(response.text).toContain(ERROR_PAGE_TEXT);
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(PSC_STATEMENT_URL);
     });
 
     it("should navigate to individual psc page if psc is individual", async () => {

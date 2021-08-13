@@ -108,6 +108,6 @@ export const mockSingleActivePsc: CompanyPersonWithSignificantControlStatement =
     self: "self"
   },
   notifiedOn: "2020-05-03",
-  statement: "Active Psc Statement",
+  statement: "api-enumeration-key",
   linkedPscName: "Bob"
 };

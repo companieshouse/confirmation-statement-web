@@ -19,7 +19,7 @@ jest.mock("../../../src/middleware/company.authentication.middleware");
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 const mockGetActiveDirectorDetails = getActiveDirectorDetailsData as jest.Mock;
-const mockformatDirectorDetails = formatDirectorDetails as jest.Mock;
+const mockFormatDirectorDetails = formatDirectorDetails as jest.Mock;
 const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
@@ -36,14 +36,14 @@ describe("Active directors controller tests", () => {
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
     mockGetActiveDirectorDetails.mockClear();
-    mockformatDirectorDetails.mockClear();
+    mockFormatDirectorDetails.mockClear();
   });
 
   describe("get tests", () => {
 
     it("Should navigate to director's details page", async () => {
       mockGetActiveDirectorDetails.mockResolvedValueOnce(mockActiveDirectorDetails);
-      mockformatDirectorDetails.mockReturnValueOnce(mockActiveDirectorDetails);
+      mockFormatDirectorDetails.mockReturnValueOnce(mockActiveDirectorDetails);
       const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
@@ -60,7 +60,7 @@ describe("Active directors controller tests", () => {
       mockActiveDirectorDetails.foreName2 = undefined;
 
       mockGetActiveDirectorDetails.mockResolvedValueOnce(mockActiveDirectorDetails);
-      mockformatDirectorDetails.mockReturnValueOnce(mockActiveDirectorDetails);
+      mockFormatDirectorDetails.mockReturnValueOnce(mockActiveDirectorDetails);
       const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
@@ -77,7 +77,7 @@ describe("Active directors controller tests", () => {
     it("Should navigate to director's details page for secure director", async () => {
 
       mockGetActiveDirectorDetails.mockResolvedValueOnce(mockSecureActiveDirectorDetails);
-      mockformatDirectorDetails.mockReturnValueOnce(mockSecureActiveDirectorDetails);
+      mockFormatDirectorDetails.mockReturnValueOnce(mockSecureActiveDirectorDetails);
       const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
