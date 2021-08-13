@@ -6,7 +6,8 @@ import {
   ActiveDirectorDetailsData,
   SectionStatus,
   PersonsOfSignificantControlData,
-  SicCodeData
+  SicCodeData,
+  StatementOfCapitalData
 } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement, updateConfirmationStatement } from "../services/confirmation.statement.service";
 import { SECTIONS } from "../utils/constants";
@@ -50,6 +51,12 @@ const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission
         sectionStatus: status
       };
       currentCsSubmission.data.sicCodeData = newSicData;
+      break;
+    case SECTIONS.SOC:
+      const newSocData: StatementOfCapitalData = {
+        sectionStatus: status,
+      };    
+      currentCsSubmission.data.statementOfCapitalData = newSocData;
       break;
   }
 

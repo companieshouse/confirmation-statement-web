@@ -1,18 +1,16 @@
 import { NextFunction, Request, Response } from "express";
-import { RADIO_BUTTON_VALUE, sessionCookieConstants, STATEMENT_OF_CAPITAL_ERROR } from "../../utils/constants";
+import { RADIO_BUTTON_VALUE, SECTIONS, sessionCookieConstants, STATEMENT_OF_CAPITAL_ERROR } from "../../utils/constants";
 import { STATEMENT_OF_CAPITAL_PATH, TASK_LIST_PATH, urlParams } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
 import { getStatementOfCapitalData } from "../../services/statement.of.capital.service";
 import { Session } from "@companieshouse/node-session-handler";
 import {
-  ConfirmationStatementSubmission,
   SectionStatus,
   StatementOfCapital
 } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { formatTitleCase } from "../../utils/format";
-import { getConfirmationStatement, updateConfirmationStatement } from "../../services/confirmation.statement.service";
-import { StatementOfCapitalData } from "private-api-sdk-node/dist/services/confirmation-statement/types";
+import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 
 export const get = async(req: Request, res: Response, next: NextFunction) => {
   try {
@@ -44,12 +42,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
 
     if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.YES) {
-      const statementOfCapital: StatementOfCapital = req.sessionCookie[sessionCookieConstants.STATEMENT_OF_CAPITAL_KEY];
-      await sendUpdate(transactionId, submissionId, req, SectionStatus.CONFIRMED, statementOfCapital);
+      await sendUpdate(req, SectionStatus.CONFIRMED, SECTIONS.SOC);
       return res.redirect(urlUtils
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),);
     } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO) {
-      await sendUpdate(transactionId, submissionId, req, SectionStatus.NOT_CONFIRMED);
+      await sendUpdate(req, SectionStatus.NOT_CONFIRMED, SECTIONS.SOC);
       return res.render(Templates.WRONG_STATEMENT_OF_CAPITAL, {
         templateName: Templates.WRONG_STATEMENT_OF_CAPITAL,
         backLinkUrl: urlUtils
@@ -65,29 +62,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   } catch (e) {
     return next(e);
   }
-};
-
-const sendUpdate = async (transactionId: string, submissionId: string, req: Request, status: SectionStatus, statementOfCapital?: StatementOfCapital) => {
-  const session = req.session as Session;
-  const currentCsSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
-  const csSubmission = updateCsSubmission(currentCsSubmission, status, statementOfCapital);
-  await updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
-};
-
-const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission, status: SectionStatus, statementOfCapital?: StatementOfCapital):
-    ConfirmationStatementSubmission => {
-  const newSocData: StatementOfCapitalData = {
-    sectionStatus: status,
-    ...(statementOfCapital && { statementOfCapital: statementOfCapital })
-  };
-
-  if (!currentCsSubmission.data) {
-    currentCsSubmission.data = {};
-  }
-
-  currentCsSubmission.data.statementOfCapitalData = newSocData;
-
-  return currentCsSubmission;
 };
 
 const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];
