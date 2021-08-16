@@ -47,7 +47,7 @@ describe("Active directors controller tests", () => {
       const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
-      expect(response.text).toContain("Is the director still active?");
+      expect(response.text).toContain("Are the director details correct?");
       expect(response.text).toContain(mockActiveDirectorDetails.foreName1);
       expect(response.text).toContain(mockActiveDirectorDetails.foreName2);
       expect(response.text).toContain(mockActiveDirectorDetails.dateOfBirth);
@@ -64,7 +64,7 @@ describe("Active directors controller tests", () => {
       const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
-      expect(response.text).toContain("Is the director still active?");
+      expect(response.text).toContain("Are the director details correct?");
       expect(response.text).toContain(mockActiveDirectorDetails.foreName1);
       expect(response.text).toContain(mockActiveDirectorDetails.dateOfBirth);
       expect(response.text).toContain(mockActiveDirectorDetails.nationality);
@@ -81,7 +81,7 @@ describe("Active directors controller tests", () => {
       const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
-      expect(response.text).toContain("Is the director still active?");
+      expect(response.text).toContain("Are the director details correct?");
       expect(response.text).toContain(mockSecureActiveDirectorDetails.foreName1);
       expect(response.text).toContain(mockSecureActiveDirectorDetails.dateOfBirth);
       expect(response.text).toContain(mockSecureActiveDirectorDetails.nationality);
