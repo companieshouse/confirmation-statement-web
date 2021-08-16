@@ -1,5 +1,5 @@
 import { request } from "express";
-import { urlParams } from "../../src/types/page.urls";
+import { urlParams, URL_QUERY_PARAM } from "../../src/types/page.urls";
 import { urlUtils } from "../../src/utils/url";
 
 describe("url utils tests", () => {
@@ -61,5 +61,12 @@ describe("url utils tests", () => {
     });
   });
 
+  describe("setQueryParam tests", () => {
+    it("Should replace query param", () => {
+      const url = `something?${URL_QUERY_PARAM.IS_PSC}={${URL_QUERY_PARAM.IS_PSC}}`;
+      const newUrl = urlUtils.setQueryParam(url, URL_QUERY_PARAM.IS_PSC, "test");
+      expect(newUrl).toBe(`something?${URL_QUERY_PARAM.IS_PSC}=test`);
+    });
+  });
 
 });

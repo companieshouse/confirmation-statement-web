@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
-import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, PSC_STATEMENT_PATH, TASK_LIST_PATH, urlParams } from "../../types/page.urls";
+import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, PSC_STATEMENT_PATH, TASK_LIST_PATH, urlParams, URL_QUERY_PARAM } from "../../types/page.urls";
 import {
   appointmentTypeNames,
   appointmentTypes,
@@ -25,8 +25,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const psc: PersonOfSignificantControl | undefined = await getPscData(req);
     if (!psc) {
-      logger.info("No PSC data returned, redirecting to PSC Statement page")
-       return res.redirect(urlUtils.getUrlToPath(PSC_STATEMENT_PATH, req));
+      const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+      logger.info(`No PSC data returned for company ${companyNumber}, redirecting to PSC Statement page`);
+      return res.redirect(getPscStatementUrl(req, false));
     }
     const pscAppointmentType = psc.appointmentType;
     const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
@@ -77,7 +78,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       SectionStatus.CONFIRMED : SectionStatus.RECENT_FILING;
 
     await sendUpdate(transactionId, submissionId, req, sectionStatus);
-    return res.redirect(urlUtils.getUrlToPath(PSC_STATEMENT_PATH, req));
+    return res.redirect(getPscStatementUrl(req, true));
   } catch (e) {
     return next(e);
   }
@@ -87,8 +88,8 @@ const getPscData = async (req: Request): Promise<PersonOfSignificantControl | un
   const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
   const pscs: PersonOfSignificantControl[] = await getPscs(req.session as Session, companyNumber);
 
-  if (!pscs || pscs.length ===0) {
-    return undefined
+  if (!pscs || pscs.length === 0) {
+    return undefined;
   }
 
   if (pscs.length > 1) {
@@ -136,4 +137,9 @@ const handleDateOfBirth = (pscAppointmentType: string, psc: PersonOfSignificantC
     return toReadableFormatMonthYear(psc.dateOfBirth.month, psc.dateOfBirth.year);
   }
   throw createAndLogError(`Date of birth missing for individual psc name ${psc.nameElements?.forename} ${psc.nameElements?.surname}`);
+};
+
+const getPscStatementUrl = (req: Request, isPscFound: boolean) => {
+  const path = urlUtils.getUrlToPath(PSC_STATEMENT_PATH, req);
+  return urlUtils.setQueryParam(path, URL_QUERY_PARAM.IS_PSC, isPscFound.toString());
 };

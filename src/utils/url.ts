@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { urlParams } from "../types/page.urls";
+import { urlParams, URL_QUERY_PARAM } from "../types/page.urls";
 
 const getUrlWithCompanyNumber = (url: string, companyNumber: string): string =>
   url.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, companyNumber);
@@ -24,11 +24,15 @@ const getCompanyNumberFromRequestParams = (req: Request): string => req.params[u
 const getTransactionIdFromRequestParams = (req: Request): string => req.params[urlParams.PARAM_TRANSACTION_ID];
 const getSubmissionIdFromRequestParams = (req: Request): string => req.params[urlParams.PARAM_SUBMISSION_ID];
 
+const setQueryParam = (url: string, paramName: URL_QUERY_PARAM, value: string) =>
+  url.replace(`{${paramName}}`, value);
+
 export const urlUtils = {
   getCompanyNumberFromRequestParams,
   getTransactionIdFromRequestParams,
   getSubmissionIdFromRequestParams,
   getUrlToPath,
   getUrlWithCompanyNumber,
-  getUrlWithCompanyNumberTransactionIdAndSubmissionId
+  getUrlWithCompanyNumberTransactionIdAndSubmissionId,
+  setQueryParam
 };
