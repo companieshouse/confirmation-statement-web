@@ -9,7 +9,7 @@ export const getShareholders = async (session: Session, companyNumber: string): 
   const response: Resource<Shareholder> | ApiErrorResponse = await csService.getShareholders(companyNumber);
   const status = response.httpStatusCode as number;
   if (status >= 400) {
-    const errorResponse = response as ApiErrorResponse;
+    const errorResponse = response;
     throw new Error("Error retrieving shareholder " + JSON.stringify(errorResponse));
   }
   const successfulResponse = response as Resource<Shareholder[]>;
