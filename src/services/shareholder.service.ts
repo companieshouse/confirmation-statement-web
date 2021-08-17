@@ -10,7 +10,7 @@ export const getShareholders = async (session: Session, companyNumber: string): 
   const status = response.httpStatusCode as number;
   if (status >= 400) {
     const errorResponse = response as ApiErrorResponse;
-    throw new Error("Error retrieving statement of capital " + JSON.stringify(errorResponse));
+    throw new Error("Error retrieving shareholder " + JSON.stringify(errorResponse));
   }
   const successfulResponse = response as Resource<Shareholder[]>;
   return successfulResponse.resource as Shareholder[];
