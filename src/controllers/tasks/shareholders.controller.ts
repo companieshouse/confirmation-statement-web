@@ -3,11 +3,21 @@ import { NextFunction, Request, Response } from "express";
 import { TASK_LIST_PATH, SHAREHOLDERS_PATH } from "../../types/page.urls";
 import { urlUtils } from "../../utils/url";
 import { RADIO_BUTTON_VALUE, SHAREHOLDERS_ERROR } from "../../utils/constants";
+import { Session } from "@companieshouse/node-session-handler";
+import { Shareholder } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { getShareholders } from "../../services/shareholder.service";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+    const session: Session = req.session as Session;
+    const shareholders: Shareholder[] = await getShareholders(session, companyNumber);
     const backLinkUrl = urlUtils.getUrlToPath(TASK_LIST_PATH, req);
-    return res.render(Templates.SHAREHOLDERS, { backLinkUrl });
+    return res.render(
+      Templates.SHAREHOLDERS, {
+        backLinkUrl,
+        shareholders
+      });
   } catch (error) {
     return next(error);
   }
