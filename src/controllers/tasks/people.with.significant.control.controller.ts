@@ -20,6 +20,7 @@ import { getConfirmationStatement, updateConfirmationStatement } from "../../ser
 import { getPscs } from "../../services/psc.service";
 import { createAndLogError, logger } from "../../utils/logger";
 import { toReadableFormatMonthYear } from "../../utils/date";
+import { formatTitleCase } from "../../utils/format";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -31,10 +32,12 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     }
     const pscAppointmentType = psc.appointmentType;
     const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
+    const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);
+
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       dob: handleDateOfBirth(pscTemplateType, psc),
-      psc,
+      psc: formattedPsc,
       pscTemplateType,
       templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
     });
@@ -52,12 +55,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (!pscButtonValue) {
       const psc: PersonOfSignificantControl = await getPscData(req) as PersonOfSignificantControl;
       const pscAppointmentType = psc.appointmentType;
+      const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);
       const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
       return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
         backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
         dob: handleDateOfBirth(pscTemplateType, psc),
         peopleWithSignificantControlErrorMsg: PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
-        psc,
+        psc: formattedPsc,
         pscTemplateType,
         templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL
       });
@@ -142,4 +146,24 @@ const handleDateOfBirth = (pscAppointmentType: string, psc: PersonOfSignificantC
 const getPscStatementUrl = (req: Request, isPscFound: boolean) => {
   const path = urlUtils.getUrlToPath(PSC_STATEMENT_PATH, req);
   return urlUtils.setQueryParam(path, URL_QUERY_PARAM.IS_PSC, isPscFound.toString());
+};
+
+const formatPSCForDisplay = (psc: PersonOfSignificantControl): PersonOfSignificantControl => {
+  const clonedPsc: PersonOfSignificantControl = JSON.parse(JSON.stringify(psc));
+  if (psc.nameElements) {
+    clonedPsc.nameElements.forename = formatTitleCase(psc.nameElements.forename);
+  }
+
+  if (psc.address) {
+    Object.keys(psc.address).forEach(function (key) {
+      if (key !== "postalCode") {
+        clonedPsc.address[key] = formatTitleCase(psc.address[key]);
+      }
+    });
+  }
+
+  clonedPsc.serviceAddressLine_1 = formatTitleCase(psc.serviceAddressLine_1);
+  clonedPsc.serviceAddressPostTown = formatTitleCase(psc.serviceAddressPostTown);
+
+  return clonedPsc;
 };
