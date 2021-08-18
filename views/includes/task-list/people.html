@@ -8,9 +8,9 @@
                     Officers
                 </a>
             </span>
-        {% if taskList.officers.state === "CHECKED" %}
+        {% if taskList.tasks.officers.state === "CHECKED" %}
             {{ showChecked | safe | replace("statusIdPlaceholder", "officersStatus")}}
-        {% elseif taskList.officers.state === "IN_PROGRESS" %}
+        {% elseif taskList.tasks.officers.state === "IN_PROGRESS" %}
             {{ showInProgress | safe | replace("statusIdPlaceholder", "officersStatus")}}
         {% else %}
             {{ showNotChecked | safe | replace("statusIdPlaceholder", "officersStatus")}}

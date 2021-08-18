@@ -8,7 +8,7 @@ import { toReadableFormat } from "../utils/date";
 import {
   SIC_PATH,
   STATEMENT_OF_CAPITAL_PATH,
-  ACTIVE_OFFICERS_PATH,
+  ACTIVE_DIRECTORS_PATH,
   REGISTERED_OFFICE_ADDRESS_PATH,
   SHAREHOLDERS_PATH,
   PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH
@@ -25,8 +25,8 @@ export const initTaskList = (companyNumber: string,
     tasks: {
       officers: {
         isVisible: false,
-        state: TaskState.NOT_CHECKED,
-        url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(ACTIVE_OFFICERS_PATH, companyNumber, transactionId, submissionId)
+        state: toTaskState(csSubmission.data?.activeDirectorDetailsData?.sectionStatus),
+        url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(ACTIVE_DIRECTORS_PATH, companyNumber, transactionId, submissionId)
       },
       peopleSignificantControl: {
         isVisible: false,
@@ -39,13 +39,13 @@ export const initTaskList = (companyNumber: string,
       },
       registeredOfficeAddress: {
         isVisible: false,
-        state: TaskState.NOT_CHECKED,
+        state: toTaskState(csSubmission.data?.registeredOfficeAddressData?.sectionStatus),
         url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTERED_OFFICE_ADDRESS_PATH, companyNumber, transactionId, submissionId)
       },
       shareholders: {
         isVisible: false,
         state: TaskState.NOT_CHECKED,
-        url: urlUtils.getUrlWithCompanyNumber(SHAREHOLDERS_PATH, companyNumber)
+        url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(SHAREHOLDERS_PATH, companyNumber, transactionId, submissionId)
       },
       sicCodes: {
         isVisible: false,

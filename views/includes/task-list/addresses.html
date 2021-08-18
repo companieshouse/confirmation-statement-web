@@ -8,9 +8,9 @@
                 Registered office address
             </a>
         </span>
-        {% if taskList.registeredOfficeAddress.state === "CHECKED" %}
+        {% if taskList.tasks.registeredOfficeAddress.state === "CHECKED" %}
             {{ showChecked | safe | replace("statusIdPlaceholder", "roaStatus")}}
-        {% elseif taskList.registeredOfficeAddress.state === "IN_PROGRESS" %}
+        {% elseif taskList.tasks.registeredOfficeAddress.state === "IN_PROGRESS" %}
             {{ showInProgress | safe | replace("statusIdPlaceholder", "roaStatus")}}
         {% else %}
             {{ showNotChecked | safe | replace("statusIdPlaceholder", "roaStatus")}}

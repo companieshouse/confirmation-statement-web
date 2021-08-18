@@ -7,7 +7,7 @@
         classes: "govuk-tag--green"
       })}}
   </div>
-  <div style="display: flex" class="govuk-!-padding-1" style="border-bottom: 0px">
+  <div style="display: flex; border-bottom: 0" class="govuk-!-padding-1">
     <dl style="display: block" class="govuk-summary-list govuk-!-margin-3">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Nationality</dt>
@@ -24,10 +24,10 @@
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Correspondence address</dt>
         <dd class="govuk-summary-list__value">
-          <p>{{ psc.serviceAddressLine_1 }}, {{ psc.serviceAddressPostTown }}, {{ psc.serviceAddressPostCode }}</p>
+          <p>{{ psc.serviceAddressLine1 }}, {{ psc.serviceAddressPostTown }}, {{ psc.serviceAddressPostCode }}</p>
         </dd>
       </div>
-      {% if psc.address %}
+      {% if psc.address|length > 0 %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Usual residential address</dt>
           <dd class="govuk-summary-list__value">
@@ -43,9 +43,10 @@
               <li>
                 <p>{{ noc }}</p>
               </li>
-            {% endfor %} 
+            {% endfor %}
+          </ul>
         </dd>
       </div>
     </dl>
   </div>
-  </div>
+</div>

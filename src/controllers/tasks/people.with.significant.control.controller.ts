@@ -1,8 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
-import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, TASK_LIST_PATH, urlParams } from "../../types/page.urls";
-import { appointmentTypes, PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR, RADIO_BUTTON_VALUE } from "../../utils/constants";
+import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, PSC_STATEMENT_PATH, TASK_LIST_PATH, urlParams, URL_QUERY_PARAM } from "../../types/page.urls";
+import {
+  appointmentTypeNames,
+  appointmentTypes,
+  PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
+  RADIO_BUTTON_VALUE,
+  WRONG_DETAILS_INCORRECT_PSC,
+  WRONG_DETAILS_UPDATE_PSC } from "../../utils/constants";
 import {
   ConfirmationStatementSubmission,
   PersonOfSignificantControl,
@@ -12,33 +18,24 @@ import {
 import { Session } from "@companieshouse/node-session-handler";
 import { getConfirmationStatement, updateConfirmationStatement } from "../../services/confirmation.statement.service";
 import { getPscs } from "../../services/psc.service";
-import { createAndLogError } from "../../utils/logger";
+import { createAndLogError, logger } from "../../utils/logger";
 import { toReadableFormatMonthYear } from "../../utils/date";
 import { formatTitleCase } from "../../utils/format";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
-    const pscs: PersonOfSignificantControl[] = await getPscs(req.session as Session, companyNumber);
-
-    if (pscs.length > 1) {
-      return next(createAndLogError(`More than one (${pscs.length}) PSC returned for company ${companyNumber}`));
+    const psc: PersonOfSignificantControl | undefined = await getPscData(req);
+    if (!psc) {
+      const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+      logger.info(`No PSC data returned for company ${companyNumber}, redirecting to PSC Statement page`);
+      return res.redirect(getPscStatementUrl(req, false));
     }
-
-    if (pscs.length === 0) {
-      return next(createAndLogError(`No PSC returned for company ${companyNumber}`));
-    }
-
-    const psc: PersonOfSignificantControl = pscs[0];
     const pscAppointmentType = psc.appointmentType;
-
     const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
-
-    const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);
 
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-      dob: toReadableFormatMonthYear(psc.dateOfBirth.month, psc.dateOfBirth.year),
+      dob: handleDateOfBirth(pscTemplateType, psc),
       psc: formattedPsc,
       pscTemplateType,
       templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
@@ -55,10 +52,16 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
 
     if (!pscButtonValue) {
+      const psc: PersonOfSignificantControl = await getPscData(req) as PersonOfSignificantControl;
+      const pscAppointmentType = psc.appointmentType;
+      const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
       return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
-        templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
+        backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+        dob: handleDateOfBirth(pscTemplateType, psc),
         peopleWithSignificantControlErrorMsg: PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
-        backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req)
+        psc,
+        pscTemplateType,
+        templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL
       });
     }
 
@@ -68,8 +71,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         templateName: Templates.WRONG_DETAILS,
         backLinkUrl: urlUtils.getUrlToPath(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, req),
         returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        stepOneHeading: "Update the people with significant control (PSC) details",
-        pageHeading: "Incorrect people with significant control - File a confirmation statement",
+        stepOneHeading: WRONG_DETAILS_UPDATE_PSC,
+        pageHeading: WRONG_DETAILS_INCORRECT_PSC,
       });
     }
 
@@ -77,15 +80,26 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       SectionStatus.CONFIRMED : SectionStatus.RECENT_FILING;
 
     await sendUpdate(transactionId, submissionId, req, sectionStatus);
-    return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
-      templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
-      backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req)
-    });
+    return res.redirect(getPscStatementUrl(req, true));
   } catch (e) {
     return next(e);
   }
 };
 
+const getPscData = async (req: Request): Promise<PersonOfSignificantControl | undefined> => {
+  const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+  const pscs: PersonOfSignificantControl[] = await getPscs(req.session as Session, companyNumber);
+
+  if (!pscs || pscs.length === 0) {
+    return undefined;
+  }
+
+  if (pscs.length > 1) {
+    throw createAndLogError(`More than one (${pscs.length}) PSC returned for company ${companyNumber}`);
+  }
+
+  return pscs[0];
+};
 
 const sendUpdate = async (transactionId: string, submissionId: string, req: Request, status: SectionStatus) => {
   const session = req.session as Session;
@@ -131,8 +145,23 @@ const formatPSCForDisplay = (psc: PersonOfSignificantControl): PersonOfSignifica
 
 const getPscTypeTemplate = (pscAppointmentType: string): string => {
   switch (pscAppointmentType) {
-      case appointmentTypes.INDIVIDUAL_PSC: return "psc";
-      case appointmentTypes.RLE_PSC: return "rle";
+      case appointmentTypes.INDIVIDUAL_PSC: return appointmentTypeNames.PSC;
+      case appointmentTypes.RLE_PSC: return appointmentTypeNames.RLE;
       default: throw createAndLogError(`Unknown PSC type: ${pscAppointmentType}`);
   }
+};
+
+const handleDateOfBirth = (pscAppointmentType: string, psc: PersonOfSignificantControl): string => {
+  if (pscAppointmentType === appointmentTypeNames.RLE) {
+    return "";
+  }
+  if (psc.dateOfBirth?.month && psc.dateOfBirth.year) {
+    return toReadableFormatMonthYear(psc.dateOfBirth.month, psc.dateOfBirth.year);
+  }
+  throw createAndLogError(`Date of birth missing for individual psc name ${psc.nameElements?.forename} ${psc.nameElements?.surname}`);
+};
+
+const getPscStatementUrl = (req: Request, isPscFound: boolean) => {
+  const path = urlUtils.getUrlToPath(PSC_STATEMENT_PATH, req);
+  return urlUtils.setQueryParam(path, URL_QUERY_PARAM.IS_PSC, isPscFound.toString());
 };

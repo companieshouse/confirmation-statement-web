@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  {% if pscStatementControlError %}
+    Error:
+  {% endif %}
+  Review the people with significant control statement
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form action="" method="post">
+
+        {% if pscStatementControlErrorMsg %}
+          {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: [
+              {
+                text: "Select yes if the company PSC Statement is correct",
+                href: "#psc-statement-value"
+              }
+            ]
+          }) }}
+          {% set pscStatementControlError = {
+            text: pscStatementControlErrorMsg
+           } %}
+        {% else %}
+          {% set pscStatementControlError = false %}
+        {% endif %}
+
+        {% set pscStatementTypesHTML %}
+          <p>
+            If a company has no PSCs, or is currently investigating who its PSCs are, it needs to file a statement to
+            explain why
+            its full PSC information is not yet on the public register. For example, if there is a PSC that has not yet been
+            identified, or if a PSC has been identified but their details have not yet been confirmed.
+          </p>
+          <p>
+            <a href="https://ewf.companieshouse.gov.uk/help/en/stdwf/faqHelp.html#psc" data-event-id="psc-statements-guidance-link">Read the guidance for a full list of PSC statements.</a>
+          </p>
+        {% endset %}
+
+        {% set pscStatementHTML %}
+          <p class="govuk-body">{{ pscStatement }}</p>
+          {{ govukDetails({
+            summaryText: "What are PSC statements?",
+            html: pscStatementTypesHTML,
+            attributes: {
+              "data-event-id": "what-are-psc-statements-info"
+            }
+          }) }}
+        {% endset %}
+
+        {{ govukRadios({
+          classes: "govuk-radios",
+          idPrefix: "psc-statement-value",
+          name: "pscStatementValue",
+          errorMessage: pscStatementControlError,
+          fieldset: {
+            legend: {
+              html: "Is the PSC statement correct?",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+          hint: {
+            html: pscStatementHTML
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes",
+              label: "psc-statement Yes",
+              attributes: {
+                "data-event-id": "yes-radio-button"
+              }
+            },
+            {
+              value: "no",
+              text: "No",
+              label: "psc-statement No",
+              attributes: {
+                "data-event-id": "no-radio-button"
+              }
+            },
+            {
+              value: "recently_filed",
+              text: "No, but I've recently filed an update",
+              label: "psc-statement No, but I've recently filed an update",
+              attributes: {
+                "data-event-id": "recently-filed-radio-button"
+              }
+            }
+          ]
+        }) }}
+
+        {% include "includes/continue-button.html" %}
+      </form>
+    </div>
+  </div>
+{% endblock %}
