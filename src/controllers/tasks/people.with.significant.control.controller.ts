@@ -151,18 +151,30 @@ const getPscStatementUrl = (req: Request, isPscFound: boolean) => {
 const formatPSCForDisplay = (psc: PersonOfSignificantControl): PersonOfSignificantControl => {
   const clonedPsc: PersonOfSignificantControl = JSON.parse(JSON.stringify(psc));
   if (psc.nameElements) {
-    clonedPsc.nameElements.forename = formatTitleCase(psc.nameElements.forename);
+    clonedPsc.nameElements = {
+      forename: formatTitleCase(psc.nameElements?.forename),
+      otherForenames: psc.nameElements?.otherForenames,
+      surname: psc.nameElements?.surname,
+      middleName: psc.nameElements?.middleName,
+      title: psc.nameElements?.title
+    };
   }
 
   if (psc.address) {
-    Object.keys(psc.address).forEach(function (key) {
-      if (key !== "postalCode") {
-        clonedPsc.address[key] = formatTitleCase(psc.address[key]);
-      }
-    });
+    clonedPsc.address = {
+      addressLine1: formatTitleCase(psc.address.addressLine1),
+      addressLine2: formatTitleCase(psc.address.addressLine2),
+      careOf: formatTitleCase(psc.address.careOf),
+      country: formatTitleCase(psc.address.country),
+      locality: formatTitleCase(psc.address.locality),
+      poBox: formatTitleCase(psc.address.poBox),
+      postalCode: psc.address.postalCode,
+      premises: formatTitleCase(psc.address.premises),
+      region: formatTitleCase(psc.address.region)
+    };
   }
 
-  clonedPsc.serviceAddressLine_1 = formatTitleCase(psc.serviceAddressLine_1);
+  clonedPsc.serviceAddressLine1 = formatTitleCase(psc.serviceAddressLine1);
   clonedPsc.serviceAddressPostTown = formatTitleCase(psc.serviceAddressPostTown);
 
   return clonedPsc;
