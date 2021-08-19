@@ -5,7 +5,7 @@ jest.mock("../../../src/utils/logger");
 jest.mock("../../../src/utils/update.confirmation.statement.submission");
 
 import mocks from "../../mocks/all.middleware.mock";
-import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, PSC_STATEMENT_PATH } from "../../../src/types/page.urls";
+import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, PSC_STATEMENT_PATH, URL_QUERY_PARAM } from "../../../src/types/page.urls";
 import request from "supertest";
 import app from "../../../src/app";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
@@ -107,7 +107,7 @@ describe("People with significant control controller tests", () => {
       mockGetPscs.mockResolvedValueOnce([ ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.status).toEqual(302);
-      expect(response.header.location).toEqual(PSC_STATEMENT_URL);
+      expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("false"));
     });
 
     it("should navigate to individual psc page if psc is individual", async () => {
@@ -151,7 +151,7 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain("1 relevant legal entity");
       expect(response.text).toContain(COMPANY_NAME);
       expect(response.text).toContain(REG_NO);
-      expect(response.text).toContain(SERV_ADD_LINE_1);
+      expect(response.text).toContain("Line1");
       expect(response.text).toContain(COUNTRY_RESIDENCE);
     });
 
@@ -170,7 +170,7 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain("1 relevant legal entity");
       expect(response.text).toContain(COMPANY_NAME);
       expect(response.text).not.toContain("Registration number");
-      expect(response.text).toContain(SERV_ADD_LINE_1);
+      expect(response.text).toContain("Line1");
       expect(response.text).not.toContain("Country of residence");
     });
 
@@ -244,7 +244,7 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain("1 relevant legal entity");
       expect(response.text).toContain(COMPANY_NAME);
       expect(response.text).not.toContain("Registration number");
-      expect(response.text).toContain(SERV_ADD_LINE_1);
+      expect(response.text).toContain("Line1");
       expect(response.text).not.toContain("Country of residence");
     });
   });
@@ -280,7 +280,7 @@ describe("People with significant control controller tests", () => {
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
       expect(response.status).toEqual(302);
-      expect(response.header.location).toEqual(PSC_STATEMENT_URL);
+      expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("true"));
     });
 
     it("Should redirect to psc statement page when Recently Filed radio button is selected", async () => {
@@ -291,7 +291,7 @@ describe("People with significant control controller tests", () => {
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.RECENT_FILING);
       expect(response.status).toEqual(302);
-      expect(response.header.location).toEqual(PSC_STATEMENT_URL);
+      expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("true"));
     });
 
     it("Should return an error page if error is thrown in post function", async () => {
@@ -304,3 +304,7 @@ describe("People with significant control controller tests", () => {
     });
   });
 });
+
+const pscStatementPathWithIsPscParam = (isPscParam: string) => {
+  return urlUtils.setQueryParam(PSC_STATEMENT_URL, URL_QUERY_PARAM.IS_PSC, isPscParam);
+};

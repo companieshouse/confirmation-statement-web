@@ -7,7 +7,7 @@ import {
   sessionCookieConstants,
   WRONG_DETAILS_INCORRECT_PSC,
   WRONG_DETAILS_UPDATE_PSC } from "../../utils/constants";
-import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, PSC_STATEMENT_PATH } from "../../types/page.urls";
+import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, PSC_STATEMENT_PATH, TASK_LIST_PATH, URL_QUERY_PARAM } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
 import { getMostRecentActivePscStatement } from "../../services/psc.service";
@@ -22,7 +22,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     req.sessionCookie[sessionCookieConstants.PSC_STATEMENT_KEY] = pscStatement;
 
     return res.render(Templates.PSC_STATEMENT, {
-      backLinkUrl: urlUtils.getUrlToPath(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, req),
+      backLinkUrl: getBackLinkUrl(req),
       pscStatement,
       templateName: Templates.PSC_STATEMENT,
     });
@@ -46,7 +46,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     const pscStatement: string = req.sessionCookie[sessionCookieConstants.PSC_STATEMENT_KEY];
     return res.render(Templates.PSC_STATEMENT, {
-      backLinkUrl: urlUtils.getUrlToPath(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, req),
+      backLinkUrl: getBackLinkUrl(req),
       pscStatementControlErrorMsg: PSC_STATEMENT_CONTROL_ERROR,
       pscStatement,
       templateName: Templates.PSC_STATEMENT,
@@ -74,4 +74,13 @@ const getPscStatementText = async (req: Request): Promise<string> => {
     pscStatementText = pscStatementText.replace(PSC_STATEMENT_NAME_PLACEHOLDER,  pscStatement.linkedPscName);
   }
   return pscStatementText;
+};
+
+const getBackLinkUrl = (req: Request): string => {
+  let path = PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH;
+
+  if (req.query[URL_QUERY_PARAM.IS_PSC] === "false") {
+    path = TASK_LIST_PATH;
+  }
+  return urlUtils.getUrlToPath(path, req);
 };

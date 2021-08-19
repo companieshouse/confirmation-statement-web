@@ -5,7 +5,7 @@ import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
 import { urlUtils } from "../../../src/utils/url";
-import { PSC_STATEMENT_PATH } from "../../../src/types/page.urls";
+import { PSC_STATEMENT_PATH, URL_QUERY_PARAM } from "../../../src/types/page.urls";
 import {
   PSC_STATEMENT_CONTROL_ERROR,
   RADIO_BUTTON_VALUE,
@@ -14,6 +14,7 @@ import {
 import { getMostRecentActivePscStatement } from "../../../src/services/psc.service";
 import { mockSingleActivePsc } from "../../mocks/person.of.significant.control.mock";
 import { lookupPscStatementDescription } from "../../../src/utils/api.enumerations";
+import { Templates } from "../../../src/types/template.paths";
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Is the PSC statement correct?";
@@ -49,6 +50,27 @@ describe("PSC Statement controller tests", () => {
 
       expect(response.statusCode).toBe(200);
       expect(response.text).toContain(PAGE_HEADING);
+    });
+
+    it("Should back-link to the psc details page", async () => {
+      const response = await request(app)
+        .get(pscStatementPathWithIsPscParam("true"));
+
+      expect(response.text).toContain(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL);
+    });
+
+    it("Should back-link to the psc details page when no query param is provided", async () => {
+      const response = await request(app)
+        .get(PSC_STATEMENT_URL);
+
+      expect(response.text).toContain(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL);
+    });
+
+    it("Should back-link to the task list page", async () => {
+      const response = await request(app)
+        .get(pscStatementPathWithIsPscParam("false"));
+
+      expect(response.text).toContain(Templates.TASK_LIST);
     });
 
     it("Should show the psc statement text", async () => {
@@ -150,3 +172,7 @@ describe("PSC Statement controller tests", () => {
     });
   });
 });
+
+const pscStatementPathWithIsPscParam = (isPscValue: string) => {
+  return urlUtils.setQueryParam(PSC_STATEMENT_URL, URL_QUERY_PARAM.IS_PSC, isPscValue);
+};
