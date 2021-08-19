@@ -13,52 +13,53 @@ import { getConfirmationStatement, updateConfirmationStatement } from "../servic
 import { SECTIONS } from "../utils/constants";
 import { urlUtils } from "../utils/url";
 
-export const sendUpdate = async (req: Request, status: SectionStatus, section: SECTIONS ) => {
+export const sendUpdate = async (req: Request, sectionName: SECTIONS, status: SectionStatus, extraData?: any ) => {
   const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
   const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
   const session = req.session as Session;
   const currentCsSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
-  const csSubmission = updateCsSubmission(currentCsSubmission, status, section);
+  const sectionData = generateSectionData(sectionName, status, extraData);
+  const csSubmission = updateCsSubmission(currentCsSubmission, sectionName, sectionData);
   await updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
 };
 
-const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission, status: SectionStatus, section: SECTIONS ): ConfirmationStatementSubmission => {
+const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission, sectionName: SECTIONS, sectionData: any ): ConfirmationStatementSubmission => {
   if (!currentCsSubmission.data) {
     currentCsSubmission.data = {};
   }
+  currentCsSubmission.data[sectionName] = sectionData;
+  return currentCsSubmission;
+}
 
+const generateSectionData = (section: SECTIONS, status: SectionStatus, extraData?: any): any => {
   switch (section) {
     case SECTIONS.ACTIVE_DIRECTOR:
       const newData: ActiveDirectorDetailsData = {
         sectionStatus: status,
       };
-      currentCsSubmission.data.activeDirectorDetailsData = newData;
-      break;
+      return newData;
     case SECTIONS.PSC:
       const newPSCData: PersonsOfSignificantControlData = {
         sectionStatus: status
       };
-      currentCsSubmission.data.personsSignificantControlData = newPSCData;
-      break;
+      return newPSCData;
     case SECTIONS.ROA:
       const newRoaData: RegisteredOfficeAddressData = {
         sectionStatus: status,
       };
-      currentCsSubmission.data.registeredOfficeAddressData = newRoaData;
-      break;
+      return newRoaData;
     case SECTIONS.SIC:
       const newSicData: SicCodeData = {
         sectionStatus: status
       };
-      currentCsSubmission.data.sicCodeData = newSicData;
-      break;
+      return newSicData;
     case SECTIONS.SOC:
       const newSocData: StatementOfCapitalData = {
-        sectionStatus: status,
-      };    
-      currentCsSubmission.data.statementOfCapitalData = newSocData;
-      break;
+        sectionStatus: status
+      };
+      if (extraData) {
+        newSocData.statementOfCapital = extraData 
+      }
+      return newSocData;
   }
-
-  return currentCsSubmission;
-};
+}

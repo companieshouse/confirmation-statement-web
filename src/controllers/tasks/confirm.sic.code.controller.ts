@@ -25,12 +25,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   const sicButtonValue = req.body.sicCodeStatus;
 
   if (sicButtonValue === RADIO_BUTTON_VALUE.YES) {
-    await sendUpdate(req, SectionStatus.CONFIRMED, SECTIONS.SIC);
+    await sendUpdate(req, SECTIONS.SIC, SectionStatus.CONFIRMED);
     return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
   }
 
   if (sicButtonValue === RADIO_BUTTON_VALUE.NO) {
-    await sendUpdate(req, SectionStatus.NOT_CONFIRMED, SECTIONS.SIC);
+    await sendUpdate(req, SECTIONS.SIC, SectionStatus.NOT_CONFIRMED);
     return res.render(Templates.WRONG_SIC, {
       backLinkUrl: urlUtils.getUrlToPath(SIC_PATH, req),
       templateName: Templates.SIC,

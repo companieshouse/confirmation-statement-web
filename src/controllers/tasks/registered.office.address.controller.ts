@@ -33,12 +33,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const registeredOfficeAddress: RegisteredOfficeAddress = req.sessionCookie[sessionCookieConstants.REGISTERED_OFFICE_ADDRESS_KEY];
 
     if (roaButtonValue === RADIO_BUTTON_VALUE.YES) {
-      await sendUpdate(req, SectionStatus.CONFIRMED, SECTIONS.ROA);
+      await sendUpdate(req, SECTIONS.ROA, SectionStatus.CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     }
 
     if (roaButtonValue === RADIO_BUTTON_VALUE.NO) {
-      await sendUpdate(req, SectionStatus.NOT_CONFIRMED, SECTIONS.ROA);
+      await sendUpdate(req, SECTIONS.ROA, SectionStatus.NOT_CONFIRMED);
       return res.render(Templates.WRONG_RO, {
         backLinkUrl: urlUtils.getUrlToPath(REGISTERED_OFFICE_ADDRESS_PATH, req),
         taskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),

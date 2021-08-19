@@ -42,11 +42,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
 
     if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.YES) {
-      await sendUpdate(req, SectionStatus.CONFIRMED, SECTIONS.SOC);
+      const statementOfCapital: StatementOfCapital = req.sessionCookie[sessionCookieConstants.STATEMENT_OF_CAPITAL_KEY];
+      await sendUpdate(req, SECTIONS.SOC, SectionStatus.CONFIRMED, statementOfCapital);
       return res.redirect(urlUtils
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),);
     } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO) {
-      await sendUpdate(req, SectionStatus.NOT_CONFIRMED, SECTIONS.SOC);
+      await sendUpdate(req, SECTIONS.SOC, SectionStatus.NOT_CONFIRMED);
       return res.render(Templates.WRONG_STATEMENT_OF_CAPITAL, {
         templateName: Templates.WRONG_STATEMENT_OF_CAPITAL,
         backLinkUrl: urlUtils

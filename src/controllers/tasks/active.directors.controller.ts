@@ -38,10 +38,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const activeDirectorDetailsBtnValue = req.body.activeDirectors;
     if (activeDirectorDetailsBtnValue === RADIO_BUTTON_VALUE.YES) {
-      await sendUpdate(req, SectionStatus.CONFIRMED, SECTIONS.ACTIVE_DIRECTOR);
+      await sendUpdate(req, SECTIONS.ACTIVE_DIRECTOR, SectionStatus.CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     } else if (activeDirectorDetailsBtnValue === RADIO_BUTTON_VALUE.NO) {
-      await sendUpdate(req, SectionStatus.NOT_CONFIRMED, SECTIONS.ACTIVE_DIRECTOR);
+      await sendUpdate(req, SECTIONS.ACTIVE_DIRECTOR, SectionStatus.NOT_CONFIRMED);
       return res.render(Templates.WRONG_DETAILS, {
         templateName: Templates.WRONG_DETAILS,
         backLinkUrl: urlUtils.getUrlToPath(ACTIVE_DIRECTORS_PATH, req),

@@ -60,7 +60,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (pscButtonValue === RADIO_BUTTON_VALUE.NO) {
-      await sendUpdate(req, SectionStatus.NOT_CONFIRMED, SECTIONS.PSC);
+      await sendUpdate(req, SECTIONS.PSC, SectionStatus.NOT_CONFIRMED);
       return res.render(Templates.WRONG_DETAILS, {
         templateName: Templates.WRONG_DETAILS,
         backLinkUrl: urlUtils.getUrlToPath(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, req),
@@ -73,7 +73,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const sectionStatus: SectionStatus = RADIO_BUTTON_VALUE.YES === pscButtonValue ?
       SectionStatus.CONFIRMED : SectionStatus.RECENT_FILING;
 
-    await sendUpdate(req, sectionStatus, SECTIONS.PSC);
+    await sendUpdate(req, SECTIONS.PSC, sectionStatus);
     return res.redirect(urlUtils.getUrlToPath(PSC_STATEMENT_PATH, req));
   } catch (e) {
     return next(e);
