@@ -80,12 +80,8 @@ describe("Format director details test", () => {
     expect(formattedDirectorDetails.surname).toEqual(mockActiveDirectorDetailsFormatted.surname);
     expect(formattedDirectorDetails.nationality).toEqual(mockActiveDirectorDetailsFormatted.nationality);
     expect(formattedDirectorDetails.occupation).toEqual(mockActiveDirectorDetailsFormatted.occupation);
-    expect(formattedDirectorDetails.serviceAddressLine1).toEqual(mockActiveDirectorDetailsFormatted.serviceAddressLine1);
-    expect(formattedDirectorDetails.serviceAddressPostTown).toEqual(mockActiveDirectorDetailsFormatted.serviceAddressPostTown);
-    expect(formattedDirectorDetails.serviceAddressPostcode).toEqual(mockActiveDirectorDetailsFormatted.serviceAddressPostcode);
-    expect(formattedDirectorDetails.uraLine1).toEqual(mockActiveDirectorDetailsFormatted.uraLine1);
-    expect(formattedDirectorDetails.uraPostTown).toEqual(mockActiveDirectorDetailsFormatted.uraPostTown);
-    expect(formattedDirectorDetails.uraPostcode).toEqual(mockActiveDirectorDetailsFormatted.uraPostcode);
+    expect(formattedDirectorDetails.serviceAddress).toEqual(mockActiveDirectorDetailsFormatted.serviceAddress);
+    expect(formattedDirectorDetails.residentialAddress).toEqual(mockActiveDirectorDetailsFormatted.residentialAddress);
   });
 
 });

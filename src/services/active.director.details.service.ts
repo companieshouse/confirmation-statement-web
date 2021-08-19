@@ -23,15 +23,23 @@ export const formatDirectorDetails = ( activeDirectorDetails: ActiveDirectorDeta
   activeDirectorDetails.foreName1 = formatTitleCase(activeDirectorDetails.foreName1);
   activeDirectorDetails.nationality = formatTitleCase(activeDirectorDetails.nationality);
   activeDirectorDetails.occupation = formatTitleCase(activeDirectorDetails.occupation);
-  activeDirectorDetails.serviceAddressLine1 = formatTitleCase(activeDirectorDetails.serviceAddressLine1);
-  activeDirectorDetails.serviceAddressPostTown = formatTitleCase(activeDirectorDetails.serviceAddressPostTown);
+  if (activeDirectorDetails.serviceAddress.addressLine1) {
+    activeDirectorDetails.serviceAddress.addressLine1 = formatTitleCase(activeDirectorDetails.serviceAddress.addressLine1);
+  }
+  if (activeDirectorDetails.serviceAddress.postalCode) {
+    activeDirectorDetails.serviceAddress.postalCode = formatTitleCase(activeDirectorDetails.serviceAddress.postalCode);
+  }
 
   if (activeDirectorDetails.foreName2) {
     activeDirectorDetails.foreName2 = formatTitleCase(activeDirectorDetails.foreName2);
   }
-  if (activeDirectorDetails.uraLine1 && activeDirectorDetails.uraPostTown) {
-    activeDirectorDetails.uraLine1 = formatTitleCase(activeDirectorDetails.uraLine1);
-    activeDirectorDetails.uraPostTown = formatTitleCase(activeDirectorDetails.uraPostTown);
+
+  if (activeDirectorDetails.residentialAddress.addressLine1 === "") {
+    activeDirectorDetails.residentialAddress.addressLine1 = formatTitleCase(activeDirectorDetails.residentialAddress.addressLine1);
+  } else {
+    if (activeDirectorDetails.residentialAddress.addressLine2) {
+      activeDirectorDetails.residentialAddress.addressLine2 = formatTitleCase(activeDirectorDetails.residentialAddress.addressLine2);
+    }
   }
   return activeDirectorDetails;
 };
