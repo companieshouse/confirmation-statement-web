@@ -1,26 +1,25 @@
 import { NextFunction, Request, Response } from "express";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
-import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, PSC_STATEMENT_PATH, TASK_LIST_PATH, urlParams, URL_QUERY_PARAM } from "../../types/page.urls";
+import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, PSC_STATEMENT_PATH, TASK_LIST_PATH, URL_QUERY_PARAM } from "../../types/page.urls";
 import {
   appointmentTypeNames,
   appointmentTypes,
   PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
   RADIO_BUTTON_VALUE,
+  SECTIONS,
   WRONG_DETAILS_INCORRECT_PSC,
   WRONG_DETAILS_UPDATE_PSC } from "../../utils/constants";
 import {
-  ConfirmationStatementSubmission,
   PersonOfSignificantControl,
-  PersonsOfSignificantControlData,
   SectionStatus
 } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { Session } from "@companieshouse/node-session-handler";
-import { getConfirmationStatement, updateConfirmationStatement } from "../../services/confirmation.statement.service";
 import { getPscs } from "../../services/psc.service";
 import { createAndLogError, logger } from "../../utils/logger";
 import { toReadableFormatMonthYear } from "../../utils/date";
 import { formatTitleCase } from "../../utils/format";
+import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -49,8 +48,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const pscButtonValue = req.body.pscRadioValue;
-    const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
-    const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
 
     if (!pscButtonValue) {
       const psc: PersonOfSignificantControl = await getPscData(req) as PersonOfSignificantControl;
@@ -68,7 +65,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (pscButtonValue === RADIO_BUTTON_VALUE.NO) {
-      await sendUpdate(transactionId, submissionId, req, SectionStatus.NOT_CONFIRMED);
+      await sendUpdate(req, SECTIONS.PSC, SectionStatus.NOT_CONFIRMED);
       return res.render(Templates.WRONG_DETAILS, {
         templateName: Templates.WRONG_DETAILS,
         backLinkUrl: urlUtils.getUrlToPath(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, req),
@@ -81,7 +78,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const sectionStatus: SectionStatus = RADIO_BUTTON_VALUE.YES === pscButtonValue ?
       SectionStatus.CONFIRMED : SectionStatus.RECENT_FILING;
 
-    await sendUpdate(transactionId, submissionId, req, sectionStatus);
+    await sendUpdate(req, SECTIONS.PSC, sectionStatus);
     return res.redirect(getPscStatementUrl(req, true));
   } catch (e) {
     return next(e);
@@ -101,28 +98,6 @@ const getPscData = async (req: Request): Promise<PersonOfSignificantControl | un
   }
 
   return pscs[0];
-};
-
-const sendUpdate = async (transactionId: string, submissionId: string, req: Request, status: SectionStatus) => {
-  const session = req.session as Session;
-  const currentCsSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
-  const csSubmission = updateCsSubmission(currentCsSubmission, status);
-  await updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
-};
-
-const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission, status: SectionStatus):
-  ConfirmationStatementSubmission => {
-  const newPSCData: PersonsOfSignificantControlData = {
-    sectionStatus: status
-  };
-
-  if (!currentCsSubmission.data) {
-    currentCsSubmission.data = {};
-  }
-
-  currentCsSubmission.data.personsSignificantControlData = newPSCData;
-
-  return currentCsSubmission;
 };
 
 const getPscTypeTemplate = (pscAppointmentType: string): string => {
