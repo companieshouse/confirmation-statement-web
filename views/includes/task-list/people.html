@@ -22,9 +22,9 @@
                     People with significant control (PSC)
                 </a>
             </span>
-        {% if taskList.peopleSignificantControl.state === "CHECKED" %}
+        {% if taskList.tasks.peopleSignificantControl.state === "CHECKED" %}
             {{ showChecked | safe | replace("statusIdPlaceholder", "pscStatus")}}
-        {% elseif taskList.peopleSignificantControl.state === "IN_PROGRESS" %}
+        {% elseif taskList.tasks.peopleSignificantControl.state === "IN_PROGRESS" %}
             {{ showInProgress | safe | replace("statusIdPlaceholder", "pscStatus")}}
         {% else %}
             {{ showNotChecked | safe | replace("statusIdPlaceholder", "pscStatus")}}
