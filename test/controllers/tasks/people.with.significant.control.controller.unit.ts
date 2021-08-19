@@ -155,7 +155,7 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain("1 relevant legal entity");
       expect(response.text).toContain(COMPANY_NAME);
       expect(response.text).toContain(REG_NO);
-      expect(response.text).toContain(SERV_ADD_LINE_1);
+      expect(response.text).toContain("Line1");
       expect(response.text).toContain(COUNTRY_RESIDENCE);
     });
 
@@ -174,7 +174,7 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain("1 relevant legal entity");
       expect(response.text).toContain(COMPANY_NAME);
       expect(response.text).not.toContain("Registration number");
-      expect(response.text).toContain(SERV_ADD_LINE_1);
+      expect(response.text).toContain("Line1");
       expect(response.text).not.toContain("Country of residence");
     });
 
@@ -248,7 +248,7 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain("1 relevant legal entity");
       expect(response.text).toContain(COMPANY_NAME);
       expect(response.text).not.toContain("Registration number");
-      expect(response.text).toContain(SERV_ADD_LINE_1);
+      expect(response.text).toContain("Line1");
       expect(response.text).not.toContain("Country of residence");
     });
   });

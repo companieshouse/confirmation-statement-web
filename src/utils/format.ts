@@ -1,4 +1,4 @@
-export const formatTitleCase = (str: string): string =>  {
+export const formatTitleCase = (str: string|undefined): string =>  {
   if (!str) {
     return "";
   }
