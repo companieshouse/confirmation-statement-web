@@ -52,7 +52,7 @@ describe("Active directors controller tests", () => {
       expect(response.text).toContain(mockActiveDirectorDetails.foreName2);
       expect(response.text).toContain(mockActiveDirectorDetails.dateOfBirth);
       expect(response.text).toContain(mockActiveDirectorDetails.nationality);
-      expect(response.text).toContain(mockActiveDirectorDetails.uraLine1);
+      expect(response.text).toContain(mockActiveDirectorDetails.serviceAddress.addressLine1);
     });
 
     it("Should navigate to director's details page with no middle name", async () => {
@@ -68,7 +68,7 @@ describe("Active directors controller tests", () => {
       expect(response.text).toContain(mockActiveDirectorDetails.foreName1);
       expect(response.text).toContain(mockActiveDirectorDetails.dateOfBirth);
       expect(response.text).toContain(mockActiveDirectorDetails.nationality);
-      expect(response.text).toContain(mockActiveDirectorDetails.uraLine1);
+      expect(response.text).toContain(mockActiveDirectorDetails.serviceAddress.addressLine1);
       expect(response.text).not.toContain(fName2);
 
       mockActiveDirectorDetails.foreName2 = fName2;
@@ -86,7 +86,7 @@ describe("Active directors controller tests", () => {
       expect(response.text).toContain(mockSecureActiveDirectorDetails.dateOfBirth);
       expect(response.text).toContain(mockSecureActiveDirectorDetails.nationality);
       expect(response.text).toContain("Usual residential address");
-      expect(response.text).toContain(mockSecureActiveDirectorDetails.uraLine1);
+      expect(response.text).toContain(mockSecureActiveDirectorDetails.serviceAddress.addressLine1);
     });
 
     it("Should navigate to an error page if the function throws an error", async () => {
