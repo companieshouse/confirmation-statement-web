@@ -44,6 +44,11 @@ const APPOINTMENT_TYPE_5008 = "5008";
 const DOB_MONTH = 3;
 const DOB_YEAR = 1955;
 const FORMATTED_DATE = "March 1955";
+const FORENAME = "BOB";
+const FORENAME_TITLE_CASE = "Bob";
+const SURNAME = "WILSON";
+const ADDRESS_LINE_1 = "ADD LINE 1";
+const ADDRESS_LINE_1_TITLE_CASE = "Add Line 1";
 
 const mockSendUpdate = sendUpdate as jest.Mock;
 
@@ -52,10 +57,17 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next(
 
 const mockGetPscs = getPscs as jest.Mock;
 mockGetPscs.mockResolvedValue([{
+  address: {
+    addressLine1: ADDRESS_LINE_1
+  },
   appointmentType: APPOINTMENT_TYPE_5007,
   dateOfBirth: {
     month: DOB_MONTH,
     year: DOB_YEAR
+  },
+  nameElements: {
+    forename: FORENAME,
+    surname: SURNAME
   }
 }]);
 
@@ -75,7 +87,7 @@ describe("People with significant control controller tests", () => {
     mockSendUpdate.mockClear();
   });
 
-  describe("get tests", function () {
+  describe("get tests", () => {
     it("should navigate to the active pscs page", async () => {
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.text).toContain(PAGE_HEADING);
@@ -84,6 +96,9 @@ describe("People with significant control controller tests", () => {
       expect(toReadableFormatMonthYear).toBeCalledTimes(1);
       expect(mockToReadableFormatMonthYear.mock.calls[0][0]).toBe(DOB_MONTH);
       expect(mockToReadableFormatMonthYear.mock.calls[0][1]).toBe(DOB_YEAR);
+      expect(response.text).toContain(ADDRESS_LINE_1_TITLE_CASE);
+      expect(response.text).toContain(FORENAME_TITLE_CASE);
+      expect(response.text).toContain(SURNAME);
     });
 
     it("Should navigate to an error page if the function throws an error", async () => {
@@ -278,7 +293,7 @@ describe("People with significant control controller tests", () => {
         .send({ pscRadioValue: RADIO_BUTTON_VALUE.YES });
 
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
-      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("true"));
     });
@@ -289,7 +304,7 @@ describe("People with significant control controller tests", () => {
         .send({ pscRadioValue: RADIO_BUTTON_VALUE.RECENTLY_FILED });
 
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
-      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.RECENT_FILING);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("true"));
     });

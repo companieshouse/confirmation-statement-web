@@ -32,7 +32,6 @@ const STOP_PAGE_HEADING = "You cannot use this service - File a confirmation sta
 const COMPANY_NUMBER = "12345678";
 const SUBMISSION_ID = "a80f09e2";
 const TRANSACTION_ID = "111-111-111";
-const LINK_SELF = "/something";
 const STATEMENT_OF_CAPITAL_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 const TASK_LIST_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 

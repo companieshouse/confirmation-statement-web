@@ -1,20 +1,24 @@
 jest.mock("../../../src/services/psc.service");
 jest.mock("../../../src/utils/api.enumerations");
+jest.mock("../../../src/utils/update.confirmation.statement.submission");
 
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
 import { urlUtils } from "../../../src/utils/url";
-import { PSC_STATEMENT_PATH, URL_QUERY_PARAM } from "../../../src/types/page.urls";
+import { PSC_STATEMENT_PATH, TASK_LIST_PATH, URL_QUERY_PARAM } from "../../../src/types/page.urls";
 import {
   PSC_STATEMENT_CONTROL_ERROR,
   RADIO_BUTTON_VALUE,
   PSC_STATEMENT_NOT_FOUND,
-  PSC_STATEMENT_NAME_PLACEHOLDER } from "../../../src/utils/constants";
+  PSC_STATEMENT_NAME_PLACEHOLDER,
+  SECTIONS } from "../../../src/utils/constants";
 import { getMostRecentActivePscStatement } from "../../../src/services/psc.service";
 import { mockSingleActivePsc } from "../../mocks/person.of.significant.control.mock";
 import { lookupPscStatementDescription } from "../../../src/utils/api.enumerations";
 import { Templates } from "../../../src/types/template.paths";
+import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
+import { SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Is the PSC statement correct?";
@@ -28,6 +32,11 @@ const PSC_STATEMENT_URL =
                                                                      COMPANY_NUMBER,
                                                                      TRANSACTION_ID,
                                                                      SUBMISSION_ID);
+const TASK_LIST_URL =
+        urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH,
+                                                                     COMPANY_NUMBER,
+                                                                     TRANSACTION_ID,
+                                                                     SUBMISSION_ID);
 
 const mockGetMostRecentActivePscStatement = getMostRecentActivePscStatement as jest.Mock;
 mockGetMostRecentActivePscStatement.mockResolvedValue(mockSingleActivePsc);
@@ -35,12 +44,15 @@ mockGetMostRecentActivePscStatement.mockResolvedValue(mockSingleActivePsc);
 const mockLookupPscStatementDescription = lookupPscStatementDescription as jest.Mock;
 mockLookupPscStatementDescription.mockReturnValue(PSC_STATEMENT_TEXT);
 
+const mockSendUpdate = sendUpdate as jest.Mock;
+
 describe("PSC Statement controller tests", () => {
 
   beforeEach(() => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mockGetMostRecentActivePscStatement.mockClear();
     mockLookupPscStatementDescription.mockClear();
+    mockSendUpdate.mockClear();
   });
 
   describe("get tests", () => {
@@ -156,8 +168,31 @@ describe("PSC Statement controller tests", () => {
 
       expect(response.status).toEqual(200);
       expect(response.text).toContain(STOP_PAGE_HEADING);
+      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
     });
 
+    it("Should redirect to task list when yes radio button is selected", async () => {
+      const response = await request(app)
+        .post(PSC_STATEMENT_URL)
+        .send({ pscStatementValue: RADIO_BUTTON_VALUE.YES });
+
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(TASK_LIST_URL);
+      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+    });
+
+    it("Should redirect to task list when recently filed radio button is selected", async () => {
+      const response = await request(app)
+        .post(PSC_STATEMENT_URL)
+        .send({ pscStatementValue: RADIO_BUTTON_VALUE.RECENTLY_FILED });
+
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(TASK_LIST_URL);
+      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.RECENT_FILING);
+    });
 
     it("Should return an error page if error is thrown", async () => {
       const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");

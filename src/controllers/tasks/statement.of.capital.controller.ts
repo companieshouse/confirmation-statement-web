@@ -45,7 +45,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const statementOfCapital: StatementOfCapital = req.sessionCookie[sessionCookieConstants.STATEMENT_OF_CAPITAL_KEY];
       await sendUpdate(req, SECTIONS.SOC, SectionStatus.CONFIRMED, statementOfCapital);
       return res.redirect(urlUtils
-        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),);
+        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId));
     } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO) {
       await sendUpdate(req, SECTIONS.SOC, SectionStatus.NOT_CONFIRMED);
       return res.render(Templates.WRONG_STATEMENT_OF_CAPITAL, {

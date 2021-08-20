@@ -75,10 +75,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
-    const sectionStatus: SectionStatus = RADIO_BUTTON_VALUE.YES === pscButtonValue ?
-      SectionStatus.CONFIRMED : SectionStatus.RECENT_FILING;
-
-    await sendUpdate(req, SECTIONS.PSC, sectionStatus);
+    await sendUpdate(req, SECTIONS.PSC, SectionStatus.NOT_CONFIRMED);
     return res.redirect(getPscStatementUrl(req, true));
   } catch (e) {
     return next(e);
