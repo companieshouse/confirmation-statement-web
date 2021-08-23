@@ -85,10 +85,22 @@ export const mockSecureActiveDirectorDetails: ActiveDirectorDetails = {
 export const mockActiveDirectorDetailsFormatted: ActiveDirectorDetails = {
   foreName1: "John",
   foreName2: "MiddleName",
-  surname: "DOE",
+  surname: "Doe",
   occupation: "Singer",
   nationality: "British",
   dateOfBirth: "1 January 1960",
   serviceAddress: mockAddress1Formatted,
   residentialAddress: mockAddress2Formatted
+};
+
+
+export const mockSecureActiveDirectorDetailsFormatted: ActiveDirectorDetails = {
+  foreName1: "John",
+  foreName2: "MiddleName",
+  surname: "Doe",
+  occupation: "singer",
+  nationality: "British",
+  dateOfBirth: "1 January 1960",
+  serviceAddress: mockAddress1Formatted,
+  residentialAddress: mockSecureAddress
 };

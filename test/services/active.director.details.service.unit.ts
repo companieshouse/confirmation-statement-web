@@ -4,11 +4,12 @@ jest.mock("private-api-sdk-node/");
 import { Resource } from "@companieshouse/api-sdk-node";
 import { createPrivateApiClient } from "private-api-sdk-node";
 import PrivateApiClient from "private-api-sdk-node/dist/client";
-import { getActiveDirectorDetailsData, formatDirectorDetails } from "../../src/services/active.director.details.service";
+import { getActiveDirectorDetailsData } from "../../src/services/active.director.details.service";
 import { ActiveDirectorDetails, ConfirmationStatementService } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { mockActiveDirectorDetails, mockActiveDirectorDetailsFormatted } from "../mocks/active.director.details.mock";
 import { getSessionRequest } from "../mocks/session.mock";
 import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
+import { formatDirectorDetails } from "../../src/controllers/tasks/active.directors.controller";
 
 
 const mockGetActiveDirectorDetails = ConfirmationStatementService.prototype.getActiveDirectorDetails as jest.Mock;

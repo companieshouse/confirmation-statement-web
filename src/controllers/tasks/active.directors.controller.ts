@@ -119,7 +119,8 @@ const formatAddress = (address: Address): Address => {
     country: formatTitleCase(addressClone.country),
     locality: formatTitleCase(addressClone.locality),
     premises: formatTitleCase(addressClone.premises),
-    region: formatTitleCase(addressClone.region)
+    region: formatTitleCase(addressClone.region),
+    postalCode: addressClone.postalCode?.toUpperCase()
   };
 };
 

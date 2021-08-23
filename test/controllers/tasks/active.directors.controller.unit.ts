@@ -9,7 +9,7 @@ import { ACTIVE_DIRECTORS_PATH, TASK_LIST_PATH, urlParams } from "../../../src/t
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
 import { DIRECTOR_DETAILS_ERROR } from "../../../src/utils/constants";
 import { urlUtils } from "../../../src/utils/url";
-import { mockActiveDirectorDetails, mockSecureActiveDirectorDetails } from "../../mocks/active.director.details.mock";
+import { mockActiveDirectorDetailsFormatted, mockSecureActiveDirectorDetailsFormatted } from "../../mocks/active.director.details.mock";
 import { getActiveDirectorDetailsData } from "../../../src/services/active.director.details.service";
 import { getConfirmationStatement } from "../../../src/services/confirmation.statement.service";
 import { mockConfirmationStatementSubmission } from "../../mocks/confirmation.statement.submission.mock";
@@ -40,48 +40,48 @@ describe("Active directors controller tests", () => {
   describe("get tests", () => {
 
     it("Should navigate to director's details page", async () => {
-      mockGetActiveDirectorDetails.mockResolvedValueOnce(mockActiveDirectorDetails);
+      mockGetActiveDirectorDetails.mockResolvedValueOnce(mockActiveDirectorDetailsFormatted);
       const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Are the director details correct?");
-      expect(response.text).toContain(mockActiveDirectorDetails.foreName1);
-      expect(response.text).toContain(mockActiveDirectorDetails.foreName2);
-      expect(response.text).toContain(mockActiveDirectorDetails.dateOfBirth);
-      expect(response.text).toContain(mockActiveDirectorDetails.nationality);
-      expect(response.text).toContain(mockActiveDirectorDetails.serviceAddress.addressLine1);
+      expect(response.text).toContain(mockActiveDirectorDetailsFormatted.foreName1);
+      expect(response.text).toContain(mockActiveDirectorDetailsFormatted.foreName2);
+      expect(response.text).toContain(mockActiveDirectorDetailsFormatted.dateOfBirth);
+      expect(response.text).toContain(mockActiveDirectorDetailsFormatted.nationality);
+      expect(response.text).toContain(mockActiveDirectorDetailsFormatted.serviceAddress.addressLine1);
     });
 
     it("Should navigate to director's details page with no middle name", async () => {
-      const fName2 = mockActiveDirectorDetails.foreName2;
-      mockActiveDirectorDetails.foreName2 = undefined;
+      const fName2 = mockActiveDirectorDetailsFormatted.foreName2;
+      mockActiveDirectorDetailsFormatted.foreName2 = undefined;
 
-      mockGetActiveDirectorDetails.mockResolvedValueOnce(mockActiveDirectorDetails);
+      mockGetActiveDirectorDetails.mockResolvedValueOnce(mockActiveDirectorDetailsFormatted);
       const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Are the director details correct?");
-      expect(response.text).toContain(mockActiveDirectorDetails.foreName1);
-      expect(response.text).toContain(mockActiveDirectorDetails.dateOfBirth);
-      expect(response.text).toContain(mockActiveDirectorDetails.nationality);
-      expect(response.text).toContain(mockActiveDirectorDetails.serviceAddress.addressLine1);
+      expect(response.text).toContain(mockActiveDirectorDetailsFormatted.foreName1);
+      expect(response.text).toContain(mockActiveDirectorDetailsFormatted.dateOfBirth);
+      expect(response.text).toContain(mockActiveDirectorDetailsFormatted.nationality);
+      expect(response.text).toContain(mockActiveDirectorDetailsFormatted.serviceAddress.addressLine1);
       expect(response.text).not.toContain(fName2);
 
-      mockActiveDirectorDetails.foreName2 = fName2;
+      mockActiveDirectorDetailsFormatted.foreName2 = fName2;
     });
 
     it("Should navigate to director's details page for secure director", async () => {
 
-      mockGetActiveDirectorDetails.mockResolvedValueOnce(mockSecureActiveDirectorDetails);
+      mockGetActiveDirectorDetails.mockResolvedValueOnce(mockSecureActiveDirectorDetailsFormatted);
       const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Are the director details correct?");
-      expect(response.text).toContain(mockSecureActiveDirectorDetails.foreName1);
-      expect(response.text).toContain(mockSecureActiveDirectorDetails.dateOfBirth);
-      expect(response.text).toContain(mockSecureActiveDirectorDetails.nationality);
+      expect(response.text).toContain(mockSecureActiveDirectorDetailsFormatted.foreName1);
+      expect(response.text).toContain(mockSecureActiveDirectorDetailsFormatted.dateOfBirth);
+      expect(response.text).toContain(mockSecureActiveDirectorDetailsFormatted.nationality);
       expect(response.text).toContain("Usual residential address");
-      expect(response.text).toContain(mockSecureActiveDirectorDetails.serviceAddress.addressLine1);
+      expect(response.text).toContain(mockSecureActiveDirectorDetailsFormatted.serviceAddress.addressLine1);
     });
 
     it("Should navigate to an error page if the function throws an error", async () => {
