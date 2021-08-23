@@ -13,11 +13,10 @@ import {
   ActiveDirectorDetails,
   ConfirmationStatementSubmission,
   ActiveDirectorDetailsData,
-  SectionStatus,
-  Address } from "private-api-sdk-node/dist/services/confirmation-statement";
+  SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { getActiveDirectorDetailsData } from "../../services/active.director.details.service";
 import { getConfirmationStatement, updateConfirmationStatement } from "../../services/confirmation.statement.service";
-import { formatTitleCase } from "../../utils/format";
+import { formatAddressForDisplay, formatDirectorDetails } from "../../utils/format";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -60,8 +59,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       });
     } else {
       const activeDirectorDetails: ActiveDirectorDetails = req.sessionCookie[sessionCookieConstants.ACTIVE_DIRECTOR_DETAILS_KEY];
-      const serviceAddress = formatAddressForDisplay(activeDirectorDetails.serviceAddress);
-      const residentialAddress = formatAddressForDisplay(activeDirectorDetails.residentialAddress);
+      const serviceAddress = formatAddressForDisplay(activeDirectorDetails?.serviceAddress);
+      const residentialAddress = formatAddressForDisplay(activeDirectorDetails?.residentialAddress);
       return res.render(Templates.ACTIVE_DIRECTORS, {
         backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
         directorErrorMsg: DIRECTOR_DETAILS_ERROR,
@@ -95,41 +94,4 @@ const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission
   currentCsSubmission.data.activeDirectorDetailsData = newActiveDirectorDetailsData;
 
   return currentCsSubmission;
-};
-
-export const formatDirectorDetails = (directorDetails: ActiveDirectorDetails): ActiveDirectorDetails => {
-  const clone: ActiveDirectorDetails = JSON.parse(JSON.stringify(directorDetails));
-
-  clone.foreName1 = formatTitleCase(directorDetails.foreName1);
-  clone.nationality = formatTitleCase(directorDetails.nationality);
-  clone.occupation = formatTitleCase(directorDetails.occupation);
-  clone.serviceAddress = formatAddress(directorDetails.serviceAddress);
-  clone.residentialAddress = formatAddress(directorDetails.residentialAddress);
-
-  return clone;
-};
-
-const formatAddress = (address: Address): Address => {
-  const addressClone: Address = JSON.parse(JSON.stringify(address));
-  return {
-    careOf: formatTitleCase(addressClone.careOf),
-    addressLine1: formatTitleCase(addressClone.addressLine1),
-    addressLine2: formatTitleCase(addressClone.addressLine2),
-    poBox: formatTitleCase(addressClone.poBox),
-    country: formatTitleCase(addressClone.country),
-    locality: formatTitleCase(addressClone.locality),
-    premises: formatTitleCase(addressClone.premises),
-    region: formatTitleCase(addressClone.region),
-    postalCode: addressClone.postalCode?.toUpperCase()
-  };
-};
-
-const formatAddressForDisplay = (address: Address): string => {
-  let addressStr = "";
-  for (const line of Object.values(address)) {
-    if (line) {
-      addressStr = addressStr + line + ", ";
-    }
-  }
-  return addressStr.slice(0, -2);
 };

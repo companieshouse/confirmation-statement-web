@@ -1,6 +1,7 @@
 jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/active.director.details.service");
 jest.mock("../../../src/services/confirmation.statement.service");
+jest.mock("../../../src/utils/format");
 
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
@@ -9,17 +10,24 @@ import { ACTIVE_DIRECTORS_PATH, TASK_LIST_PATH, urlParams } from "../../../src/t
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
 import { DIRECTOR_DETAILS_ERROR } from "../../../src/utils/constants";
 import { urlUtils } from "../../../src/utils/url";
-import { mockActiveDirectorDetailsFormatted, mockSecureActiveDirectorDetailsFormatted } from "../../mocks/active.director.details.mock";
+import { mockActiveDirectorDetails, mockActiveDirectorDetailsFormatted, mockSecureActiveDirectorDetailsFormatted } from "../../mocks/active.director.details.mock";
 import { getActiveDirectorDetailsData } from "../../../src/services/active.director.details.service";
 import { getConfirmationStatement } from "../../../src/services/confirmation.statement.service";
 import { mockConfirmationStatementSubmission } from "../../mocks/confirmation.statement.submission.mock";
+import { formatAddressForDisplay, formatDirectorDetails } from "../../../src/utils/format";
 
 jest.mock("../../../src/middleware/company.authentication.middleware");
+
+const FORMATTED_ADDRESS_LINE = "Formatted Test Address";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 const mockGetActiveDirectorDetails = getActiveDirectorDetailsData as jest.Mock;
 const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
+const mockFormatAddressForDisplay = formatAddressForDisplay as jest.Mock;
+mockFormatAddressForDisplay.mockReturnValue(FORMATTED_ADDRESS_LINE);
+const mockFormatDirectorDetails = formatDirectorDetails as jest.Mock;
+mockFormatDirectorDetails.mockReturnValue(mockActiveDirectorDetails);
 
 const COMPANY_NUMBER = "12345678";
 const PAGE_HEADING = "Check the director's details";
@@ -31,6 +39,8 @@ const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}
 describe("Active directors controller tests", () => {
 
   beforeEach(() => {
+    mockFormatAddressForDisplay.mockClear();
+    mockFormatDirectorDetails.mockClear();
     mocks.mockAuthenticationMiddleware.mockClear();
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
@@ -41,6 +51,7 @@ describe("Active directors controller tests", () => {
 
     it("Should navigate to director's details page", async () => {
       mockGetActiveDirectorDetails.mockResolvedValueOnce(mockActiveDirectorDetailsFormatted);
+      mockFormatDirectorDetails.mockReturnValueOnce(mockActiveDirectorDetailsFormatted);
       const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
@@ -49,7 +60,7 @@ describe("Active directors controller tests", () => {
       expect(response.text).toContain(mockActiveDirectorDetailsFormatted.foreName2);
       expect(response.text).toContain(mockActiveDirectorDetailsFormatted.dateOfBirth);
       expect(response.text).toContain(mockActiveDirectorDetailsFormatted.nationality);
-      expect(response.text).toContain(mockActiveDirectorDetailsFormatted.serviceAddress.addressLine1);
+      expect(response.text).toContain(FORMATTED_ADDRESS_LINE);
     });
 
     it("Should navigate to director's details page with no middle name", async () => {
@@ -57,6 +68,7 @@ describe("Active directors controller tests", () => {
       mockActiveDirectorDetailsFormatted.foreName2 = undefined;
 
       mockGetActiveDirectorDetails.mockResolvedValueOnce(mockActiveDirectorDetailsFormatted);
+      mockFormatDirectorDetails.mockReturnValueOnce(mockActiveDirectorDetailsFormatted);
       const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
@@ -64,7 +76,7 @@ describe("Active directors controller tests", () => {
       expect(response.text).toContain(mockActiveDirectorDetailsFormatted.foreName1);
       expect(response.text).toContain(mockActiveDirectorDetailsFormatted.dateOfBirth);
       expect(response.text).toContain(mockActiveDirectorDetailsFormatted.nationality);
-      expect(response.text).toContain(mockActiveDirectorDetailsFormatted.serviceAddress.addressLine1);
+      expect(response.text).toContain(FORMATTED_ADDRESS_LINE);
       expect(response.text).not.toContain(fName2);
 
       mockActiveDirectorDetailsFormatted.foreName2 = fName2;
@@ -73,6 +85,8 @@ describe("Active directors controller tests", () => {
     it("Should navigate to director's details page for secure director", async () => {
 
       mockGetActiveDirectorDetails.mockResolvedValueOnce(mockSecureActiveDirectorDetailsFormatted);
+      mockFormatDirectorDetails.mockReturnValueOnce(mockSecureActiveDirectorDetailsFormatted);
+      mockFormatAddressForDisplay.mockReturnValueOnce(mockSecureActiveDirectorDetailsFormatted.serviceAddress.addressLine1);
       const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
@@ -81,7 +95,7 @@ describe("Active directors controller tests", () => {
       expect(response.text).toContain(mockSecureActiveDirectorDetailsFormatted.dateOfBirth);
       expect(response.text).toContain(mockSecureActiveDirectorDetailsFormatted.nationality);
       expect(response.text).toContain("Usual residential address");
-      expect(response.text).toContain(mockSecureActiveDirectorDetailsFormatted.serviceAddress.addressLine1);
+      expect(response.text).toContain(FORMATTED_ADDRESS_LINE);
     });
 
     it("Should navigate to an error page if the function throws an error", async () => {

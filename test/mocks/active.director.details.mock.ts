@@ -84,7 +84,7 @@ export const mockSecureActiveDirectorDetails: ActiveDirectorDetails = {
 
 export const mockActiveDirectorDetailsFormatted: ActiveDirectorDetails = {
   foreName1: "John",
-  foreName2: "MiddleName",
+  foreName2: "Middlename",
   surname: "Doe",
   occupation: "Singer",
   nationality: "British",

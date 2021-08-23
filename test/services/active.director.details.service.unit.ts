@@ -9,8 +9,7 @@ import { ActiveDirectorDetails, ConfirmationStatementService } from "private-api
 import { mockActiveDirectorDetails, mockActiveDirectorDetailsFormatted } from "../mocks/active.director.details.mock";
 import { getSessionRequest } from "../mocks/session.mock";
 import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
-import { formatDirectorDetails } from "../../src/controllers/tasks/active.directors.controller";
-
+import { formatDirectorDetails } from "../../src/utils/format";
 
 const mockGetActiveDirectorDetails = ConfirmationStatementService.prototype.getActiveDirectorDetails as jest.Mock;
 const mockCreatePrivateApiClient = createPrivateApiClient as jest.Mock;
