@@ -29,37 +29,37 @@ const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission
   }
   currentCsSubmission.data[sectionName] = sectionData;
   return currentCsSubmission;
-}
+};
 
 const generateSectionData = (section: SECTIONS, status: SectionStatus, extraData?: any): any => {
   switch (section) {
-    case SECTIONS.ACTIVE_DIRECTOR:
-      const newData: ActiveDirectorDetailsData = {
-        sectionStatus: status,
-      };
-      return newData;
-    case SECTIONS.PSC:
-      const newPSCData: PersonsOfSignificantControlData = {
-        sectionStatus: status
-      };
-      return newPSCData;
-    case SECTIONS.ROA:
-      const newRoaData: RegisteredOfficeAddressData = {
-        sectionStatus: status,
-      };
-      return newRoaData;
-    case SECTIONS.SIC:
-      const newSicData: SicCodeData = {
-        sectionStatus: status
-      };
-      return newSicData;
-    case SECTIONS.SOC:
-      const newSocData: StatementOfCapitalData = {
-        sectionStatus: status
-      };
-      if (extraData) {
-        newSocData.statementOfCapital = extraData 
-      }
-      return newSocData;
+      case SECTIONS.ACTIVE_DIRECTOR:
+        const newData: ActiveDirectorDetailsData = {
+          sectionStatus: status,
+        };
+        return newData;
+      case SECTIONS.PSC:
+        const newPSCData: PersonsOfSignificantControlData = {
+          sectionStatus: status
+        };
+        return newPSCData;
+      case SECTIONS.ROA:
+        const newRoaData: RegisteredOfficeAddressData = {
+          sectionStatus: status,
+        };
+        return newRoaData;
+      case SECTIONS.SIC:
+        const newSicData: SicCodeData = {
+          sectionStatus: status
+        };
+        return newSicData;
+      case SECTIONS.SOC:
+        const newSocData: StatementOfCapitalData = {
+          sectionStatus: status
+        };
+        if (extraData) {
+          newSocData.statementOfCapital = extraData;
+        }
+        return newSocData;
   }
-}
+};
