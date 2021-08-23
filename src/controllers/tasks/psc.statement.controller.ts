@@ -4,6 +4,7 @@ import {
   PSC_STATEMENT_NAME_PLACEHOLDER,
   PSC_STATEMENT_NOT_FOUND,
   RADIO_BUTTON_VALUE,
+  SECTIONS,
   sessionCookieConstants,
   WRONG_DETAILS_INCORRECT_PSC,
   WRONG_DETAILS_UPDATE_PSC } from "../../utils/constants";
@@ -14,6 +15,8 @@ import { getMostRecentActivePscStatement } from "../../services/psc.service";
 import { Session } from "@companieshouse/node-session-handler";
 import { lookupPscStatementDescription } from "../../utils/api.enumerations";
 import { createAndLogError } from "../../utils/logger";
+import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
+import { SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -31,17 +34,28 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async(req: Request, res: Response, next: NextFunction) => {
   try {
     const pscButtonValue = req.body.pscStatementValue;
 
     if (pscButtonValue === RADIO_BUTTON_VALUE.NO) {
+      await sendUpdate(req, SECTIONS.PSC, SectionStatus.NOT_CONFIRMED);
       return res.render(Templates.WRONG_DETAILS, {
         templateName: Templates.WRONG_DETAILS,
         backLinkUrl: urlUtils.getUrlToPath(PSC_STATEMENT_PATH, req),
+        returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
         stepOneHeading: WRONG_DETAILS_UPDATE_PSC,
         pageHeading: WRONG_DETAILS_INCORRECT_PSC,
       });
+    }
+
+    if (pscButtonValue === RADIO_BUTTON_VALUE.YES || pscButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
+      const companyNumber: string = urlUtils.getCompanyNumberFromRequestParams(req);
+      const transactionId: string = urlUtils.getTransactionIdFromRequestParams(req);
+      const submissionId: string = urlUtils.getSubmissionIdFromRequestParams(req);
+      await sendUpdate(req, SECTIONS.PSC, getSectionStatusFromButtonValue(pscButtonValue));
+      return res.redirect(urlUtils
+        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId));
     }
 
     const pscStatement: string = req.sessionCookie[sessionCookieConstants.PSC_STATEMENT_KEY];
@@ -83,4 +97,13 @@ const getBackLinkUrl = (req: Request): string => {
     path = TASK_LIST_PATH;
   }
   return urlUtils.getUrlToPath(path, req);
+};
+
+const getSectionStatusFromButtonValue = (radioButtonValue: RADIO_BUTTON_VALUE): SectionStatus => {
+  const buttonStatusMap = {
+    [RADIO_BUTTON_VALUE.YES]: SectionStatus.CONFIRMED,
+    [RADIO_BUTTON_VALUE.NO]: SectionStatus.NOT_CONFIRMED,
+    [RADIO_BUTTON_VALUE.RECENTLY_FILED]: SectionStatus.RECENT_FILING
+  };
+  return buttonStatusMap[radioButtonValue];
 };

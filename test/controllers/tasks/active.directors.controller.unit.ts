@@ -2,19 +2,20 @@ jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/active.director.details.service");
 jest.mock("../../../src/services/confirmation.statement.service");
 jest.mock("../../../src/utils/format");
+jest.mock("../../../src/utils/update.confirmation.statement.submission");
 
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
 import { ACTIVE_DIRECTORS_PATH, TASK_LIST_PATH, urlParams } from "../../../src/types/page.urls";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
-import { DIRECTOR_DETAILS_ERROR } from "../../../src/utils/constants";
+import { DIRECTOR_DETAILS_ERROR, SECTIONS } from "../../../src/utils/constants";
 import { urlUtils } from "../../../src/utils/url";
 import { mockActiveDirectorDetails, mockActiveDirectorDetailsFormatted, mockSecureActiveDirectorDetailsFormatted } from "../../mocks/active.director.details.mock";
-import { getActiveDirectorDetailsData } from "../../../src/services/active.director.details.service";
-import { getConfirmationStatement } from "../../../src/services/confirmation.statement.service";
-import { mockConfirmationStatementSubmission } from "../../mocks/confirmation.statement.submission.mock";
 import { formatAddressForDisplay, formatDirectorDetails } from "../../../src/utils/format";
+import { getActiveDirectorDetailsData } from "../../../src/services/active.director.details.service";
+import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
+import { SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
 
 jest.mock("../../../src/middleware/company.authentication.middleware");
 
@@ -23,11 +24,11 @@ const FORMATTED_ADDRESS_LINE = "Formatted Test Address";
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 const mockGetActiveDirectorDetails = getActiveDirectorDetailsData as jest.Mock;
-const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 const mockFormatAddressForDisplay = formatAddressForDisplay as jest.Mock;
 mockFormatAddressForDisplay.mockReturnValue(FORMATTED_ADDRESS_LINE);
 const mockFormatDirectorDetails = formatDirectorDetails as jest.Mock;
 mockFormatDirectorDetails.mockReturnValue(mockActiveDirectorDetails);
+const mockSendUpdate = sendUpdate as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
 const PAGE_HEADING = "Check the director's details";
@@ -45,6 +46,8 @@ describe("Active directors controller tests", () => {
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
     mockGetActiveDirectorDetails.mockClear();
+    mockFormatDirectorDetails.mockClear();
+    mockSendUpdate.mockClear();
   });
 
   describe("get tests", () => {
@@ -122,21 +125,23 @@ describe("Active directors controller tests", () => {
   describe("post tests", () => {
 
     it("Should return to task list page when director details is confirmed", async () => {
-      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(ACTIVE_DIRECTOR_DETAILS_URL)
         .send({ activeDirectors: "yes" });
 
+      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ACTIVE_DIRECTOR);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
     });
 
     it("Should go to stop page when director details radio button is no", async () => {
-      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(ACTIVE_DIRECTOR_DETAILS_URL)
         .send({ activeDirectors: "no" });
 
+      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ACTIVE_DIRECTOR);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
       expect(response.status).toEqual(200);
       expect(response.text).toContain(WRONG_OFFICER_PAGE_HEADING);
     });
