@@ -36,15 +36,7 @@
           <dt class="govuk-summary-list__key">Correspondence address</dt>
           <dd class="govuk-summary-list__value">
           <p>
-            {% if activeDirectorDetails.serviceAddress.careOf %} {{activeDirectorDetails.serviceAddress.careOf}}, {% endif %}}
-            {% if activeDirectorDetails.serviceAddress.poBox %} {{activeDirectorDetails.serviceAddress.poBox}}, {% endif %}}
-            {% if activeDirectorDetails.serviceAddress.premises %} {{activeDirectorDetails.serviceAddress.premises}}, {% endif %}}
-            {% if activeDirectorDetails.serviceAddress.addressLine1 %} {{activeDirectorDetails.serviceAddress.addressLine1}} {% endif %}}
-            {% if activeDirectorDetails.serviceAddress.addressLine2 %}, {{activeDirectorDetails.serviceAddress.addressLine2}} {% endif %}}
-            {% if activeDirectorDetails.serviceAddress.locality %}, {{activeDirectorDetails.serviceAddress.locality}} {% endif %}}
-            {% if activeDirectorDetails.serviceAddress.region %}, {{activeDirectorDetails.serviceAddress.region}} {% endif %}}
-            {% if activeDirectorDetails.serviceAddress.country %}, {{activeDirectorDetails.serviceAddress.country}} {% endif %}}
-            {% if activeDirectorDetails.serviceAddress.postalCode %}, {{activeDirectorDetails.serviceAddress.postalCode}} {% endif %}}
+            {{serviceAddress}}
           </p>
           </dd>
         </div>
@@ -52,19 +44,7 @@
           <dt class="govuk-summary-list__key">Usual residential address</dt>
           <dd class="govuk-summary-list__value">
           <p>
-            {% if activeDirectorDetails.residentialAdress.addressLine1 === "Companies House Cannot Disclose this Home Address" %}
-              {{activeDirectorDetails.residentialAdress.addressLine1}}
-            {% else %}
-              {% if activeDirectorDetails.residentialAdress.careOf %} {{activeDirectorDetails.residentialAdress.careOf}}, {% endif %}}
-              {% if activeDirectorDetails.residentialAdress.premises %} {{activeDirectorDetails.residentialAdress.premises}}, {% endif %}}
-              {% if activeDirectorDetails.residentialAdress.addressLine1 %} {{activeDirectorDetails.residentialAdress.addressLine1}} {% endif %}}
-              {% if activeDirectorDetails.residentialAdress.addressLine2 %}, {{activeDirectorDetails.residentialAdress.addressLine2}} {% endif %}}
-              {% if activeDirectorDetails.residentialAdress.poBox %}, {{activeDirectorDetails.residentialAdress.poBox}} {% endif %}}
-              {% if activeDirectorDetails.residentialAdress.locality %}, {{activeDirectorDetails.residentialAdress.locality}} {% endif %}}
-              {% if activeDirectorDetails.residentialAdress.region %}, {{activeDirectorDetails.residentialAdress.region}} {% endif %}}
-              {% if activeDirectorDetails.residentialAdress.country %}, {{activeDirectorDetails.residentialAdress.country}} {% endif %}}
-              {% if activeDirectorDetails.residentialAdress.postalCode %}, {{activeDirectorDetails.residentialAdress.postalCode}} {% endif %}}
-            {% endif %}
+            {{residentialAddress}}
           </p>
           </dd>
         </div>

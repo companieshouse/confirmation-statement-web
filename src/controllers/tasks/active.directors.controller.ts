@@ -25,12 +25,16 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const session: Session = req.session as Session;
     const directorDetails: ActiveDirectorDetails = await getActiveDirectorDetailsData(session, companyNumber);
     const activeDirectorDetails = formatDirectorDetails(directorDetails);
+    const serviceAddress = formatAddressForDisplay(activeDirectorDetails.serviceAddress);
+    const residentialAddress = formatAddressForDisplay(activeDirectorDetails.residentialAddress);
     req.sessionCookie[sessionCookieConstants.ACTIVE_DIRECTOR_DETAILS_KEY] = activeDirectorDetails;
 
     return res.render(Templates.ACTIVE_DIRECTORS, {
       templateName: Templates.ACTIVE_DIRECTORS,
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-      activeDirectorDetails
+      activeDirectorDetails,
+      serviceAddress,
+      residentialAddress
     });
   } catch (e) {
     return next(e);
@@ -56,11 +60,15 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       });
     } else {
       const activeDirectorDetails: ActiveDirectorDetails = req.sessionCookie[sessionCookieConstants.ACTIVE_DIRECTOR_DETAILS_KEY];
+      const serviceAddress = formatAddressForDisplay(activeDirectorDetails.serviceAddress);
+      const residentialAddress = formatAddressForDisplay(activeDirectorDetails.residentialAddress);
       return res.render(Templates.ACTIVE_DIRECTORS, {
         backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
         directorErrorMsg: DIRECTOR_DETAILS_ERROR,
         templateName: Templates.ACTIVE_DIRECTORS,
-        activeDirectorDetails
+        activeDirectorDetails,
+        serviceAddress,
+        residentialAddress
       });
     }
   } catch (e) {
@@ -113,4 +121,14 @@ const formatAddress = (address: Address): Address => {
     premises: formatTitleCase(addressClone.premises),
     region: formatTitleCase(addressClone.region)
   };
+};
+
+const formatAddressForDisplay = (address: Address): string => {
+  let addressStr = "";
+  for (const line of Object.values(address)) {
+    if (line) {
+      addressStr = addressStr + line + ", ";
+    }
+  }
+  return addressStr.slice(0, -2);
 };
