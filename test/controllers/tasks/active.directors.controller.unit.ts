@@ -10,7 +10,7 @@ import { companyAuthenticationMiddleware } from "../../../src/middleware/company
 import { DIRECTOR_DETAILS_ERROR } from "../../../src/utils/constants";
 import { urlUtils } from "../../../src/utils/url";
 import { mockActiveDirectorDetails, mockSecureActiveDirectorDetails } from "../../mocks/active.director.details.mock";
-import { getActiveDirectorDetailsData, formatDirectorDetails } from "../../../src/services/active.director.details.service";
+import { getActiveDirectorDetailsData } from "../../../src/services/active.director.details.service";
 import { getConfirmationStatement } from "../../../src/services/confirmation.statement.service";
 import { mockConfirmationStatementSubmission } from "../../mocks/confirmation.statement.submission.mock";
 
@@ -19,7 +19,6 @@ jest.mock("../../../src/middleware/company.authentication.middleware");
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 const mockGetActiveDirectorDetails = getActiveDirectorDetailsData as jest.Mock;
-const mockFormatDirectorDetails = formatDirectorDetails as jest.Mock;
 const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
@@ -36,14 +35,12 @@ describe("Active directors controller tests", () => {
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
     mockGetActiveDirectorDetails.mockClear();
-    mockFormatDirectorDetails.mockClear();
   });
 
   describe("get tests", () => {
 
     it("Should navigate to director's details page", async () => {
       mockGetActiveDirectorDetails.mockResolvedValueOnce(mockActiveDirectorDetails);
-      mockFormatDirectorDetails.mockReturnValueOnce(mockActiveDirectorDetails);
       const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
@@ -60,7 +57,6 @@ describe("Active directors controller tests", () => {
       mockActiveDirectorDetails.foreName2 = undefined;
 
       mockGetActiveDirectorDetails.mockResolvedValueOnce(mockActiveDirectorDetails);
-      mockFormatDirectorDetails.mockReturnValueOnce(mockActiveDirectorDetails);
       const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
@@ -77,7 +73,6 @@ describe("Active directors controller tests", () => {
     it("Should navigate to director's details page for secure director", async () => {
 
       mockGetActiveDirectorDetails.mockResolvedValueOnce(mockSecureActiveDirectorDetails);
-      mockFormatDirectorDetails.mockReturnValueOnce(mockSecureActiveDirectorDetails);
       const response = await request(app).get(ACTIVE_DIRECTOR_DETAILS_URL);
 
       expect(response.text).toContain(PAGE_HEADING);
