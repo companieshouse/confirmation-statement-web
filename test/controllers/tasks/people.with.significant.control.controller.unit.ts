@@ -12,10 +12,10 @@ import { companyAuthenticationMiddleware } from "../../../src/middleware/company
 import { PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR, RADIO_BUTTON_VALUE, SECTIONS } from "../../../src/utils/constants";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
 import { getPscs } from "../../../src/services/psc.service";
-import { toReadableFormatMonthYear } from "../../../src/utils/date";
+import { toReadableFormat } from "../../../src/utils/date";
 import { urlUtils } from "../../../src/utils/url";
 import { createAndLogError } from "../../../src/utils/logger";
-import { SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { PersonOfSignificantControl, SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Check the people with significant control (PSC)";
@@ -44,6 +44,7 @@ const APPOINTMENT_TYPE_5008 = "5008";
 const DOB_MONTH = 3;
 const DOB_YEAR = 1955;
 const FORMATTED_DATE = "March 1955";
+const DOB_ISO = "1955-03-21";
 const FORENAME = "BOB";
 const FORENAME_TITLE_CASE = "Bob";
 const SURNAME = "WILSON";
@@ -65,14 +66,15 @@ mockGetPscs.mockResolvedValue([{
     month: DOB_MONTH,
     year: DOB_YEAR
   },
+  dateOfBirthIso: DOB_ISO,
   nameElements: {
     forename: FORENAME,
     surname: SURNAME
   }
-}]);
+} as PersonOfSignificantControl ]);
 
-const mockToReadableFormatMonthYear = toReadableFormatMonthYear as jest.Mock;
-mockToReadableFormatMonthYear.mockReturnValue(FORMATTED_DATE);
+const mockToReadableFormat = toReadableFormat as jest.Mock;
+mockToReadableFormat.mockReturnValue(FORMATTED_DATE);
 
 const mockCreateAndLogError = createAndLogError as jest.Mock;
 mockCreateAndLogError.mockReturnValue(new Error());
@@ -82,7 +84,7 @@ describe("People with significant control controller tests", () => {
   beforeEach(() => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mockGetPscs.mockClear();
-    mockToReadableFormatMonthYear.mockClear();
+    mockToReadableFormat.mockClear();
     mockCreateAndLogError.mockClear();
     mockSendUpdate.mockClear();
   });
@@ -93,9 +95,8 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain(PAGE_HEADING);
       expect(mockGetPscs).toBeCalledTimes(1);
       expect(mockGetPscs.mock.calls[0][1]).toBe(COMPANY_NUMBER);
-      expect(toReadableFormatMonthYear).toBeCalledTimes(1);
-      expect(mockToReadableFormatMonthYear.mock.calls[0][0]).toBe(DOB_MONTH);
-      expect(mockToReadableFormatMonthYear.mock.calls[0][1]).toBe(DOB_YEAR);
+      expect(mockToReadableFormat).toBeCalledTimes(1);
+      expect(mockToReadableFormat.mock.calls[0][0]).toBe(DOB_ISO);
       expect(response.text).toContain(ADDRESS_LINE_1_TITLE_CASE);
       expect(response.text).toContain(FORENAME_TITLE_CASE);
       expect(response.text).toContain(SURNAME);
