@@ -51,3 +51,11 @@ export enum SECTIONS {
   SIC = "sicCodeData",
   SOC = "statementOfCapitalData"
 }
+
+export const transactionStatus = {
+  CLOSED: "closed"
+};
+
+export const headers = {
+  PAYMENT_REQUIRED: "X-Payment-Required"
+};

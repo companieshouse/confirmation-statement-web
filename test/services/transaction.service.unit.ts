@@ -4,7 +4,7 @@ jest.mock("../../src/utils/logger");
 
 import { Session } from "@companieshouse/node-session-handler";
 import { createPublicOAuthApiClient } from "../../src/services/api.service";
-import { postTransaction } from "../../src/services/transaction.service";
+import { closeTransaction, postTransaction } from "../../src/services/transaction.service";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
 import { createAndLogError } from "../../src/utils/logger";
 
@@ -62,7 +62,7 @@ describe ("transaction service tests", () => {
     });
   });
 
-  it ("Should throw an error when transaction api returns no resource", () => {
+  it.only ("Should throw an error when transaction api returns no resource", async () => {
     mockPostTransaction.mockReturnValue({
       httpStatusCode: 200
     });
@@ -70,5 +70,8 @@ describe ("transaction service tests", () => {
     postTransaction(session, "12345678", "desc", "ref").then(() => {fail();}).catch(() => {
       expect(mockCreateAndLogError).toBeCalledWith("Transaction API returned no resource for company number 12345678");
     });
+
+    const resp = await closeTransaction(session, "1234", "333");
+    console.log("**************" + resp);
   });
 });
