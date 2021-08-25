@@ -23,7 +23,7 @@ const submissionWithNoData: ConfirmationStatementSubmission = {
 const request = {
   session: {} as Session,
   params: { companyNumber: "123456", transactionId: "001", sumbmissionId: "001" } as ParamsDictionary
-} as Request
+} as Request;
 
 describe("Update.confirmation.statement.submission util tests", () => {
 
@@ -98,10 +98,10 @@ describe("Update.confirmation.statement.submission util tests", () => {
           classOfShares: "wqerqt",
           currency: "pounds",
           numberAllotted: "1002",
-          aggregateNominalValue: "1", 
-          prescribedParticulars: "34", 
-          totalNumberOfShares: "1002", 
-          totalAggregateNominalValue: "1002", 
+          aggregateNominalValue: "1",
+          prescribedParticulars: "34",
+          totalNumberOfShares: "1002",
+          totalAggregateNominalValue: "1002",
           totalAmountUnpaidForCurrency: "1002"
         }
       };

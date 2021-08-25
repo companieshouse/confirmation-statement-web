@@ -4,12 +4,12 @@ jest.mock("private-api-sdk-node/");
 import { Resource } from "@companieshouse/api-sdk-node";
 import { createPrivateApiClient } from "private-api-sdk-node";
 import PrivateApiClient from "private-api-sdk-node/dist/client";
-import { getActiveDirectorDetailsData, formatDirectorDetails } from "../../src/services/active.director.details.service";
+import { getActiveDirectorDetailsData } from "../../src/services/active.director.details.service";
 import { ActiveDirectorDetails, ConfirmationStatementService } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { mockActiveDirectorDetails, mockActiveDirectorDetailsFormatted } from "../mocks/active.director.details.mock";
 import { getSessionRequest } from "../mocks/session.mock";
 import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
-
+import { formatDirectorDetails } from "../../src/utils/format";
 
 const mockGetActiveDirectorDetails = ConfirmationStatementService.prototype.getActiveDirectorDetails as jest.Mock;
 const mockCreatePrivateApiClient = createPrivateApiClient as jest.Mock;
@@ -80,12 +80,8 @@ describe("Format director details test", () => {
     expect(formattedDirectorDetails.surname).toEqual(mockActiveDirectorDetailsFormatted.surname);
     expect(formattedDirectorDetails.nationality).toEqual(mockActiveDirectorDetailsFormatted.nationality);
     expect(formattedDirectorDetails.occupation).toEqual(mockActiveDirectorDetailsFormatted.occupation);
-    expect(formattedDirectorDetails.serviceAddressLine1).toEqual(mockActiveDirectorDetailsFormatted.serviceAddressLine1);
-    expect(formattedDirectorDetails.serviceAddressPostTown).toEqual(mockActiveDirectorDetailsFormatted.serviceAddressPostTown);
-    expect(formattedDirectorDetails.serviceAddressPostcode).toEqual(mockActiveDirectorDetailsFormatted.serviceAddressPostcode);
-    expect(formattedDirectorDetails.uraLine1).toEqual(mockActiveDirectorDetailsFormatted.uraLine1);
-    expect(formattedDirectorDetails.uraPostTown).toEqual(mockActiveDirectorDetailsFormatted.uraPostTown);
-    expect(formattedDirectorDetails.uraPostcode).toEqual(mockActiveDirectorDetailsFormatted.uraPostcode);
+    expect(formattedDirectorDetails.serviceAddress).toEqual(mockActiveDirectorDetailsFormatted.serviceAddress);
+    expect(formattedDirectorDetails.residentialAddress).toEqual(mockActiveDirectorDetailsFormatted.residentialAddress);
   });
 
 });

@@ -13,7 +13,9 @@ import { Session } from "@companieshouse/node-session-handler";
 import {
   ActiveDirectorDetails,
   SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
-import { getActiveDirectorDetailsData, formatDirectorDetails } from "../../services/active.director.details.service";
+
+import { formatAddressForDisplay, formatDirectorDetails } from "../../utils/format";
+import { getActiveDirectorDetailsData } from "../../services/active.director.details.service";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -22,12 +24,16 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const session: Session = req.session as Session;
     const directorDetails: ActiveDirectorDetails = await getActiveDirectorDetailsData(session, companyNumber);
     const activeDirectorDetails = formatDirectorDetails(directorDetails);
+    const serviceAddress = formatAddressForDisplay(activeDirectorDetails.serviceAddress);
+    const residentialAddress = formatAddressForDisplay(activeDirectorDetails.residentialAddress);
     req.sessionCookie[sessionCookieConstants.ACTIVE_DIRECTOR_DETAILS_KEY] = activeDirectorDetails;
 
     return res.render(Templates.ACTIVE_DIRECTORS, {
       templateName: Templates.ACTIVE_DIRECTORS,
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-      activeDirectorDetails
+      activeDirectorDetails,
+      serviceAddress,
+      residentialAddress
     });
   } catch (e) {
     return next(e);
@@ -51,11 +57,15 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       });
     } else {
       const activeDirectorDetails: ActiveDirectorDetails = req.sessionCookie[sessionCookieConstants.ACTIVE_DIRECTOR_DETAILS_KEY];
+      const serviceAddress = formatAddressForDisplay(activeDirectorDetails?.serviceAddress);
+      const residentialAddress = formatAddressForDisplay(activeDirectorDetails?.residentialAddress);
       return res.render(Templates.ACTIVE_DIRECTORS, {
         backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
         directorErrorMsg: DIRECTOR_DETAILS_ERROR,
         templateName: Templates.ACTIVE_DIRECTORS,
-        activeDirectorDetails
+        activeDirectorDetails,
+        serviceAddress,
+        residentialAddress
       });
     }
   } catch (e) {
