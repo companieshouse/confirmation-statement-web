@@ -39,6 +39,9 @@ export const postTransaction = async (session: Session, companyNumber: string, d
   return castedSdkResponse.resource;
 };
 
+/**
+ * Response can contain a URL to start payment session if payment is needed
+ */
 export const closeTransaction = async (session: Session, companyNumber: string, transactionId: string): Promise<string | undefined> => {
   const apiResponse: ApiResponse<Transaction> = await putTransaction(session, companyNumber, transactionId, DESCRIPTION, REFERENCE, transactionStatus.CLOSED);
   if (apiResponse?.headers) {
@@ -48,7 +51,7 @@ export const closeTransaction = async (session: Session, companyNumber: string, 
 };
 
 /**
- * Response from PUT transaction can contain a URL in header if payment is needed
+ * Response from PUT transaction can contain a URL in header to start payment session if payment is needed
  */
 export const putTransaction = async (session: Session,
                                      companyNumber: string,

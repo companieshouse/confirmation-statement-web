@@ -4,7 +4,7 @@ jest.mock("../../src/utils/logger");
 
 import { Session } from "@companieshouse/node-session-handler";
 import { createPublicOAuthApiClient } from "../../src/services/api.service";
-import { postTransaction, putTransaction } from "../../src/services/transaction.service";
+import { closeTransaction, postTransaction, putTransaction } from "../../src/services/transaction.service";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
 import { createAndLogError } from "../../src/utils/logger";
 import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
@@ -21,8 +21,12 @@ mockCreatePublicOAuthApiClient.mockReturnValue({
   }
 });
 
-let session: any;
+const ERROR: Error = new Error("oops");
+mockCreateAndLogError.mockReturnValue(ERROR);
 
+let session: any;
+const TRANSACTION_ID = "2222";
+const COMPANY_NUMBER = "12345678";
 
 describe("transaction service tests", () => {
 
@@ -37,47 +41,39 @@ describe("transaction service tests", () => {
         httpStatusCode: 200,
         resource: {
           reference: "ref",
-          companyNumber: "12345678",
+          companyNumber: COMPANY_NUMBER,
           description: "desc"
         }
       });
-      const transaction: Transaction = await postTransaction(session, "12345678", "desc", "ref");
+      const transaction: Transaction = await postTransaction(session, COMPANY_NUMBER, "desc", "ref");
 
       expect(transaction.reference).toEqual("ref");
-      expect(transaction.companyNumber).toEqual("12345678");
+      expect(transaction.companyNumber).toEqual(COMPANY_NUMBER);
       expect(transaction.description).toEqual("desc");
     });
 
     it("Should throw an error when no transaction api response", async () => {
       mockPostTransaction.mockResolvedValueOnce(undefined);
-      const error: Error = new Error("oops");
-      mockCreateAndLogError.mockReturnValueOnce(error);
 
-      await expect(postTransaction(session, "12345678", "desc", "ref")).rejects.toThrow(error);
+      await expect(postTransaction(session, COMPANY_NUMBER, "desc", "ref")).rejects.toThrow(ERROR);
       expect(mockCreateAndLogError).toBeCalledWith("Transaction API POST request returned no response for company number 12345678");
     });
 
     it("Should throw an error when transaction api returns a status greater than 400", async () => {
-      mockPostTransaction.mockReturnValue({
+      mockPostTransaction.mockResolvedValueOnce({
         httpStatusCode: 404
       });
 
-      const error: Error = new Error("oops");
-      mockCreateAndLogError.mockReturnValueOnce(error);
-
-      await expect(postTransaction(session, "12345678", "desc", "ref")).rejects.toThrow(error);
+      await expect(postTransaction(session, COMPANY_NUMBER, "desc", "ref")).rejects.toThrow(ERROR);
       expect(mockCreateAndLogError).toBeCalledWith("Http status code 404 - Failed to post transaction for company number 12345678");
     });
 
     it("Should throw an error when transaction api returns no resource", async () => {
-      mockPostTransaction.mockReturnValue({
+      mockPostTransaction.mockResolvedValueOnce({
         httpStatusCode: 200
       });
 
-      const error: Error = new Error("oops");
-      mockCreateAndLogError.mockReturnValueOnce(error);
-
-      await expect(postTransaction(session, "12345678", "desc", "ref")).rejects.toThrow(error);
+      await expect(postTransaction(session, COMPANY_NUMBER, "desc", "ref")).rejects.toThrow(ERROR);
       expect(mockCreateAndLogError).toBeCalledWith("Transaction API POST request returned no resource for company number 12345678");
     });
   });
@@ -85,22 +81,107 @@ describe("transaction service tests", () => {
 
   describe("putTransaction tests", () => {
     it("Should successfully PUT a transaction", async () => {
-      mockPutTransaction.mockReturnValue({
+      mockPutTransaction.mockResolvedValueOnce({
         headers: {
           "X-Payment-Required": "http://payment"
         },
         httpStatusCode: 200,
         resource: {
           reference: "ref",
-          companyNumber: "12345678",
-          description: "desc"
+          companyNumber: COMPANY_NUMBER,
+          description: "desc",
+          status: "closed"
         }
       } as ApiResponse<Transaction>);
-      const transaction: ApiResponse<Transaction> = await putTransaction(session, "12345678", "2222", "desc", "ref", "closed");
+      const transaction: ApiResponse<Transaction> = await putTransaction(session, COMPANY_NUMBER, TRANSACTION_ID, "desc", "ref", "closed");
 
       expect(transaction.resource?.reference).toEqual("ref");
-      expect(transaction.resource?.companyNumber).toEqual("12345678");
+      expect(transaction.resource?.companyNumber).toEqual(COMPANY_NUMBER);
       expect(transaction.resource?.description).toEqual("desc");
+      expect(transaction.resource?.status).toEqual("closed");
+
+      expect(mockPutTransaction.mock.calls[0][0].status).toBe("closed");
+      expect(mockPutTransaction.mock.calls[0][0].id).toBe(TRANSACTION_ID);
+    });
+
+    it("Should throw an error when no transaction api response", async () => {
+      mockPutTransaction.mockResolvedValueOnce(undefined);
+
+      await expect(putTransaction(session, COMPANY_NUMBER, TRANSACTION_ID, "desc", "ref", "closed")).rejects.toThrow(ERROR);
+      expect(mockCreateAndLogError).toBeCalledWith(`Transaction API PUT request returned no response for transaction id ${TRANSACTION_ID}, company number ${COMPANY_NUMBER}`);
+    });
+
+    it("Should throw an error when transaction api returns a status greater than 400", async () => {
+      mockPutTransaction.mockResolvedValueOnce({
+        httpStatusCode: 404
+      });
+
+      await expect(putTransaction(session, COMPANY_NUMBER, TRANSACTION_ID, "desc", "ref", "closed")).rejects.toThrow(ERROR);
+      expect(mockCreateAndLogError).toBeCalledWith(`Http status code 404 - Failed to put transaction for transaction id ${TRANSACTION_ID}, company number ${COMPANY_NUMBER}`);
+    });
+
+    it("Should throw an error when transaction api returns no resource", async () => {
+      mockPutTransaction.mockResolvedValueOnce({
+        httpStatusCode: 200
+      });
+
+      await expect(putTransaction(session, COMPANY_NUMBER, TRANSACTION_ID, "desc", "ref", "closed")).rejects.toThrow(ERROR);
+      expect(mockCreateAndLogError).toBeCalledWith(`Transaction API PUT request returned no resource for transaction id ${TRANSACTION_ID}, company number ${COMPANY_NUMBER}`);
+    });
+  });
+
+  describe("closeTransaction tests", () => {
+    it("Should extract payment url from headers", async () => {
+      const paymentUrl = "http://payment";
+      mockPutTransaction.mockResolvedValueOnce({
+        headers: {
+          "X-Payment-Required": paymentUrl
+        },
+        httpStatusCode: 200,
+        resource: {
+          reference: "ref",
+          companyNumber: COMPANY_NUMBER,
+          description: "desc",
+          status: "closed"
+        }
+      } as ApiResponse<Transaction>);
+
+      const url = await closeTransaction(session, COMPANY_NUMBER, TRANSACTION_ID);
+
+      expect(url).toBe(paymentUrl);
+    });
+
+    it("Should return undefined if payment header not present", async () => {
+      mockPutTransaction.mockResolvedValueOnce({
+        headers: {  },
+        httpStatusCode: 200,
+        resource: {
+          reference: "ref",
+          companyNumber: COMPANY_NUMBER,
+          description: "desc",
+          status: "closed"
+        }
+      } as ApiResponse<Transaction>);
+
+      const url = await closeTransaction(session, COMPANY_NUMBER, TRANSACTION_ID);
+
+      expect(url).toBeUndefined();
+    });
+
+    it("Should return undefined if no headers present", async () => {
+      mockPutTransaction.mockResolvedValueOnce({
+        httpStatusCode: 200,
+        resource: {
+          reference: "ref",
+          companyNumber: COMPANY_NUMBER,
+          description: "desc",
+          status: "closed"
+        }
+      } as ApiResponse<Transaction>);
+
+      const url = await closeTransaction(session, COMPANY_NUMBER, TRANSACTION_ID);
+
+      expect(url).toBeUndefined();
     });
   });
 });
