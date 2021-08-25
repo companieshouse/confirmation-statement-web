@@ -1,4 +1,4 @@
-export enum TaskState {
+  export enum TaskState {
     NOT_CHECKED = "NOT_CHECKED",
     IN_PROGRESS = "IN_PROGRESS",
     CHECKED = "CHECKED"
@@ -45,6 +45,7 @@ export interface TaskList {
     registerLocations: {
       state: TaskState;
       isVisible: boolean;
+      url: string;
     };
   },
   recordDate: string;
