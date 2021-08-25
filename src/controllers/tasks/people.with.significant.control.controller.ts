@@ -17,7 +17,7 @@ import {
 import { Session } from "@companieshouse/node-session-handler";
 import { getPscs } from "../../services/psc.service";
 import { createAndLogError, logger } from "../../utils/logger";
-import { toReadableFormatMonthYear } from "../../utils/date";
+import { toReadableFormat } from "../../utils/date";
 import { formatTitleCase } from "../../utils/format";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 
@@ -75,10 +75,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
-    const sectionStatus: SectionStatus = RADIO_BUTTON_VALUE.YES === pscButtonValue ?
-      SectionStatus.CONFIRMED : SectionStatus.RECENT_FILING;
-
-    await sendUpdate(req, SECTIONS.PSC, sectionStatus);
+    await sendUpdate(req, SECTIONS.PSC, SectionStatus.NOT_CONFIRMED);
     return res.redirect(getPscStatementUrl(req, true));
   } catch (e) {
     return next(e);
@@ -112,8 +109,8 @@ const handleDateOfBirth = (pscAppointmentType: string, psc: PersonOfSignificantC
   if (pscAppointmentType === appointmentTypeNames.RLE) {
     return "";
   }
-  if (psc.dateOfBirth?.month && psc.dateOfBirth.year) {
-    return toReadableFormatMonthYear(psc.dateOfBirth.month, psc.dateOfBirth.year);
+  if (psc.dateOfBirthIso) {
+    return toReadableFormat(psc.dateOfBirthIso);
   }
   throw createAndLogError(`Date of birth missing for individual psc name ${psc.nameElements?.forename} ${psc.nameElements?.surname}`);
 };

@@ -12,10 +12,10 @@ import { companyAuthenticationMiddleware } from "../../../src/middleware/company
 import { PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR, RADIO_BUTTON_VALUE, SECTIONS } from "../../../src/utils/constants";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
 import { getPscs } from "../../../src/services/psc.service";
-import { toReadableFormatMonthYear } from "../../../src/utils/date";
+import { toReadableFormat } from "../../../src/utils/date";
 import { urlUtils } from "../../../src/utils/url";
 import { createAndLogError } from "../../../src/utils/logger";
-import { SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { PersonOfSignificantControl, SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Check the people with significant control (PSC)";
@@ -43,7 +43,13 @@ const APPOINTMENT_TYPE_5007 = "5007";
 const APPOINTMENT_TYPE_5008 = "5008";
 const DOB_MONTH = 3;
 const DOB_YEAR = 1955;
-const FORMATTED_DATE = "March 1955";
+const FORMATTED_DOB = "21 March 1955";
+const DOB_ISO = "1955-03-21";
+const FORENAME = "BOB";
+const FORENAME_TITLE_CASE = "Bob";
+const SURNAME = "WILSON";
+const ADDRESS_LINE_1 = "ADD LINE 1";
+const ADDRESS_LINE_1_TITLE_CASE = "Add Line 1";
 
 const mockSendUpdate = sendUpdate as jest.Mock;
 
@@ -52,15 +58,23 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next(
 
 const mockGetPscs = getPscs as jest.Mock;
 mockGetPscs.mockResolvedValue([{
+  address: {
+    addressLine1: ADDRESS_LINE_1
+  },
   appointmentType: APPOINTMENT_TYPE_5007,
   dateOfBirth: {
     month: DOB_MONTH,
     year: DOB_YEAR
+  },
+  dateOfBirthIso: DOB_ISO,
+  nameElements: {
+    forename: FORENAME,
+    surname: SURNAME
   }
-}]);
+} as PersonOfSignificantControl ]);
 
-const mockToReadableFormatMonthYear = toReadableFormatMonthYear as jest.Mock;
-mockToReadableFormatMonthYear.mockReturnValue(FORMATTED_DATE);
+const mockToReadableFormat = toReadableFormat as jest.Mock;
+mockToReadableFormat.mockReturnValue(FORMATTED_DOB);
 
 const mockCreateAndLogError = createAndLogError as jest.Mock;
 mockCreateAndLogError.mockReturnValue(new Error());
@@ -70,20 +84,23 @@ describe("People with significant control controller tests", () => {
   beforeEach(() => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mockGetPscs.mockClear();
-    mockToReadableFormatMonthYear.mockClear();
+    mockToReadableFormat.mockClear();
     mockCreateAndLogError.mockClear();
     mockSendUpdate.mockClear();
   });
 
-  describe("get tests", function () {
+  describe("get tests", () => {
     it("should navigate to the active pscs page", async () => {
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.text).toContain(PAGE_HEADING);
       expect(mockGetPscs).toBeCalledTimes(1);
       expect(mockGetPscs.mock.calls[0][1]).toBe(COMPANY_NUMBER);
-      expect(toReadableFormatMonthYear).toBeCalledTimes(1);
-      expect(mockToReadableFormatMonthYear.mock.calls[0][0]).toBe(DOB_MONTH);
-      expect(mockToReadableFormatMonthYear.mock.calls[0][1]).toBe(DOB_YEAR);
+      expect(mockToReadableFormat).toBeCalledTimes(1);
+      expect(mockToReadableFormat.mock.calls[0][0]).toBe(DOB_ISO);
+      expect(response.text).toContain(ADDRESS_LINE_1_TITLE_CASE);
+      expect(response.text).toContain(FORENAME_TITLE_CASE);
+      expect(response.text).toContain(SURNAME);
+      expect(response.text).toContain(FORMATTED_DOB);
     });
 
     it("Should navigate to an error page if the function throws an error", async () => {
@@ -114,7 +131,7 @@ describe("People with significant control controller tests", () => {
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.statusCode).toBe(200);
       expect(response.text).toContain("1 individual person");
-      expect(response.text).toContain(FORMATTED_DATE);
+      expect(response.text).toContain(FORMATTED_DOB);
     });
 
     it("should navigate to rle page if psc is rle type", async () => {
@@ -258,7 +275,7 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain(PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR);
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("1 individual person");
-      expect(response.text).toContain(FORMATTED_DATE);
+      expect(response.text).toContain(FORMATTED_DOB);
     });
 
     it("Should display wrong psc data page when no radio button is selected", async () => {
@@ -278,7 +295,7 @@ describe("People with significant control controller tests", () => {
         .send({ pscRadioValue: RADIO_BUTTON_VALUE.YES });
 
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
-      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("true"));
     });
@@ -289,7 +306,7 @@ describe("People with significant control controller tests", () => {
         .send({ pscRadioValue: RADIO_BUTTON_VALUE.RECENTLY_FILED });
 
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
-      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.RECENT_FILING);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("true"));
     });

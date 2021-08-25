@@ -35,16 +35,16 @@
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Correspondence address</dt>
           <dd class="govuk-summary-list__value">
-            <p>{{activeDirectorDetails.serviceAddressLine1}}, {{activeDirectorDetails.serviceAddressPostTown}}, {{activeDirectorDetails.serviceAddressPostcode}}</p>
+          <p>
+            {{serviceAddress}}
+          </p>
           </dd>
         </div>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Usual residential address</dt>
           <dd class="govuk-summary-list__value">
-          <p>{{activeDirectorDetails.uraLine1}}
-          {% if activeDirectorDetails.uraPostTown %}
-            , {{activeDirectorDetails.uraPostTown}}, {{activeDirectorDetails.uraPostcode}}
-          {% endif %}
+          <p>
+            {{residentialAddress}}
           </p>
           </dd>
         </div>
