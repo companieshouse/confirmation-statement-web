@@ -8,7 +8,7 @@ import { ApiErrorResponse, ApiResponse } from "@companieshouse/api-sdk-node/dist
 import { DESCRIPTION, headers, REFERENCE, transactionStatus } from "../utils/constants";
 
 
-export const postTransaction = async (session: Session, companyNumber: string, description: string, reference: string) => {
+export const postTransaction = async (session: Session, companyNumber: string, description: string, reference: string): Promise<Transaction> => {
   const apiClient: ApiClient = createPublicOAuthApiClient(session);
 
   const transaction: Transaction = {
