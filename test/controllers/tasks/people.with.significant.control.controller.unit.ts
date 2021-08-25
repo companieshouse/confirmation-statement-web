@@ -43,7 +43,7 @@ const APPOINTMENT_TYPE_5007 = "5007";
 const APPOINTMENT_TYPE_5008 = "5008";
 const DOB_MONTH = 3;
 const DOB_YEAR = 1955;
-const FORMATTED_DATE = "March 1955";
+const FORMATTED_DOB = "21 March 1955";
 const DOB_ISO = "1955-03-21";
 const FORENAME = "BOB";
 const FORENAME_TITLE_CASE = "Bob";
@@ -74,7 +74,7 @@ mockGetPscs.mockResolvedValue([{
 } as PersonOfSignificantControl ]);
 
 const mockToReadableFormat = toReadableFormat as jest.Mock;
-mockToReadableFormat.mockReturnValue(FORMATTED_DATE);
+mockToReadableFormat.mockReturnValue(FORMATTED_DOB);
 
 const mockCreateAndLogError = createAndLogError as jest.Mock;
 mockCreateAndLogError.mockReturnValue(new Error());
@@ -100,6 +100,7 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain(ADDRESS_LINE_1_TITLE_CASE);
       expect(response.text).toContain(FORENAME_TITLE_CASE);
       expect(response.text).toContain(SURNAME);
+      expect(response.text).toContain(FORMATTED_DOB);
     });
 
     it("Should navigate to an error page if the function throws an error", async () => {
@@ -130,7 +131,7 @@ describe("People with significant control controller tests", () => {
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.statusCode).toBe(200);
       expect(response.text).toContain("1 individual person");
-      expect(response.text).toContain(FORMATTED_DATE);
+      expect(response.text).toContain(FORMATTED_DOB);
     });
 
     it("should navigate to rle page if psc is rle type", async () => {
@@ -274,7 +275,7 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain(PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR);
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("1 individual person");
-      expect(response.text).toContain(FORMATTED_DATE);
+      expect(response.text).toContain(FORMATTED_DOB);
     });
 
     it("Should display wrong psc data page when no radio button is selected", async () => {
