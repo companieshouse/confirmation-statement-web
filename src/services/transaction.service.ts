@@ -5,7 +5,7 @@ import { createPublicOAuthApiClient } from "./api.service";
 import { Session } from "@companieshouse/node-session-handler";
 import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 import { ApiErrorResponse, ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
-import { DESCRIPTION, headers, REFERENCE, transactionStatus } from "../utils/constants";
+import { DESCRIPTION, headers, REFERENCE, transactionStatuses } from "../utils/constants";
 
 
 export const postTransaction = async (session: Session, companyNumber: string, description: string, reference: string): Promise<Transaction> => {
@@ -43,7 +43,7 @@ export const postTransaction = async (session: Session, companyNumber: string, d
  * Response can contain a URL to start payment session if payment is needed
  */
 export const closeTransaction = async (session: Session, companyNumber: string, transactionId: string): Promise<string | undefined> => {
-  const apiResponse: ApiResponse<Transaction> = await putTransaction(session, companyNumber, transactionId, DESCRIPTION, REFERENCE, transactionStatus.CLOSED);
+  const apiResponse: ApiResponse<Transaction> = await putTransaction(session, companyNumber, transactionId, DESCRIPTION, REFERENCE, transactionStatuses.CLOSED);
   if (apiResponse?.headers) {
     return apiResponse.headers[headers.PAYMENT_REQUIRED];
   }

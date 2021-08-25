@@ -52,7 +52,7 @@ export enum SECTIONS {
   SOC = "statementOfCapitalData"
 }
 
-export const transactionStatus = {
+export const transactionStatuses = {
   CLOSED: "closed"
 };
 
