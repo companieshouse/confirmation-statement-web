@@ -4,7 +4,7 @@ import { TaskList } from "../types/task.list";
 import { initTaskList } from "../services/task.list.service";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../services/company.profile.service";
-import { REVIEW_PATH, TRADING_STATUS_PATH, urlParams } from "../types/page.urls";
+import { REVIEW_PATH, TRADING_STATUS_PATH } from "../types/page.urls";
 import { isInFuture, toReadableFormat } from "../utils/date";
 import { createAndLogError } from "../utils/logger";
 import { urlUtils } from "../utils/url";
