@@ -2,10 +2,11 @@ import { Templates } from "../../types/template.paths";
 import { NextFunction, Request, Response } from "express";
 import { TASK_LIST_PATH, SHAREHOLDERS_PATH } from "../../types/page.urls";
 import { urlUtils } from "../../utils/url";
-import { RADIO_BUTTON_VALUE, SHAREHOLDERS_ERROR } from "../../utils/constants";
+import { RADIO_BUTTON_VALUE, SECTIONS, SHAREHOLDERS_ERROR } from "../../utils/constants";
 import { Session } from "@companieshouse/node-session-handler";
-import { Shareholder } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { SectionStatus, Shareholder } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { getShareholders } from "../../services/shareholder.service";
+import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -23,15 +24,17 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const shareholdersButtonValue = req.body.shareholders;
 
     if (shareholdersButtonValue === RADIO_BUTTON_VALUE.YES) {
+      await sendUpdate(req, SECTIONS.SHAREHOLDER, SectionStatus.CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     }
 
     if (shareholdersButtonValue === RADIO_BUTTON_VALUE.NO) {
+      await sendUpdate(req, SECTIONS.SHAREHOLDER, SectionStatus.NOT_CONFIRMED);
       return res.render(Templates.WRONG_SHAREHOLDERS, {
         backLinkUrl: urlUtils.getUrlToPath(SHAREHOLDERS_PATH, req),
         templateName: Templates.WRONG_SHAREHOLDERS,
