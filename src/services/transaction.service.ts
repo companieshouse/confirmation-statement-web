@@ -62,7 +62,7 @@ export const getTransaction = async (session: Session, transactionId: string): P
   logger.debug(`Received transaction ${JSON.stringify(sdkResponse)}`);
 
   return castedSdkResponse.resource;
-}
+};
 
 /**
  * Response can contain a URL to start payment session if payment is needed

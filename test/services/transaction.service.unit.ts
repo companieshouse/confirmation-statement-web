@@ -4,19 +4,21 @@ jest.mock("../../src/utils/logger");
 
 import { Session } from "@companieshouse/node-session-handler";
 import { createPublicOAuthApiClient } from "../../src/services/api.service";
-import { closeTransaction, postTransaction, putTransaction } from "../../src/services/transaction.service";
+import { closeTransaction, getTransaction, postTransaction, putTransaction } from "../../src/services/transaction.service";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
 import { createAndLogError } from "../../src/utils/logger";
-import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
+import Resource, { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { REFERENCE } from "../../src/utils/constants";
 
 const mockCreatePublicOAuthApiClient = createPublicOAuthApiClient as jest.Mock;
 const mockPostTransaction = jest.fn();
 const mockPutTransaction = jest.fn();
+const mockGetTransaction = jest.fn();
 const mockCreateAndLogError = createAndLogError as jest.Mock;
 
 mockCreatePublicOAuthApiClient.mockReturnValue({
   transaction: {
+    getTransaction: mockGetTransaction,
     postTransaction: mockPostTransaction,
     putTransaction: mockPutTransaction
   }
@@ -186,6 +188,58 @@ describe("transaction service tests", () => {
       const url = await closeTransaction(session, COMPANY_NUMBER, CS_SUBMISSION_ID, TRANSACTION_ID);
 
       expect(url).toBeUndefined();
+    });
+  });
+
+  describe("getTransaction tests", () => {
+    it("Should return a transaction", async () => {
+      const dummyTransaction: Transaction = {
+        reference: EXPECTED_REF,
+        companyNumber: COMPANY_NUMBER,
+        description: "desc",
+        status: "closed"
+      };
+
+      mockGetTransaction.mockResolvedValueOnce({
+        httpStatusCode: 200,
+        resource: dummyTransaction
+      } as Resource<Transaction>);
+
+      const transaction: Transaction = await getTransaction(session, TRANSACTION_ID);
+
+      expect(transaction).toStrictEqual(dummyTransaction);
+    });
+
+    it("Should throw an error when no transaction api response", async () => {
+      mockGetTransaction.mockResolvedValueOnce(undefined);
+
+      await expect(getTransaction(session, TRANSACTION_ID)).rejects.toThrow(ERROR);
+      expect(mockCreateAndLogError).toBeCalledWith(`Transaction API GET request returned no response for transaction id ${TRANSACTION_ID}`);
+    });
+
+    it("Should throw an error when transaction api returns a response with no status", async () => {
+      mockGetTransaction.mockResolvedValueOnce({});
+
+      await expect(getTransaction(session, TRANSACTION_ID)).rejects.toThrow(ERROR);
+      expect(mockCreateAndLogError).toBeCalledWith(`Http status code undefined - Failed to get transaction for transaction id ${TRANSACTION_ID}`);
+    });
+
+    it("Should throw an error when transaction api returns a status greater than 400", async () => {
+      mockGetTransaction.mockResolvedValueOnce({
+        httpStatusCode: 404
+      });
+
+      await expect(getTransaction(session, TRANSACTION_ID)).rejects.toThrow(ERROR);
+      expect(mockCreateAndLogError).toBeCalledWith(`Http status code 404 - Failed to get transaction for transaction id ${TRANSACTION_ID}`);
+    });
+
+    it("Should throw an error when transaction api returns no resource", async () => {
+      mockGetTransaction.mockResolvedValueOnce({
+        httpStatusCode: 200
+      });
+
+      await expect(getTransaction(session, TRANSACTION_ID)).rejects.toThrow(ERROR);
+      expect(mockCreateAndLogError).toBeCalledWith(`Transaction API GET request returned no resource for transaction id ${TRANSACTION_ID}`);
     });
   });
 });
