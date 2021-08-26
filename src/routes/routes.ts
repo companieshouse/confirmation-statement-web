@@ -13,6 +13,7 @@ import * as tradingStatusRoute from "../controllers/trading.status.controller";
 import * as taskListRoute from "../controllers/task.list.controller";
 import * as registeredOfficeAddressRoute from "../controllers/tasks/registered.office.address.controller";
 import * as registeredLocationsRoute from "../controllers/tasks/register.locations.controller";
+import * as reviewRoute from "../controllers/review.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 
@@ -49,6 +50,7 @@ router.get(urls.TRADING_STATUS, tradingStatusRoute.get);
 router.post(urls.TRADING_STATUS, tradingStatusRoute.post);
 
 router.get(urls.TASK_LIST, taskListRoute.get);
+router.post(urls.TASK_LIST, taskListRoute.post);
 
 router.get(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.get);
 router.post(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.post);
@@ -66,3 +68,5 @@ router.get(urls.SHAREHOLDERS, shareholders.get);
 router.post(urls.SHAREHOLDERS, shareholders.post);
 
 router.get(urls.REGISTER_LOCATIONS, registeredLocationsRoute.get);
+
+router.get(urls.REVIEW, reviewRoute.get);

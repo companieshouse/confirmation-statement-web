@@ -39,6 +39,31 @@ export const postTransaction = async (session: Session, companyNumber: string, d
   return castedSdkResponse.resource;
 };
 
+export const getTransaction = async (session: Session, transactionId: string): Promise<Transaction> => {
+  const apiClient: ApiClient = createPublicOAuthApiClient(session);
+
+  logger.debug(`Retrieving transaction with id ${transactionId}`);
+  const sdkResponse: Resource<Transaction> | ApiErrorResponse = await apiClient.transaction.getTransaction(transactionId);
+
+  if (!sdkResponse) {
+    throw createAndLogError(`Transaction API GET request returned no response for transaction id ${transactionId}`);
+  }
+
+  if (!sdkResponse.httpStatusCode || sdkResponse.httpStatusCode >= 400) {
+    throw createAndLogError(`Http status code ${sdkResponse.httpStatusCode} - Failed to get transaction for transaction id ${transactionId}`);
+  }
+
+  const castedSdkResponse: Resource<Transaction> = sdkResponse as Resource<Transaction>;
+
+  if (!castedSdkResponse.resource) {
+    throw createAndLogError(`Transaction API GET request returned no resource for transaction id ${transactionId}`);
+  }
+
+  logger.debug(`Received transaction ${JSON.stringify(sdkResponse)}`);
+
+  return castedSdkResponse.resource;
+}
+
 /**
  * Response can contain a URL to start payment session if payment is needed
  */
