@@ -42,8 +42,8 @@ export const postTransaction = async (session: Session, companyNumber: string, d
 /**
  * Response can contain a URL to start payment session if payment is needed
  */
-export const closeTransaction = async (session: Session, companyNumber: string, transactionId: string): Promise<string | undefined> => {
-  const apiResponse: ApiResponse<Transaction> = await putTransaction(session, companyNumber, transactionId, DESCRIPTION, REFERENCE, transactionStatuses.CLOSED);
+export const closeTransaction = async (session: Session, companyNumber: string, confirmationStatementId: string, transactionId: string): Promise<string | undefined> => {
+  const apiResponse: ApiResponse<Transaction> = await putTransaction(session, companyNumber, confirmationStatementId, transactionId, DESCRIPTION, transactionStatuses.CLOSED);
   return apiResponse.headers?.[headers.PAYMENT_REQUIRED];
 };
 
@@ -52,17 +52,18 @@ export const closeTransaction = async (session: Session, companyNumber: string, 
  */
 export const putTransaction = async (session: Session,
                                      companyNumber: string,
+                                     confirmationStatementId: string,
                                      transactionId: string,
                                      transactionDescription: string,
-                                     transactionReference: string,
                                      transactionStatus: string): Promise<ApiResponse<Transaction>> => {
   const apiClient: ApiClient = createPublicOAuthApiClient(session);
 
+  const csReference = `${REFERENCE}_${confirmationStatementId}`;
   const transaction: Transaction = {
     companyNumber,
     description: transactionDescription,
     id: transactionId,
-    reference: transactionReference,
+    reference: csReference,
     status: transactionStatus
   };
 
