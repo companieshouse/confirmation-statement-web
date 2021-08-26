@@ -37,15 +37,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = async (req: Request, res: Response, next: NextFunction) => {
+export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
 
     return res.redirect(urlUtils
-      .getUrlWithCompanyNumberTransactionIdAndSubmissionId(REVIEW_PATH, companyNumber,
-        transactionId, submissionId));
+      .getUrlWithCompanyNumberTransactionIdAndSubmissionId(REVIEW_PATH, companyNumber, transactionId, submissionId));
   } catch (e) {
     return next(e);
   }
