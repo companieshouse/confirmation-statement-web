@@ -5,7 +5,7 @@ jest.mock("../../src/utils/url");
 
 import { ConfirmationStatementSubmission } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { initTaskList } from "../../src/services/task.list.service";
-import { ACTIVE_DIRECTORS_PATH, PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, REGISTERED_OFFICE_ADDRESS_PATH, SHAREHOLDERS_PATH, SIC_PATH, STATEMENT_OF_CAPITAL_PATH } from "../../src/types/page.urls";
+import { ACTIVE_DIRECTORS_PATH, PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, REGISTERED_OFFICE_ADDRESS_PATH, REGISTER_LOCATIONS_PATH, SHAREHOLDERS_PATH, SIC_PATH, STATEMENT_OF_CAPITAL_PATH } from "../../src/types/page.urls";
 import { TaskList, TaskState } from "../../src/types/task.list";
 import { toReadableFormat } from "../../src/utils/date";
 import { getTaskCompletedCount } from "../../src/utils/task/task.counter";
@@ -54,26 +54,28 @@ describe("Task List Service tests", () => {
 
       expect(taskList.tasks.registerLocations.isVisible).toBe(false);
       expect(taskList.tasks.registerLocations.state).toBe(TaskState.NOT_CHECKED);
+      expect(taskList.tasks.registerLocations.url).toBe(TASK_URL);
+      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[2][0]).toBe(REGISTER_LOCATIONS_PATH);
 
       expect(taskList.tasks.registeredOfficeAddress.isVisible).toBe(false);
       expect(taskList.tasks.registeredOfficeAddress.state).toBe(TASK_STATE);
       expect(taskList.tasks.registeredOfficeAddress.url).toBe(TASK_URL);
-      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[2][0]).toBe(REGISTERED_OFFICE_ADDRESS_PATH);
+      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[3][0]).toBe(REGISTERED_OFFICE_ADDRESS_PATH);
 
       expect(taskList.tasks.shareholders.isVisible).toBe(false);
       expect(taskList.tasks.shareholders.state).toBe(TaskState.CHECKED);
       expect(taskList.tasks.shareholders.url).toBe(TASK_URL);
-      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[3][0]).toBe(SHAREHOLDERS_PATH);
+      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[4][0]).toBe(SHAREHOLDERS_PATH);
 
       expect(taskList.tasks.sicCodes.isVisible).toBe(false);
       expect(taskList.tasks.sicCodes.state).toBe(TaskState.CHECKED);
       expect(taskList.tasks.sicCodes.url).toBe(TASK_URL);
-      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[4][0]).toBe(SIC_PATH);
+      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[5][0]).toBe(SIC_PATH);
 
       expect(taskList.tasks.statementOfCapital.isVisible).toBe(false);
       expect(taskList.tasks.statementOfCapital.state).toBe(TASK_STATE);
       expect(taskList.tasks.statementOfCapital.url).toBe(TASK_URL);
-      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[5][0]).toBe(STATEMENT_OF_CAPITAL_PATH);
+      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[6][0]).toBe(STATEMENT_OF_CAPITAL_PATH);
 
       expect(taskList.recordDate).toBe(RECORD_DATE);
       expect(taskList.tasksCompletedCount).toBe(TASK_COMPLETED_COUNT);

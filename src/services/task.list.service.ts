@@ -11,7 +11,8 @@ import {
   ACTIVE_DIRECTORS_PATH,
   REGISTERED_OFFICE_ADDRESS_PATH,
   SHAREHOLDERS_PATH,
-  PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH
+  PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH,
+  REGISTER_LOCATIONS_PATH
 } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { toTaskState } from "../utils/task/task.state.mapper";
@@ -35,7 +36,8 @@ export const initTaskList = (companyNumber: string,
       },
       registerLocations: {
         isVisible: false,
-        state: TaskState.NOT_CHECKED
+        state: TaskState.NOT_CHECKED,
+        url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTER_LOCATIONS_PATH, companyNumber, transactionId, submissionId)
       },
       registeredOfficeAddress: {
         isVisible: false,

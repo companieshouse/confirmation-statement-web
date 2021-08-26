@@ -12,6 +12,7 @@ import * as statementOfCapitalRoute from "../controllers/tasks/statement.of.capi
 import * as tradingStatusRoute from "../controllers/trading.status.controller";
 import * as taskListRoute from "../controllers/task.list.controller";
 import * as registeredOfficeAddressRoute from "../controllers/tasks/registered.office.address.controller";
+import * as registeredLocationsRoute from "../controllers/tasks/register.locations.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 
@@ -63,3 +64,5 @@ router.post(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.post);
 
 router.get(urls.SHAREHOLDERS, shareholders.get);
 router.post(urls.SHAREHOLDERS, shareholders.post);
+
+router.get(urls.REGISTER_LOCATIONS, registeredLocationsRoute.get);
