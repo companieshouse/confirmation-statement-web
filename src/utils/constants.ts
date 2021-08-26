@@ -60,3 +60,7 @@ export const transactionStatuses = {
 export const headers = {
   PAYMENT_REQUIRED: "X-Payment-Required"
 };
+
+export const links = {
+  COSTS: "costs"
+};

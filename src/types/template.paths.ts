@@ -24,5 +24,6 @@ export enum Templates {
   WRONG_STATEMENT_OF_CAPITAL = "incorrect-information/wrong-statement-of-capital",
   WRONG_RO = "incorrect-information/wrong-ro",
   REGISTERED_OFFICE_ADDRESS = "tasks/registered-office-address",
-  REGISTER_LOCATIONS = "tasks/register-locations"
+  REGISTER_LOCATIONS = "tasks/register-locations",
+  REVIEW = "review"
 }

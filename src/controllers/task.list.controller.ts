@@ -4,7 +4,7 @@ import { TaskList } from "../types/task.list";
 import { initTaskList } from "../services/task.list.service";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../services/company.profile.service";
-import { TRADING_STATUS_PATH, urlParams } from "../types/page.urls";
+import { REVIEW_PATH, TRADING_STATUS_PATH } from "../types/page.urls";
 import { isInFuture, toReadableFormat } from "../utils/date";
 import { createAndLogError } from "../utils/logger";
 import { urlUtils } from "../utils/url";
@@ -15,9 +15,9 @@ import { ConfirmationStatementSubmission } from "private-api-sdk-node/dist/servi
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const session = req.session as Session;
-    const companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER];
-    const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
-    const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
+    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const backLinkUrl = urlUtils
       .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TRADING_STATUS_PATH, companyNumber, transactionId, submissionId);
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
@@ -32,6 +32,20 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       company,
       taskList
     });
+  } catch (e) {
+    return next(e);
+  }
+};
+
+export const post = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+
+    return res.redirect(urlUtils
+      .getUrlWithCompanyNumberTransactionIdAndSubmissionId(REVIEW_PATH, companyNumber,
+        transactionId, submissionId));
   } catch (e) {
     return next(e);
   }

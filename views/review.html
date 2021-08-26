@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+    Submit the confirmation statement
+{% endblock %}
+
+{% block backLink %}
+{% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">Submit the confirmation statement</h1>
+
+    <h2 class="govuk-heading-m">
+      Company name: {{company.companyName}}<br>
+      Company number: {{company.companyNumber}}<br>
+      Confirmation statement date: {{company.confirmationStatement.nextMadeUpTo}}</h2>
+    <form action="" method="post">
+      <p>
+        <a href="/print-confirmation-statement-review">Review all the company information being confirmed with this Confirmation Statement.</a>
+      </p>
+      <p>By continuing, you confirm that all information required to be delivered by the company pursuant to
+        <a href="https://www.legislation.gov.uk/ukpga/2006/46/section/853A">section 853A(1)(a) of the Companies Act 2006</a>
+        in relation to the confirmation period ending
+        <strong>{{company.confirmationStatement.nextMadeUpTo}}</strong>
+        either has been delivered or is being delivered with this statement.
+      </p>
+      {% if isPaymentDue %}
+        <p>You will need to pay a fee of £13 to submit your confirmation statement.</p>
+      {% endif %}
+
+      {% if isPaymentDue %}
+        {{ govukButton({
+          text: "Confirm and pay",
+          href: "/review-payment"
+        }) }}
+      {% else %}
+        {{ govukButton({
+          text: "Confirm and submit",
+          href: "/confirmation"
+        }) }}
+      {% endif %}
+
+    </form>
+  </div>
+</div>
+{% endblock %}
