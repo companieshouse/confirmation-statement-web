@@ -36,9 +36,9 @@
                     Shareholders
                 </a>
             </span>
-        {% if taskList.shareholders.state === "CHECKED" %}
+        {% if taskList.tasks.shareholders.state === "CHECKED" %}
             {{ showChecked | safe | replace("statusIdPlaceholder", "shareholdersStatus")}}
-        {% elseif taskList.shareholders.state === "IN_PROGRESS" %}
+        {% elseif taskList.tasks.shareholders.state === "IN_PROGRESS" %}
             {{ showInProgress | safe | replace("statusIdPlaceholder", "shareholdersStatus")}}
         {% else %}
             {{ showNotChecked | safe | replace("statusIdPlaceholder", "shareholdersStatus")}}

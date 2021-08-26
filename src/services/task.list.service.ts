@@ -44,7 +44,7 @@ export const initTaskList = (companyNumber: string,
       },
       shareholders: {
         isVisible: false,
-        state: TaskState.NOT_CHECKED,
+        state: toTaskState(csSubmission.data?.shareholderData?.sectionStatus),
         url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(SHAREHOLDERS_PATH, companyNumber, transactionId, submissionId)
       },
       sicCodes: {

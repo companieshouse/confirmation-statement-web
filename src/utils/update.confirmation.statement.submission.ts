@@ -7,7 +7,8 @@ import {
   SectionStatus,
   PersonsOfSignificantControlData,
   SicCodeData,
-  StatementOfCapitalData
+  StatementOfCapitalData,
+  ShareholderData
 } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement, updateConfirmationStatement } from "../services/confirmation.statement.service";
 import { SECTIONS } from "../utils/constants";
@@ -65,6 +66,12 @@ const generateSectionData = (section: SECTIONS, status: SectionStatus, extraData
           newSocData.statementOfCapital = extraData;
         }
         return newSocData;
+      }
+      case SECTIONS.SHAREHOLDER: {
+        const newShareholderData: ShareholderData = {
+          sectionStatus: status
+        };
+        return newShareholderData;
       }
   }
 };

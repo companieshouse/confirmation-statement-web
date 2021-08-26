@@ -61,7 +61,7 @@ describe("Task List Service tests", () => {
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[2][0]).toBe(REGISTERED_OFFICE_ADDRESS_PATH);
 
       expect(taskList.tasks.shareholders.isVisible).toBe(false);
-      expect(taskList.tasks.shareholders.state).toBe(TaskState.NOT_CHECKED);
+      expect(taskList.tasks.shareholders.state).toBe(TaskState.CHECKED);
       expect(taskList.tasks.shareholders.url).toBe(TASK_URL);
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[3][0]).toBe(SHAREHOLDERS_PATH);
 

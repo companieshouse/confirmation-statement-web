@@ -1,5 +1,6 @@
 jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/shareholder.service");
+jest.mock("../../../src/utils/update.confirmation.statement.submission");
 
 import mocks from "../../mocks/all.middleware.mock";
 import { SHAREHOLDERS_PATH, TASK_LIST_PATH, urlParams } from "../../../src/types/page.urls";
@@ -7,13 +8,16 @@ import request from "supertest";
 import app from "../../../src/app";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
 import { urlUtils } from "../../../src/utils/url";
-import { SHAREHOLDERS_ERROR } from "../../../src/utils/constants";
+import { SECTIONS, SHAREHOLDERS_ERROR } from "../../../src/utils/constants";
 import { getShareholders } from "../../../src/services/shareholder.service";
 import { mockShareholder } from "../../mocks/shareholder.mock";
+import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
+import { SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 const mockGetShareholders = getShareholders as jest.Mock;
+const mockSendUpdate = sendUpdate as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
 const PAGE_HEADING = "Review the shareholders";
@@ -26,6 +30,7 @@ describe("Shareholders controller tests", () => {
   beforeEach(() => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mockGetShareholders.mockClear();
+    mockSendUpdate.mockClear();
   });
 
   it("should navigate to the shareholders page", async () => {
@@ -54,6 +59,8 @@ describe("Shareholders controller tests", () => {
       .post(SHAREHOLDERS_URL)
       .send({ shareholders: "yes" });
 
+    expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.SHAREHOLDER);
+    expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
     expect(response.status).toEqual(302);
     expect(response.header.location).toEqual(TASK_LIST_URL);
   });
@@ -63,6 +70,8 @@ describe("Shareholders controller tests", () => {
       .post(SHAREHOLDERS_URL)
       .send({ shareholders: "no" });
 
+    expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.SHAREHOLDER);
+    expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
     expect(response.status).toEqual(200);
     expect(response.text).toContain(STOP_PAGE_MESSAGE);
   });

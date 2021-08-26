@@ -49,5 +49,6 @@ export enum SECTIONS {
   PSC = "personsSignificantControlData",
   ROA = "registeredOfficeAddressData",
   SIC = "sicCodeData",
-  SOC = "statementOfCapitalData"
+  SOC = "statementOfCapitalData",
+  SHAREHOLDER = "shareholderData"
 }
