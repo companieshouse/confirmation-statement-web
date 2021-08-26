@@ -15,9 +15,9 @@ import { ConfirmationStatementSubmission } from "private-api-sdk-node/dist/servi
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const session = req.session as Session;
-    const companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER];
-    const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
-    const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
+    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const backLinkUrl = urlUtils
       .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TRADING_STATUS_PATH, companyNumber, transactionId, submissionId);
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
@@ -39,9 +39,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER];
-    const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
-    const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
+    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
 
     return res.redirect(urlUtils
       .getUrlWithCompanyNumberTransactionIdAndSubmissionId(REVIEW_PATH, companyNumber,
