@@ -2,8 +2,8 @@ import { Shareholder } from "private-api-sdk-node/dist/services/confirmation-sta
 
 export const mockShareholder: Shareholder[] = [
   {
-    forename1: "Saul",
-    forename2: "F",
+    foreName1: "Saul",
+    foreName2: "F",
     surname: "Goodman",
     shares: "123",
     shareClassTypeId: "123",

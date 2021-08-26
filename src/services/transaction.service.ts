@@ -44,10 +44,7 @@ export const postTransaction = async (session: Session, companyNumber: string, d
  */
 export const closeTransaction = async (session: Session, companyNumber: string, transactionId: string): Promise<string | undefined> => {
   const apiResponse: ApiResponse<Transaction> = await putTransaction(session, companyNumber, transactionId, DESCRIPTION, REFERENCE, transactionStatuses.CLOSED);
-  if (apiResponse?.headers) {
-    return apiResponse.headers[headers.PAYMENT_REQUIRED];
-  }
-  return undefined;
+  return apiResponse.headers?.[headers.PAYMENT_REQUIRED];
 };
 
 /**
