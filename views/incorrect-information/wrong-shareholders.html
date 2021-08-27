@@ -4,10 +4,7 @@
   You cannot use this service - File a confirmation statement
 {% endblock %}
 {% block backLink %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLinkUrl
-  }) }}
+  {% include "includes/back-link.html" %}
 {% endblock %}
 {% block content %}
   <div class="govuk-grid-row">
