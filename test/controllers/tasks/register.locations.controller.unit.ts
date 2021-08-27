@@ -6,7 +6,7 @@ import { companyAuthenticationMiddleware } from "../../../src/middleware/company
 import app from "../../../src/app";
 import { REGISTER_LOCATIONS_PATH, TASK_LIST_PATH, urlParams } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
-import { REGISTER_LOCATIONS_ERROR } from "../../../src/utils/constants";
+import { RADIO_BUTTON_VALUE, REGISTER_LOCATIONS_ERROR } from "../../../src/utils/constants";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
@@ -47,7 +47,15 @@ describe("Register locations controller tests", () => {
   it("Should navigate to the task list page when register locations are confirmed", async () => {
     const response = await request(app)
       .post(REGISTER_LOCATIONS_URL)
-      .send({ registers: "yes" });
+      .send({ registers: RADIO_BUTTON_VALUE.YES });
+    expect(response.status).toEqual(302);
+    expect(response.header.location).toEqual(TASK_LIST_URL);
+  });
+
+  it("Should redirect to task list when recently filed radio button is selected", async () => {
+    const response = await request(app)
+      .post(REGISTER_LOCATIONS_URL)
+      .send({ registers: RADIO_BUTTON_VALUE.RECENTLY_FILED });
     expect(response.status).toEqual(302);
     expect(response.header.location).toEqual(TASK_LIST_URL);
   });
@@ -55,7 +63,7 @@ describe("Register locations controller tests", () => {
   it("Should navigate to the register locations stop page if details are incorrect", async () => {
     const response = await request(app)
       .post(REGISTER_LOCATIONS_URL)
-      .send({ registers: "no" });
+      .send({ registers: RADIO_BUTTON_VALUE.NO });
     expect(response.status).toEqual(200);
     expect(response.text).toContain(STOP_PAGE_MESSAGE);
   });

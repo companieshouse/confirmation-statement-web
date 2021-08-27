@@ -19,7 +19,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     const registerLocationsButton = req.body.registers;
 
-    if (registerLocationsButton === (RADIO_BUTTON_VALUE.YES || RADIO_BUTTON_VALUE.RECENTLY_FILED)) {
+    if (registerLocationsButton === RADIO_BUTTON_VALUE.YES || registerLocationsButton === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     }
 
