@@ -33,13 +33,11 @@
 
       {% if isPaymentDue %}
         {{ govukButton({
-          text: "Confirm and pay",
-          href: "/review-payment"
+          text: "Confirm and pay"
         }) }}
       {% else %}
         {{ govukButton({
-          text: "Confirm and submit",
-          href: "/confirmation"
+          text: "Confirm and submit"
         }) }}
       {% endif %}
 
