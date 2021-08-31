@@ -39,6 +39,7 @@
     "on-headers": "^1.0.2",
     "private-api-sdk-node": "github:companieshouse/private-api-sdk-node#0.1.54",
     "safe-buffer": "^5.2.1",
+    "uuid": "^8.3.2",
     "yargs": "^15.3.1"
   },
   "devDependencies": {
