@@ -48,6 +48,22 @@ const dummyTransactionWithCosts = {
   }
 } as Transaction;
 
+const dummyTransactionWithCostsWithDifferentResourceKey = {
+  id: TRANSACTION_ID,
+  companyNumber: "12412",
+  reference: "424",
+  description: "stuff",
+  resources: {
+    [`/tran/21321321/confirmation-statement/123456`]: {
+      kind: "erewr",
+      links: {
+        resource: "eerwrewr",
+        costs: "/343543543"
+      }
+    }
+  }
+} as Transaction;
+
 describe("review controller tests", () => {
 
   beforeEach(() => {
@@ -89,6 +105,19 @@ describe("review controller tests", () => {
     expect(response.status).toBe(500);
     expect(mockGetTransaction).toBeCalledTimes(1);
     expect(response.text).toContain(ERROR_PAGE_HEADING);
+    expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+  });
+
+  it("should show review page with no costs text when resource is wrong type", async () => {
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCostsWithDifferentResourceKey);
+    const response = await request(app)
+      .get(URL);
+
+    expect(response.status).toBe(200);
+    expect(mockGetTransaction).toBeCalledTimes(1);
+    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).not.toContain(COSTS_TEXT);
     expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
   });
 });
