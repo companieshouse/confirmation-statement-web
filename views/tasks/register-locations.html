@@ -39,7 +39,6 @@
 
         {% include "tasks/includes/register.html" %}
 
-        {% if registers === 'yes' %}
           {{ govukRadios({
             classes: "govuk-radios",
             idPrefix: "registers",
@@ -52,11 +51,13 @@
                 classes: "govuk-fieldset__legend--l"
               }
             },
+            hint: {
+              html: registerHTML
+            },
             items: [
               {
                 value: "yes",
                 text: "Yes",
-                checked: true,
                 attributes: {
                   "data-event-id": "yes-radio-button"
                 }
@@ -77,85 +78,6 @@
               }
             ]
           }) }}
-          {% elseif registers === 'no' %}
-            {{ govukRadios({
-              classes: "govuk-radios",
-              idPrefix: "registers",
-              name: "registers",
-              errorMessage: registerLocationsErrorMsg,
-              fieldset: {
-                legend: {
-                  html: "Is this where the company records are kept?",
-                  isPageHeading: true,
-                  classes: "govuk-fieldset__legend--l"
-                }
-              },
-              items: [
-                {
-                  value: "yes",
-                  text: "Yes",
-                  attributes: {
-                    "data-event-id": "yes-radio-button"
-                  }
-                },
-                {
-                  value: "no",
-                  text: "No",
-                  checked: true,
-                  attributes: {
-                    "data-event-id": "no-radio-button"
-                  }
-                },
-                {
-                  value: "yes",
-                  text: "No, but i've recently filed an update",
-                  attributes: {
-                    "data-event-id": "recently-filed-radio-button"
-                  }
-                }
-              ]
-            }) }}
-            {% else %}
-            {{ govukRadios({
-              classes: "govuk-radios",
-              idPrefix: "registers",
-              name: "registers",
-              errorMessage: registerLocationsErrorMsg,
-              fieldset: {
-                legend: {
-                  html: "Is this where the company records are kept?",
-                  isPageHeading: true,
-                  classes: "govuk-fieldset__legend--l"
-                }
-              },
-              hint: {
-                html: registerHTML
-              },
-              items: [
-                {
-                  value: "yes",
-                  text: "Yes",
-                  attributes: {
-                    "data-event-id": "yes-radio-button"
-                  }
-                },
-                {
-                  value: "no",
-                  text: "No",
-                  attributes: {
-                    "data-event-id": "no-radio-button"
-                  }
-                },
-                {
-                  value: "yes",
-                  text: "No, but i've recently filed an update",
-                  attributes: {
-                    "data-event-id": "recently-filed-radio-button"
-                  }
-                }
-              ]
-            }) }}
-          {% endif %}
 
           {{ govukButton({
             text: "Continue"
