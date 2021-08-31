@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { closeTransaction, getTransaction } from "../services/transaction.service";
 import { Session } from "@companieshouse/node-session-handler";
-import { TASK_LIST_PATH } from "../types/page.urls";
+import { CONFIRMATION_STATEMENT, TASK_LIST_PATH } from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 import { urlUtils } from "../utils/url";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
@@ -65,7 +65,7 @@ const isPaymentDue = (transaction: Transaction, submissionId: string): boolean =
   if (!transaction.resources) {
     return false;
   }
-  const resourceKeyName = Object.keys(transaction.resources).find(key => key.endsWith(submissionId));
+  const resourceKeyName = Object.keys(transaction.resources).find(key => key.endsWith(`${CONFIRMATION_STATEMENT}/${submissionId}`));
   if (!resourceKeyName) {
     return false;
   }

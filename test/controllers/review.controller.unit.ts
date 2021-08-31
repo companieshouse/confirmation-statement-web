@@ -9,13 +9,14 @@ import mocks from "../mocks/all.middleware.mock";
 import app from "../../src/app";
 import { REVIEW_PATH } from "../../src/types/page.urls";
 import { urlUtils } from "../../src/utils/url";
-import {validCompanyProfile} from "../mocks/company.profile.mock";
-import {getCompanyProfile} from "../../src/services/company.profile.service";
+import { validCompanyProfile } from "../mocks/company.profile.mock";
+import { getCompanyProfile } from "../../src/services/company.profile.service";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockGetTransaction = getTransaction as jest.Mock;
 
 const PAGE_HEADING = "Submit the confirmation statement";
+const ERROR_PAGE_HEADING = "Service offline - File a confirmation statement";
 const COSTS_TEXT = "You will need to pay a fee";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -36,7 +37,7 @@ const dummyTransactionWithCosts = {
   reference: "424",
   description: "stuff",
   resources: {
-    ["/tran/21321321/confirmation-statement/612e42ad7e5c856f45d651bc"]: {
+    [`/tran/21321321/confirmation-statement/${SUBMISSION_ID}`]: {
       kind: "erewr",
       links: {
         resource: "eerwrewr",
@@ -75,6 +76,18 @@ describe("review controller tests", () => {
     expect(mockGetTransaction).toBeCalledTimes(1);
     expect(response.text).toContain(PAGE_HEADING);
     expect(response.text).toContain(COSTS_TEXT);
+    expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+  });
+
+  it("should show error screen when no transaction returned", async () => {
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    mockGetTransaction.mockResolvedValueOnce(undefined);
+    const response = await request(app)
+      .get(URL);
+
+    expect(response.status).toBe(500);
+    expect(mockGetTransaction).toBeCalledTimes(1);
+    expect(response.text).toContain(ERROR_PAGE_HEADING);
     expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
   });
 });
