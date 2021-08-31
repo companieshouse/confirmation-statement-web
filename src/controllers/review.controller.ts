@@ -21,7 +21,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const backLinkUrl = urlUtils
       .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId);
+
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
+
     const transaction: Transaction = await getTransaction(session, transactionId);
     return res.render(Templates.REVIEW, {
       backLinkUrl,
