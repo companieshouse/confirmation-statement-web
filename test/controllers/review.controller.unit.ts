@@ -28,8 +28,7 @@ const URL =
                                                                SUBMISSION_ID);
 
 const dummyTransactionNoCosts = {
-  id: TRANSACTION_ID,
-  resources: {}
+  id: TRANSACTION_ID
 } as Transaction;
 
 const dummyTransactionWithCosts = {
