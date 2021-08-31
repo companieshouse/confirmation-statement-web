@@ -32,11 +32,6 @@
 
       <h1 class="govuk-heading-l">Check where the company records are kept</h1>
 
-        {% if registers === 'no' %}
-          {{ govukInsetText({
-            html: "A filing to update these details has been received. You can continue filing this confirmation statement, even if the change is not yet reflected on this page." }) }}
-        {% endif %}
-
         {% include "tasks/includes/register.html" %}
 
           {{ govukRadios({
