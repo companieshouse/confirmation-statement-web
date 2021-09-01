@@ -59,7 +59,7 @@ export const transactionStatuses = {
 };
 
 export const headers = {
-  PAYMENT_REQUIRED: "X-Payment-Required"
+  PAYMENT_REQUIRED: "x-payment-required"
 };
 
 export const links = {

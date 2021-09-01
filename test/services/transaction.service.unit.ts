@@ -132,7 +132,7 @@ describe("transaction service tests", () => {
       const paymentUrl = "http://payment";
       mockPutTransaction.mockResolvedValueOnce({
         headers: {
-          "X-Payment-Required": paymentUrl
+          "x-payment-required": paymentUrl
         },
         httpStatusCode: 200,
         resource: {
