@@ -1,8 +1,10 @@
 jest.mock("../../src/services/company.profile.service");
 jest.mock("../../src/services/transaction.service");
 jest.mock("../../src/services/confirmation.statement.service");
+jest.mock("../../src/services/payment.service");
+jest.mock("../../src/utils/logger");
 
-import { getTransaction } from "../../src/services/transaction.service";
+import { closeTransaction, getTransaction } from "../../src/services/transaction.service";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
 import request from "supertest";
 import mocks from "../mocks/all.middleware.mock";
@@ -11,10 +13,25 @@ import { REVIEW_PATH } from "../../src/types/page.urls";
 import { urlUtils } from "../../src/utils/url";
 import { validCompanyProfile } from "../mocks/company.profile.mock";
 import { getCompanyProfile } from "../../src/services/company.profile.service";
+import { startPaymentsSession } from "../../src/services/payment.service";
+import { Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
+import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
+import { createAndLogError } from "../../src/utils/logger";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockGetTransaction = getTransaction as jest.Mock;
+const mockCloseTransaction = closeTransaction as jest.Mock;
+const mockStartPaymentsSession = startPaymentsSession as jest.Mock;
+const mockCreateAndLogError = createAndLogError as jest.Mock;
 
+const dummyError = {
+  message: "oops"
+} as Error;
+mockCreateAndLogError.mockReturnValue(dummyError);
+
+const SERVICE_UNAVAILABLE_TEXT = "Sorry, the service is unavailable";
+const PAYMENT_URL = "/payment/1234";
+const PAYMENT_JOURNEY_URL = "journey";
 const PAGE_HEADING = "Submit the confirmation statement";
 const ERROR_PAGE_HEADING = "Service offline - File a confirmation statement";
 const COSTS_TEXT = "You will need to pay a fee";
@@ -63,60 +80,145 @@ const dummyTransactionWithCostsWithDifferentResourceKey = {
   }
 } as Transaction;
 
+const dummyHeaders = {
+  header1: "45435435"
+};
+
+const dummyPayment = {
+  amount: "13",
+  availablePaymentMethods: ["methods"],
+  companyNumber: "23213",
+  completedAt: "2021-05-23",
+  createdAt: "2021-05-23",
+  createdBy: {
+    email: "ewre",
+    forename: "forename",
+    id: "342423",
+    surname: "testy"
+  },
+  description: "payment",
+  etag: "34324",
+  kind: "kind",
+  links: {
+    journey: PAYMENT_JOURNEY_URL
+  },
+  paymentMethod: "visa",
+  reference: "3432",
+  status: "paid"
+} as Payment;
+
+const dummyPaymentResponse = {
+  headers: dummyHeaders,
+  httpStatusCode: 200,
+  resource: dummyPayment
+} as ApiResponse<Payment>;
+
 describe("review controller tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it("should show review page with no costs text", async () => {
-    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-    mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
-    const response = await request(app)
-      .get(URL);
+  describe("get tests", () => {
+    it("should show review page with no costs text", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
+      const response = await request(app)
+        .get(URL);
 
-    expect(response.status).toBe(200);
-    expect(mockGetTransaction).toBeCalledTimes(1);
-    expect(response.text).toContain(PAGE_HEADING);
-    expect(response.text).not.toContain(COSTS_TEXT);
-    expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+      expect(response.status).toBe(200);
+      expect(mockGetTransaction).toBeCalledTimes(1);
+      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).not.toContain(COSTS_TEXT);
+      expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    });
+
+    it("should show review page with costs text", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+      const response = await request(app)
+        .get(URL);
+
+      expect(response.status).toBe(200);
+      expect(mockGetTransaction).toBeCalledTimes(1);
+      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain(COSTS_TEXT);
+      expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    });
+
+    it("should show error screen when no transaction returned", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(undefined);
+      const response = await request(app)
+        .get(URL);
+
+      expect(response.status).toBe(500);
+      expect(mockGetTransaction).toBeCalledTimes(1);
+      expect(response.text).toContain(ERROR_PAGE_HEADING);
+      expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    });
+
+    it("should show review page with no costs text when resource is wrong type", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCostsWithDifferentResourceKey);
+      const response = await request(app)
+        .get(URL);
+
+      expect(response.status).toBe(200);
+      expect(mockGetTransaction).toBeCalledTimes(1);
+      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).not.toContain(COSTS_TEXT);
+      expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    });
   });
 
-  it("should show review page with costs text", async () => {
-    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-    mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
-    const response = await request(app)
-      .get(URL);
+  describe("post tests", () => {
+    it("Should redirect to the payment journey url", async () => {
+      mockCloseTransaction.mockResolvedValueOnce(PAYMENT_URL);
+      mockStartPaymentsSession.mockResolvedValueOnce(dummyPaymentResponse);
 
-    expect(response.status).toBe(200);
-    expect(mockGetTransaction).toBeCalledTimes(1);
-    expect(response.text).toContain(PAGE_HEADING);
-    expect(response.text).toContain(COSTS_TEXT);
-    expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
-  });
+      const response = await request(app)
+        .post(URL);
 
-  it("should show error screen when no transaction returned", async () => {
-    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-    mockGetTransaction.mockResolvedValueOnce(undefined);
-    const response = await request(app)
-      .get(URL);
+      expect(response.status).toBe(302);
+      expect(response.header.location).toBe(PAYMENT_JOURNEY_URL);
+    });
 
-    expect(response.status).toBe(500);
-    expect(mockGetTransaction).toBeCalledTimes(1);
-    expect(response.text).toContain(ERROR_PAGE_HEADING);
-    expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
-  });
+    it("Should show error page if payment response has no resource", async () => {
+      mockCloseTransaction.mockResolvedValueOnce(PAYMENT_URL);
+      mockStartPaymentsSession.mockResolvedValueOnce({
+        headers: dummyHeaders,
+        httpStatusCode: 200
+      } as ApiResponse<Payment>);
 
-  it("should show review page with no costs text when resource is wrong type", async () => {
-    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-    mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCostsWithDifferentResourceKey);
-    const response = await request(app)
-      .get(URL);
+      const response = await request(app)
+        .post(URL);
 
-    expect(response.status).toBe(200);
-    expect(mockGetTransaction).toBeCalledTimes(1);
-    expect(response.text).toContain(PAGE_HEADING);
-    expect(response.text).not.toContain(COSTS_TEXT);
-    expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+      expect(response.status).toBe(500);
+      expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
+      expect(mockCreateAndLogError).toBeCalledWith("No resource in payment response");
+    });
+
+    it("Should show error page if closing transaction does not return a url (this will change to a redirect to final page when that page is ready)", async () => {
+      mockCloseTransaction.mockResolvedValueOnce(undefined);
+
+      const response = await request(app)
+        .post(URL);
+
+      expect(response.status).toBe(500);
+      expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
+      expect(mockCreateAndLogError).toBeCalledWith("Not yet supported");
+    });
+
+    it("Should show error page if error is thrown inside post function", async () => {
+      mockCloseTransaction.mockRejectedValueOnce(new Error("Internal error"));
+
+      const response = await request(app)
+        .post(URL);
+
+      expect(response.status).toBe(500);
+      expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
+      expect(mockStartPaymentsSession).not.toHaveBeenCalled();
+    });
   });
 });
