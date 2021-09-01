@@ -17,6 +17,7 @@ import { startPaymentsSession } from "../../src/services/payment.service";
 import { Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { createAndLogError } from "../../src/utils/logger";
+import { dummyPayment, PAYMENT_JOURNEY_URL } from "../mocks/payment.mock";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockGetTransaction = getTransaction as jest.Mock;
@@ -31,7 +32,6 @@ mockCreateAndLogError.mockReturnValue(dummyError);
 
 const SERVICE_UNAVAILABLE_TEXT = "Sorry, the service is unavailable";
 const PAYMENT_URL = "/payment/1234";
-const PAYMENT_JOURNEY_URL = "journey";
 const PAGE_HEADING = "Submit the confirmation statement";
 const ERROR_PAGE_HEADING = "Service offline - File a confirmation statement";
 const COSTS_TEXT = "You will need to pay a fee";
@@ -83,29 +83,6 @@ const dummyTransactionWithCostsWithDifferentResourceKey = {
 const dummyHeaders = {
   header1: "45435435"
 };
-
-const dummyPayment = {
-  amount: "13",
-  availablePaymentMethods: ["methods"],
-  companyNumber: "23213",
-  completedAt: "2021-05-23",
-  createdAt: "2021-05-23",
-  createdBy: {
-    email: "ewre",
-    forename: "forename",
-    id: "342423",
-    surname: "testy"
-  },
-  description: "payment",
-  etag: "34324",
-  kind: "kind",
-  links: {
-    journey: PAYMENT_JOURNEY_URL
-  },
-  paymentMethod: "visa",
-  reference: "3432",
-  status: "paid"
-} as Payment;
 
 const dummyPaymentResponse = {
   headers: dummyHeaders,
