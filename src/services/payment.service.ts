@@ -5,14 +5,15 @@ import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist
 import { v4 as uuidv4 } from "uuid";
 import { createAndLogError, logger } from "../utils/logger";
 import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
+import { API_URL } from "../utils/properties";
 
 export const startPaymentsSession = async (session: Session, paymentSessionUrl: string, resourceUri: string): Promise<ApiResponse<Payment>> => {
   const apiClient: ApiClient = createPaymentApiClient(session, paymentSessionUrl);
-
+  const resourceWithHost = API_URL + resourceUri;
   const createPaymentRequest: CreatePaymentRequest = {
-    redirectUri: paymentSessionUrl,
+    redirectUri: "http://chs.local/confirmation-statement",
     reference: "CS_REFERENCE",
-    resource: resourceUri,
+    resource: resourceWithHost,
     state: uuidv4(),
   };
   const paymentResult = await apiClient.payment.createPaymentWithFullUrl(createPaymentRequest);
