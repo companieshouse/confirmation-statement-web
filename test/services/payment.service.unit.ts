@@ -9,6 +9,7 @@ import { startPaymentsSession } from "../../src/services/payment.service";
 import { ApiResponse, ApiResult } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { v4 as uuidv4 } from "uuid";
+import { INTERNAL_API_URL } from "../../src/utils/properties";
 
 const PAYMENT_SESSION_URL = "/payment/21321";
 const RESOURCE_URI = "/confirmation-statement/65465464";
@@ -98,10 +99,12 @@ describe("Payment Service tests", () => {
       expect(apiResponse.resource).toBe(dummyPayment);
       expect(apiResponse.headers).toBe(dummyHeaders);
 
+      expect(mockCreatePaymentApiClient).toBeCalledWith(session, PAYMENT_SESSION_URL);
+
       const paymentRequest: CreatePaymentRequest = mockCreatePaymentWithFullUrl.mock.calls[0][0];
-      expect(paymentRequest.redirectUri).toBe(PAYMENT_SESSION_URL);
+      expect(paymentRequest.redirectUri).toBe("http://chs.local/confirmation-statement");
       expect(paymentRequest.reference).toBe("CS_REFERENCE");
-      expect(paymentRequest.resource).toBe(RESOURCE_URI);
+      expect(paymentRequest.resource).toBe(INTERNAL_API_URL + RESOURCE_URI);
       expect(paymentRequest.state).toBe(UUID);
     });
 
