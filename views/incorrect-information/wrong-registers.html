@@ -14,7 +14,7 @@
           You will need to update the company details
         </h1>
         <p>You will need to update the location of the company records before you can file a confirmation statement. You can use
-          <a target="_blank" href="https://ewf.companieshouse.gov.uk/seclogin?tc=1" rel="noopener noreferrer">our WebFiling service (opens in a new tab)</a>
+          <a target="_blank" href="https://ewf.companieshouse.gov.uk/seclogin?tc=1" rel="noopener noreferrer" data-event-id="webfiling-link">our WebFiling service (opens in a new tab)</a>
           to file the following forms online:</p>
         <ul class="govuk-list govuk-list--bullet">
           <strong>
@@ -30,11 +30,14 @@
               text: "Updates can take some time to process, and will not be reflected immediately in the information displayed on this service. As long as the update has been submitted, you can still file the confirmation statement."
             }) }}
 
-        <p>You can return to this confirmation statement by selecting <a href="/user/transactions">Your Filings</a> in your Companies House account.</p>
+        <p>You can return to this confirmation statement by selecting <a href="/user/transactions" data-event-id="your-filing-link">Your Filings</a> in your Companies House account.</p>
 
         {{ govukButton({
             text: "Return to confirmation statement",
-            href: taskListUrl
+            href: taskListUrl,
+            attributes: {
+              "data-event-id": "return-to-confirmation-statement-link"
+            }
         }) }}
         <p>
 
