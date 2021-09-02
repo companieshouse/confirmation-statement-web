@@ -12,7 +12,7 @@ import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource
 import { Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { createAndLogError } from "../utils/logger";
 import { links } from "../utils/constants";
-import {toReadableFormat} from "../utils/date";
+import { toReadableFormat } from "../utils/date";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
