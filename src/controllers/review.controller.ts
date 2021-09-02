@@ -12,6 +12,7 @@ import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource
 import { Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { createAndLogError } from "../utils/logger";
 import { links } from "../utils/constants";
+import {toReadableFormat} from "../utils/date";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -28,6 +29,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     return res.render(Templates.REVIEW, {
       backLinkUrl,
       company,
+      nextMadeUpToDate: toReadableFormat(company.confirmationStatement?.nextMadeUpTo as string),
       isPaymentDue: isPaymentDue(transaction, submissionId)
     });
   } catch (e) {
