@@ -10,10 +10,10 @@ import { ApiResponse, ApiResult } from "@companieshouse/api-sdk-node/dist/servic
 import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { v4 as uuidv4 } from "uuid";
 import { INTERNAL_API_URL } from "../../src/utils/properties";
+import { dummyPayment } from "../mocks/payment.mock";
 
 const PAYMENT_SESSION_URL = "/payment/21321";
 const RESOURCE_URI = "/confirmation-statement/65465464";
-const PAYMENT_AMOUNT = "13";
 const UUID = "d29f8b9c-501d-4ae3-91b2-001fd9e4e0a5";
 
 const mockCreatePaymentWithFullUrl = jest.fn();
@@ -36,27 +36,6 @@ mockUuidv4.mockReturnValue(UUID);
 const mockCreateAndLogError = createAndLogError as jest.Mock;
 const ERROR: Error = new Error("oops");
 mockCreateAndLogError.mockReturnValue(ERROR);
-
-const dummyPayment = {
-  amount: PAYMENT_AMOUNT,
-  availablePaymentMethods: ["methods"],
-  companyNumber: "23213",
-  completedAt: "2021-05-23",
-  createdAt: "2021-05-23",
-  createdBy: {
-    email: "ewre",
-    forename: "forename",
-    id: "342423",
-    surname: "testy"
-  },
-  description: "payment",
-  etag: "34324",
-  kind: "kind",
-  links: {},
-  paymentMethod: "visa",
-  reference: "3432",
-  status: "paid"
-} as Payment;
 
 const dummyHeaders = {
   header1: "45435435"
