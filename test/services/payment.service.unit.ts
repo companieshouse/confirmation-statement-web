@@ -120,7 +120,7 @@ describe("Payment Service tests", () => {
         .rejects
         .toThrow(ERROR);
 
-      expect(mockCreateAndLogError).toBeCalledWith("Unknown Error");
+      expect(mockCreateAndLogError).toBeCalledWith('Unknown Error {"error1":"something"}');
     });
   });
 });
