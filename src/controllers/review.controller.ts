@@ -49,7 +49,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     } else {
       // Payment required kick off payment journey
       const resourceUri: string = `/transactions/${transactionId}/payment`;
-      // const resourceUri: string = `/transactions/${transactionId}/confirmation-statement/${submissionId}`;
       const paymentResponse: ApiResponse<Payment> = await startPaymentsSession(session, paymentUrl, resourceUri);
 
       if (!paymentResponse.resource) {
