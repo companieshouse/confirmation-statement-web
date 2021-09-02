@@ -48,7 +48,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return next(createAndLogError("Not yet supported"));
     } else {
       // Payment required kick off payment journey
-      const resourceUri: string = `/transactions/${transactionId}/confirmation-statement/${submissionId}`;
+      const resourceUri: string = `/transactions/${transactionId}/payment`;
       const paymentResponse: ApiResponse<Payment> = await startPaymentsSession(session, paymentUrl, resourceUri);
 
       if (!paymentResponse.resource) {
