@@ -24,7 +24,7 @@ export const startPaymentsSession = async (session: Session, paymentSessionUrl: 
     if (errorResponse.httpStatusCode === 401 || errorResponse.httpStatusCode === 429) {
       throw createAndLogError(`Http status code ${errorResponse.httpStatusCode} - Failed to create payment,  ${JSON.stringify(errorResponse?.errors) || "Unknown Error"}`);
     } else {
-      throw createAndLogError("Unknown Error");
+      throw createAndLogError(`Unknown Error ${JSON.stringify(errorResponse?.errors) || "No Errors found in response"}`);
     }
   } else {
     logger.info(`Create payment, status_code=${paymentResult.value.httpStatusCode}`);
