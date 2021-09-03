@@ -125,15 +125,6 @@ describe("transaction service tests", () => {
       await expect(putTransaction(session, COMPANY_NUMBER, CS_SUBMISSION_ID, TRANSACTION_ID, "desc", "closed")).rejects.toThrow(ERROR);
       expect(mockCreateAndLogError).toBeCalledWith(`Http status code 404 - Failed to put transaction for transaction id ${TRANSACTION_ID}, company number ${COMPANY_NUMBER}`);
     });
-
-    it("Should throw an error when transaction api returns no resource", async () => {
-      mockPutTransaction.mockResolvedValueOnce({
-        httpStatusCode: 200
-      });
-
-      await expect(putTransaction(session, COMPANY_NUMBER, CS_SUBMISSION_ID, TRANSACTION_ID, "desc", "closed")).rejects.toThrow(ERROR);
-      expect(mockCreateAndLogError).toBeCalledWith(`Transaction API PUT request returned no resource for transaction id ${TRANSACTION_ID}, company number ${COMPANY_NUMBER}`);
-    });
   });
 
   describe("closeTransaction tests", () => {
@@ -141,7 +132,7 @@ describe("transaction service tests", () => {
       const paymentUrl = "http://payment";
       mockPutTransaction.mockResolvedValueOnce({
         headers: {
-          "X-Payment-Required": paymentUrl
+          "x-payment-required": paymentUrl
         },
         httpStatusCode: 200,
         resource: {

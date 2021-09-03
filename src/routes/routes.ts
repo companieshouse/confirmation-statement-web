@@ -68,5 +68,7 @@ router.get(urls.SHAREHOLDERS, shareholders.get);
 router.post(urls.SHAREHOLDERS, shareholders.post);
 
 router.get(urls.REGISTER_LOCATIONS, registeredLocationsRoute.get);
+router.post(urls.REGISTER_LOCATIONS, registeredLocationsRoute.post);
 
 router.get(urls.REVIEW, reviewRoute.get);
+router.post(urls.REVIEW, reviewRoute.post);

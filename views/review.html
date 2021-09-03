@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block backLink %}
-{% include "includes/back-link.html" %}
+  {% include "includes/back-link.html" %}
 {% endblock %}
 
 {% block content %}
@@ -16,7 +16,7 @@
     <h2 class="govuk-heading-m">
       Company name: {{company.companyName}}<br>
       Company number: {{company.companyNumber}}<br>
-      Confirmation statement date: {{company.confirmationStatement.nextMadeUpTo}}</h2>
+      Confirmation statement date: {{nextMadeUpToDate}}</h2>
     <form action="" method="post">
       <p>
         <a href="/print-confirmation-statement-review">Review all the company information being confirmed with this Confirmation Statement.</a>
@@ -33,13 +33,11 @@
 
       {% if isPaymentDue %}
         {{ govukButton({
-          text: "Confirm and pay",
-          href: "/review-payment"
+          text: "Confirm and pay"
         }) }}
       {% else %}
         {{ govukButton({
-          text: "Confirm and submit",
-          href: "/confirmation"
+          text: "Confirm and submit"
         }) }}
       {% endif %}
 

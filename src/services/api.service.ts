@@ -24,3 +24,11 @@ export const createPublicOAuthApiClient = (session: Session): ApiClient => {
   }
   throw createAndLogError("Error getting session keys for creating public api client");
 };
+
+export const createPaymentApiClient = (session: Session, paymentUrl: string): ApiClient => {
+  const oAuth = session.data?.[SessionKey.SignInInfo]?.[SignInInfoKeys.AccessToken]?.[AccessTokenKeys.AccessToken];
+  if (oAuth) {
+    return createApiClient(undefined, oAuth, paymentUrl);
+  }
+  throw createAndLogError("Error getting session keys for creating public api client");
+};

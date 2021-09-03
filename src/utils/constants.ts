@@ -5,6 +5,7 @@ export const DESCRIPTION = "Confirmation Statement Transaction";
 export const REFERENCE = "ConfirmationStatementReference";
 export const PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR = "Select yes if the PSC details are correct";
 export const PSC_STATEMENT_CONTROL_ERROR = "Select yes if the company PSC Statement is correct";
+export const REGISTER_LOCATIONS_ERROR = "Please select yes if the Company records location is correct";
 export const REGISTERED_OFFICE_ADDRESS_ERROR = "Select yes if the Registered Office Address is correct";
 export const DIRECTOR_DETAILS_ERROR = "Select yes if director details are correct";
 export const SHAREHOLDERS_ERROR = "Select yes if the active shareholders are correct";
@@ -58,7 +59,7 @@ export const transactionStatuses = {
 };
 
 export const headers = {
-  PAYMENT_REQUIRED: "X-Payment-Required"
+  PAYMENT_REQUIRED: "x-payment-required"
 };
 
 export const links = {

@@ -105,10 +105,6 @@ export const putTransaction = async (session: Session,
 
   const castedSdkResponse: ApiResponse<Transaction> = sdkResponse as ApiResponse<Transaction>;
 
-  if (!castedSdkResponse.resource) {
-    throw createAndLogError(`Transaction API PUT request returned no resource for transaction id ${transactionId}, company number ${companyNumber}`);
-  }
-
   logger.debug(`Received transaction ${JSON.stringify(sdkResponse)}`);
 
   return castedSdkResponse;

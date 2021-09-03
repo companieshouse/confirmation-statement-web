@@ -12,20 +12,33 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <form action="" method="post">
-      <h1 class="govuk-heading-l">Check where the company records are kept</h1>
 
-        {% if registers === 'no' %}
-          {{ govukInsetText({
-            html: "A filing to update these details has been received. You can continue filing this confirmation statement, even if the change is not yet reflected on this page." }) }}
+        {% if registerLocationsErrorMsg %}
+          {{ govukErrorSummary({
+              titleText: "There is a problem",
+              errorList: [
+                {
+                  text: registerLocationsErrorMsg,
+                  href: "#registerLocation"
+                }
+              ]
+            }) }}
+          {% set registerLocationsErrorMsg = {
+              text: registerLocationsErrorMsg
+            } %}
+        {% else %}
+          {% set registerLocationsErrorMsg = false %}
         {% endif %}
+
+      <h1 class="govuk-heading-l">Check where the company records are kept</h1>
 
         {% include "tasks/includes/register.html" %}
 
-        {% if registers === 'yes' %}
           {{ govukRadios({
             classes: "govuk-radios",
             idPrefix: "registers",
             name: "registers",
+            errorMessage: registerLocationsErrorMsg,
             fieldset: {
               legend: {
                 html: "Is this where the company records are kept?",
@@ -33,81 +46,33 @@
                 classes: "govuk-fieldset__legend--l"
               }
             },
+            hint: {
+              html: registerHTML
+            },
             items: [
               {
                 value: "yes",
                 text: "Yes",
-                checked: true
+                attributes: {
+                  "data-event-id": "yes-radio-button"
+                }
               },
               {
                 value: "no",
-                text: "No"
+                text: "No",
+                attributes: {
+                  "data-event-id": "no-radio-button"
+                }
               },
               {
-                value: "yes",
-                text: "No, but i've recently filed an update"
+                value: "recently_filed",
+                text: "No, but i've recently filed an update",
+                attributes: {
+                  "data-event-id": "recently-filed-radio-button"
+                }
               }
             ]
           }) }}
-          {% elseif registers === 'no' %}
-            {{ govukRadios({
-              classes: "govuk-radios",
-              idPrefix: "registers",
-              name: "registers",
-              fieldset: {
-                legend: {
-                  html: "Is this where the company records are kept?",
-                  isPageHeading: true,
-                  classes: "govuk-fieldset__legend--l"
-                }
-              },
-              items: [
-                {
-                  value: "yes",
-                  text: "Yes"
-                },
-                {
-                  value: "no",
-                  text: "No",
-                  checked: true
-                },
-                {
-                  value: "yes",
-                  text: "No, but i've recently filed an update"
-                }
-              ]
-            }) }}
-            {% else %}
-            {{ govukRadios({
-              classes: "govuk-radios",
-              idPrefix: "registers",
-              name: "registers",
-              fieldset: {
-                legend: {
-                  html: "Is this where the company records are kept?",
-                  isPageHeading: true,
-                  classes: "govuk-fieldset__legend--l"
-                }
-              },
-              hint: {
-                html: registerHTML
-              },
-              items: [
-                {
-                  value: "yes",
-                  text: "Yes"
-                },
-                {
-                  value: "no",
-                  text: "No"
-                },
-                {
-                  value: "yes",
-                  text: "No, but i've recently filed an update"
-                }
-              ]
-            }) }}
-          {% endif %}
 
           {{ govukButton({
             text: "Continue"
