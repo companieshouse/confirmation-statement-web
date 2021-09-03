@@ -19,7 +19,7 @@ mockCreatePrivateApiClient.mockReturnValue({
   confirmationStatementService: ConfirmationStatementService.prototype
 } as PrivateApiClient);
 
-describe("Test shareholder service", () => {
+describe("Test register location service", () => {
 
   const companyNumber = "11111111";
 
