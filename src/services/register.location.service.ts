@@ -3,6 +3,7 @@ import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/res
 import { Session } from "@companieshouse/node-session-handler";
 import { RegisterLocation, ConfirmationStatementService } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { createPrivateOAuthApiClient } from "./api.service";
+import { createAndLogError } from "../utils/logger";
 
 export const getRegisterLocationData = async (session: Session, companyNumber: string): Promise<RegisterLocation[]> => {
   const client = createPrivateOAuthApiClient(session);
@@ -11,7 +12,7 @@ export const getRegisterLocationData = async (session: Session, companyNumber: s
   const status = response.httpStatusCode as number;
   if (status >= 400) {
     const errorResponse = response as ApiErrorResponse;
-    throw new Error(`Error retrieving register location data from confirmation-statment api: ${JSON.stringify(errorResponse)}`);
+    throw createAndLogError(`Error retrieving register location data from confirmation-statment api: ${JSON.stringify(errorResponse)}`);
   }
   const successfulResponse = response as Resource<RegisterLocation[]>;
   return successfulResponse.resource as RegisterLocation[];

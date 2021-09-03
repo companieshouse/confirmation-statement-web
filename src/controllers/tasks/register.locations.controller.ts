@@ -60,9 +60,9 @@ const formatSailForDisplay = (regLoc: RegisterLocation[]): string => {
 
 const formatRegisterForDisplay = (regLoc: RegisterLocation[]): Array<string> => {
   const registers = new Array<string>();
-  for (const key of Object.values(regLoc)) {
-    if (key.registerTypeDesc) {
-      registers.push(key.registerTypeDesc);
+  for (const value of Object.values(regLoc)) {
+    if (value.registerTypeDesc) {
+      registers.push(value.registerTypeDesc);
     }
   }
   return registers;
