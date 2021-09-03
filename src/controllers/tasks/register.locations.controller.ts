@@ -12,10 +12,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const session: Session = req.session as Session;
     const registerLocations: RegisterLocation[] = await getRegisterLocationData(session, companyNumber);
-    console.log("JSON OBJECT: " + JSON.stringify(registerLocations));
     const sailAddress = formatSailForDisplay(registerLocations);
     const registers = formatRegisterForDisplay(registerLocations);
-    console.log("registers: " + registers + " length: " + registers.length);
     const backLinkUrl = urlUtils.getUrlToPath(TASK_LIST_PATH, req);
     return res.render(Templates.REGISTER_LOCATIONS, {
       templateName: Templates.REGISTER_LOCATIONS,
