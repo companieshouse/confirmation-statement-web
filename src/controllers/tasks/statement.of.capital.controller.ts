@@ -7,10 +7,12 @@ import { getStatementOfCapitalData } from "../../services/statement.of.capital.s
 import { Session } from "@companieshouse/node-session-handler";
 import {
   SectionStatus,
+  Shareholder,
   StatementOfCapital
 } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { formatTitleCase } from "../../utils/format";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
+import { getShareholders } from "../../services/shareholder.service";
 
 export const get = async(req: Request, res: Response, next: NextFunction) => {
   try {
@@ -19,6 +21,7 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
     const session: Session = req.session as Session;
     const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, companyNumber);
+    const sharesValidation = await compareToShareholderTotalNumberOfShares(session, companyNumber, statementOfCapital);
 
     req.sessionCookie[sessionCookieConstants.STATEMENT_OF_CAPITAL_KEY] = statementOfCapital;
     statementOfCapital.classOfShares = formatTitleCase(statementOfCapital.classOfShares);
@@ -27,7 +30,8 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
       templateName: Templates.STATEMENT_OF_CAPITAL,
       backLinkUrl: urlUtils
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
-      statementOfCapital: statementOfCapital
+      statementOfCapital: statementOfCapital,
+      sharesValidation
     });
   } catch (e) {
     return next(e);
@@ -53,16 +57,28 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         backLinkUrl: urlUtils
           .getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, companyNumber, transactionId, submissionId),
       });
+    } else if (req.body.sharesValidation === 'false') {
+      await sendUpdate(req, SECTIONS.SOC, SectionStatus.NOT_CONFIRMED);
+      return res.redirect(urlUtils
+        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId));
     }
 
     return res.render(Templates.STATEMENT_OF_CAPITAL, {
       templateName: Templates.STATEMENT_OF_CAPITAL,
       statementOfCapitalErrorMsg: STATEMENT_OF_CAPITAL_ERROR,
       backLinkUrl: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
+      sharesValidation: req.body.sharesValidation
     });
   } catch (e) {
     return next(e);
   }
+};
+
+export const compareToShareholderTotalNumberOfShares = async (session: Session, companyNumber: string, statementOfCapital: StatementOfCapital): Promise<boolean> => {
+  const shareholders: Shareholder[] = await getShareholders(session, companyNumber);
+  let shareholderTotalNumberOfShares: number = 0;
+  shareholders.forEach(shareholder => shareholderTotalNumberOfShares = +shareholder.shares + shareholderTotalNumberOfShares);
+  return +statementOfCapital.totalNumberOfShares === shareholderTotalNumberOfShares;
 };
 
 const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];
