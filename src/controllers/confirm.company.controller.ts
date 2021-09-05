@@ -2,53 +2,42 @@ import { NextFunction, Request, Response } from "express";
 import { Templates } from "../types/template.paths";
 import { formatForDisplay, getCompanyProfile } from "../services/company.profile.service";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { createConfirmationStatement } from "../services/confirmation.statement.service";
+import { createConfirmationStatement, getNextMadeUpToDate } from "../services/confirmation.statement.service";
 import { Session } from "@companieshouse/node-session-handler";
 import { FEATURE_FLAG_PRIVATE_SDK_12052021 } from "../utils/properties";
 import { isActiveFeature } from "../utils/feature.flag";
 import { checkEligibility } from "../services/eligibility.service";
 import {
-  EligibilityStatusCode
+  EligibilityStatusCode, NextMadeUpToDate
 } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { CREATE_TRANSACTION_PATH } from "../types/page.urls";
-import { isInFuture, toReadableFormat } from "../utils/date";
-import { DateTime } from "luxon";
 import { urlUtils } from "../utils/url";
+import { toReadableFormat } from "../utils/date";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const companyProfile: CompanyProfile = await getCompanyProfile(req.query.companyNumber as string);
-    return res.render(Templates.CONFIRM_COMPANY, buildPageOptions(companyProfile));
+    return res.render(Templates.CONFIRM_COMPANY, await buildPageOptions(req.session as Session, companyProfile));
   } catch (e) {
     return next(e);
   }
 };
 
-const buildPageOptions = (companyProfile: CompanyProfile): Object => {
-  // need to extract the nextMadeUpTo before company profile is formatted for display as it will modify the date format
-  const nextMadeUpTo = companyProfile?.confirmationStatement?.nextMadeUpTo;
-
+const buildPageOptions = async (session: Session, companyProfile: CompanyProfile): Promise<Object> => {
   const pageOptions = {
     company: formatForDisplay(companyProfile),
     templateName: Templates.CONFIRM_COMPANY
   };
 
-  if (!isFilingDue(nextMadeUpTo)) {
+  const nextMadeUpToDate: NextMadeUpToDate = await getNextMadeUpToDate(session, companyProfile.companyNumber);
+
+  // can't use falsy here, isDue can be undefined
+  if (nextMadeUpToDate.isDue === false) {
     pageOptions["notDueWarning"] = {
-      todaysDate: toReadableFormat(DateTime.now().toISODate())
+      newNextMadeUptoDate: nextMadeUpToDate.newNextMadeUpToDate ? toReadableFormat(nextMadeUpToDate.newNextMadeUpToDate) : ""
     };
   }
   return pageOptions;
-};
-
-const isFilingDue = (nextMadeUpTo: string | undefined): boolean => {
-  let due = true;
-  if (nextMadeUpTo) {
-    if (isInFuture(nextMadeUpTo)) {
-      due = false;
-    }
-  }
-  return due;
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
