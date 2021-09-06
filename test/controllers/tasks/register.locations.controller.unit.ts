@@ -18,7 +18,7 @@ const mockGetRegisterLocation = getRegisterLocationData as jest.Mock;
 const PAGE_HEADING = "Review where the company records are held";
 const SAIL_HEADING = "SAIL (Single Alternative Inspection Location)";
 const NO_RECORDS_SAIL = "There are currently no records held at the SAIL addres";
-const ALL_RECORDS_MESSAGE = "All company records are kept at the registered office address or on the public record.";
+const ALL_RECORDS_MESSAGE = "All company records are kept at the registered office address, or on the public record.";
 const OTHER_RECORDS_MESSAGE = "Any other company records are kept at the registered office address, or on the public record.";
 
 const COMPANY_NUMBER = "12345678";
