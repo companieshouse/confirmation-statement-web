@@ -36,7 +36,7 @@ export const initTaskList = (companyNumber: string,
       },
       registerLocations: {
         isVisible: false,
-        state: TaskState.NOT_CHECKED,
+        state: toTaskState(csSubmission.data?.registerLocationsData?.sectionStatus),
         url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTER_LOCATIONS_PATH, companyNumber, transactionId, submissionId)
       },
       registeredOfficeAddress: {

@@ -8,7 +8,8 @@ import {
   PersonsOfSignificantControlData,
   SicCodeData,
   StatementOfCapitalData,
-  ShareholderData
+  ShareholderData,
+  RegisterLocationsData
 } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement, updateConfirmationStatement } from "../services/confirmation.statement.service";
 import { SECTIONS } from "../utils/constants";
@@ -72,6 +73,12 @@ const generateSectionData = (section: SECTIONS, status: SectionStatus, extraData
           sectionStatus: status
         };
         return newShareholderData;
+      }
+      case SECTIONS.REGISTER_LOCATIONS: {
+        const newRegisterLocationsData: RegisterLocationsData = {
+          sectionStatus: status
+        };
+        return newRegisterLocationsData;
       }
   }
 };
