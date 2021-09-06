@@ -3,7 +3,6 @@ jest.mock("../../../src/services/shareholder.service");
 jest.mock("../../../src/utils/update.confirmation.statement.submission");
 jest.mock("../../../src/services/statement.of.capital.service");
 jest.mock("../../../src/services/confirmation.statement.service");
-jest.mock("../../mocks/shareholder.mock");
 
 import {
   getConfirmationStatement,
