@@ -270,7 +270,7 @@ describe("Confirm company controller tests", () => {
     expect(response.text).not.toContain("You are not due to file a confirmation statement");
   });
 
-  it("Should not convert next ade up to date to readable format if date not found", async () => {
+  it("Should not convert next made up to date to readable format if date not found", async () => {
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockGetNextMadeUpToDate.mockResolvedValueOnce({
       currentNextMadeUpToDate: validCompanyProfile.confirmationStatement?.nextMadeUpTo,
