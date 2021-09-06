@@ -1,5 +1,6 @@
 jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/register.location.service");
+jest.mock("../../../src/utils/update.confirmation.statement.submission");
 
 import request from "supertest";
 import mocks from "../../mocks/all.middleware.mock";
@@ -7,18 +8,21 @@ import { companyAuthenticationMiddleware } from "../../../src/middleware/company
 import app from "../../../src/app";
 import { REGISTER_LOCATIONS_PATH, TASK_LIST_PATH, urlParams } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
-import { RADIO_BUTTON_VALUE, REGISTER_LOCATIONS_ERROR } from "../../../src/utils/constants";
+import { RADIO_BUTTON_VALUE, REGISTER_LOCATIONS_ERROR, SECTIONS } from "../../../src/utils/constants";
+import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
+import { SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { getRegisterLocationData } from "../../../src/services/register.location.service";
 import { mockRegisterLocation, mockRegisterLocationNoReg, mockRegisterLocationNoRegNoSail } from "../../mocks/register.location.mock";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 const mockGetRegisterLocation = getRegisterLocationData as jest.Mock;
+const mockSendUpdate = sendUpdate as jest.Mock;
 
 const PAGE_HEADING = "Review where the company records are held";
 const SAIL_HEADING = "SAIL (Single Alternative Inspection Location)";
 const NO_RECORDS_SAIL = "There are currently no records held at the SAIL addres";
-const ALL_RECORDS_MESSAGE = "All company records are kept at the registered office address or on the public record.";
+const ALL_RECORDS_MESSAGE = "All company records are kept at the registered office address, or on the public record.";
 const OTHER_RECORDS_MESSAGE = "Any other company records are kept at the registered office address, or on the public record.";
 
 const COMPANY_NUMBER = "12345678";
@@ -33,6 +37,7 @@ describe("Register locations controller tests", () => {
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
     mockGetRegisterLocation.mockClear();
+    mockSendUpdate.mockClear();
   });
 
   it("Should navigate to the Register locations page", async () => {
@@ -83,6 +88,9 @@ describe("Register locations controller tests", () => {
     const response = await request(app)
       .post(REGISTER_LOCATIONS_URL)
       .send({ registers: RADIO_BUTTON_VALUE.YES });
+
+    expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.REGISTER_LOCATIONS);
+    expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
     expect(response.status).toEqual(302);
     expect(response.header.location).toEqual(TASK_LIST_URL);
   });
@@ -91,6 +99,8 @@ describe("Register locations controller tests", () => {
     const response = await request(app)
       .post(REGISTER_LOCATIONS_URL)
       .send({ registers: RADIO_BUTTON_VALUE.RECENTLY_FILED });
+    expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.REGISTER_LOCATIONS);
+    expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
     expect(response.status).toEqual(302);
     expect(response.header.location).toEqual(TASK_LIST_URL);
   });
@@ -99,6 +109,8 @@ describe("Register locations controller tests", () => {
     const response = await request(app)
       .post(REGISTER_LOCATIONS_URL)
       .send({ registers: RADIO_BUTTON_VALUE.NO });
+    expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.REGISTER_LOCATIONS);
+    expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
     expect(response.status).toEqual(200);
     expect(response.text).toContain(STOP_PAGE_MESSAGE);
   });

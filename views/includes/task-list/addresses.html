@@ -22,9 +22,9 @@
                 Register locations
             </a>
         </span>
-        {% if taskList.registerLocations.state === "CHECKED" %}
+        {% if taskList.tasks.registerLocations.state === "CHECKED" %}
             {{ showChecked | safe | replace("statusIdPlaceholder", "registersStatus")}}
-        {% elseif taskList.registerLocations.state === "IN_PROGRESS" %}
+        {% elseif taskList.tasks.registerLocations.state === "IN_PROGRESS" %}
             {{ showInProgress | safe | replace("statusIdPlaceholder", "registersStatus")}}
         {% else %}
             {{ showNotChecked | safe | replace("statusIdPlaceholder", "registersStatus")}}

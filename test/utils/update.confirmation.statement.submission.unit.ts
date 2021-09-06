@@ -73,6 +73,12 @@ describe("Update.confirmation.statement.submission util tests", () => {
       expect(csSubmission.data?.registeredOfficeAddressData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
     });
 
+    it("Should create registereLocations submission data", async () => {
+      await sendUpdate(request, SECTIONS.REGISTER_LOCATIONS, SectionStatus.CONFIRMED);
+      const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
+      expect(csSubmission.data?.registerLocationsData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
+    });
+
     it("Should create personsSignificantControl submission data", async () => {
       await sendUpdate(request, SECTIONS.PSC, SectionStatus.CONFIRMED);
       const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
