@@ -21,7 +21,7 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
     const session: Session = req.session as Session;
     const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, companyNumber);
-    const sharesValidation = await compareToShareholderTotalNumberOfShares(session, companyNumber, statementOfCapital);
+    const sharesValidation = await validateTotalNumberOfShares(session, companyNumber, +statementOfCapital.totalNumberOfShares);
 
     req.sessionCookie[sessionCookieConstants.STATEMENT_OF_CAPITAL_KEY] = statementOfCapital;
     statementOfCapital.classOfShares = formatTitleCase(statementOfCapital.classOfShares);
@@ -74,11 +74,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const compareToShareholderTotalNumberOfShares = async (session: Session, companyNumber: string, statementOfCapital: StatementOfCapital): Promise<boolean> => {
+const validateTotalNumberOfShares = async (session: Session, companyNumber: string, totalNumberOfShares: number): Promise<boolean> => {
   const shareholders: Shareholder[] = await getShareholders(session, companyNumber);
   let shareholderTotalNumberOfShares: number = 0;
   shareholders.forEach(shareholder => shareholderTotalNumberOfShares = +shareholder.shares + shareholderTotalNumberOfShares);
-  return +statementOfCapital.totalNumberOfShares === shareholderTotalNumberOfShares;
+  return totalNumberOfShares === shareholderTotalNumberOfShares;
 };
 
 const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];
