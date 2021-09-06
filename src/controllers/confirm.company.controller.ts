@@ -29,13 +29,15 @@ const buildPageOptions = async (session: Session, companyProfile: CompanyProfile
     templateName: Templates.CONFIRM_COMPANY
   };
 
-  const nextMadeUpToDate: NextMadeUpToDate = await getNextMadeUpToDate(session, companyProfile.companyNumber);
+  if (companyProfile?.confirmationStatement?.nextMadeUpTo) {
+    const nextMadeUpToDate: NextMadeUpToDate = await getNextMadeUpToDate(session, companyProfile.companyNumber);
 
-  // can't use falsy here, isDue can be undefined
-  if (nextMadeUpToDate.isDue === false) {
-    pageOptions["notDueWarning"] = {
-      newNextMadeUptoDate: nextMadeUpToDate.newNextMadeUpToDate ? toReadableFormat(nextMadeUpToDate.newNextMadeUpToDate) : ""
-    };
+    // can't use falsy here, isDue can be undefined
+    if (nextMadeUpToDate.isDue === false) {
+      pageOptions["notDueWarning"] = {
+        newNextMadeUptoDate: nextMadeUpToDate.newNextMadeUpToDate ? toReadableFormat(nextMadeUpToDate.newNextMadeUpToDate) : ""
+      };
+    }
   }
   return pageOptions;
 };
