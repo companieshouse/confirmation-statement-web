@@ -35,7 +35,7 @@ export const formatAddressForDisplay = (address: Address): string => {
   return addressStr.slice(0, -2);
 };
 
-const formatAddress = (address: Address): Address => {
+export const formatAddress = (address: Address): Address => {
   const addressClone: Address = JSON.parse(JSON.stringify(address));
   return {
     careOf: formatTitleCase(addressClone.careOf),
