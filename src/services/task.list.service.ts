@@ -1,7 +1,6 @@
 import { ConfirmationStatementSubmission } from "private-api-sdk-node/dist/services/confirmation-statement";
 import {
-  TaskList,
-  TaskState
+  TaskList
 } from "../types/task.list";
 import { DateTime } from "luxon";
 import { toReadableFormat } from "../utils/date";

@@ -3,10 +3,12 @@ import {
   CompanyValidationResponse,
   ConfirmationStatementCreated,
   ConfirmationStatementService,
-  ConfirmationStatementSubmission
+  ConfirmationStatementSubmission,
+  NextMadeUpToDate
 } from "private-api-sdk-node/dist/services/confirmation-statement";
 import Resource, { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { createPrivateOAuthApiClient } from "./api.service";
+import { createAndLogError } from "../utils/logger";
 
 export const createConfirmationStatement = async (session: Session,
                                                   transactionId: string): Promise<Resource<ConfirmationStatementCreated | CompanyValidationResponse>> => {
@@ -49,4 +51,21 @@ export const updateConfirmationStatement = async (session: Session,
     const castedResponse: ApiErrorResponse = response;
     throw new Error(`Transaction Id ${transactionId}, Submit Id ${submitId}, Something went wrong updating confirmation statement ${JSON.stringify(castedResponse)}`);
   }
+};
+
+export const getNextMadeUpToDate = async (session: Session, companyNumber: string): Promise<NextMadeUpToDate> => {
+  const client = createPrivateOAuthApiClient(session);
+  const csService: ConfirmationStatementService = client.confirmationStatementService;
+  const response = await csService.getNextMadeUpToDate(companyNumber);
+
+  if (response.httpStatusCode !== 200) {
+    throw createAndLogError(`Error getting next made up to date from api with company number = ${companyNumber} - ${JSON.stringify(response)}`);
+  }
+
+  const nextMadeUpToDate: Resource<NextMadeUpToDate> = response as Resource<NextMadeUpToDate>;
+  if (!nextMadeUpToDate.resource) {
+    throw createAndLogError(`Error No resource returned when getting next made up to date from api with companyNumber = ${companyNumber} - ${JSON.stringify(response)}`);
+  }
+
+  return nextMadeUpToDate.resource;
 };

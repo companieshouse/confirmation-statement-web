@@ -30,12 +30,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const registerLocationsButton = req.body.registers;
 
     if (registerLocationsButton === RADIO_BUTTON_VALUE.YES || registerLocationsButton === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-      await sendUpdate(req, SECTIONS.REGISTER_LOCATIONS, SectionStatus.CONFIRMED)
+      await sendUpdate(req, SECTIONS.REGISTER_LOCATIONS, SectionStatus.CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     }
 
     if (registerLocationsButton === RADIO_BUTTON_VALUE.NO) {
-      await sendUpdate(req, SECTIONS.REGISTER_LOCATIONS, SectionStatus.NOT_CONFIRMED)
+      await sendUpdate(req, SECTIONS.REGISTER_LOCATIONS, SectionStatus.NOT_CONFIRMED);
       return res.render(Templates.WRONG_REGISTER_LOCATIONS, {
         backLinkUrl: urlUtils.getUrlToPath(REGISTER_LOCATIONS_PATH, req),
         taskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
