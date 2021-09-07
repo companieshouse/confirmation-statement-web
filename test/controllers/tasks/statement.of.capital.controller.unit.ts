@@ -1,4 +1,6 @@
 jest.mock("../../../src/middleware/company.authentication.middleware");
+jest.mock("../../../src/services/shareholder.service");
+jest.mock("../../../src/utils/update.confirmation.statement.submission");
 jest.mock("../../../src/services/statement.of.capital.service");
 jest.mock("../../../src/services/confirmation.statement.service");
 
@@ -18,6 +20,9 @@ import {
   mockConfirmationStatementSubmission,
   mockStatementOfCapital
 } from "../../mocks/confirmation.statement.submission.mock";
+import { getShareholders } from "../../../src/services/shareholder.service";
+import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
+import { SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
@@ -26,9 +31,12 @@ const mockGetStatementOfCapitalData = getStatementOfCapitalData as jest.Mock;
 const mockUpdateConfirmationStatement = updateConfirmationStatement as jest.Mock;
 
 const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
+const mockGetShareholders = getShareholders as jest.Mock;
+const mockSendUpdate = sendUpdate as jest.Mock;
 
 const PAGE_HEADING = "Review the statement of capital";
 const STOP_PAGE_HEADING = "You cannot use this service - File a confirmation statement";
+const SHARES_TOTALS_INVALID_WARNING = "You cannot continue to file a confirmation statement in this service.";
 const COMPANY_NUMBER = "12345678";
 const SUBMISSION_ID = "a80f09e2";
 const TRANSACTION_ID = "111-111-111";
@@ -43,15 +51,33 @@ describe("Statement of Capital controller tests", () => {
     mocks.mockSessionMiddleware.mockClear();
     mockGetStatementOfCapitalData.mockClear();
     mockUpdateConfirmationStatement.mockClear();
+    mockGetShareholders.mockClear();
+    mockSendUpdate.mockClear();
   });
 
   describe("get tests", () => {
-    it("should navigate to the statement of capital page", async () => {
-      mockGetStatementOfCapitalData.mockReturnValueOnce(mockStatementOfCapital);
+    it("should navigate to the statement of capital page with NO buttons visible if share totals DO NOT match the shareholders'.", async () => {
+      mockGetStatementOfCapitalData.mockResolvedValueOnce(mockStatementOfCapital);
+      mockGetShareholders.mockResolvedValue([{ shares: "123" }]);
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
 
+      expect(mockGetShareholders).toBeCalledTimes(1);
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Check the statement of capital");
+      expect(response.text).toContain(SHARES_TOTALS_INVALID_WARNING);
+      expect(response.text).not.toContain("Is the statement of capital correct?");
+    });
+
+    it("should navigate to the statement of capital page with buttons visible if share totals match the shareholders'.", async () => {
+      mockGetStatementOfCapitalData.mockResolvedValueOnce(mockStatementOfCapital);
+      mockGetShareholders.mockResolvedValue([{ shares: "100" }]);
+      const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
+
+      expect(mockGetShareholders).toBeCalledTimes(1);
+      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain("Check the statement of capital");
+      expect(response.text).toContain("Is the statement of capital correct?");
+      expect(response.text).not.toContain(SHARES_TOTALS_INVALID_WARNING);
     });
 
     it("Should return an error page if error is thrown in get function", async () => {
@@ -73,16 +99,29 @@ describe("Statement of Capital controller tests", () => {
   });
 
   describe("post tests", () => {
-    it("Should navigate to the task list page when statement of capital confirmed", async () => {
+    it("Should navigate to the task list page when statement of capital confirmed and set status to CONFIRMED.", async () => {
       mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(STATEMENT_OF_CAPITAL_URL)
         .send({ sessionCookie: `{ statementOfCapital: ${mockStatementOfCapital} }` })
-        .send({ statementOfCapital: "yes" });
+        .send({ statementOfCapital: "yes" })
+        .send({ sharesValidation: "true" });
 
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
-      expect(mockUpdateConfirmationStatement).toBeCalled();
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+    });
+
+    it("Should navigate to the task list page when statement of capital confirmed and set status to NOT CONFIRMED.", async () => {
+      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
+      const response = await request(app)
+        .post(STATEMENT_OF_CAPITAL_URL)
+        .send({ sessionCookie: `{ statementOfCapital: ${mockStatementOfCapital} }` })
+        .send({ sharesValidation: "false" });
+
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(TASK_LIST_URL);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
     });
 
     it("Should navigate to the statement of capital stop page when statement of capital is declared incorrect", async () => {
