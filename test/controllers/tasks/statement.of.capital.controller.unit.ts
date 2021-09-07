@@ -57,8 +57,8 @@ describe("Statement of Capital controller tests", () => {
 
   describe("get tests", () => {
     it("should navigate to the statement of capital page with NO buttons visible if share totals DO NOT match the shareholders'.", async () => {
-      mockGetStatementOfCapitalData.mockReturnValueOnce(mockStatementOfCapital);
-      mockGetShareholders.mockReturnValue([{ shares: "123" }]);
+      mockGetStatementOfCapitalData.mockResolvedValueOnce(mockStatementOfCapital);
+      mockGetShareholders.mockResolvedValue([{ shares: "123" }]);
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
 
       expect(mockGetShareholders).toBeCalledTimes(1);
@@ -69,8 +69,8 @@ describe("Statement of Capital controller tests", () => {
     });
 
     it("should navigate to the statement of capital page with buttons visible if share totals match the shareholders'.", async () => {
-      mockGetStatementOfCapitalData.mockReturnValueOnce(mockStatementOfCapital);
-      mockGetShareholders.mockReturnValueOnce([{ shares: "100" }]);
+      mockGetStatementOfCapitalData.mockResolvedValueOnce(mockStatementOfCapital);
+      mockGetShareholders.mockResolvedValue([{ shares: "100" }]);
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
 
       expect(mockGetShareholders).toBeCalledTimes(1);
