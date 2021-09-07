@@ -1,18 +1,18 @@
-import { ActiveDirectorDetails } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { ActiveDirectorDetails, Address } from "private-api-sdk-node/dist/services/confirmation-statement";
 
-export const mockAddress1 = {
+export const mockAddress1: Address = {
   addressLine1: "Diddly squat farm shop",
-  addressLine2: null,
-  careOf: null,
+  addressLine2: undefined,
+  careOf: undefined,
   country: "England",
   locality: "Chadlington",
-  poBox: null,
+  poBox: undefined,
   postalCode: "OX7 3PE",
-  premises: null,
+  premises: undefined,
   region: "Thisshire"
 };
 
-export const mockAddress1Formatted = {
+export const mockAddress1Formatted: Address = {
   addressLine1: "Diddly Squat Farm Shop",
   addressLine2: "",
   careOf: "",
@@ -24,7 +24,7 @@ export const mockAddress1Formatted = {
   region: "Thisshire"
 };
 
-export const mockAddress2 = {
+export const mockAddress2: Address = {
   addressLine1: "10 this road",
   addressLine2: "this",
   careOf: "abc",
@@ -36,7 +36,7 @@ export const mockAddress2 = {
   region: "Thisshire"
 };
 
-export const mockAddress2Formatted = {
+export const mockAddress2Formatted: Address = {
   addressLine1: "10 This Road",
   addressLine2: "This",
   careOf: "Abc",
@@ -48,16 +48,16 @@ export const mockAddress2Formatted = {
   region: "Thisshire"
 };
 
-export const mockSecureAddress = {
+export const mockSecureAddress: Address = {
   addressLine1: "Companies House Cannot Disclose this Home Address",
-  addressLine2: null,
-  careOf: null,
-  country: null,
-  locality: null,
-  poBox: null,
-  postalCode: null,
-  premises: null,
-  region: null
+  addressLine2: undefined,
+  careOf: undefined,
+  country: undefined,
+  locality: undefined,
+  poBox: undefined,
+  postalCode: undefined,
+  premises: undefined,
+  region: undefined
 };
 
 export const mockActiveDirectorDetails: ActiveDirectorDetails = {
