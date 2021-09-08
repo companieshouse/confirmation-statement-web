@@ -50,17 +50,14 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       await sendUpdate(req, SECTIONS.SOC, SectionStatus.CONFIRMED, statementOfCapital);
       return res.redirect(urlUtils
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId));
-    } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO) {
+    } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO || req.body.sharesValidation === 'false') {
       await sendUpdate(req, SECTIONS.SOC, SectionStatus.NOT_CONFIRMED);
       return res.render(Templates.WRONG_STATEMENT_OF_CAPITAL, {
         templateName: Templates.WRONG_STATEMENT_OF_CAPITAL,
         backLinkUrl: urlUtils
           .getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, companyNumber, transactionId, submissionId),
+        sharesValidation: req.body.sharesValidation
       });
-    } else if (req.body.sharesValidation === 'false') {
-      await sendUpdate(req, SECTIONS.SOC, SectionStatus.NOT_CONFIRMED);
-      return res.redirect(urlUtils
-        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId));
     }
 
     return res.render(Templates.STATEMENT_OF_CAPITAL, {
