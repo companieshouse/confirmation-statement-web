@@ -42,37 +42,30 @@ describe("Task List Service tests", () => {
     it("Should return a populated task list", () => {
       const taskList: TaskList = initTaskList(COMPANY_NUMBER, TRANSACTION_ID, CS_SUBMISSION_ID, mockConfirmationStatementSubmission);
 
-      expect(taskList.tasks.officers.isVisible).toBe(false);
       expect(taskList.tasks.officers.state).toBe(TASK_STATE);
       expect(taskList.tasks.officers.url).toBe(TASK_URL);
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[0][0]).toBe(ACTIVE_DIRECTORS_PATH);
 
-      expect(taskList.tasks.peopleSignificantControl.isVisible).toBe(false);
       expect(taskList.tasks.peopleSignificantControl.state).toBe(TaskState.CHECKED);
       expect(taskList.tasks.peopleSignificantControl.url).toBe(TASK_URL);
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[1][0]).toBe(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH);
 
-      expect(taskList.tasks.registerLocations.isVisible).toBe(false);
       expect(taskList.tasks.registerLocations.state).toBe(TASK_STATE);
       expect(taskList.tasks.registerLocations.url).toBe(TASK_URL);
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[2][0]).toBe(REGISTER_LOCATIONS_PATH);
 
-      expect(taskList.tasks.registeredOfficeAddress.isVisible).toBe(false);
       expect(taskList.tasks.registeredOfficeAddress.state).toBe(TASK_STATE);
       expect(taskList.tasks.registeredOfficeAddress.url).toBe(TASK_URL);
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[3][0]).toBe(REGISTERED_OFFICE_ADDRESS_PATH);
 
-      expect(taskList.tasks.shareholders.isVisible).toBe(false);
       expect(taskList.tasks.shareholders.state).toBe(TaskState.CHECKED);
       expect(taskList.tasks.shareholders.url).toBe(TASK_URL);
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[4][0]).toBe(SHAREHOLDERS_PATH);
 
-      expect(taskList.tasks.sicCodes.isVisible).toBe(false);
       expect(taskList.tasks.sicCodes.state).toBe(TaskState.CHECKED);
       expect(taskList.tasks.sicCodes.url).toBe(TASK_URL);
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[5][0]).toBe(SIC_PATH);
 
-      expect(taskList.tasks.statementOfCapital.isVisible).toBe(false);
       expect(taskList.tasks.statementOfCapital.state).toBe(TASK_STATE);
       expect(taskList.tasks.statementOfCapital.url).toBe(TASK_URL);
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[6][0]).toBe(STATEMENT_OF_CAPITAL_PATH);
