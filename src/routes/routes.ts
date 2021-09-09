@@ -14,6 +14,7 @@ import * as taskListRoute from "../controllers/task.list.controller";
 import * as registeredOfficeAddressRoute from "../controllers/tasks/registered.office.address.controller";
 import * as registeredLocationsRoute from "../controllers/tasks/register.locations.controller";
 import * as reviewRoute from "../controllers/review.controller";
+import * as confirmationRoute from "../controllers/confirmation.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 
@@ -72,3 +73,5 @@ router.post(urls.REGISTER_LOCATIONS, registeredLocationsRoute.post);
 
 router.get(urls.REVIEW, reviewRoute.get);
 router.post(urls.REVIEW, reviewRoute.post);
+
+router.get(urls.CONFIRMATION, confirmationRoute.get);

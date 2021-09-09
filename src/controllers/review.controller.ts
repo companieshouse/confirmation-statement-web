@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { closeTransaction, getTransaction } from "../services/transaction.service";
 import { Session } from "@companieshouse/node-session-handler";
-import { CONFIRMATION_STATEMENT, TASK_LIST_PATH } from "../types/page.urls";
+import {CONFIRMATION_PATH, CONFIRMATION_STATEMENT, TASK_LIST_PATH } from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 import { urlUtils } from "../utils/url";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
@@ -46,8 +46,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const paymentUrl: string | undefined = await closeTransaction(session, companyNumber, submissionId, transactionId);
 
     if (!paymentUrl) {
-      // No payment required skip to confirmation of submission
-      return next(createAndLogError("Not yet supported"));
+      return res.redirect(urlUtils
+        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(CONFIRMATION_PATH, companyNumber, transactionId, submissionId));
     } else {
       // Payment required kick off payment journey
       const resourceUri: string = `/transactions/${transactionId}/payment`;
