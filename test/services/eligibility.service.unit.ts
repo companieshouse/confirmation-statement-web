@@ -1,7 +1,3 @@
-
-
-jest.mock("private-api-sdk-node/dist/services/confirmation-statement");
-jest.mock("private-api-sdk-node/");
 jest.mock("@companieshouse/api-sdk-node");
 jest.mock("@companieshouse/api-sdk-node/dist/services/confirmation-statement");
 

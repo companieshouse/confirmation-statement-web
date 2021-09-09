@@ -1,12 +1,12 @@
-jest.mock("private-api-sdk-node/dist/services/confirmation-statement");
-jest.mock("private-api-sdk-node/");
+jest.mock("@companieshouse/api-sdk-node");
+jest.mock("@companieshouse/api-sdk-node/dist/services/confirmation-statement");
 
 import {
   ConfirmationStatementService,
   StatementOfCapital
-} from "private-api-sdk-node/dist/services/confirmation-statement";
-import { createPrivateApiClient } from "private-api-sdk-node";
-import PrivateApiClient from "private-api-sdk-node/dist/client";
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { createApiClient } from "@companieshouse/api-sdk-node";
+import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 import { Resource } from "@companieshouse/api-sdk-node";
 import { getStatementOfCapitalData } from "../../src/services/statement.of.capital.service";
 import { getSessionRequest } from "../mocks/session.mock";
@@ -14,11 +14,11 @@ import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/res
 import { mockStatementOfCapital } from "../mocks/confirmation.statement.submission.mock";
 
 const mockGetStatementOfCapital = ConfirmationStatementService.prototype.getStatementOfCapital as jest.Mock;
-const mockCreatePrivateApiClient = createPrivateApiClient as jest.Mock;
+const mockCreateApiClient = createApiClient as jest.Mock;
 
-mockCreatePrivateApiClient.mockReturnValue({
+mockCreateApiClient.mockReturnValue({
   confirmationStatementService: ConfirmationStatementService.prototype
-} as PrivateApiClient);
+} as ApiClient);
 
 describe("Test statement of capital service", () => {
 
