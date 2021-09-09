@@ -1,10 +1,8 @@
-jest.mock("../../src/services/confirmation.statement.service");
-
 import request from "supertest";
 import mocks from "../mocks/all.middleware.mock";
 import app from "../../src/app";
 import { urlUtils } from "../../src/utils/url";
-import { CONFIRM_COMPANY_PATH, CONFIRMATION_PATH } from "../../src/types/page.urls";
+import { CONFIRMATION_PATH } from "../../src/types/page.urls";
 
 
 const COMPANY_NUMBER = "12345678";
