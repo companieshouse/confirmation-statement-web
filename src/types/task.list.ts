@@ -14,37 +14,30 @@ export interface TaskList {
   tasks: {
     sicCodes: {
       state: TaskState;
-      isVisible: boolean;
       url: string;
     };
     statementOfCapital: {
       state: TaskState;
-      isVisible: boolean;
       url: string;
     };
     officers: {
       state: TaskState;
-      isVisible: boolean;
       url: string;
     };
     peopleSignificantControl: {
       state: TaskState;
-      isVisible: boolean;
       url: string;
     };
     shareholders: {
       state: TaskState;
-      isVisible: boolean;
       url: string;
     };
     registeredOfficeAddress: {
       state: TaskState;
-      isVisible: boolean;
       url: string;
     };
     registerLocations: {
       state: TaskState;
-      isVisible: boolean;
       url: string;
     };
   },
