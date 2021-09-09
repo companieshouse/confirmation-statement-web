@@ -22,6 +22,7 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
     const session: Session = req.session as Session;
     const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, companyNumber);
     const sharesValidation = await validateTotalNumberOfShares(session, companyNumber, +statementOfCapital.totalNumberOfShares);
+    const totalAmountUnpaidValidation = statementOfCapital.totalAmountUnpaidForCurrency !== null;
 
     req.sessionCookie[sessionCookieConstants.STATEMENT_OF_CAPITAL_KEY] = statementOfCapital;
     statementOfCapital.classOfShares = formatTitleCase(statementOfCapital.classOfShares);
@@ -31,7 +32,8 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
       backLinkUrl: urlUtils
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
       statementOfCapital: statementOfCapital,
-      sharesValidation
+      sharesValidation,
+      totalAmountUnpaidValidation
     });
   } catch (e) {
     return next(e);
@@ -44,19 +46,22 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = getCompanyNumber(req);
     const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
+    const sharesValidation = req.body.sharesValidation === 'true';
+    const totalAmountUnpaidValidation = req.body.totalAmountUnpaidValidation === 'true';
 
     if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.YES) {
       const statementOfCapital: StatementOfCapital = req.sessionCookie[sessionCookieConstants.STATEMENT_OF_CAPITAL_KEY];
       await sendUpdate(req, SECTIONS.SOC, SectionStatus.CONFIRMED, statementOfCapital);
       return res.redirect(urlUtils
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId));
-    } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO || req.body.sharesValidation === 'false') {
+    } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO || !sharesValidation || !totalAmountUnpaidValidation) {
       await sendUpdate(req, SECTIONS.SOC, SectionStatus.NOT_CONFIRMED);
       return res.render(Templates.WRONG_STATEMENT_OF_CAPITAL, {
         templateName: Templates.WRONG_STATEMENT_OF_CAPITAL,
         backLinkUrl: urlUtils
           .getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, companyNumber, transactionId, submissionId),
-        sharesValidation: req.body.sharesValidation
+        sharesValidation,
+        totalAmountUnpaidValidation
       });
     }
 
@@ -64,7 +69,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       templateName: Templates.STATEMENT_OF_CAPITAL,
       statementOfCapitalErrorMsg: STATEMENT_OF_CAPITAL_ERROR,
       backLinkUrl: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
-      sharesValidation: req.body.sharesValidation
+      sharesValidation,
+      totalAmountUnpaidValidation
     });
   } catch (e) {
     return next(e);

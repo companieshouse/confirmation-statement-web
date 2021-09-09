@@ -15,10 +15,20 @@
         <h1 class="govuk-heading-xl">
           You cannot use this service
         </h1>
-        {% if sharesValidation === 'false' %}
-          <p>The company's share capital does not match the shares held by its shareholders.</p>
+
+        {% if totalAmountUnpaidValidation === false or sharesValidation === false %}
+          
+          {% if totalAmountUnpaidValidation === false %}
+            <p>The total amount unpaid for all shares is missing on this company’s statement of capital.</p>
+          {% endif %}
+
+          {% if sharesValidation === false %}
+            <p>The company's share capital does not match the shares held by its shareholders.</p>
+          {% endif %}
+
           <p>You must update this information by filing a confirmation statement through 
-            <a target="_blank" rel="noopener noreferrer" href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" data-event-id="webfiling-service-link-from-invalid-share-totals-wrong-statement-of-capital-page">our WebFiling service</a>. You will need to sign in to or create a WebFiling account to do this.</p>
+            <a target="_blank" rel="noopener noreferrer" href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" data-event-id="webfiling-service-link-from-invalid-share-or-amount-unpaid-totals-wrong-statement-of-capital-page">our WebFiling service</a>. You will need to sign in to or create a WebFiling account to do this.</p>
+        
         {% else %}
           <p>Currently, changes to share capital can only be made by filing a confirmation statement through
             <a target="_blank" rel="noopener noreferrer" href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" data-event-id="webfiling-service-link-from-wrong-statement-of-capital-page">our WebFiling service (opens in a new tab)</a>. You will need to sign in to or create a WebFiling account to do this.

@@ -36,7 +36,8 @@ const mockSendUpdate = sendUpdate as jest.Mock;
 
 const PAGE_HEADING = "Review the statement of capital";
 const STOP_PAGE_HEADING = "You cannot use this service - File a confirmation statement";
-const SHARES_TOTALS_INVALID_WARNING = "You cannot continue to file a confirmation statement in this service.";
+const SHARES_TOTALS_INVALID_WARNING = "The company's share capital does not match the number of shares held by its shareholders.";
+const UNPAID_AMOUNT_NULL_WARNING = "The total amount unpaid for all shares is missing on this company’s statement of capital.";
 const COMPANY_NUMBER = "12345678";
 const SUBMISSION_ID = "a80f09e2";
 const TRANSACTION_ID = "111-111-111";
@@ -56,7 +57,40 @@ describe("Statement of Capital controller tests", () => {
   });
 
   describe("get tests", () => {
-    it("should navigate to the statement of capital page with NO buttons visible if share totals DO NOT match the shareholders'.", async () => {
+
+    it("should navigate to the statement of capital page with NO buttons visible, a share-capital-mismatch-warning and total-amount-unpaid-warning messages if Share totals DO NOT match and amount unpaid is NULL", async () => {
+      mockGetStatementOfCapitalData.mockResolvedValueOnce({
+        totalNumberOfShares: "100",
+        totalAmountUnpaidForCurrency: null
+      });
+      mockGetShareholders.mockResolvedValue([{ shares: "123" }]);
+      const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
+
+      expect(mockGetShareholders).toBeCalledTimes(1);
+      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain("Check the statement of capital");
+      expect(response.text).toContain(UNPAID_AMOUNT_NULL_WARNING);
+      expect(response.text).toContain(SHARES_TOTALS_INVALID_WARNING);
+      expect(response.text).not.toContain("Is the statement of capital correct?");
+    });
+
+    it("should navigate to the statement of capital page with NO buttons visible and a total-amount-unpaid-warning message if Amount unpaid is NULL", async () => {
+      mockGetStatementOfCapitalData.mockResolvedValueOnce({
+        totalNumberOfShares: "100",
+        totalAmountUnpaidForCurrency: null
+      });
+      mockGetShareholders.mockResolvedValue([{ shares: "100" }]);
+      const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
+
+      expect(mockGetShareholders).toBeCalledTimes(1);
+      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain("Check the statement of capital");
+      expect(response.text).toContain(UNPAID_AMOUNT_NULL_WARNING);
+      expect(response.text).not.toContain(SHARES_TOTALS_INVALID_WARNING);
+      expect(response.text).not.toContain("Is the statement of capital correct?");
+    });
+
+    it("should navigate to the statement of capital page with NO buttons visible and a share-capital-mismatch-warning message if share totals DO NOT match the shareholders'.", async () => {
       mockGetStatementOfCapitalData.mockResolvedValueOnce(mockStatementOfCapital);
       mockGetShareholders.mockResolvedValue([{ shares: "123" }]);
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
@@ -65,10 +99,11 @@ describe("Statement of Capital controller tests", () => {
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Check the statement of capital");
       expect(response.text).toContain(SHARES_TOTALS_INVALID_WARNING);
+      expect(response.text).not.toContain(UNPAID_AMOUNT_NULL_WARNING);
       expect(response.text).not.toContain("Is the statement of capital correct?");
     });
 
-    it("should navigate to the statement of capital page with buttons visible if share totals match the shareholders'.", async () => {
+    it("should navigate to the statement of capital page with buttons visible and no warning messages if Share totals match and amount unpaid is NOT NULL.", async () => {
       mockGetStatementOfCapitalData.mockResolvedValueOnce(mockStatementOfCapital);
       mockGetShareholders.mockResolvedValue([{ shares: "100" }]);
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
@@ -78,6 +113,7 @@ describe("Statement of Capital controller tests", () => {
       expect(response.text).toContain("Check the statement of capital");
       expect(response.text).toContain("Is the statement of capital correct?");
       expect(response.text).not.toContain(SHARES_TOTALS_INVALID_WARNING);
+      expect(response.text).not.toContain(UNPAID_AMOUNT_NULL_WARNING);
     });
 
     it("Should return an error page if error is thrown in get function", async () => {
@@ -105,19 +141,47 @@ describe("Statement of Capital controller tests", () => {
         .post(STATEMENT_OF_CAPITAL_URL)
         .send({ sessionCookie: `{ statementOfCapital: ${mockStatementOfCapital} }` })
         .send({ statementOfCapital: "yes" })
-        .send({ sharesValidation: "true" });
+        .send({ sharesValidation: "true" })
+        .send({ totalAmountUnpaidValidation: "false" });
 
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
     });
 
-    it("Should navigate to the task list page when statement of capital confirmed and set status to NOT CONFIRMED.", async () => {
+    it("Should navigate to the statement of capital stop page when the ONLY statement of capital validation has failed.", async () => {
       mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(STATEMENT_OF_CAPITAL_URL)
         .send({ sessionCookie: `{ statementOfCapital: ${mockStatementOfCapital} }` })
-        .send({ sharesValidation: "false" });
+        .send({ sharesValidation: "false" })
+        .send({ totalAmountUnpaidValidation: "true" });
+
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(STOP_PAGE_HEADING);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
+    });
+
+    it("Should navigate to the statement of capital stop page when ONLY the total amount unpaid is NULL.", async () => {
+      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
+      const response = await request(app)
+        .post(STATEMENT_OF_CAPITAL_URL)
+        .send({ sessionCookie: `{ statementOfCapital: ${mockStatementOfCapital} }` })
+        .send({ sharesValidation: "true" })
+        .send({ totalAmountUnpaidValidation: "false" });
+
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(STOP_PAGE_HEADING);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
+    });
+
+    it("Should navigate to the statement of capital stop page when BOTH the statement of capital validation has failed and the total amount unpaid is NULL.", async () => {
+      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
+      const response = await request(app)
+        .post(STATEMENT_OF_CAPITAL_URL)
+        .send({ sessionCookie: `{ statementOfCapital: ${mockStatementOfCapital} }` })
+        .send({ sharesValidation: "false" })
+        .send({ totalAmountUnpaidValidation: "false" });
 
       expect(response.status).toEqual(200);
       expect(response.text).toContain(STOP_PAGE_HEADING);
@@ -135,7 +199,10 @@ describe("Statement of Capital controller tests", () => {
     });
 
     it("Should redisplay statement of capital page with error when radio button is not selected", async () => {
-      const response = await request(app).post(STATEMENT_OF_CAPITAL_URL);
+      const response = await request(app)
+        .post(STATEMENT_OF_CAPITAL_URL)
+        .send({ sharesValidation: 'true' })
+        .send({ totalAmountUnpaidValidation: 'true' });
 
       expect(response.status).toEqual(200);
       expect(response.text).toContain(PAGE_HEADING);
