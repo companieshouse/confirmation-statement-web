@@ -1,14 +1,15 @@
-import { createPrivateOAuthApiClient, createPublicOAuthApiClient } from "./api.service";
-import { ConfirmationStatementService, PersonOfSignificantControl } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { createPublicOAuthApiClient } from "./api.service";
+import { PersonOfSignificantControl } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { Session } from "@companieshouse/node-session-handler";
 import Resource, { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { CompanyPersonsWithSignificantControlStatements, CompanyPersonWithSignificantControlStatement } from "@companieshouse/api-sdk-node/dist/services/company-psc-statements";
 import { DateTime } from "luxon";
 import { logger } from "../utils/logger";
 import { PSC_STATEMENTS_API_PAGE_SIZE } from "../utils/properties";
+import { ConfirmationStatementService } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 export const getPscs = async (session: Session, companyNumber: string): Promise<PersonOfSignificantControl[]> => {
-  const client = createPrivateOAuthApiClient(session);
+  const client = createPublicOAuthApiClient(session);
   const csService: ConfirmationStatementService = client.confirmationStatementService;
   const response: Resource<PersonOfSignificantControl[]> | ApiErrorResponse = await csService.getPersonsOfSignificantControl(companyNumber);
   const status = response.httpStatusCode as number;

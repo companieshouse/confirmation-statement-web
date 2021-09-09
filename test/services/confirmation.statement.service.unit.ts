@@ -1,6 +1,6 @@
-jest.mock("private-api-sdk-node/dist/services/confirmation-statement");
-jest.mock("private-api-sdk-node/");
 jest.mock("../../src/utils/logger");
+jest.mock("@companieshouse/api-sdk-node");
+jest.mock("@companieshouse/api-sdk-node/dist/services/confirmation-statement");
 
 import { getSessionRequest } from "../mocks/session.mock";
 import {
@@ -8,19 +8,21 @@ import {
   getConfirmationStatement, getNextMadeUpToDate, updateConfirmationStatement
 }
   from "../../src/services/confirmation.statement.service";
-import { ConfirmationStatementService, ConfirmationStatementSubmission, NextMadeUpToDate }
-  from "private-api-sdk-node/dist/services/confirmation-statement";
-import PrivateApiClient from "private-api-sdk-node/dist/client";
-import { createPrivateApiClient } from "private-api-sdk-node";
+import {
+  ConfirmationStatementService,
+  ConfirmationStatementSubmission, NextMadeUpToDate
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { createApiClient } from "@companieshouse/api-sdk-node";
 import { mockConfirmationStatementSubmission } from "../mocks/confirmation.statement.submission.mock";
 import { Resource } from "@companieshouse/api-sdk-node";
 import { createAndLogError } from "../../src/utils/logger";
+import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 
 const mockPostNewConfirmationStatement
     = ConfirmationStatementService.prototype.postNewConfirmationStatement as jest.Mock;
 const mockPostUpdateConfirmationStatement
     = ConfirmationStatementService.prototype.postUpdateConfirmationStatement as jest.Mock;
-const mockCreatePrivateApiClient = createPrivateApiClient as jest.Mock;
+const mockCreateApiClient = createApiClient as jest.Mock;
 const mockGetConfirmationStatementSubmission
     = ConfirmationStatementService.prototype.getConfirmationStatementSubmission as jest.Mock;
 const mockGetNextMadeUpToDate = ConfirmationStatementService.prototype.getNextMadeUpToDate as jest.Mock;
@@ -29,9 +31,9 @@ const mockCreateAndLogError = createAndLogError as jest.Mock;
 const ERROR: Error = new Error("oops");
 mockCreateAndLogError.mockReturnValue(ERROR);
 
-mockCreatePrivateApiClient.mockReturnValue({
+mockCreateApiClient.mockReturnValue({
   confirmationStatementService: ConfirmationStatementService.prototype
-} as PrivateApiClient);
+} as ApiClient);
 
 const TRANSACTION_ID = "12345";
 const SUBMISSION_ID = "14566";
