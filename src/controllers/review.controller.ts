@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { closeTransaction, getTransaction } from "../services/transaction.service";
 import { Session } from "@companieshouse/node-session-handler";
-import {CONFIRMATION_PATH, CONFIRMATION_STATEMENT, TASK_LIST_PATH } from "../types/page.urls";
+import { CONFIRMATION_PATH, CONFIRMATION_STATEMENT, TASK_LIST_PATH } from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 import { urlUtils } from "../utils/url";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";

@@ -9,7 +9,7 @@ import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transact
 import request from "supertest";
 import mocks from "../mocks/all.middleware.mock";
 import app from "../../src/app";
-import { REVIEW_PATH } from "../../src/types/page.urls";
+import { CONFIRMATION_PATH, REVIEW_PATH } from "../../src/types/page.urls";
 import { urlUtils } from "../../src/utils/url";
 import { validCompanyProfile } from "../mocks/company.profile.mock";
 import { getCompanyProfile } from "../../src/services/company.profile.service";
@@ -43,6 +43,12 @@ const URL =
                                                                COMPANY_NUMBER,
                                                                TRANSACTION_ID,
                                                                SUBMISSION_ID);
+const CONFIRMATION_URL =
+  urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(CONFIRMATION_PATH,
+                                                               COMPANY_NUMBER,
+                                                               TRANSACTION_ID,
+                                                               SUBMISSION_ID);
+
 
 const dummyTransactionNoCosts = {
   id: TRANSACTION_ID
@@ -161,6 +167,16 @@ describe("review controller tests", () => {
       expect(response.header.location).toBe(PAYMENT_JOURNEY_URL);
     });
 
+    it("Should redirect to the no payment journey url", async () => {
+      mockCloseTransaction.mockResolvedValueOnce(undefined);
+
+      const response = await request(app)
+        .post(URL);
+
+      expect(response.status).toBe(302);
+      expect(response.header.location).toEqual(CONFIRMATION_URL);
+    });
+
     it("Should show error page if payment response has no resource", async () => {
       mockCloseTransaction.mockResolvedValueOnce(PAYMENT_URL);
       mockStartPaymentsSession.mockResolvedValueOnce({
@@ -174,17 +190,6 @@ describe("review controller tests", () => {
       expect(response.status).toBe(500);
       expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
       expect(mockCreateAndLogError).toBeCalledWith("No resource in payment response");
-    });
-
-    it("Should show error page if closing transaction does not return a url (this will change to a redirect to final page when that page is ready)", async () => {
-      mockCloseTransaction.mockResolvedValueOnce(undefined);
-
-      const response = await request(app)
-        .post(URL);
-
-      expect(response.status).toBe(500);
-      expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
-      expect(mockCreateAndLogError).toBeCalledWith("Not yet supported");
     });
 
     it("Should show error page if error is thrown inside post function", async () => {

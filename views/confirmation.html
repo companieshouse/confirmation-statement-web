@@ -21,17 +21,6 @@ Confirmation
         <p>Your confirmation statement will then be posted on the
             <a href="https://find-and-update.company-information.service.gov.uk/">Companies House register</a>.</p>
         <p>
-        <p>Your next confirmation statement is due
-            <b>{{ nextDueDate }}</b>.<p>
-        {% if isPaymentDue %}
-        You will need to pay a £13 fee for your next payment period when you file a confirmation statement after
-        <b>{{ nextDueDate }}</b>.
-        {% else %}
-        {% if paymentOptions === 'card' %}
-        <p>If you need to contact us about your payment, use the payment reference number
-            <strong>{{ paymentReferenceNumber }}</strong>.</p>
-        {% endif %}
-        {% endif %}
         <h3 class="govuk-heading-m">Email reminders</h3>
         <p>
             <a href="https://www.gov.uk/government/news/email-reminders-help-companies-file-on-time">Register for email reminders for Companies House</a>
