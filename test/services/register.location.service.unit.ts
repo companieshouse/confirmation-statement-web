@@ -1,11 +1,11 @@
-jest.mock("private-api-sdk-node/dist/services/confirmation-statement");
-jest.mock("private-api-sdk-node/");
+jest.mock("@companieshouse/api-sdk-node");
+jest.mock("@companieshouse/api-sdk-node/dist/services/confirmation-statement");
 
 import {
   ConfirmationStatementService, RegisterLocation
-} from "private-api-sdk-node/dist/services/confirmation-statement";
-import { createPrivateApiClient } from "private-api-sdk-node";
-import PrivateApiClient from "private-api-sdk-node/dist/client";
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { createApiClient } from "@companieshouse/api-sdk-node";
+import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 import { Resource } from "@companieshouse/api-sdk-node";
 import { getRegisterLocationData } from "../../src/services/register.location.service";
 import { getSessionRequest } from "../mocks/session.mock";
@@ -13,11 +13,11 @@ import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/res
 import { mockRegisterLocation } from "../mocks/register.location.mock";
 
 const mockGetRegisterLocations = ConfirmationStatementService.prototype.getRegisterLocations as jest.Mock;
-const mockCreatePrivateApiClient = createPrivateApiClient as jest.Mock;
+const mockCreateApiClient = createApiClient as jest.Mock;
 
-mockCreatePrivateApiClient.mockReturnValue({
+mockCreateApiClient.mockReturnValue({
   confirmationStatementService: ConfirmationStatementService.prototype
-} as PrivateApiClient);
+} as ApiClient);
 
 describe("Test register location service", () => {
 

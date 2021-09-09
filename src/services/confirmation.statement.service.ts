@@ -1,18 +1,16 @@
 import { Session } from "@companieshouse/node-session-handler";
+import Resource, { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
+import { createPublicOAuthApiClient } from "./api.service";
+import { createAndLogError } from "../utils/logger";
 import {
   CompanyValidationResponse,
   ConfirmationStatementCreated,
-  ConfirmationStatementService,
-  ConfirmationStatementSubmission,
-  NextMadeUpToDate
-} from "private-api-sdk-node/dist/services/confirmation-statement";
-import Resource, { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
-import { createPrivateOAuthApiClient } from "./api.service";
-import { createAndLogError } from "../utils/logger";
+  ConfirmationStatementService, ConfirmationStatementSubmission, NextMadeUpToDate
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 export const createConfirmationStatement = async (session: Session,
                                                   transactionId: string): Promise<Resource<ConfirmationStatementCreated | CompanyValidationResponse>> => {
-  const client = createPrivateOAuthApiClient(session);
+  const client = createPublicOAuthApiClient(session);
   const csService: ConfirmationStatementService = client.confirmationStatementService;
   const response = await csService.postNewConfirmationStatement(transactionId);
   if (response.httpStatusCode !== 201 && response.httpStatusCode !== 400) {
@@ -24,7 +22,7 @@ export const createConfirmationStatement = async (session: Session,
 };
 
 export const getConfirmationStatement = async (session: Session, transactionId: string, confirmationStatementId: string): Promise<ConfirmationStatementSubmission> => {
-  const client = createPrivateOAuthApiClient(session);
+  const client = createPublicOAuthApiClient(session);
   const csService: ConfirmationStatementService = client.confirmationStatementService;
   const response = await csService.getConfirmationStatementSubmission(transactionId, confirmationStatementId);
 
@@ -44,7 +42,7 @@ export const updateConfirmationStatement = async (session: Session,
                                                   transactionId: string,
                                                   submitId: string,
                                                   csSubmission: ConfirmationStatementSubmission) => {
-  const client = createPrivateOAuthApiClient(session);
+  const client = createPublicOAuthApiClient(session);
   const csService: ConfirmationStatementService = client.confirmationStatementService;
   const response = await csService.postUpdateConfirmationStatement(transactionId, submitId, csSubmission);
   if (response.httpStatusCode !== 200) {
@@ -54,7 +52,7 @@ export const updateConfirmationStatement = async (session: Session,
 };
 
 export const getNextMadeUpToDate = async (session: Session, companyNumber: string): Promise<NextMadeUpToDate> => {
-  const client = createPrivateOAuthApiClient(session);
+  const client = createPublicOAuthApiClient(session);
   const csService: ConfirmationStatementService = client.confirmationStatementService;
   const response = await csService.getNextMadeUpToDate(companyNumber);
 

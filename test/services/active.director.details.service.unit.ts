@@ -1,22 +1,24 @@
-jest.mock("private-api-sdk-node/dist/services/confirmation-statement");
-jest.mock("private-api-sdk-node/");
+jest.mock("@companieshouse/api-sdk-node");
+jest.mock("@companieshouse/api-sdk-node/dist/services/confirmation-statement");
 
-import { Resource } from "@companieshouse/api-sdk-node";
-import { createPrivateApiClient } from "private-api-sdk-node";
-import PrivateApiClient from "private-api-sdk-node/dist/client";
+import { createApiClient, Resource } from "@companieshouse/api-sdk-node";
 import { getActiveDirectorDetailsData } from "../../src/services/active.director.details.service";
-import { ActiveDirectorDetails, ConfirmationStatementService } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { mockActiveDirectorDetails, mockActiveDirectorDetailsFormatted } from "../mocks/active.director.details.mock";
 import { getSessionRequest } from "../mocks/session.mock";
 import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { formatDirectorDetails } from "../../src/utils/format";
+import ApiClient from "@companieshouse/api-sdk-node/dist/client";
+import {
+  ActiveDirectorDetails,
+  ConfirmationStatementService
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 const mockGetActiveDirectorDetails = ConfirmationStatementService.prototype.getActiveDirectorDetails as jest.Mock;
-const mockCreatePrivateApiClient = createPrivateApiClient as jest.Mock;
+const mockCreatePrivateApiClient = createApiClient as jest.Mock;
 
 mockCreatePrivateApiClient.mockReturnValue({
   confirmationStatementService: ConfirmationStatementService.prototype
-} as PrivateApiClient);
+} as ApiClient);
 
 const clone = (objectToClone: any): any => {
   return JSON.parse(JSON.stringify(objectToClone));
