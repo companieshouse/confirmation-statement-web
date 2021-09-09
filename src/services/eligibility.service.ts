@@ -1,11 +1,11 @@
-import {
-  CompanyValidationResponse,
-  EligibilityStatusCode
-} from "private-api-sdk-node/dist/services/confirmation-statement";
 import { createPublicOAuthApiClient } from "./api.service";
 import { Session } from "@companieshouse/node-session-handler";
 import Resource from "@companieshouse/api-sdk-node/dist/services/resource";
-import { ConfirmationStatementService } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import {
+  CompanyValidationResponse,
+  ConfirmationStatementService,
+  EligibilityStatusCode
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 export const checkEligibility = async (session: Session, companyNumber: string): Promise<EligibilityStatusCode> => {
   const client = createPublicOAuthApiClient(session);

@@ -1,9 +1,11 @@
 import { Resource } from "@companieshouse/api-sdk-node";
 import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { Session } from "@companieshouse/node-session-handler";
-import { ActiveDirectorDetails } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { createPublicOAuthApiClient } from "./api.service";
-import { ConfirmationStatementService } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import {
+  ActiveDirectorDetails,
+  ConfirmationStatementService
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 export const getActiveDirectorDetailsData = async (session: Session, companyNumber: string): Promise<ActiveDirectorDetails> => {
   const client = createPublicOAuthApiClient(session);

@@ -1,8 +1,10 @@
 import { createPublicOAuthApiClient } from "./api.service";
-import { StatementOfCapital } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { Session } from "@companieshouse/node-session-handler";
 import Resource, { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
-import { ConfirmationStatementService } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import {
+  ConfirmationStatementService,
+  StatementOfCapital
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 export const getStatementOfCapitalData = async (session: Session, companyNumber: string): Promise<StatementOfCapital> => {
   const client = createPublicOAuthApiClient(session);

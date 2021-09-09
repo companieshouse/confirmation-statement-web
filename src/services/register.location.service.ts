@@ -1,10 +1,12 @@
 import { Resource } from "@companieshouse/api-sdk-node";
 import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { Session } from "@companieshouse/node-session-handler";
-import { RegisterLocation } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { createPublicOAuthApiClient } from "./api.service";
 import { createAndLogError } from "../utils/logger";
-import { ConfirmationStatementService } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import {
+  ConfirmationStatementService,
+  RegisterLocation
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 export const getRegisterLocationData = async (session: Session, companyNumber: string): Promise<RegisterLocation[]> => {
   const client = createPublicOAuthApiClient(session);
