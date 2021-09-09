@@ -1,24 +1,22 @@
-jest.mock("private-api-sdk-node/dist/services/confirmation-statement");
-jest.mock("private-api-sdk-node/");
+jest.mock("@companieshouse/api-sdk-node");
+jest.mock("@companieshouse/api-sdk-node/dist/services/confirmation-statement");
 
-import { Resource } from "@companieshouse/api-sdk-node";
 import {
   CompanyValidationResponse,
-  ConfirmationStatementService,
-  EligibilityStatusCode
-} from "private-api-sdk-node/dist/services/confirmation-statement";
+  ConfirmationStatementService, EligibilityStatusCode
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import ApiClient from "@companieshouse/api-sdk-node/dist/client";
+import { createApiClient, Resource } from "@companieshouse/api-sdk-node";
 import { checkEligibility } from "../../src/services/eligibility.service";
 import { getSessionRequest } from "../mocks/session.mock";
-import { createPrivateApiClient } from "private-api-sdk-node";
-import PrivateApiClient from "private-api-sdk-node/dist/client";
 
 const mockGetEligibility
     = ConfirmationStatementService.prototype.getEligibility as jest.Mock;
-const mockCreatePrivateApiClient = createPrivateApiClient as jest.Mock;
+const mockCreateApiClient = createApiClient as jest.Mock;
 
-mockCreatePrivateApiClient.mockReturnValue({
+mockCreateApiClient.mockReturnValue({
   confirmationStatementService: ConfirmationStatementService.prototype
-} as PrivateApiClient);
+} as ApiClient);
 
 describe("Test eligibility checks", () => {
 

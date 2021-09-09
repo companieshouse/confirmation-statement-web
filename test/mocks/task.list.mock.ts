@@ -35,6 +35,7 @@ export const mockTaskList: TaskList = {
     registerLocations: {
       state: TaskState.NOT_CHECKED,
       isVisible: false,
+      url: "/regloc"
     },
   },
   recordDate: "16 Jun 2021",

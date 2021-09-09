@@ -1,7 +1,6 @@
 import { ConfirmationStatementSubmission } from "private-api-sdk-node/dist/services/confirmation-statement";
 import {
-  TaskList,
-  TaskState
+  TaskList
 } from "../types/task.list";
 import { DateTime } from "luxon";
 import { toReadableFormat } from "../utils/date";
@@ -36,7 +35,7 @@ export const initTaskList = (companyNumber: string,
       },
       registerLocations: {
         isVisible: false,
-        state: TaskState.NOT_CHECKED,
+        state: toTaskState(csSubmission.data?.registerLocationsData?.sectionStatus),
         url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTER_LOCATIONS_PATH, companyNumber, transactionId, submissionId)
       },
       registeredOfficeAddress: {

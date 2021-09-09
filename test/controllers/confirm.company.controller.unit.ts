@@ -4,9 +4,9 @@ jest.mock("../../src/services/confirmation.statement.service");
 jest.mock("../../src/utils/feature.flag");
 jest.mock("../../src/utils/date");
 
-import { EligibilityStatusCode } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { EligibilityStatusCode, NextMadeUpToDate } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { checkEligibility } from "../../src/services/eligibility.service";
-import { createConfirmationStatement } from "../../src/services/confirmation.statement.service";
+import { createConfirmationStatement, getNextMadeUpToDate } from "../../src/services/confirmation.statement.service";
 import mocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
@@ -14,7 +14,7 @@ import { CONFIRM_COMPANY_PATH } from "../../src/types/page.urls";
 import { getCompanyProfile, formatForDisplay } from "../../src/services/company.profile.service";
 import { validCompanyProfile } from "../mocks/company.profile.mock";
 import { isActiveFeature } from "../../src/utils/feature.flag";
-import { isInFuture, toReadableFormat } from "../../src/utils/date";
+import { toReadableFormat } from "../../src/utils/date";
 import { Settings as luxonSettings } from "luxon";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
@@ -22,8 +22,8 @@ const mockFormatForDisplay = formatForDisplay as jest.Mock;
 const mockCreateConfirmationStatement = createConfirmationStatement as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockEligibilityStatusCode = checkEligibility as jest.Mock;
-const mockIsInFuture = isInFuture as jest.Mock;
 const mockToReadableFormat = toReadableFormat as jest.Mock;
+const mockGetNextMadeUpToDate = getNextMadeUpToDate as jest.Mock;
 
 const today = "2020-04-25";
 
@@ -56,6 +56,11 @@ describe("Confirm company controller tests", () => {
   it("Should populate the template with CompanyProfile data", async () => {
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockFormatForDisplay.mockReturnValueOnce(validCompanyProfile);
+    mockGetNextMadeUpToDate.mockResolvedValueOnce({
+      currentNextMadeUpToDate: validCompanyProfile.confirmationStatement?.nextMadeUpTo,
+      isDue: false,
+      newNextMadeUpToDate: today
+    } as NextMadeUpToDate);
 
     const response = await request(app)
       .get(CONFIRM_COMPANY_PATH);
@@ -231,7 +236,11 @@ describe("Confirm company controller tests", () => {
     const formattedNextMadeUpTo = "15 March 2020";
 
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-    mockIsInFuture.mockReturnValueOnce(true);
+    mockGetNextMadeUpToDate.mockResolvedValueOnce({
+      currentNextMadeUpToDate: validCompanyProfile.confirmationStatement?.nextMadeUpTo,
+      isDue: false,
+      newNextMadeUpToDate: today
+    } as NextMadeUpToDate);
     mockFormatForDisplay.mockReturnValueOnce({
       confirmationStatement:
         { nextMadeUpTo: formattedNextMadeUpTo }
@@ -250,11 +259,26 @@ describe("Confirm company controller tests", () => {
   });
 
   it("Should not display a warning if filing is due", async () => {
-    mockIsInFuture.mockReturnValueOnce(false);
-
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    mockGetNextMadeUpToDate.mockResolvedValueOnce({
+      currentNextMadeUpToDate: validCompanyProfile.confirmationStatement?.nextMadeUpTo,
+      isDue: true
+    } as NextMadeUpToDate);
     const response = await request(app)
       .get(CONFIRM_COMPANY_PATH);
 
     expect(response.text).not.toContain("You are not due to file a confirmation statement");
+  });
+
+  it("Should not convert next made up to date to readable format if date not found", async () => {
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    mockGetNextMadeUpToDate.mockResolvedValueOnce({
+      currentNextMadeUpToDate: validCompanyProfile.confirmationStatement?.nextMadeUpTo,
+      isDue: false
+    } as NextMadeUpToDate);
+
+    await request(app).get(CONFIRM_COMPANY_PATH);
+
+    expect(mockToReadableFormat).not.toBeCalled();
   });
 });

@@ -2,10 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import { urlUtils } from "../../utils/url";
 import { REGISTER_LOCATIONS_PATH, TASK_LIST_PATH } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
-import { RADIO_BUTTON_VALUE, REGISTER_LOCATIONS_ERROR } from "../../utils/constants";
+import { RADIO_BUTTON_VALUE, REGISTER_LOCATIONS_ERROR, SECTIONS } from "../../utils/constants";
+import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { Session } from "@companieshouse/node-session-handler";
 import { getRegisterLocationData } from "../../services/register.location.service";
-import { RegisterLocation } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { RegisterLocation, SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
 import { formatAddress, formatAddressForDisplay } from "../../utils/format";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -24,15 +25,17 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const registerLocationsButton = req.body.registers;
 
     if (registerLocationsButton === RADIO_BUTTON_VALUE.YES || registerLocationsButton === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
+      await sendUpdate(req, SECTIONS.REGISTER_LOCATIONS, SectionStatus.CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     }
 
     if (registerLocationsButton === RADIO_BUTTON_VALUE.NO) {
+      await sendUpdate(req, SECTIONS.REGISTER_LOCATIONS, SectionStatus.NOT_CONFIRMED);
       return res.render(Templates.WRONG_REGISTER_LOCATIONS, {
         backLinkUrl: urlUtils.getUrlToPath(REGISTER_LOCATIONS_PATH, req),
         taskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),

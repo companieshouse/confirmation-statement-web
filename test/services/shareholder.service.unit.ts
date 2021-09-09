@@ -1,11 +1,11 @@
-jest.mock("private-api-sdk-node/dist/services/confirmation-statement");
-jest.mock("private-api-sdk-node/");
+jest.mock("@companieshouse/api-sdk-node");
+jest.mock("@companieshouse/api-sdk-node/dist/services/confirmation-statement");
 
 import {
   ConfirmationStatementService, Shareholder
-} from "private-api-sdk-node/dist/services/confirmation-statement";
-import { createPrivateApiClient } from "private-api-sdk-node";
-import PrivateApiClient from "private-api-sdk-node/dist/client";
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { createApiClient } from "@companieshouse/api-sdk-node";
+import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 import { Resource } from "@companieshouse/api-sdk-node";
 import { getShareholders } from "../../src/services/shareholder.service";
 import { getSessionRequest } from "../mocks/session.mock";
@@ -13,11 +13,11 @@ import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/res
 import { mockShareholder } from "../mocks/shareholder.mock";
 
 const mockGetShareholder = ConfirmationStatementService.prototype.getShareholders as jest.Mock;
-const mockCreatePrivateApiClient = createPrivateApiClient as jest.Mock;
+const mockCreateApiClient = createApiClient as jest.Mock;
 
-mockCreatePrivateApiClient.mockReturnValue({
+mockCreateApiClient.mockReturnValue({
   confirmationStatementService: ConfirmationStatementService.prototype
-} as PrivateApiClient);
+} as ApiClient);
 
 describe("Test shareholder service", () => {
 

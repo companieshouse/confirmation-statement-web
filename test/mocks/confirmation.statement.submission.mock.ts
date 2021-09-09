@@ -1,8 +1,7 @@
 import {
-  ConfirmationStatementSubmission,
-  SectionStatus,
+  ConfirmationStatementSubmission, SectionStatus,
   StatementOfCapital
-} from "private-api-sdk-node/dist/services/confirmation-statement";
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 export const mockStatementOfCapital: StatementOfCapital = {
   classOfShares: "Ordinary",

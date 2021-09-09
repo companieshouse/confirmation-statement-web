@@ -15,12 +15,16 @@
         <h1 class="govuk-heading-xl">
           You cannot use this service
         </h1>
-        <p>Currently, changes to share capital can only be made by filing a confirmation statement through
-          <a target="_blank" rel="noopener noreferrer" href="https://ewf.companieshouse.gov.uk//seclogin?tc=1">our WebFiling service (opens in a new tab)</a>. You will need to sign in to or create a WebFiling account to do this.
-        </p>
-        <p>
-          <a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-wrongsharecap/">What did you think of this service?</a>
-          (takes 2 minutes)</p>
+        {% if sharesValidation === 'false' %}
+          <p>The company's share capital does not match the shares held by its shareholders.</p>
+          <p>You must update this information by filing a confirmation statement through 
+            <a target="_blank" rel="noopener noreferrer" href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" data-event-id="webfiling-service-link-from-invalid-share-totals-wrong-statement-of-capital-page">our WebFiling service</a>. You will need to sign in to or create a WebFiling account to do this.</p>
+        {% else %}
+          <p>Currently, changes to share capital can only be made by filing a confirmation statement through
+            <a target="_blank" rel="noopener noreferrer" href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" data-event-id="webfiling-service-link-from-wrong-statement-of-capital-page">our WebFiling service (opens in a new tab)</a>. You will need to sign in to or create a WebFiling account to do this.
+          </p>
+        {% endif %}
+        <p><a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-wrongsharecap/">What did you think of this service?</a> (takes 2 minutes)</p>
       </form>
     </div>
   </div>

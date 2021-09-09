@@ -1,35 +1,43 @@
-jest.mock("private-api-sdk-node/dist/services/confirmation-statement");
-jest.mock("private-api-sdk-node/");
+jest.mock("../../src/utils/logger");
+jest.mock("@companieshouse/api-sdk-node");
+jest.mock("@companieshouse/api-sdk-node/dist/services/confirmation-statement");
 
 import { getSessionRequest } from "../mocks/session.mock";
 import {
   createConfirmationStatement,
-  getConfirmationStatement, updateConfirmationStatement
+  getConfirmationStatement, getNextMadeUpToDate, updateConfirmationStatement
 }
   from "../../src/services/confirmation.statement.service";
-import { ConfirmationStatementService, ConfirmationStatementSubmission }
-  from "private-api-sdk-node/dist/services/confirmation-statement";
-import PrivateApiClient from "private-api-sdk-node/dist/client";
-import { createPrivateApiClient } from "private-api-sdk-node";
+import {
+  ConfirmationStatementService,
+  ConfirmationStatementSubmission, NextMadeUpToDate
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { createApiClient } from "@companieshouse/api-sdk-node";
 import { mockConfirmationStatementSubmission } from "../mocks/confirmation.statement.submission.mock";
+import { Resource } from "@companieshouse/api-sdk-node";
+import { createAndLogError } from "../../src/utils/logger";
+import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 
 const mockPostNewConfirmationStatement
     = ConfirmationStatementService.prototype.postNewConfirmationStatement as jest.Mock;
-
 const mockPostUpdateConfirmationStatement
     = ConfirmationStatementService.prototype.postUpdateConfirmationStatement as jest.Mock;
-
-const mockCreatePrivateApiClient = createPrivateApiClient as jest.Mock;
-
+const mockCreateApiClient = createApiClient as jest.Mock;
 const mockGetConfirmationStatementSubmission
     = ConfirmationStatementService.prototype.getConfirmationStatementSubmission as jest.Mock;
+const mockGetNextMadeUpToDate = ConfirmationStatementService.prototype.getNextMadeUpToDate as jest.Mock;
+const mockCreateAndLogError = createAndLogError as jest.Mock;
 
-mockCreatePrivateApiClient.mockReturnValue({
+const ERROR: Error = new Error("oops");
+mockCreateAndLogError.mockReturnValue(ERROR);
+
+mockCreateApiClient.mockReturnValue({
   confirmationStatementService: ConfirmationStatementService.prototype
-} as PrivateApiClient);
+} as ApiClient);
 
 const TRANSACTION_ID = "12345";
 const SUBMISSION_ID = "14566";
+const COMPANY_NUMBER = "26331212";
 
 describe ("Confirmation statement api service unit tests", () => {
 
@@ -165,5 +173,54 @@ describe ("updateConfirmationStatement unit tests", () => {
       });
 
     expect(mockPostUpdateConfirmationStatement).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID, csSubmission);
+  });
+});
+
+describe("getNextMadeUpToDate tests", () => {
+
+  const CURRENT_NEXT_MADE_UP_TO = "2021-05-23";
+  const NEW_NEXT_MADE_UP_TO = "2021-04-12";
+
+  it("Should call SDK to get next made up to date", async () => {
+    mockGetNextMadeUpToDate.mockResolvedValueOnce({
+      httpStatusCode: 200,
+      resource: {
+        currentNextMadeUpToDate: CURRENT_NEXT_MADE_UP_TO,
+        isDue: false,
+        newNextMadeUpToDate: NEW_NEXT_MADE_UP_TO
+      } as NextMadeUpToDate
+    } as Resource<NextMadeUpToDate>);
+
+    const nextMadeUpToDate: NextMadeUpToDate = await getNextMadeUpToDate(getSessionRequest({ access_token: "token" }), COMPANY_NUMBER);
+
+    expect(nextMadeUpToDate.currentNextMadeUpToDate).toBe(CURRENT_NEXT_MADE_UP_TO);
+    expect(nextMadeUpToDate.isDue).toBe(false);
+    expect(nextMadeUpToDate.newNextMadeUpToDate).toBe(NEW_NEXT_MADE_UP_TO);
+  });
+
+  it("Should throw an error if status code != 200", async () => {
+    mockGetNextMadeUpToDate.mockResolvedValueOnce({
+      httpStatusCode: 404
+    } as Resource<NextMadeUpToDate>);
+
+    await expect(getNextMadeUpToDate(getSessionRequest({ access_token: "token" }), COMPANY_NUMBER))
+      .rejects
+      .toThrow(ERROR);
+
+    expect(mockCreateAndLogError).toBeCalledWith(
+      expect.stringContaining(`Error getting next made up to date from api with company number = ${COMPANY_NUMBER}`));
+  });
+
+  it("Should throw an error if no resource returned when status 200", async () => {
+    mockGetNextMadeUpToDate.mockResolvedValueOnce({
+      httpStatusCode: 200
+    } as Resource<NextMadeUpToDate>);
+
+    await expect(getNextMadeUpToDate(getSessionRequest({ access_token: "token" }), COMPANY_NUMBER))
+      .rejects
+      .toThrow(ERROR);
+
+    expect(mockCreateAndLogError).toBeCalledWith(
+      expect.stringContaining(`Error No resource returned when getting next made up to date from api with companyNumber = ${COMPANY_NUMBER}`));
   });
 });
