@@ -167,7 +167,7 @@ describe("review controller tests", () => {
       expect(response.header.location).toBe(PAYMENT_JOURNEY_URL);
     });
 
-    it("Should redirect to the no payment journey url", async () => {
+    it("Should redirect to the confirmation url", async () => {
       mockCloseTransaction.mockResolvedValueOnce(undefined);
 
       const response = await request(app)
