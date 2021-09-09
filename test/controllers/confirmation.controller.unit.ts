@@ -4,7 +4,7 @@ import request from "supertest";
 import mocks from "../mocks/all.middleware.mock";
 import app from "../../src/app";
 import { urlUtils } from "../../src/utils/url";
-import { CONFIRMATION_PATH } from "../../src/types/page.urls";
+import { CONFIRM_COMPANY_PATH, CONFIRMATION_PATH } from "../../src/types/page.urls";
 
 
 const COMPANY_NUMBER = "12345678";
@@ -31,5 +31,16 @@ describe("Confirmation controller tests", () => {
     expect(response.text).toContain(PAGE_HEADING);
     expect(response.text).toContain(TRANSACTION_ID);
     expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+  });
+
+  it("Should navigate to error page if error is thrown when getting confirmation page", async () => {
+    const spyGetTrans = jest.spyOn(urlUtils, "getTransactionIdFromRequestParams");
+    spyGetTrans.mockImplementationOnce(() => { throw new Error(); });
+    const response = await request(app)
+      .get(URL);
+
+    expect(response.text).toContain("Sorry, the service is unavailable");
+
+    spyGetTrans.mockRestore();
   });
 });
