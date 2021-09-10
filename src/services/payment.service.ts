@@ -5,13 +5,14 @@ import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist
 import { v4 as uuidv4 } from "uuid";
 import { createAndLogError, logger } from "../utils/logger";
 import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
-import { API_URL } from "../utils/properties";
+import { API_URL, CHS_URL } from "../utils/properties";
 
-export const startPaymentsSession = async (session: Session, paymentSessionUrl: string, resourceUri: string): Promise<ApiResponse<Payment>> => {
+export const startPaymentsSession = async (session: Session, paymentSessionUrl: string,
+                                           paymentResourceUri: string, filingResourceUri: string): Promise<ApiResponse<Payment>> => {
   const apiClient: ApiClient = createPaymentApiClient(session, paymentSessionUrl);
-  const resourceWithHost = API_URL + resourceUri;
+  const resourceWithHost = API_URL + paymentResourceUri;
   const createPaymentRequest: CreatePaymentRequest = {
-    redirectUri: "http://chs.local/confirmation-statement",
+    redirectUri: `${CHS_URL}${filingResourceUri}/confirmation`,
     reference: "CS_REFERENCE",
     resource: resourceWithHost,
     state: uuidv4(),
