@@ -33,7 +33,7 @@
       <p class="govuk-body govuk-!-font-weight-bold">You can only use this service if the company:</p>
       <ul class="govuk-list govuk-list--bullet">
         <li>is a private limited company</li>
-        <li>has only one officer</li>
+        <li>has only one director</li>
         <li>has only one shareholder</li>
         <li>has one person with significant control (PSC) or fewer</li>
       </ul>
@@ -49,12 +49,14 @@
           <li>a Companies House account, which is different from a WebFiling account</li>
           <li>the company number</li>
           <li>the company authentication code</li>
-          <li>to pay the £13 annual fee using a credit or debit card, or Companies House account</li>
+          <li>to pay the £13 annual fee using a credit or debit card</li>
         </ul>
 
         {{ govukInsetText({
           html: insetHTML
         }) }}
+
+        <p>It can take up to 15 minutes to file a confirmation statement. The service will time out after 60 minutes and your answers will not be saved.</p>
 
         <a href="/confirmation-statement/company-number" id="start-now" onclick="_paq.push(['trackGoal', '{{PIWIK_START_GOAL_ID}}'])" role="button" draggable="false" class="govuk-button govuk-button--start govuk-!-margin-top-2 govuk-!-margin-bottom-8" data-module="govuk-button">
           Start now
@@ -65,11 +67,8 @@
 
         <h2 class="govuk-heading-m">Before you start</h2>
 
-        <p>
-          <a href="https://www.gov.uk/guidance/confirmation-statement-guidance" data-event-id="Read-the-guidance-on-filing-link">Read the guidance on filing a confirmation statement</a>, including how to make changes to your company information.</p>
-        <p>
-          <a href="#">This service is also available in Welsh.</a>
-        </p>
+        <p><a href="https://www.gov.uk/guidance/confirmation-statement-guidance" data-event-id="Read-the-guidance-on-filing-link">Read the guidance on filing a confirmation statement</a>, including how to make changes to your company information.</p>
+
         {{ govukDetails({
           summaryHtml: '<div data-event-id="Other-ways-to-file-a-confirmation-statement-details-dropdown"> Other ways to file a confirmation statement</div>',
           html: fileByPostHTML
