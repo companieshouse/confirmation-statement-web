@@ -14,7 +14,10 @@ import { dummyPayment } from "../mocks/payment.mock";
 
 const PAYMENT_SESSION_URL = "/payment/21321";
 const PAYMENT_RESOURCE_URI = "/confirmation-statement/65465464";
-const FILING_RESOURCE_URI = "/transaction/1234/confirmation-statement/65465464";
+const PAYMENT_REDIRECT_URI = "/confirmation-statement/65465464/confirmation";
+const SUBMISSION_ID = "65465464";
+const TRANSACTION_ID = "987654321";
+const COMPANY_NUMBER = "12345678";
 const UUID = "d29f8b9c-501d-4ae3-91b2-001fd9e4e0a5";
 
 const mockCreatePaymentWithFullUrl = jest.fn();
@@ -74,7 +77,8 @@ describe("Payment Service tests", () => {
       dummyApiResponse.httpStatusCode = 200;
       mockCreatePaymentWithFullUrl.mockResolvedValueOnce(dummyPaymentResult);
       const apiResponse: ApiResponse<Payment> = await startPaymentsSession(session, PAYMENT_SESSION_URL,
-                                                                           PAYMENT_RESOURCE_URI, FILING_RESOURCE_URI);
+                                                                           PAYMENT_RESOURCE_URI, SUBMISSION_ID,
+                                                                           TRANSACTION_ID, COMPANY_NUMBER);
 
       expect(apiResponse.httpStatusCode).toBe(200);
       expect(apiResponse.resource).toBe(dummyPayment);
@@ -83,7 +87,7 @@ describe("Payment Service tests", () => {
       expect(mockCreatePaymentApiClient).toBeCalledWith(session, PAYMENT_SESSION_URL);
 
       const paymentRequest: CreatePaymentRequest = mockCreatePaymentWithFullUrl.mock.calls[0][0];
-      expect(paymentRequest.redirectUri).toBe(`${CHS_URL}${FILING_RESOURCE_URI}/confirmation`);
+      expect(paymentRequest.redirectUri).toBe("http://chs.local/confirmation-statement/company/12345678/transaction/987654321/submission/65465464/confirmation");
       expect(paymentRequest.reference).toBe("CS_REFERENCE");
       expect(paymentRequest.resource).toBe(API_URL + PAYMENT_RESOURCE_URI);
       expect(paymentRequest.state).toBe(UUID);
@@ -94,7 +98,9 @@ describe("Payment Service tests", () => {
       mockIsFailure.mockReturnValueOnce(true);
       mockCreatePaymentWithFullUrl.mockResolvedValueOnce(dummyPaymentResult);
 
-      await expect(startPaymentsSession(session, PAYMENT_SESSION_URL, PAYMENT_RESOURCE_URI, FILING_RESOURCE_URI))
+      await expect(startPaymentsSession(session, PAYMENT_SESSION_URL,
+                                        PAYMENT_RESOURCE_URI, SUBMISSION_ID,
+                                        TRANSACTION_ID, COMPANY_NUMBER))
         .rejects
         .toThrow(ERROR);
 
@@ -106,7 +112,9 @@ describe("Payment Service tests", () => {
       mockIsFailure.mockReturnValueOnce(true);
       mockCreatePaymentWithFullUrl.mockResolvedValueOnce(dummyPaymentResult);
 
-      await expect(startPaymentsSession(session, PAYMENT_SESSION_URL, PAYMENT_RESOURCE_URI, FILING_RESOURCE_URI))
+      await expect(startPaymentsSession(session, PAYMENT_SESSION_URL,
+                                        PAYMENT_RESOURCE_URI, SUBMISSION_ID,
+                                        TRANSACTION_ID, COMPANY_NUMBER))
         .rejects
         .toThrow(ERROR);
 
@@ -118,7 +126,9 @@ describe("Payment Service tests", () => {
       mockIsFailure.mockReturnValueOnce(true);
       mockCreatePaymentWithFullUrl.mockResolvedValueOnce(dummyPaymentResult);
 
-      await expect(startPaymentsSession(session, PAYMENT_SESSION_URL, PAYMENT_RESOURCE_URI, FILING_RESOURCE_URI))
+      await expect(startPaymentsSession(session, PAYMENT_SESSION_URL,
+                                        PAYMENT_RESOURCE_URI, SUBMISSION_ID,
+                                        TRANSACTION_ID, COMPANY_NUMBER))
         .rejects
         .toThrow(ERROR);
 
