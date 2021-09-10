@@ -48,9 +48,22 @@
               }}
             {% endif %}
 
+            {% if totalAmountUnpaidValidation === false %}
+              {% set warningHTML %}
+                <p><strong>You cannot continue to file a confirmation statement in this service.</strong></p>
+                <p><strong>The total amount unpaid for all shares is missing on this company’s statement of capital.</strong></p>
+                <p><strong>You must update this information by filing a confirmation statement through our <a href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" data-event-id="webfiling-service-link-from-statement-of-capital-page">WebFiling service</a>.</strong></p>
+              {% endset %}
+
+              {{ govukWarningText({
+                html: warningHTML,
+                iconFallbackText: "Warning"})
+              }}
+            {% endif %}
+
             {% include "includes/statement-of-capital.html" %}
 
-            {% if sharesValidation %}
+            {% if sharesValidation and totalAmountUnpaidValidation %}
               {{ govukRadios({
                 classes: "govuk-radios--inline",
                 idPrefix: "statement-of-capital",
@@ -74,10 +87,10 @@
                   }
                 ]
               }) }}
-              <input type="hidden" id="sharesValidation" name="sharesValidation" value=true>
-            {% else %}
-              <input type="hidden" id="sharesValidation" name="sharesValidation" value=false>
             {% endif %}
+            
+            <input type="hidden" id="sharesValidation" name="sharesValidation" value= {{ sharesValidation }}>
+            <input type="hidden" id="totalAmountUnpaidValidation" name="totalAmountUnpaidValidation" value= {{ totalAmountUnpaidValidation }}>
 
             {% include "includes/continue-button.html" %}
         </form>
