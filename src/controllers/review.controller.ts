@@ -51,10 +51,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     } else {
       // Payment required kick off payment journey
       const paymentResourceUri: string = `/transactions/${transactionId}/payment`;
-      const filingResourceUri: string = `/transactions/${transactionId}/confirmation-statement/${submissionId}`;
 
       const paymentResponse: ApiResponse<Payment> = await startPaymentsSession(session, paymentUrl,
-                                                                               paymentResourceUri, filingResourceUri);
+                                                                               paymentResourceUri, submissionId,
+                                                                               transactionId, companyNumber);
 
       if (!paymentResponse.resource) {
         return next(createAndLogError("No resource in payment response"));
