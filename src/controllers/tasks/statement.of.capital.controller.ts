@@ -22,7 +22,7 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
     const session: Session = req.session as Session;
     const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, companyNumber);
     const sharesValidation = await validateTotalNumberOfShares(session, companyNumber, +statementOfCapital.totalNumberOfShares);
-    const totalAmountUnpaidValidation = statementOfCapital.totalAmountUnpaidForCurrency !== null;
+    const totalAmountUnpaidValidation = typeof statementOfCapital.totalAmountUnpaidForCurrency === 'string';
 
     req.sessionCookie[sessionCookieConstants.STATEMENT_OF_CAPITAL_KEY] = statementOfCapital;
     statementOfCapital.classOfShares = formatTitleCase(statementOfCapital.classOfShares);

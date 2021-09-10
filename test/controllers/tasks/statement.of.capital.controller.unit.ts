@@ -74,6 +74,22 @@ describe("Statement of Capital controller tests", () => {
       expect(response.text).not.toContain("Is the statement of capital correct?");
     });
 
+    it("should navigate to the statement of capital page with NO buttons visible and a total-amount-unpaid-warning message if Amount unpaid is undefined", async () => {
+      mockGetStatementOfCapitalData.mockResolvedValueOnce({
+        totalNumberOfShares: "100",
+        totalAmountUnpaidForCurrency: undefined
+      });
+      mockGetShareholders.mockResolvedValue([{ shares: "100" }]);
+      const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
+
+      expect(mockGetShareholders).toBeCalledTimes(1);
+      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain("Check the statement of capital");
+      expect(response.text).toContain(UNPAID_AMOUNT_NULL_WARNING);
+      expect(response.text).not.toContain(SHARES_TOTALS_INVALID_WARNING);
+      expect(response.text).not.toContain("Is the statement of capital correct?");
+    });
+
     it("should navigate to the statement of capital page with NO buttons visible and a total-amount-unpaid-warning message if Amount unpaid is NULL", async () => {
       mockGetStatementOfCapitalData.mockResolvedValueOnce({
         totalNumberOfShares: "100",
