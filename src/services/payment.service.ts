@@ -6,16 +6,16 @@ import { v4 as uuidv4 } from "uuid";
 import { createAndLogError, logger } from "../utils/logger";
 import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { API_URL, CHS_URL } from "../utils/properties";
-import { CONFIRMATION_PATH, urlParams } from "../types/page.urls";
+import { CONFIRMATION_PATH } from "../types/page.urls";
+import { urlUtils } from "../utils/url";
 
 export const startPaymentsSession = async (session: Session, paymentSessionUrl: string,
                                            paymentResourceUri: string, submissionId: string, transactionId: string, companyNumber: string): Promise<ApiResponse<Payment>> => {
   const apiClient: ApiClient = createPaymentApiClient(session, paymentSessionUrl);
   const resourceWithHost = API_URL + paymentResourceUri;
-  const redirectUri: string = `${CHS_URL}${CONFIRMATION_PATH}`
-    .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, transactionId)
-    .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, companyNumber)
-    .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, submissionId);
+  const redirectUri: string = urlUtils
+    .getUrlWithCompanyNumberTransactionIdAndSubmissionId(`${CHS_URL}${CONFIRMATION_PATH}`,
+                                                         companyNumber, transactionId, submissionId);
 
   const createPaymentRequest: CreatePaymentRequest = {
     redirectUri: redirectUri,
