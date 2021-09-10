@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { urlUtils } from "../../utils/url";
 import { REGISTER_LOCATIONS_PATH, TASK_LIST_PATH } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
-import { RADIO_BUTTON_VALUE, REGISTER_LOCATIONS_ERROR, SECTIONS } from "../../utils/constants";
+import { RADIO_BUTTON_VALUE, REGISTER_LOCATIONS_ERROR, SECTIONS, sessionCookieConstants } from "../../utils/constants";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { Session } from "@companieshouse/node-session-handler";
 import { getRegisterLocationData } from "../../services/register.location.service";
@@ -16,10 +16,12 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const registerLocations: RegisterLocation[] = await getRegisterLocationData(session, companyNumber);
     const sailAddress = formatSailForDisplay(registerLocations);
     const registers = formatRegisterForDisplay(registerLocations);
-    const backLinkUrl = urlUtils.getUrlToPath(TASK_LIST_PATH, req);
+    req.sessionCookie[sessionCookieConstants.SAIL_ADDRESS_KEY] = sailAddress;
+    req.sessionCookie[sessionCookieConstants.REGISTERS_LOCATION_KEY] = registers;
     return res.render(Templates.REGISTER_LOCATIONS, {
       templateName: Templates.REGISTER_LOCATIONS,
-      backLinkUrl, registers, sailAddress });
+      backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+      registers, sailAddress });
   } catch (error) {
     return next(error);
   }
@@ -28,6 +30,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const registerLocationsButton = req.body.registers;
+    const sailAddress: string = req.sessionCookie[sessionCookieConstants.SAIL_ADDRESS_KEY];
+    const registers: Array<string> = req.sessionCookie[sessionCookieConstants.REGISTERS_LOCATION_KEY];
 
     if (registerLocationsButton === RADIO_BUTTON_VALUE.YES || registerLocationsButton === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
       await sendUpdate(req, SECTIONS.REGISTER_LOCATIONS, SectionStatus.CONFIRMED);
@@ -46,7 +50,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     return res.render(Templates.REGISTER_LOCATIONS, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       registerLocationsErrorMsg: REGISTER_LOCATIONS_ERROR,
-      templateName: Templates.REGISTER_LOCATIONS
+      templateName: Templates.REGISTER_LOCATIONS,
+      registers, sailAddress
     });
   } catch (e) {
     return next(e);

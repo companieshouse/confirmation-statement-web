@@ -21,6 +21,8 @@ export const sessionCookieConstants = {
   ACTIVE_DIRECTOR_DETAILS_KEY: "activeDirectorDetails",
   PSC_STATEMENT_KEY: "pscStatement",
   REGISTERED_OFFICE_ADDRESS_KEY: "registeredOfficeAddress",
+  REGISTERS_LOCATION_KEY: "registers",
+  SAIL_ADDRESS_KEY: "sailAddress",
   STATEMENT_OF_CAPITAL_KEY: "statementOfCapital"
 };
 
