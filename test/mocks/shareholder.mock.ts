@@ -1,4 +1,4 @@
-import { Shareholder } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { Shareholder } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 export const mockShareholder: Shareholder[] = [
   {
@@ -6,7 +6,7 @@ export const mockShareholder: Shareholder[] = [
     foreName2: "F",
     surname: "Goodman",
     shares: "123",
-    shareClassTypeId: "123",
-    currencyTypeId: "123"
+    classOfShares: "ORDINARY",
+    currency: "GBP"
   }
 ];
