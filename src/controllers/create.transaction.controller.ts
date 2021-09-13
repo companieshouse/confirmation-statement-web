@@ -6,7 +6,7 @@ import { DESCRIPTION, REFERENCE } from "../utils/constants";
 import { Session } from "@companieshouse/node-session-handler";
 import { createConfirmationStatement } from "../services/confirmation.statement.service";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
-import { ConfirmationStatementCreated } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { ConfirmationStatementCreated } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 

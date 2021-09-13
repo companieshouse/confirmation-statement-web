@@ -9,7 +9,7 @@ import { isActiveFeature } from "../utils/feature.flag";
 import { checkEligibility } from "../services/eligibility.service";
 import {
   EligibilityStatusCode, NextMadeUpToDate
-} from "private-api-sdk-node/dist/services/confirmation-statement";
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { CREATE_TRANSACTION_PATH } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { toReadableFormat } from "../utils/date";

@@ -6,7 +6,7 @@ import { lookupSicCodeDescription } from "../../utils/api.enumerations";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../../services/company.profile.service";
 import { RADIO_BUTTON_VALUE, SECTIONS, SIC_CODE_ERROR } from "../../utils/constants";
-import { SectionStatus, SicCode } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { SectionStatus, SicCode } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
