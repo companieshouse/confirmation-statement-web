@@ -4,7 +4,7 @@ jest.mock("../../src/services/confirmation.statement.service");
 jest.mock("../../src/utils/feature.flag");
 jest.mock("../../src/utils/date");
 
-import { EligibilityStatusCode, NextMadeUpToDate } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { EligibilityStatusCode, NextMadeUpToDate } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { checkEligibility } from "../../src/services/eligibility.service";
 import { createConfirmationStatement, getNextMadeUpToDate } from "../../src/services/confirmation.statement.service";
 import mocks from "../mocks/all.middleware.mock";

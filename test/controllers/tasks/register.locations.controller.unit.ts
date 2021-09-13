@@ -10,7 +10,7 @@ import { REGISTER_LOCATIONS_PATH, TASK_LIST_PATH, urlParams } from "../../../src
 import { urlUtils } from "../../../src/utils/url";
 import { RADIO_BUTTON_VALUE, REGISTER_LOCATIONS_ERROR, SECTIONS } from "../../../src/utils/constants";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
-import { SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getRegisterLocationData } from "../../../src/services/register.location.service";
 import { mockRegisterLocation, mockRegisterLocationNoReg, mockRegisterLocationNoRegNoSail } from "../../mocks/register.location.mock";
 

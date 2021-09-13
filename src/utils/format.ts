@@ -1,4 +1,4 @@
-import { ActiveDirectorDetails, Address } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { ActiveDirectorDetails, Address } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 export const formatTitleCase = (str: string|undefined): string =>  {
   if (!str) {

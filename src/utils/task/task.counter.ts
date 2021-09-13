@@ -1,7 +1,7 @@
 import {
   ConfirmationStatementSubmission,
   SectionStatus
-} from "private-api-sdk-node/dist/services/confirmation-statement";
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { taskKeys } from "../../utils/constants";
 import { TaskState } from "../../types/task.list";
 import { toTaskState } from "./task.state.mapper";
