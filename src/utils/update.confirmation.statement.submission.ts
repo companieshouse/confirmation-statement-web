@@ -10,7 +10,7 @@ import {
   StatementOfCapitalData,
   ShareholderData,
   RegisterLocationsData
-} from "private-api-sdk-node/dist/services/confirmation-statement";
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement, updateConfirmationStatement } from "../services/confirmation.statement.service";
 import { SECTIONS } from "../utils/constants";
 import { urlUtils } from "../utils/url";
@@ -26,9 +26,6 @@ export const sendUpdate = async (req: Request, sectionName: SECTIONS, status: Se
 };
 
 const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission, sectionName: SECTIONS, sectionData: any ): ConfirmationStatementSubmission => {
-  if (!currentCsSubmission.data) {
-    currentCsSubmission.data = {};
-  }
   currentCsSubmission.data[sectionName] = sectionData;
   return currentCsSubmission;
 };
