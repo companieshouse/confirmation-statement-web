@@ -9,7 +9,8 @@ import {
   SicCodeData,
   StatementOfCapitalData,
   ShareholderData,
-  RegisterLocationsData
+  RegisterLocationsData,
+  TradingStatusData
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement, updateConfirmationStatement } from "../services/confirmation.statement.service";
 import { SECTIONS } from "../utils/constants";
@@ -76,6 +77,12 @@ const generateSectionData = (section: SECTIONS, status: SectionStatus, extraData
           sectionStatus: status
         };
         return newRegisterLocationsData;
+      }
+      case SECTIONS.TRADING_STATUS: {
+        const newTradingStatusData: TradingStatusData = {
+          sectionStatus: status
+        };
+        return newTradingStatusData;
       }
   }
 };
