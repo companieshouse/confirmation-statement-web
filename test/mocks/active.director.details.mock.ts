@@ -1,4 +1,4 @@
-import { ActiveDirectorDetails, Address } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { ActiveDirectorDetails, Address } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 export const mockAddress1: Address = {
   addressLine1: "Diddly squat farm shop",

@@ -1,4 +1,4 @@
-import { PersonOfSignificantControl } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { PersonOfSignificantControl } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { CompanyPersonsWithSignificantControlStatements, CompanyPersonWithSignificantControlStatement } from "@companieshouse/api-sdk-node/dist/services/company-psc-statements";
 
 export const mockPersonsOfSignificantControl: PersonOfSignificantControl[] = [

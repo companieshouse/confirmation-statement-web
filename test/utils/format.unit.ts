@@ -1,5 +1,5 @@
 import { formatAddressForDisplay, formatTitleCase } from "../../src/utils/format";
-import { Address } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { Address } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 
 describe("formatTitleCase tests", () => {
