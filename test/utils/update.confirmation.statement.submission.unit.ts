@@ -117,5 +117,11 @@ describe("Update.confirmation.statement.submission util tests", () => {
       const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
       expect(csSubmission.data?.statementOfCapitalData).toStrictEqual(statementOfCapitalData);
     });
+
+    it("Should create tradingStatus submission data", async () => {
+      await sendUpdate(request, SECTIONS.TRADING_STATUS, SectionStatus.CONFIRMED);
+      const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
+      expect(csSubmission.data?.tradingStatusData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
+    });
   });
 });

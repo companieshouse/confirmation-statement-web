@@ -54,7 +54,8 @@ export enum SECTIONS {
   REGISTER_LOCATIONS = "registerLocationsData",
   SIC = "sicCodeData",
   SOC = "statementOfCapitalData",
-  SHAREHOLDER = "shareholderData"
+  SHAREHOLDER = "shareholderData",
+  TRADING_STATUS = "tradingStatusData"
 }
 
 export const transactionStatuses = {

@@ -1,70 +1,66 @@
 jest.mock("../../src/middleware/company.authentication.middleware");
+jest.mock("../../src/utils/update.confirmation.statement.submission");
 
 import request from "supertest";
 import mocks from "../mocks/all.middleware.mock";
 import { companyAuthenticationMiddleware } from "../../src/middleware/company.authentication.middleware";
 import app from "../../src/app";
-import { TRADING_STATUS_PATH } from "../../src/types/page.urls";
-import { TRADING_STATUS_ERROR } from "../../src/utils/constants";
+import { TASK_LIST_PATH, TRADING_STATUS_PATH, urlParams } from "../../src/types/page.urls";
+import { SECTIONS, TRADING_STATUS_ERROR } from "../../src/utils/constants";
+import { sendUpdate } from "../../src/utils/update.confirmation.statement.submission";
+import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
+const mockSendUpdate = sendUpdate as jest.Mock;
 
 const PAGE_HEADING = "Check the trading status";
 const STOP_PAGE_HEADING = "Trading status not supported";
 const COMPANY_NUMBER = "12345678";
-const TRANSACTION_ID = "87654321";
-const SUBMISSION_ID = "12348765";
-const RESPONSE_HEADER = "/confirmation-statement/company/12345678/transaction/87654321/submission/12348765/task-list";
+const TRADING_STATUS_URL = TRADING_STATUS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
 describe("Trading status controller tests", () => {
 
   beforeEach(() => {
     mocks.mockAuthenticationMiddleware.mockClear();
+    mockSendUpdate.mockClear();
   });
 
   it("Should navigate to the trading status page", async () => {
-    const url = TRADING_STATUS_PATH.replace(":companyNumber", COMPANY_NUMBER)
-      .replace(":transactionId", TRANSACTION_ID)
-      .replace(":submissionId", SUBMISSION_ID);
-    const response = await request(app).get(url);
+    const response = await request(app).get(TRADING_STATUS_URL);
     expect(response.text).toContain(PAGE_HEADING);
     expect(response.text).toContain("No company shares were traded on a market during this confirmation period.");
   });
 
   it("Should navigate to the task list page when trading status is correct", async () => {
-    const url = TRADING_STATUS_PATH.replace(":companyNumber", COMPANY_NUMBER)
-      .replace(":transactionId", TRANSACTION_ID)
-      .replace(":submissionId", SUBMISSION_ID);
     const response = await request(app)
-      .post(url)
+      .post(TRADING_STATUS_URL)
       .send({ tradingStatus: "yes" });
+    expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.TRADING_STATUS);
+    expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
     expect(response.status).toEqual(302);
     expect(response.header.location)
-      .toEqual(RESPONSE_HEADER);
+      .toEqual(TASK_LIST_URL);
   });
 
   it("Should display stop page when trading status is not correct", async () => {
-    const url = TRADING_STATUS_PATH.replace(":companyNumber", COMPANY_NUMBER)
-      .replace(":transactionId", TRANSACTION_ID)
-      .replace(":submissionId", SUBMISSION_ID);
     const response = await request(app)
-      .post(url)
+      .post(TRADING_STATUS_URL)
       .send({ tradingStatus: "no" });
+    expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.TRADING_STATUS);
+    expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
     expect(response.status).toEqual(200);
     expect(response.header.location).not
-      .toEqual(RESPONSE_HEADER);
+      .toEqual(TRADING_STATUS_URL);
     expect(response.text).toContain(STOP_PAGE_HEADING);
   });
 
   it("Should redisplay trading status page with error when trading status is not selected", async () => {
-    const url = TRADING_STATUS_PATH.replace(":companyNumber", COMPANY_NUMBER)
-      .replace(":transactionId", TRANSACTION_ID)
-      .replace(":submissionId", SUBMISSION_ID);
-    const response = await request(app).post(url);
+    const response = await request(app).post(TRADING_STATUS_URL);
     expect(response.status).toEqual(200);
     expect(response.header.location).not
-      .toEqual(RESPONSE_HEADER);
+      .toEqual(TRADING_STATUS_URL);
     expect(response.text).toContain(PAGE_HEADING);
     expect(response.text).toContain(TRADING_STATUS_ERROR);
     expect(response.text).toContain("No company shares were traded on a market during this confirmation period.");
