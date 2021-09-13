@@ -15,7 +15,7 @@ import { getPscs } from "../../../src/services/psc.service";
 import { toReadableFormat } from "../../../src/utils/date";
 import { urlUtils } from "../../../src/utils/url";
 import { createAndLogError } from "../../../src/utils/logger";
-import { PersonOfSignificantControl, SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { PersonOfSignificantControl, SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Check the people with significant control (PSC)";

@@ -16,7 +16,7 @@ import { getCompanyProfile } from "../../../src/services/company.profile.service
 import { validCompanyProfile } from "../../mocks/company.profile.mock";
 import { SECTIONS, SIC_CODE_ERROR } from "../../../src/utils/constants";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
-import { SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());

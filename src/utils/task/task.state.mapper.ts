@@ -1,4 +1,4 @@
-import { SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { TaskState } from "../../types/task.list";
 
 const TASK_STATE_MAP = {

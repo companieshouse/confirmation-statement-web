@@ -18,7 +18,7 @@ import { mockSingleActivePsc } from "../../mocks/person.of.significant.control.m
 import { lookupPscStatementDescription } from "../../../src/utils/api.enumerations";
 import { Templates } from "../../../src/types/template.paths";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
-import { SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Is the PSC statement correct?";

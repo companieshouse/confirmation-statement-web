@@ -15,7 +15,7 @@ import { mockActiveDirectorDetails, mockActiveDirectorDetailsFormatted, mockSecu
 import { formatAddressForDisplay, formatDirectorDetails } from "../../../src/utils/format";
 import { getActiveDirectorDetailsData } from "../../../src/services/active.director.details.service";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
-import { SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 jest.mock("../../../src/middleware/company.authentication.middleware");
 

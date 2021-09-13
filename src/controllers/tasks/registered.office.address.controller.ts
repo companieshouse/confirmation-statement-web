@@ -7,7 +7,7 @@ import { getCompanyProfile } from "../../services/company.profile.service";
 import { RADIO_BUTTON_VALUE, REGISTERED_OFFICE_ADDRESS_ERROR, SECTIONS, sessionCookieConstants } from "../../utils/constants";
 import {
   SectionStatus
-} from "private-api-sdk-node/dist/services/confirmation-statement";
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
