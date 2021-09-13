@@ -1,4 +1,4 @@
-import { ConfirmationStatementSubmission } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import {
   TaskList
 } from "../types/task.list";

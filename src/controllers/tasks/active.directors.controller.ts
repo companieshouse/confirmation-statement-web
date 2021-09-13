@@ -12,7 +12,7 @@ import {
 import { Session } from "@companieshouse/node-session-handler";
 import {
   ActiveDirectorDetails,
-  SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
+  SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 import { formatAddressForDisplay, formatDirectorDetails } from "../../utils/format";
 import { getActiveDirectorDetailsData } from "../../services/active.director.details.service";

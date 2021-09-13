@@ -13,7 +13,7 @@ import {
 import {
   PersonOfSignificantControl,
   SectionStatus
-} from "private-api-sdk-node/dist/services/confirmation-statement";
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { Session } from "@companieshouse/node-session-handler";
 import { getPscs } from "../../services/psc.service";
 import { createAndLogError, logger } from "../../utils/logger";

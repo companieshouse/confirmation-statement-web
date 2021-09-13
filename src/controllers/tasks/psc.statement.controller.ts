@@ -16,7 +16,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { lookupPscStatementDescription } from "../../utils/api.enumerations";
 import { createAndLogError } from "../../utils/logger";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
-import { SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {

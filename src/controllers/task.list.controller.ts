@@ -10,7 +10,7 @@ import { createAndLogError } from "../utils/logger";
 import { urlUtils } from "../utils/url";
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
 import { Session } from "@companieshouse/node-session-handler";
-import { ConfirmationStatementSubmission } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {

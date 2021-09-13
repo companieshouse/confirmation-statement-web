@@ -6,7 +6,7 @@ import { RADIO_BUTTON_VALUE, REGISTER_LOCATIONS_ERROR, SECTIONS, sessionCookieCo
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { Session } from "@companieshouse/node-session-handler";
 import { getRegisterLocationData } from "../../services/register.location.service";
-import { RegisterLocation, SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { RegisterLocation, SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { formatAddress, formatAddressForDisplay } from "../../utils/format";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
