@@ -16,7 +16,7 @@ export const formatDirectorDetails = (directorDetails: ActiveDirectorDetails): A
 
   clone.foreName1 = formatTitleCase(directorDetails.foreName1);
   clone.foreName2 = formatTitleCase(directorDetails.foreName2);
-  clone.surname = formatTitleCase(directorDetails.surname);
+  clone.surname = directorDetails.surname;
   clone.nationality = formatTitleCase(directorDetails.nationality);
   clone.occupation = formatTitleCase(directorDetails.occupation);
   clone.serviceAddress = formatAddress(directorDetails.serviceAddress);
