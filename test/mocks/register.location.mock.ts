@@ -1,4 +1,4 @@
-import { RegisterLocation } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { RegisterLocation } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 export const mockRegisterLocation: RegisterLocation[] = [
   {

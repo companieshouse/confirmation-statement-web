@@ -3,7 +3,7 @@ jest.mock("../../src/utils/date");
 jest.mock("../../src/utils/task/task.state.mapper");
 jest.mock("../../src/utils/url");
 
-import { ConfirmationStatementSubmission } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { initTaskList } from "../../src/services/task.list.service";
 import { ACTIVE_DIRECTORS_PATH, PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, REGISTERED_OFFICE_ADDRESS_PATH, REGISTER_LOCATIONS_PATH, SHAREHOLDERS_PATH, SIC_PATH, STATEMENT_OF_CAPITAL_PATH } from "../../src/types/page.urls";
 import { TaskList, TaskState } from "../../src/types/task.list";
@@ -85,7 +85,9 @@ describe("Task List Service tests", () => {
 
     it("Should populate soc state if soc data is missing", () => {
       const clonedSubmission: ConfirmationStatementSubmission = clone(mockConfirmationStatementSubmission);
-      clonedSubmission.data = {};
+      clonedSubmission.data = {
+        confirmationStatementMadeUpToDate: "2021-03-11"
+      };
       const taskList: TaskList = initTaskList(COMPANY_NUMBER, TRANSACTION_ID, CS_SUBMISSION_ID, clone(clonedSubmission));
       expect(taskList.tasks.statementOfCapital.state).toBe(TASK_STATE);
     });
