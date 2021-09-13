@@ -1,6 +1,6 @@
 app_name: confirmation-statement-web
 group: web
 
-weight: 1000
+weight: 100
 routes:
   1: ^/confirmation-statement/*

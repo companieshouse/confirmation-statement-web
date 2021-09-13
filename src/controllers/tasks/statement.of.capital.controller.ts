@@ -9,7 +9,7 @@ import {
   SectionStatus,
   Shareholder,
   StatementOfCapital
-} from "private-api-sdk-node/dist/services/confirmation-statement";
+} from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { formatTitleCase } from "../../utils/format";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { getShareholders } from "../../services/shareholder.service";

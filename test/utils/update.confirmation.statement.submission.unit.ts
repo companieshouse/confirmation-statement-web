@@ -2,7 +2,7 @@ jest.mock("../../src/services/confirmation.statement.service");
 
 import { Request } from "express";
 import { Session } from "@companieshouse/node-session-handler";
-import { ConfirmationStatementSubmission, SectionStatus, StatementOfCapitalData } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { ConfirmationStatementSubmission, SectionStatus, StatementOfCapitalData } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement, updateConfirmationStatement } from "../../src/services/confirmation.statement.service";
 import { sendUpdate } from "../../src/utils/update.confirmation.statement.submission";
 import { SECTIONS } from "../../src/utils/constants";
@@ -13,7 +13,12 @@ const mockUpdateConfirmationStatement = updateConfirmationStatement as jest.Mock
 
 const SUBMISSION_ID = "a80f09e2";
 const LINK_SELF = "/something";
-const submissionWithNoData: ConfirmationStatementSubmission = {
+const MADE_UP_TO_DATE = "2020-03-11";
+
+const submission: ConfirmationStatementSubmission = {
+  data: {
+    confirmationStatementMadeUpToDate: MADE_UP_TO_DATE
+  },
   id: SUBMISSION_ID,
   links: {
     self: LINK_SELF
@@ -30,15 +35,7 @@ describe("Update.confirmation.statement.submission util tests", () => {
   beforeEach(() => {
     mockUpdateConfirmationStatement.mockClear();
     mockGetConfirmationStatement.mockClear();
-    mockGetConfirmationStatement.mockResolvedValueOnce(submissionWithNoData);
-  });
-
-  it("Should create csSubmission.data if current csSubmission has no data", async () => {
-    await sendUpdate(request, SECTIONS.ACTIVE_DIRECTOR, SectionStatus.CONFIRMED);
-    const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
-    expect(csSubmission.id).toBe(SUBMISSION_ID);
-    expect(csSubmission.links.self).toBe(LINK_SELF);
-    expect(csSubmission.data?.activeDirectorDetailsData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
+    mockGetConfirmationStatement.mockResolvedValueOnce(submission);
   });
 
   describe("Should create the correct submission data for each section", () => {
@@ -46,7 +43,10 @@ describe("Update.confirmation.statement.submission util tests", () => {
     it("Should create activeDirectorDetails submission data", async () => {
       await sendUpdate(request, SECTIONS.ACTIVE_DIRECTOR, SectionStatus.CONFIRMED);
       const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
-      expect(csSubmission.data?.activeDirectorDetailsData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
+      expect(csSubmission.id).toBe(SUBMISSION_ID);
+      expect(csSubmission.links.self).toBe(LINK_SELF);
+      expect(csSubmission.data.activeDirectorDetailsData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
+      expect(csSubmission.data.confirmationStatementMadeUpToDate).toBe(MADE_UP_TO_DATE);
     });
 
     it("Should update a sections submission data sectionStatus to CONFIRMED when status has already been set to NOT_CONFIRMED", async () => {
@@ -58,7 +58,8 @@ describe("Update.confirmation.statement.submission util tests", () => {
         data: {
           activeDirectorDetailsData: {
             sectionStatus: SectionStatus.NOT_CONFIRMED
-          }
+          },
+          confirmationStatementMadeUpToDate: "2020-03-11"
         }
       };
       mockGetConfirmationStatement.mockResolvedValueOnce(submissionWithActiveDirectorDetailsData);
@@ -111,7 +112,7 @@ describe("Update.confirmation.statement.submission util tests", () => {
           totalAmountUnpaidForCurrency: "1002"
         }
       };
-      mockGetConfirmationStatement.mockResolvedValueOnce(submissionWithNoData);
+      mockGetConfirmationStatement.mockResolvedValueOnce(submission);
       await sendUpdate(request, SECTIONS.SOC, SectionStatus.CONFIRMED, statementOfCapitalData.statementOfCapital);
       const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
       expect(csSubmission.data?.statementOfCapitalData).toStrictEqual(statementOfCapitalData);
