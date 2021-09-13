@@ -2,9 +2,9 @@
     <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center; color: govuk-colour("light-grey")">
       <p class="govuk-!-font-weight-bold govuk-!-margin-0">
         {{activeDirectorDetails.surname}},
-        &nbsp; {{activeDirectorDetails.foreName1}}
+          {{activeDirectorDetails.foreName1}}
         {% if activeDirectorDetails.foreName2 %}
-          &nbsp; {{activeDirectorDetails.foreName2}}
+          {{activeDirectorDetails.foreName2}}
         {% endif %}
       </p>
       {{govukTag({
