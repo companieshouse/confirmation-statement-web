@@ -4,7 +4,7 @@ import { TASK_LIST_PATH, SHAREHOLDERS_PATH } from "../../types/page.urls";
 import { urlUtils } from "../../utils/url";
 import { RADIO_BUTTON_VALUE, SECTIONS, SHAREHOLDERS_ERROR } from "../../utils/constants";
 import { Session } from "@companieshouse/node-session-handler";
-import { SectionStatus, Shareholder } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { SectionStatus, Shareholder } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getShareholders } from "../../services/shareholder.service";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 

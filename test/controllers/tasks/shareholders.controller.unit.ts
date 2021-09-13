@@ -12,7 +12,7 @@ import { SECTIONS, SHAREHOLDERS_ERROR } from "../../../src/utils/constants";
 import { getShareholders } from "../../../src/services/shareholder.service";
 import { mockShareholder } from "../../mocks/shareholder.mock";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
-import { SectionStatus } from "private-api-sdk-node/dist/services/confirmation-statement";
+import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
@@ -40,7 +40,7 @@ describe("Shareholders controller tests", () => {
     expect(response.text).toContain("Check the shareholder detail");
     expect(response.text).toContain(shareholder.surname);
     expect(response.text).toContain(shareholder.shares);
-    expect(response.text).toContain(shareholder.shareClassTypeId);
+    expect(response.text).toContain(shareholder.classOfShares);
   });
 
   it("Should return an error page if error is thrown in get function", async () => {
