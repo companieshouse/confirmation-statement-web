@@ -21,7 +21,8 @@ export const mockConfirmationStatementSubmission: ConfirmationStatementSubmissio
     statementOfCapitalData: {
       sectionStatus: SectionStatus.CONFIRMED,
       statementOfCapital: mockStatementOfCapital
-    }
+    },
+    confirmationStatementMadeUpToDate: "2020-03-11"
   },
   links: {
     self: "/somewhere/"

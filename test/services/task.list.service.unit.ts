@@ -3,7 +3,7 @@ jest.mock("../../src/utils/date");
 jest.mock("../../src/utils/task/task.state.mapper");
 jest.mock("../../src/utils/url");
 
-import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { ConfirmationStatementSubmission, ConfirmationStatementSubmissionData } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { initTaskList } from "../../src/services/task.list.service";
 import { ACTIVE_DIRECTORS_PATH, PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, REGISTERED_OFFICE_ADDRESS_PATH, REGISTER_LOCATIONS_PATH, SHAREHOLDERS_PATH, SIC_PATH, STATEMENT_OF_CAPITAL_PATH } from "../../src/types/page.urls";
 import { TaskList, TaskState } from "../../src/types/task.list";
@@ -76,9 +76,9 @@ describe("Task List Service tests", () => {
       expect(taskList.csDue).toBe(false);
     });
 
-    it("Should populate soc state if data is missing", () => {
+    it("Should populate soc state if data is undefined", () => {
       const clonedSubmission: ConfirmationStatementSubmission = clone(mockConfirmationStatementSubmission);
-      clonedSubmission.data = undefined;
+      clonedSubmission.data = undefined as unknown as ConfirmationStatementSubmissionData;
       const taskList: TaskList = initTaskList(COMPANY_NUMBER, TRANSACTION_ID, CS_SUBMISSION_ID, clone(clonedSubmission));
       expect(taskList.tasks.statementOfCapital.state).toBe(TASK_STATE);
     });

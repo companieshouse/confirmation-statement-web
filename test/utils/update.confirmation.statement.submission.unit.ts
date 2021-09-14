@@ -59,43 +59,44 @@ describe("Update.confirmation.statement.submission util tests", () => {
           activeDirectorDetailsData: {
             sectionStatus: SectionStatus.NOT_CONFIRMED
           },
-          confirmationStatementMadeUpToDate: "2020-03-11"
+          confirmationStatementMadeUpToDate: MADE_UP_TO_DATE
         }
       };
       mockGetConfirmationStatement.mockResolvedValueOnce(submissionWithActiveDirectorDetailsData);
       await sendUpdate(request, SECTIONS.ACTIVE_DIRECTOR, SectionStatus.CONFIRMED);
       const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
-      expect(csSubmission.data?.activeDirectorDetailsData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
+      expect(csSubmission.data.activeDirectorDetailsData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
+      expect(csSubmission.data.confirmationStatementMadeUpToDate).toBe(MADE_UP_TO_DATE);
     });
 
     it("Should create registeredOfficeAddress submission data", async () => {
       await sendUpdate(request, SECTIONS.ROA, SectionStatus.CONFIRMED);
       const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
-      expect(csSubmission.data?.registeredOfficeAddressData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
+      expect(csSubmission.data.registeredOfficeAddressData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
     });
 
     it("Should create registereLocations submission data", async () => {
       await sendUpdate(request, SECTIONS.REGISTER_LOCATIONS, SectionStatus.CONFIRMED);
       const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
-      expect(csSubmission.data?.registerLocationsData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
+      expect(csSubmission.data.registerLocationsData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
     });
 
     it("Should create personsSignificantControl submission data", async () => {
       await sendUpdate(request, SECTIONS.PSC, SectionStatus.CONFIRMED);
       const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
-      expect(csSubmission.data?.personsSignificantControlData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
+      expect(csSubmission.data.personsSignificantControlData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
     });
 
     it("Should create sicCode submission data", async () => {
       await sendUpdate(request, SECTIONS.SIC, SectionStatus.CONFIRMED);
       const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
-      expect(csSubmission.data?.sicCodeData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
+      expect(csSubmission.data.sicCodeData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
     });
 
     it("Should create socCode submission data without statementOfCapital", async () => {
       await sendUpdate(request, SECTIONS.SOC, SectionStatus.CONFIRMED);
       const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
-      expect(csSubmission.data?.statementOfCapitalData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
+      expect(csSubmission.data.statementOfCapitalData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
     });
 
     it("Should create statementOfCapital submission data with statementOfCapital", async () => {
@@ -115,13 +116,19 @@ describe("Update.confirmation.statement.submission util tests", () => {
       mockGetConfirmationStatement.mockResolvedValueOnce(submission);
       await sendUpdate(request, SECTIONS.SOC, SectionStatus.CONFIRMED, statementOfCapitalData.statementOfCapital);
       const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
-      expect(csSubmission.data?.statementOfCapitalData).toStrictEqual(statementOfCapitalData);
+      expect(csSubmission.data.statementOfCapitalData).toStrictEqual(statementOfCapitalData);
+    });
+
+    it("Should create shareholder submission data", async () => {
+      await sendUpdate(request, SECTIONS.SHAREHOLDER, SectionStatus.CONFIRMED);
+      const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
+      expect(csSubmission.data.shareholderData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
     });
 
     it("Should create tradingStatus submission data", async () => {
       await sendUpdate(request, SECTIONS.TRADING_STATUS, SectionStatus.CONFIRMED);
       const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
-      expect(csSubmission.data?.tradingStatusData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
+      expect(csSubmission.data.tradingStatusData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
     });
   });
 });

@@ -9,7 +9,7 @@ describe("Task Counter tests", () => {
   describe("getTaskCompletedCount tests", () => {
     it("Should return 0 if ConfirmationStatementSubmission.data is undefined", () => {
       const csSubmission: ConfirmationStatementSubmission = clone(mockConfirmationStatementSubmission);
-      csSubmission.data = undefined;
+      csSubmission.data = undefined as unknown as ConfirmationStatementSubmissionData;
       const count = getTaskCompletedCount(csSubmission);
 
       expect(count).toBe(0);
