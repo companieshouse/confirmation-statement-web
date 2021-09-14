@@ -15,8 +15,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const session: Session = req.session as Session;
     const shareholdersData: Shareholder[] = await getShareholders(session, companyNumber);
     const shareholders = formatShareholders(shareholdersData);
-    console.log(shareholdersData);
-    console.log(shareholders);
     const backLinkUrl = urlUtils.getUrlToPath(TASK_LIST_PATH, req);
     return res.render(
       Templates.SHAREHOLDERS, {
