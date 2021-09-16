@@ -9,13 +9,14 @@ import {
   SectionStatus
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
+import { formatTitleCase, formatAddressForDisplay } from "../../utils/format";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const companyProfile: CompanyProfile = await getCompanyProfile(companyNumber);
     const backLinkUrl = urlUtils.getUrlToPath(TASK_LIST_PATH, req);
-    const registeredOfficeAddress = companyProfile.registeredOfficeAddress;
+    const registeredOfficeAddress = formatAddressForDisplay(formatAddress(companyProfile.registeredOfficeAddress));
     req.sessionCookie[sessionCookieConstants.REGISTERED_OFFICE_ADDRESS_KEY] = registeredOfficeAddress;
     return res.render(Templates.REGISTERED_OFFICE_ADDRESS, {
       templateName: Templates.REGISTERED_OFFICE_ADDRESS,
@@ -55,4 +56,19 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   } catch (e) {
     return next(e);
   }
+};
+
+const formatAddress = (address: RegisteredOfficeAddress): RegisteredOfficeAddress => {
+  const addressClone: RegisteredOfficeAddress = JSON.parse(JSON.stringify(address));
+  return {
+    careOf: formatTitleCase(addressClone.careOf),
+    addressLineOne: formatTitleCase(addressClone.addressLineOne),
+    addressLineTwo: formatTitleCase(addressClone.addressLineTwo),
+    poBox: formatTitleCase(addressClone.poBox),
+    country: formatTitleCase(addressClone.country),
+    locality: formatTitleCase(addressClone.locality),
+    premises: formatTitleCase(addressClone.premises),
+    region: formatTitleCase(addressClone.region),
+    postalCode: addressClone.postalCode?.toUpperCase()
+  };
 };
