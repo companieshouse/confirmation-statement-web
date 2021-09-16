@@ -9,12 +9,11 @@ import { startPaymentsSession } from "../../src/services/payment.service";
 import { ApiResponse, ApiResult } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { v4 as uuidv4 } from "uuid";
-import { API_URL, CHS_URL } from "../../src/utils/properties";
+import { API_URL } from "../../src/utils/properties";
 import { dummyPayment } from "../mocks/payment.mock";
 
 const PAYMENT_SESSION_URL = "/payment/21321";
 const PAYMENT_RESOURCE_URI = "/confirmation-statement/65465464";
-const PAYMENT_REDIRECT_URI = "/confirmation-statement/65465464/confirmation";
 const SUBMISSION_ID = "65465464";
 const TRANSACTION_ID = "987654321";
 const COMPANY_NUMBER = "12345678";
@@ -87,7 +86,7 @@ describe("Payment Service tests", () => {
       expect(mockCreatePaymentApiClient).toBeCalledWith(session, PAYMENT_SESSION_URL);
 
       const paymentRequest: CreatePaymentRequest = mockCreatePaymentWithFullUrl.mock.calls[0][0];
-      expect(paymentRequest.redirectUri).toBe("http://chs.local/confirmation-statement/company/12345678/transaction/987654321/submission/65465464/confirmation");
+      expect(paymentRequest.redirectUri).toBe("http://chs.local/confirmation-statement/company/12345678/transaction/987654321/submission/65465464/payment-callback");
       expect(paymentRequest.reference).toBe("CS_REFERENCE");
       expect(paymentRequest.resource).toBe(API_URL + PAYMENT_RESOURCE_URI);
       expect(paymentRequest.state).toBe(UUID);

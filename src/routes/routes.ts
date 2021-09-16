@@ -15,6 +15,7 @@ import * as registeredOfficeAddressRoute from "../controllers/tasks/registered.o
 import * as registeredLocationsRoute from "../controllers/tasks/register.locations.controller";
 import * as reviewRoute from "../controllers/review.controller";
 import * as confirmationRoute from "../controllers/confirmation.controller";
+import * as paymentCallbackRoute from "../controllers/payment.callback.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 
@@ -75,3 +76,5 @@ router.get(urls.REVIEW, reviewRoute.get);
 router.post(urls.REVIEW, reviewRoute.post);
 
 router.get(urls.CONFIRMATION, confirmationRoute.get);
+
+router.get(urls.PAYMENT_CALLBACK, paymentCallbackRoute.get);

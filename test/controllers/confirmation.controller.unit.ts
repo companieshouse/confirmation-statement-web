@@ -6,8 +6,7 @@ import { CONFIRMATION_PATH } from "../../src/types/page.urls";
 
 
 const COMPANY_NUMBER = "12345678";
-const CONFIRMATION_PAGE_HEADING = "Confirmation";
-const REVIEW_PAGE_HEADING = "Found. Redirecting to /confirmation-statement/company/12345678/transaction/66454/submission/435435/review";
+const PAGE_HEADING = "Confirmation";
 const TRANSACTION_ID = "66454";
 const SUBMISSION_ID = "435435";
 const URL =
@@ -22,38 +21,12 @@ describe("Confirmation controller tests", () => {
     jest.clearAllMocks();
   });
 
-  it("should show confirmation page for successful payment", async () => {
-    const successUrl = URL + "?ref=CS_REFERENCE&state=123456&status=paid";
+  it("should show confirmation page", async () => {
     const response = await request(app)
-      .get(successUrl);
+      .get(URL);
 
     expect(response.status).toBe(200);
-    expect(response.text).toContain(CONFIRMATION_PAGE_HEADING);
-    expect(response.text).not.toContain(REVIEW_PAGE_HEADING);
-    expect(response.text).toContain(TRANSACTION_ID);
-    expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
-  });
-
-  it("should show review page for declined payment", async () => {
-    const declinedUrl = URL + "?ref=CS_REFERENCE&state=123456&status=failed";
-    const response = await request(app)
-      .get(declinedUrl);
-
-    expect(response.status).toBe(302);
-    expect(response.text).not.toContain(CONFIRMATION_PAGE_HEADING);
-    expect(response.text).toContain(REVIEW_PAGE_HEADING);
-    expect(response.text).toContain(TRANSACTION_ID);
-    expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
-  });
-
-  it("should show review page for cancelled payment", async () => {
-    const cancelledUrl = URL + "?ref=CS_REFERENCE&state=123456&status=cancelled";
-    const response = await request(app)
-      .get(cancelledUrl);
-
-    expect(response.status).toBe(302);
-    expect(response.text).not.toContain(CONFIRMATION_PAGE_HEADING);
-    expect(response.text).toContain(REVIEW_PAGE_HEADING);
+    expect(response.text).toContain(PAGE_HEADING);
     expect(response.text).toContain(TRANSACTION_ID);
     expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
   });
