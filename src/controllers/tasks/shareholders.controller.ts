@@ -7,12 +7,14 @@ import { Session } from "@companieshouse/node-session-handler";
 import { SectionStatus, Shareholder } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getShareholders } from "../../services/shareholder.service";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
+import { formatTitleCase } from "../../utils/format";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const session: Session = req.session as Session;
-    const shareholders: Shareholder[] = await getShareholders(session, companyNumber);
+    const shareholdersData: Shareholder[] = await getShareholders(session, companyNumber);
+    const shareholders = formatShareholders(shareholdersData);
     const backLinkUrl = urlUtils.getUrlToPath(TASK_LIST_PATH, req);
     return res.render(
       Templates.SHAREHOLDERS, {
@@ -49,4 +51,19 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   } catch (e) {
     return next(e);
   }
+};
+
+const formatShareholders = (shareholders: Shareholder[]): Shareholder[] => {
+  const formattedShareholders = new Array<Shareholder>();
+  shareholders.forEach(shareholder => {
+    const clone: Shareholder = JSON.parse(JSON.stringify(shareholder));
+    clone.foreName1 = formatTitleCase(shareholder.foreName1);
+    clone.foreName2 = formatTitleCase(shareholder.foreName2);
+    clone.classOfShares = formatTitleCase(shareholder.classOfShares);
+    clone.currency = shareholder.currency;
+    clone.shares = shareholder.shares;
+    clone.surname = shareholder.surname;
+    formattedShareholders.push(clone);
+  });
+  return formattedShareholders;
 };

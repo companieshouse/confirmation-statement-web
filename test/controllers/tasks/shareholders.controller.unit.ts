@@ -10,7 +10,7 @@ import { companyAuthenticationMiddleware } from "../../../src/middleware/company
 import { urlUtils } from "../../../src/utils/url";
 import { SECTIONS, SHAREHOLDERS_ERROR } from "../../../src/utils/constants";
 import { getShareholders } from "../../../src/services/shareholder.service";
-import { mockShareholder } from "../../mocks/shareholder.mock";
+import { mockShareholder, mockShareholderFormatted } from "../../mocks/shareholder.mock";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
@@ -36,7 +36,7 @@ describe("Shareholders controller tests", () => {
   it("should navigate to the shareholders page", async () => {
     mockGetShareholders.mockResolvedValueOnce(mockShareholder);
     const response = await request(app).get(SHAREHOLDERS_URL);
-    const shareholder = mockShareholder[0];
+    const shareholder = mockShareholderFormatted[0];
     expect(response.text).toContain("Check the shareholder detail");
     expect(response.text).toContain(shareholder.surname);
     expect(response.text).toContain(shareholder.shares);
