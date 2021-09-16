@@ -6,13 +6,12 @@ import mocks from "../mocks/all.middleware.mock";
 import { companyAuthenticationMiddleware } from "../../src/middleware/company.authentication.middleware";
 import app from "../../src/app";
 import { TASK_LIST_PATH, TRADING_STATUS_PATH, urlParams } from "../../src/types/page.urls";
-import { SECTIONS, TRADING_STATUS_ERROR } from "../../src/utils/constants";
-import { sendUpdate } from "../../src/utils/update.confirmation.statement.submission";
-import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { TRADING_STATUS_ERROR } from "../../src/utils/constants";
+import { sendTradingStatusUpdate } from "../../src/utils/update.confirmation.statement.submission";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
-const mockSendUpdate = sendUpdate as jest.Mock;
+const mockSendTradingStatusUpdate = sendTradingStatusUpdate as jest.Mock;
 
 const PAGE_HEADING = "Check the trading status";
 const STOP_PAGE_HEADING = "Trading status not supported";
@@ -24,7 +23,7 @@ describe("Trading status controller tests", () => {
 
   beforeEach(() => {
     mocks.mockAuthenticationMiddleware.mockClear();
-    mockSendUpdate.mockClear();
+    mockSendTradingStatusUpdate.mockClear();
   });
 
   it("Should navigate to the trading status page", async () => {
@@ -37,8 +36,7 @@ describe("Trading status controller tests", () => {
     const response = await request(app)
       .post(TRADING_STATUS_URL)
       .send({ tradingStatus: "yes" });
-    expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.TRADING_STATUS);
-    expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+    expect(mockSendTradingStatusUpdate.mock.calls[0][1]).toBe(true);
     expect(response.status).toEqual(302);
     expect(response.header.location)
       .toEqual(TASK_LIST_URL);
@@ -48,8 +46,7 @@ describe("Trading status controller tests", () => {
     const response = await request(app)
       .post(TRADING_STATUS_URL)
       .send({ tradingStatus: "no" });
-    expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.TRADING_STATUS);
-    expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
+    expect(mockSendTradingStatusUpdate.mock.calls[0][1]).toBe(false);
     expect(response.status).toEqual(200);
     expect(response.header.location).not
       .toEqual(TRADING_STATUS_URL);

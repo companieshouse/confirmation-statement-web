@@ -26,6 +26,18 @@ export const sendUpdate = async (req: Request, sectionName: SECTIONS, status: Se
   await updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
 };
 
+export const sendTradingStatusUpdate = async (req: Request, tradingStatus: boolean) => {
+  const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+  const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+  const session = req.session as Session;
+  const tradingStatusData: TradingStatusData = {
+    tradingStatusAnswer: tradingStatus
+  };
+  const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
+  csSubmission.data.tradingStatusData = tradingStatusData;
+  await updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
+};
+
 const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission, sectionName: SECTIONS, sectionData: any ): ConfirmationStatementSubmission => {
   currentCsSubmission.data[sectionName] = sectionData;
   return currentCsSubmission;
@@ -77,12 +89,6 @@ const generateSectionData = (section: SECTIONS, status: SectionStatus, extraData
           sectionStatus: status
         };
         return newRegisterLocationsData;
-      }
-      case SECTIONS.TRADING_STATUS: {
-        const newTradingStatusData: TradingStatusData = {
-          sectionStatus: status
-        };
-        return newTradingStatusData;
       }
   }
 };
