@@ -4,7 +4,7 @@ import { Request } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 import { ConfirmationStatementSubmission, SectionStatus, StatementOfCapitalData } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement, updateConfirmationStatement } from "../../src/services/confirmation.statement.service";
-import { sendUpdate } from "../../src/utils/update.confirmation.statement.submission";
+import { sendTradingStatusUpdate, sendUpdate } from "../../src/utils/update.confirmation.statement.submission";
 import { SECTIONS } from "../../src/utils/constants";
 import { ParamsDictionary } from "express-serve-static-core";
 
@@ -126,9 +126,9 @@ describe("Update.confirmation.statement.submission util tests", () => {
     });
 
     it("Should create tradingStatus submission data", async () => {
-      await sendUpdate(request, SECTIONS.TRADING_STATUS, SectionStatus.CONFIRMED);
+      await sendTradingStatusUpdate(request, true);
       const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
-      expect(csSubmission.data.tradingStatusData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
+      expect(csSubmission.data.tradingStatusData?.tradingStatusAnswer).toBe(true);
     });
   });
 });
