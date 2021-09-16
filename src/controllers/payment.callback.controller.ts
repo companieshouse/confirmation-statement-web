@@ -7,7 +7,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     const paymentStatus = req.query.status;
     if (paymentStatus === "paid") {
-      logger.info("Payment status: " + paymentStatus + " - redirecting to the review page");
+      logger.info("Payment status: " + paymentStatus + " - redirecting to the confirmation page");
       return res.redirect(urlUtils.getUrlToPath(CONFIRMATION_PATH, req));
     } else {
       logger.info("Payment status: " + paymentStatus + " - redirecting to the review page");
