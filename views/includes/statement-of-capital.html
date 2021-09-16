@@ -1,79 +1,105 @@
-{{ govukTable({
-  caption: "Statement of capital (share capital)",
-  firstCellIsHeader: false,
-
-  rows: [
-    [
+<div class="govuk-summary-card govuk-!-margin-bottom-4">
+  <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3 align-center">
+    <p class="govuk-!-font-weight-bold govuk-!-margin-0">
+      Share capital
+    </p>
+  </div>
+  {{ govukSummaryList({
+    classes: 'govuk-!-margin-3',
+    rows: [
       {
-        text: "Class of shares"
+        key: {
+          text: "Share type"
+        },
+        value: {
+          text: statementOfCapital.classOfShares
+        }
       },
       {
-        text: statementOfCapital.classOfShares
-      }
-    ],
-    [
-      {
-        text: "Currency"
+        key: {
+          text: "Currency"
+        },
+        value: {
+          text: statementOfCapital.currency
+        }
       },
       {
-        text: statementOfCapital.currency
-      }
-    ],
-    [
-      {
-        text: "Number allotted"
+        key: {
+          text: "Number of shares"
+        },
+        value: {
+          text: statementOfCapital.numberAllotted
+        }
       },
       {
-        text: statementOfCapital.numberAllotted
-      }
-    ],
-    [
-      {
-        text: "Aggregate nominal value"
+        key: {
+          text: "Value of each share"
+        },
+        value: {
+          text: statementOfCapital.aggregateNominalValue
+        }
       },
       {
-        text: statementOfCapital.aggregateNominalValue
-      }
-    ]
-  ]
-}) }}
-<p>{{statementOfCapital.prescribedParticulars}}</p>
-
-{{ govukTable({
-  caption: "Statement of capital (totals)",
-  firstCellIsHeader: false,
-  rows: [
-    [
-      {
-        text: "Currency"
+        key: {
+          text: "Total value"
+        },
+        value: {
+          text: statementOfCapital.totalAggregateNominalValue
+        }
       },
       {
-        text: statementOfCapital.currency
-      }
-    ],
-    [
-      {
-        text: "Total number of shares"
-      },
-      {
-        text: statementOfCapital.totalNumberOfShares
-      }
-    ],
-    [
-      {
-        text: "Total aggregate nominal value"
-      },
-      {
-        text: statementOfCapital.totalAggregateNominalValue
-      }
-    ],
-    [
-      {
-        text: "Total amount unpaid for all shares"
-      },
-      {
-        text: statementOfCapital.totalAmountUnpaidForCurrency
+        key: {
+          text: "Rights attached to this share type"
+        },
+        value: {
+          text: statementOfCapital.prescribedParticulars
+        }
       }
     ]
-  ]
-}) }}
+  }) }}
+</div>
+
+<div class="govuk-summary-card govuk-!-margin-bottom-4">
+  <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3 align-center">
+    <p class="govuk-!-font-weight-bold govuk-!-margin-0">
+      Totals
+    </p>
+  </div>
+  {{ govukSummaryList({
+    classes: 'govuk-!-margin-3',
+    rows: [
+      {
+        key: {
+          text: "Currency"
+        },
+        value: {
+          text: statementOfCapital.currency
+        }
+      },
+      {
+        key: {
+          text: "Total number of shares"
+        },
+        value: {
+          text: statementOfCapital.totalNumberOfShares
+        }
+      },
+      {
+        key: {
+          text: "Total value of all shares"
+        },
+        value: {
+          text: statementOfCapital.totalAggregateNorminalValue
+        }
+      },
+      {
+        key: {
+          text: "Total amount unpaid for all shares"
+        },
+        value: {
+          text: statementOfCapital.totalAmountUnpaidForCurrency
+        }
+      }
+    ]
+  }) }}
+</div>
