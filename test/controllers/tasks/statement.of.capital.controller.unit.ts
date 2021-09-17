@@ -149,7 +149,7 @@ describe("Statement of Capital controller tests", () => {
       expect(response.text).toContain("Sorry, the service is unavailable");
     });
 
-    it.only("should navigate to the statement of capital page and display the total value as a product of 'Number of shares' and 'Value of shares'", async () => {
+    it("should navigate to the statement of capital page and display the total value as a product of 'Number of shares' and 'Value of shares'", async () => {
       mockGetStatementOfCapitalData.mockResolvedValueOnce({
         numberAllotted: "110",
         aggregateNominalValue: "2"
