@@ -17,7 +17,7 @@ import { DateTime } from "luxon";
 import { createAndLogError } from "../../src/utils/logger";
 import { getConfirmationStatement } from "../../src/services/confirmation.statement.service";
 import { mockConfirmationStatementSubmission } from "../mocks/confirmation.statement.submission.mock";
-import { mockTaskList } from "../mocks/task.list.mock";
+import { mockTaskList, mockTaskListComplete } from "../mocks/task.list.mock";
 import { urlUtils } from "../../src/utils/url";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
@@ -58,6 +58,7 @@ describe("Task list controller tests", () => {
 
       expect(mockInitTaskList).toBeCalledWith(validCompanyProfile.companyNumber, TRANSACTION_ID, SUBMISSION_ID, mockConfirmationStatementSubmission);
       expect(response.text).toContain("You will need to check and confirm that the company information we have on record is correct");
+      expect(response.text).toContain("Cannot start yet");
     });
 
     it("Should show recordDate as next due date when filing after nextMadeUpToDate", async () => {
@@ -113,6 +114,16 @@ describe("Task list controller tests", () => {
 
       expect(response.status).toBe(500);
       expect(response.text).toContain(ERROR_TEXT);
+    });
+
+    it("Should navigate to the task list page with all tasks completed.", async () => {
+      mockInitTaskList.mockReturnValueOnce(mockTaskListComplete);
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+
+      const response = await request(app).get(URL);
+
+      expect(mockInitTaskList).toBeCalledWith(validCompanyProfile.companyNumber, TRANSACTION_ID, SUBMISSION_ID, mockConfirmationStatementSubmission);
+      expect(response.text).toContain("Not started");
     });
   });
 

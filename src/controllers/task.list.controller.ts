@@ -18,6 +18,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+    const reviewUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REVIEW_PATH, companyNumber, transactionId, submissionId);
     const backLinkUrl = urlUtils
       .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TRADING_STATUS_PATH, companyNumber, transactionId, submissionId);
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
@@ -27,10 +28,13 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const taskList: TaskList = initTaskList(company.companyNumber, transactionId, submissionId, confirmationStatement);
     taskList.recordDate = calculateFilingDate(taskList.recordDate, company);
 
+    taskList.allTasksCompleted = Object.keys(taskList.tasks).length === taskList.tasksCompletedCount;
+
     return res.render(Templates.TASK_LIST, {
       backLinkUrl,
       company,
-      taskList
+      taskList,
+      reviewUrl
     });
   } catch (e) {
     return next(e);

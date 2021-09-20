@@ -4,17 +4,12 @@
 <ul class="app-task-list__items">
     <li class="app-task-list__item">
         <span class="app-task-list__task-name">
-            {% if taskList.allTasksCompleted %}
-                {% if taskList.csDue %}
-                    <a href="/confirmation-statement/review">Submit</a>
-                {% else %}
-                    <a href="/confirmation-statement/review">Submit and pay</a>
-                {% endif %}
-            </span>
-            <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="submit-pay-status">Not started</strong>
+        {% if taskList.allTasksCompleted %}
+            <a href="{{reviewUrl}}">Submit</a>
+            </span><strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="submit-pay-status">Not started</strong>
         {% else %}
-            Review statement and pay
-        </span>
-        <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="submit-pay-status">Cannot start yet</strong>
-    {% endif %}
-</li></ul>
+            Submit
+            </span><strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="submit-pay-status">Cannot start yet</strong>
+        {% endif %}
+    </li>
+</ul>
