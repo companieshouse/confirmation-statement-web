@@ -58,6 +58,8 @@ describe("Task list controller tests", () => {
 
       expect(mockInitTaskList).toBeCalledWith(validCompanyProfile.companyNumber, TRANSACTION_ID, SUBMISSION_ID, mockConfirmationStatementSubmission);
       expect(response.text).toContain("You will need to check and confirm that the company information we have on record is correct");
+      expect(response.text).toContain("Submit");
+      expect(response.text).toContain("Cannot start yet");
     });
 
     it("Should show recordDate as next due date when filing after nextMadeUpToDate", async () => {
