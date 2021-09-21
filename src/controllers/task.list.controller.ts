@@ -28,8 +28,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const taskList: TaskList = initTaskList(company.companyNumber, transactionId, submissionId, confirmationStatement);
     taskList.recordDate = calculateFilingDate(taskList.recordDate, company);
 
-    taskList.allTasksCompleted = Object.keys(taskList.tasks).length === taskList.tasksCompletedCount;
-
     return res.render(Templates.TASK_LIST, {
       backLinkUrl,
       company,

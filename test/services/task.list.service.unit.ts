@@ -91,6 +91,15 @@ describe("Task List Service tests", () => {
       const taskList: TaskList = initTaskList(COMPANY_NUMBER, TRANSACTION_ID, CS_SUBMISSION_ID, clone(clonedSubmission));
       expect(taskList.tasks.statementOfCapital.state).toBe(TASK_STATE);
     });
+
+    it("Should populate set all tasks completed to TRUE.", () => {
+      const ALL_TASK_COMPLETED_COUNT = 7;
+      mockGetTaskCompletedCount.mockReturnValueOnce(ALL_TASK_COMPLETED_COUNT);
+      const taskList: TaskList = initTaskList(COMPANY_NUMBER, TRANSACTION_ID, CS_SUBMISSION_ID, mockConfirmationStatementSubmission);
+
+      expect(taskList.tasksCompletedCount).toBe(ALL_TASK_COMPLETED_COUNT);
+      expect(taskList.allTasksCompleted).toBe(true);
+    });
   });
 });
 

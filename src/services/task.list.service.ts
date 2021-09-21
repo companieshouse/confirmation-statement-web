@@ -21,40 +21,45 @@ export const initTaskList = (companyNumber: string,
                              transactionId: string,
                              submissionId: string,
                              csSubmission: ConfirmationStatementSubmission): TaskList => {
-  return {
-    tasks: {
-      officers: {
-        state: toTaskState(csSubmission.data?.activeDirectorDetailsData?.sectionStatus),
-        url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(ACTIVE_DIRECTORS_PATH, companyNumber, transactionId, submissionId)
-      },
-      peopleSignificantControl: {
-        state: toTaskState(csSubmission.data?.personsSignificantControlData?.sectionStatus),
-        url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, companyNumber, transactionId, submissionId)
-      },
-      registerLocations: {
-        state: toTaskState(csSubmission.data?.registerLocationsData?.sectionStatus),
-        url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTER_LOCATIONS_PATH, companyNumber, transactionId, submissionId)
-      },
-      registeredOfficeAddress: {
-        state: toTaskState(csSubmission.data?.registeredOfficeAddressData?.sectionStatus),
-        url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTERED_OFFICE_ADDRESS_PATH, companyNumber, transactionId, submissionId)
-      },
-      shareholders: {
-        state: toTaskState(csSubmission.data?.shareholderData?.sectionStatus),
-        url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(SHAREHOLDERS_PATH, companyNumber, transactionId, submissionId)
-      },
-      sicCodes: {
-        state: toTaskState(csSubmission.data?.sicCodeData?.sectionStatus),
-        url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(SIC_PATH, companyNumber, transactionId, submissionId)
-      },
-      statementOfCapital: {
-        state: toTaskState(csSubmission.data?.statementOfCapitalData?.sectionStatus),
-        url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, companyNumber, transactionId, submissionId)
-      }
+
+  const allTasks = {
+    officers: {
+      state: toTaskState(csSubmission.data?.activeDirectorDetailsData?.sectionStatus),
+      url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(ACTIVE_DIRECTORS_PATH, companyNumber, transactionId, submissionId)
     },
+    peopleSignificantControl: {
+      state: toTaskState(csSubmission.data?.personsSignificantControlData?.sectionStatus),
+      url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, companyNumber, transactionId, submissionId)
+    },
+    registerLocations: {
+      state: toTaskState(csSubmission.data?.registerLocationsData?.sectionStatus),
+      url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTER_LOCATIONS_PATH, companyNumber, transactionId, submissionId)
+    },
+    registeredOfficeAddress: {
+      state: toTaskState(csSubmission.data?.registeredOfficeAddressData?.sectionStatus),
+      url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTERED_OFFICE_ADDRESS_PATH, companyNumber, transactionId, submissionId)
+    },
+    shareholders: {
+      state: toTaskState(csSubmission.data?.shareholderData?.sectionStatus),
+      url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(SHAREHOLDERS_PATH, companyNumber, transactionId, submissionId)
+    },
+    sicCodes: {
+      state: toTaskState(csSubmission.data?.sicCodeData?.sectionStatus),
+      url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(SIC_PATH, companyNumber, transactionId, submissionId)
+    },
+    statementOfCapital: {
+      state: toTaskState(csSubmission.data?.statementOfCapitalData?.sectionStatus),
+      url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, companyNumber, transactionId, submissionId)
+    }
+  };
+  const completedtasks = getTaskCompletedCount(csSubmission);
+  const isTasksCompleted = Object.keys(allTasks).length === completedtasks;
+
+  return {
+    tasks: allTasks,
     recordDate: toReadableFormat(DateTime.now().toString()),
-    tasksCompletedCount: getTaskCompletedCount(csSubmission),
-    allTasksCompleted: false,
+    tasksCompletedCount: completedtasks,
+    allTasksCompleted: isTasksCompleted,
     csDue: false
   };
 };
