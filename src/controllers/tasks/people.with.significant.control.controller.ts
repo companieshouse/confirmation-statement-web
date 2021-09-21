@@ -11,6 +11,7 @@ import {
   WRONG_DETAILS_INCORRECT_PSC,
   WRONG_DETAILS_UPDATE_PSC } from "../../utils/constants";
 import {
+  Address,
   PersonOfSignificantControl,
   SectionStatus
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
@@ -18,7 +19,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { getPscs } from "../../services/psc.service";
 import { createAndLogError, logger } from "../../utils/logger";
 import { toReadableFormat } from "../../utils/date";
-import { formatTitleCase } from "../../utils/format";
+import { formatTitleCase, formatAddressForDisplay } from "../../utils/format";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -32,11 +33,15 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const pscAppointmentType = psc.appointmentType;
     const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
     const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);
+    const ura = formatUraAddress(formattedPsc);
+    const serviceAddress = formatServiceAddress(formattedPsc);
 
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       dob: handleDateOfBirth(pscTemplateType, psc),
       psc: formattedPsc,
+      ura,
+      serviceAddress,
       pscTemplateType,
       templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
     });
@@ -148,6 +153,33 @@ const formatPSCForDisplay = (psc: PersonOfSignificantControl): PersonOfSignifica
 
   clonedPsc.serviceAddressLine1 = formatTitleCase(psc.serviceAddressLine1);
   clonedPsc.serviceAddressPostTown = formatTitleCase(psc.serviceAddressPostTown);
+  clonedPsc.serviceAddressCareOf = formatTitleCase(psc.serviceAddressCareOf);
+  clonedPsc.serviceAddressCountryName = formatTitleCase(psc.serviceAddressCountryName);
+  clonedPsc.serviceAddressPoBox = formatTitleCase(psc.serviceAddressPoBox);
+  clonedPsc.serviceAddressArea = formatTitleCase(psc.serviceAddressArea);
+  clonedPsc.serviceAddressRegion = formatTitleCase(psc.serviceAddressRegion);
 
   return clonedPsc;
 };
+
+const formatServiceAddress = (formattedPsc: PersonOfSignificantControl): string => {
+  const addressClone: Address = {
+    addressLine1: formattedPsc.serviceAddressLine1,
+    careOf: formattedPsc.serviceAddressCareOf,
+    country: formattedPsc.serviceAddressCountryName,
+    locality: formattedPsc.serviceAddressArea,
+    poBox: formattedPsc.serviceAddressPoBox,
+    postalCode: formattedPsc.serviceAddressPostCode,
+    premises: formattedPsc.serviceAddressPostTown,
+    region: formattedPsc.serviceAddressRegion
+  }
+  return formatAddressForDisplay(addressClone);
+}
+
+const formatUraAddress = (formattedPsc: PersonOfSignificantControl): string => {
+  var ura = "";
+  if (formattedPsc.address) {
+    ura = formatAddressForDisplay(formattedPsc.address);
+  }
+  return ura;
+}
