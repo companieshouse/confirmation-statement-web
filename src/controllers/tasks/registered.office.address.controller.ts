@@ -29,8 +29,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
-    const companyProfile: CompanyProfile = await getCompanyProfile(companyNumber);
     const roaButtonValue = req.body.registeredOfficeAddress;
 
     if (roaButtonValue === RADIO_BUTTON_VALUE.YES) {
@@ -47,6 +45,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
+    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+    const companyProfile: CompanyProfile = await getCompanyProfile(companyNumber);
     const registeredOfficeAddress = formatAddressForDisplay(formatAddress(companyProfile.registeredOfficeAddress));
     return res.render(Templates.REGISTERED_OFFICE_ADDRESS, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
