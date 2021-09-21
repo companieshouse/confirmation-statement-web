@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { RADIO_BUTTON_VALUE, SECTIONS, sessionCookieConstants, STATEMENT_OF_CAPITAL_ERROR } from "../../utils/constants";
+import { RADIO_BUTTON_VALUE, SECTIONS, STATEMENT_OF_CAPITAL_ERROR } from "../../utils/constants";
 import { STATEMENT_OF_CAPITAL_PATH, TASK_LIST_PATH, urlParams } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
@@ -24,7 +24,6 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
     const sharesValidation = await validateTotalNumberOfShares(session, companyNumber, +statementOfCapital.totalNumberOfShares);
     const totalAmountUnpaidValidation = typeof statementOfCapital.totalAmountUnpaidForCurrency === 'string';
 
-    req.sessionCookie[sessionCookieConstants.STATEMENT_OF_CAPITAL_KEY] = statementOfCapital;
     statementOfCapital.classOfShares = formatTitleCase(statementOfCapital.classOfShares);
 
     return res.render(Templates.STATEMENT_OF_CAPITAL, {
@@ -42,6 +41,7 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const session: Session = req.session as Session;
     const statementOfCapitalButtonValue = req.body.statementOfCapital;
     const companyNumber = getCompanyNumber(req);
     const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
@@ -50,7 +50,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const totalAmountUnpaidValidation = req.body.totalAmountUnpaidValidation === 'true';
 
     if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.YES) {
-      const statementOfCapital: StatementOfCapital = req.sessionCookie[sessionCookieConstants.STATEMENT_OF_CAPITAL_KEY];
+      const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, companyNumber);
       await sendUpdate(req, SECTIONS.SOC, SectionStatus.CONFIRMED, statementOfCapital);
       return res.redirect(urlUtils
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId));

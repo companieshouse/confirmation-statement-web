@@ -4,7 +4,7 @@ import { TASK_LIST_PATH, REGISTERED_OFFICE_ADDRESS_PATH, CHANGE_ROA_PATH } from 
 import { Templates } from "../../types/template.paths";
 import { CompanyProfile, RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../../services/company.profile.service";
-import { RADIO_BUTTON_VALUE, REGISTERED_OFFICE_ADDRESS_ERROR, SECTIONS, sessionCookieConstants } from "../../utils/constants";
+import { RADIO_BUTTON_VALUE, REGISTERED_OFFICE_ADDRESS_ERROR, SECTIONS } from "../../utils/constants";
 import {
   SectionStatus
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
@@ -17,7 +17,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const companyProfile: CompanyProfile = await getCompanyProfile(companyNumber);
     const backLinkUrl = urlUtils.getUrlToPath(TASK_LIST_PATH, req);
     const registeredOfficeAddress = formatAddressForDisplay(formatAddress(companyProfile.registeredOfficeAddress));
-    req.sessionCookie[sessionCookieConstants.REGISTERED_OFFICE_ADDRESS_KEY] = registeredOfficeAddress;
     return res.render(Templates.REGISTERED_OFFICE_ADDRESS, {
       templateName: Templates.REGISTERED_OFFICE_ADDRESS,
       backLinkUrl,
@@ -31,7 +30,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const roaButtonValue = req.body.registeredOfficeAddress;
-    const registeredOfficeAddress: RegisteredOfficeAddress = req.sessionCookie[sessionCookieConstants.REGISTERED_OFFICE_ADDRESS_KEY];
 
     if (roaButtonValue === RADIO_BUTTON_VALUE.YES) {
       await sendUpdate(req, SECTIONS.ROA, SectionStatus.CONFIRMED);
@@ -47,6 +45,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
+    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+    const companyProfile: CompanyProfile = await getCompanyProfile(companyNumber);
+    const registeredOfficeAddress = formatAddressForDisplay(formatAddress(companyProfile.registeredOfficeAddress));
     return res.render(Templates.REGISTERED_OFFICE_ADDRESS, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       roaErrorMsg: REGISTERED_OFFICE_ADDRESS_ERROR,

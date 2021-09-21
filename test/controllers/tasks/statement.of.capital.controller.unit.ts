@@ -167,7 +167,6 @@ describe("Statement of Capital controller tests", () => {
       mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(STATEMENT_OF_CAPITAL_URL)
-        .send({ sessionCookie: `{ statementOfCapital: ${mockStatementOfCapital} }` })
         .send({ statementOfCapital: "yes" })
         .send({ sharesValidation: "true" })
         .send({ totalAmountUnpaidValidation: "false" });
@@ -181,7 +180,6 @@ describe("Statement of Capital controller tests", () => {
       mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(STATEMENT_OF_CAPITAL_URL)
-        .send({ sessionCookie: `{ statementOfCapital: ${mockStatementOfCapital} }` })
         .send({ sharesValidation: "false" })
         .send({ totalAmountUnpaidValidation: "true" });
 
@@ -194,7 +192,6 @@ describe("Statement of Capital controller tests", () => {
       mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(STATEMENT_OF_CAPITAL_URL)
-        .send({ sessionCookie: `{ statementOfCapital: ${mockStatementOfCapital} }` })
         .send({ sharesValidation: "true" })
         .send({ totalAmountUnpaidValidation: "false" });
 
@@ -207,7 +204,6 @@ describe("Statement of Capital controller tests", () => {
       mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(STATEMENT_OF_CAPITAL_URL)
-        .send({ sessionCookie: `{ statementOfCapital: ${mockStatementOfCapital} }` })
         .send({ sharesValidation: "false" })
         .send({ totalAmountUnpaidValidation: "false" });
 

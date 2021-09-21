@@ -16,16 +16,6 @@ export const WRONG_DETAILS_UPDATE_DIRECTOR = "Update the director details";
 export const WRONG_DETAILS_UPDATE_OFFICERS = "Update officers - File a confirmation statement";
 export const PSC_STATEMENT_NAME_PLACEHOLDER = "{linked_psc_name}";
 
-
-export const sessionCookieConstants = {
-  ACTIVE_DIRECTOR_DETAILS_KEY: "activeDirectorDetails",
-  PSC_STATEMENT_KEY: "pscStatement",
-  REGISTERED_OFFICE_ADDRESS_KEY: "registeredOfficeAddress",
-  REGISTERS_LOCATION_KEY: "registers",
-  SAIL_ADDRESS_KEY: "sailAddress",
-  STATEMENT_OF_CAPITAL_KEY: "statementOfCapital"
-};
-
 export enum RADIO_BUTTON_VALUE {
   NO = "no",
   YES = "yes",

@@ -5,7 +5,6 @@ import {
   PSC_STATEMENT_NOT_FOUND,
   RADIO_BUTTON_VALUE,
   SECTIONS,
-  sessionCookieConstants,
   WRONG_DETAILS_INCORRECT_PSC,
   WRONG_DETAILS_UPDATE_PSC } from "../../utils/constants";
 import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, PSC_STATEMENT_PATH, TASK_LIST_PATH, URL_QUERY_PARAM } from "../../types/page.urls";
@@ -22,7 +21,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     const pscStatement = await getPscStatementText(req);
-    req.sessionCookie[sessionCookieConstants.PSC_STATEMENT_KEY] = pscStatement;
 
     return res.render(Templates.PSC_STATEMENT, {
       backLinkUrl: getBackLinkUrl(req),
@@ -58,7 +56,7 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId));
     }
 
-    const pscStatement: string = req.sessionCookie[sessionCookieConstants.PSC_STATEMENT_KEY];
+    const pscStatement = await getPscStatementText(req);
     return res.render(Templates.PSC_STATEMENT, {
       backLinkUrl: getBackLinkUrl(req),
       pscStatementControlErrorMsg: PSC_STATEMENT_CONTROL_ERROR,

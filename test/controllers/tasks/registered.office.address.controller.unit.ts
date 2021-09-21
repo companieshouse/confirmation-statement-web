@@ -32,6 +32,7 @@ describe("Registered Office Address controller tests", () => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
+    mockGetCompanyProfile.mockClear();
     mockSendUpdate.mockClear();
   });
 
@@ -77,6 +78,7 @@ describe("Registered Office Address controller tests", () => {
   });
 
   it("Should redisplay roa page with error when radio button is not selected", async () => {
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     const response = await request(app).post(REGISTERED_OFFICE_ADDRESS_URL);
 
     expect(response.status).toEqual(200);

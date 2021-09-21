@@ -127,6 +127,7 @@ describe("Register locations controller tests", () => {
   });
 
   it("Should throw an error on register locations page when radio button is not selected", async () => {
+    mockGetRegisterLocation.mockResolvedValueOnce(mockRegisterLocation);
     const response = await request(app).post(REGISTER_LOCATIONS_URL);
 
     expect(response.status).toEqual(200);
