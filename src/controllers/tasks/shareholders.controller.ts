@@ -43,10 +43,15 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
+    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+    const session: Session = req.session as Session;
+    const shareholdersData: Shareholder[] = await getShareholders(session, companyNumber);
+    const shareholders = formatShareholders(shareholdersData);
     return res.render(Templates.SHAREHOLDERS, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       shareholdersErrorMsg: SHAREHOLDERS_ERROR,
-      templateName: Templates.SHAREHOLDERS
+      templateName: Templates.SHAREHOLDERS,
+      shareholders
     });
   } catch (e) {
     return next(e);

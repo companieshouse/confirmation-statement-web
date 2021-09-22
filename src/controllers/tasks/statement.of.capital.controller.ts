@@ -46,11 +46,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = getCompanyNumber(req);
     const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
+    const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, companyNumber);
     const sharesValidation = req.body.sharesValidation === 'true';
     const totalAmountUnpaidValidation = req.body.totalAmountUnpaidValidation === 'true';
+    statementOfCapital.classOfShares = formatTitleCase(statementOfCapital.classOfShares);
 
     if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.YES || statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-      const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, companyNumber);
       await sendUpdate(req, SECTIONS.SOC, SectionStatus.CONFIRMED, statementOfCapital);
       return res.redirect(urlUtils
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId));
@@ -69,6 +70,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       templateName: Templates.STATEMENT_OF_CAPITAL,
       statementOfCapitalErrorMsg: STATEMENT_OF_CAPITAL_ERROR,
       backLinkUrl: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
+      statementOfCapital,
       sharesValidation,
       totalAmountUnpaidValidation
     });
