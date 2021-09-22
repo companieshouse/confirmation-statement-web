@@ -18,12 +18,17 @@ import { Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { createAndLogError } from "../../src/utils/logger";
 import { dummyPayment, PAYMENT_JOURNEY_URL } from "../mocks/payment.mock";
+import { mockConfirmationStatementSubmission } from "../mocks/confirmation.statement.submission.mock";
+import { getConfirmationStatement } from "../../src/services/confirmation.statement.service";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockGetTransaction = getTransaction as jest.Mock;
 const mockCloseTransaction = closeTransaction as jest.Mock;
 const mockStartPaymentsSession = startPaymentsSession as jest.Mock;
 const mockCreateAndLogError = createAndLogError as jest.Mock;
+
+const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
+mockGetConfirmationStatement.mockResolvedValue(mockConfirmationStatementSubmission);
 
 const dummyError = {
   message: "oops"
