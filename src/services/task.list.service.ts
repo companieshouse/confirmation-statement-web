@@ -2,7 +2,6 @@ import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/di
 import {
   TaskList
 } from "../types/task.list";
-import { DateTime } from "luxon";
 import { toReadableFormat } from "../utils/date";
 import {
   SIC_PATH,
@@ -57,7 +56,7 @@ export const initTaskList = (companyNumber: string,
 
   return {
     tasks: allTasks,
-    recordDate: toReadableFormat(DateTime.now().toString()),
+    recordDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
     tasksCompletedCount: completedtasks,
     allTasksCompleted: isTasksCompleted,
     csDue: false
