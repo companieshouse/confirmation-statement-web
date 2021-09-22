@@ -42,8 +42,8 @@ export const formatAddress = (address: Address): Address => {
     addressLine1: formatTitleCase(addressClone.addressLine1),
     addressLine2: formatTitleCase(addressClone.addressLine2),
     poBox: formatTitleCase(addressClone.poBox),
-    country: formatTitleCase(addressClone.country),
     locality: formatTitleCase(addressClone.locality),
+    country: formatTitleCase(addressClone.country),
     premises: formatTitleCase(addressClone.premises),
     region: formatTitleCase(addressClone.region),
     postalCode: addressClone.postalCode?.toUpperCase()
