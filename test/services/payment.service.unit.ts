@@ -18,6 +18,7 @@ const SUBMISSION_ID = "65465464";
 const TRANSACTION_ID = "987654321";
 const COMPANY_NUMBER = "12345678";
 const UUID = "d29f8b9c-501d-4ae3-91b2-001fd9e4e0a5";
+const REFERENCE = "Confirmation_Statement_" + TRANSACTION_ID;
 
 const mockCreatePaymentWithFullUrl = jest.fn();
 const mockCreatePaymentApiClient = createPaymentApiClient as jest.Mock;
@@ -87,7 +88,7 @@ describe("Payment Service tests", () => {
 
       const paymentRequest: CreatePaymentRequest = mockCreatePaymentWithFullUrl.mock.calls[0][0];
       expect(paymentRequest.redirectUri).toBe("http://chs.local/confirmation-statement/company/12345678/transaction/987654321/submission/65465464/payment-callback");
-      expect(paymentRequest.reference).toBe("CS_REFERENCE");
+      expect(paymentRequest.reference).toBe(REFERENCE);
       expect(paymentRequest.resource).toBe(API_URL + PAYMENT_RESOURCE_URI);
       expect(paymentRequest.state).toBe(UUID);
     });
