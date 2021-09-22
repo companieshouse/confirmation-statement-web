@@ -172,14 +172,14 @@ const formatServiceAddress = (formattedPsc: PersonOfSignificantControl): string 
     postalCode: formattedPsc.serviceAddressPostCode,
     premises: formattedPsc.serviceAddressPostTown,
     region: formattedPsc.serviceAddressRegion
-  }
+  };
   return formatAddressForDisplay(addressClone);
-}
+};
 
 const formatUraAddress = (formattedPsc: PersonOfSignificantControl): string => {
-  var ura = "";
+  let ura = "";
   if (formattedPsc.address) {
     ura = formatAddressForDisplay(formattedPsc.address);
   }
   return ura;
-}
+};
