@@ -8,6 +8,7 @@ import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource
 import { API_URL, CHS_URL } from "../utils/properties";
 import { PAYMENT_CALLBACK_PATH } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
+import { updateConfirmationStatement } from "./confirmation.statement.service";
 
 export const startPaymentsSession = async (session: Session, paymentSessionUrl: string,
                                            paymentResourceUri: string, submissionId: string, transactionId: string, companyNumber: string): Promise<ApiResponse<Payment>> => {
@@ -17,11 +18,15 @@ export const startPaymentsSession = async (session: Session, paymentSessionUrl: 
     .getUrlWithCompanyNumberTransactionIdAndSubmissionId(`${CHS_URL}${PAYMENT_CALLBACK_PATH}`,
                                                          companyNumber, transactionId, submissionId);
 
+  const state = uuidv4();
+
+  session.setExtraData("payment-nonce", state);
+
   const createPaymentRequest: CreatePaymentRequest = {
     redirectUri: redirectUri,
     reference: "CS_REFERENCE",
     resource: resourceWithHost,
-    state: uuidv4(),
+    state: state,
   };
   const paymentResult = await apiClient.payment.createPaymentWithFullUrl(createPaymentRequest);
 

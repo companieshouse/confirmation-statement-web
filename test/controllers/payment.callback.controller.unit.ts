@@ -57,4 +57,14 @@ describe("Payment callback controller tests", () => {
     expect(response.text).toContain(TRANSACTION_ID);
     expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
   });
+
+  it("should error if state doesn't match session state", async () => {
+    const successUrl = URL + "?ref=CS_REFERENCE&state=654321&status=paid";
+    const response = await request(app)
+      .get(successUrl);
+
+    expect(response.status).toBe(500);
+    expect(response.text).toContain("Sorry, the service is unavailable");
+    expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+  });
 });
