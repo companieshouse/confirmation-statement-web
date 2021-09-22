@@ -10,11 +10,11 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const paymentStatus = req.query.status;
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const returnedState = req.query.state;
-    const state = session.getExtraData("payment-nonce");
+    const savedState = session.getExtraData("payment-nonce");
 
-    logger.debug(`Returned state: ${returnedState}, saved state: ${state}`);
+    logger.debug(`Returned state: ${returnedState}, saved state: ${savedState}`);
 
-    if (!state || state !== returnedState) {
+    if (!savedState || savedState !== returnedState) {
       return next(createAndLogError("Returned state does not match saved state, rejecting redirect"));
     }
 
