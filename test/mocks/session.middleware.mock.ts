@@ -1,5 +1,3 @@
-
-
 jest.mock("ioredis");
 jest.mock("../../src/middleware/session.middleware");
 
