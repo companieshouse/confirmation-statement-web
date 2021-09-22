@@ -8,7 +8,6 @@ import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource
 import { API_URL, CHS_URL } from "../utils/properties";
 import { PAYMENT_CALLBACK_PATH } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
-import { updateConfirmationStatement } from "./confirmation.statement.service";
 
 export const startPaymentsSession = async (session: Session, paymentSessionUrl: string,
                                            paymentResourceUri: string, submissionId: string, transactionId: string, companyNumber: string): Promise<ApiResponse<Payment>> => {
