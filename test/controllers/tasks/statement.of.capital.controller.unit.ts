@@ -176,6 +176,19 @@ describe("Statement of Capital controller tests", () => {
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
     });
 
+    it("Should navigate to the task list page when recently filed button is selected", async () => {
+      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
+      const response = await request(app)
+        .post(STATEMENT_OF_CAPITAL_URL)
+        .send({ statementOfCapital: "recently_filed" })
+        .send({ sharesValidation: "true" })
+        .send({ totalAmountUnpaidValidation: "false" });
+
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(TASK_LIST_URL);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+    });
+
     it("Should navigate to the statement of capital stop page when the ONLY statement of capital validation has failed.", async () => {
       mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)

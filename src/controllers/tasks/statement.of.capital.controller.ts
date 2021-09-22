@@ -49,7 +49,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const sharesValidation = req.body.sharesValidation === 'true';
     const totalAmountUnpaidValidation = req.body.totalAmountUnpaidValidation === 'true';
 
-    if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.YES) {
+    if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.YES || statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
       const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, companyNumber);
       await sendUpdate(req, SECTIONS.SOC, SectionStatus.CONFIRMED, statementOfCapital);
       return res.redirect(urlUtils
