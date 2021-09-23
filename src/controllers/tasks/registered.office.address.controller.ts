@@ -66,8 +66,8 @@ const formatAddress = (address: RegisteredOfficeAddress): RegisteredOfficeAddres
     addressLineOne: formatTitleCase(addressClone.addressLineOne),
     addressLineTwo: formatTitleCase(addressClone.addressLineTwo),
     poBox: formatTitleCase(addressClone.poBox),
-    country: formatTitleCase(addressClone.country),
     locality: formatTitleCase(addressClone.locality),
+    country: formatTitleCase(addressClone.country),
     premises: formatTitleCase(addressClone.premises),
     region: formatTitleCase(addressClone.region),
     postalCode: addressClone.postalCode?.toUpperCase()
