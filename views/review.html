@@ -30,11 +30,21 @@
 
       {% if isPaymentDue %}
         {{ govukButton({
-          text: "Confirm and pay"
+          text: "Confirm and pay",
+          attributes: {
+            id: "confirm-and-pay",
+            "data-event-id": "confirm-and-pay-button",
+            "onclick": "_paq.push(['trackGoal', 4])"
+          }
         }) }}
       {% else %}
         {{ govukButton({
-          text: "Confirm and submit"
+          text: "Confirm and submit",
+          attributes: {
+            id: "confirm-and-submit",
+            "data-event-id": "confirm-and-submit-button",
+            "onclick": "_paq.push(['trackGoal', 5])"
+          }
         }) }}
       {% endif %}
 
