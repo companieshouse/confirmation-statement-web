@@ -1,3 +1,4 @@
+import { RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { ActiveDirectorDetails, Address } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 export const formatTitleCase = (str: string|undefined): string =>  {
@@ -39,13 +40,28 @@ export const formatAddress = (address: Address): Address => {
   const addressClone: Address = JSON.parse(JSON.stringify(address));
   return {
     careOf: formatTitleCase(addressClone.careOf),
+    poBox: formatTitleCase(addressClone.poBox),
+    premises: formatTitleCase(addressClone.premises),
     addressLine1: formatTitleCase(addressClone.addressLine1),
     addressLine2: formatTitleCase(addressClone.addressLine2),
-    poBox: formatTitleCase(addressClone.poBox),
     locality: formatTitleCase(addressClone.locality),
-    country: formatTitleCase(addressClone.country),
-    premises: formatTitleCase(addressClone.premises),
     region: formatTitleCase(addressClone.region),
+    country: formatTitleCase(addressClone.country),
+    postalCode: addressClone.postalCode?.toUpperCase()
+  };
+};
+
+export const formatRegisteredOfficeAddress = (address: RegisteredOfficeAddress): RegisteredOfficeAddress => {
+  const addressClone: RegisteredOfficeAddress = JSON.parse(JSON.stringify(address));
+  return {
+    careOf: formatTitleCase(addressClone.careOf),
+    poBox: formatTitleCase(addressClone.poBox),
+    premises: formatTitleCase(addressClone.premises),
+    addressLineOne: formatTitleCase(addressClone.addressLineOne),
+    addressLineTwo: formatTitleCase(addressClone.addressLineTwo),
+    locality: formatTitleCase(addressClone.locality),
+    region: formatTitleCase(addressClone.region),
+    country: formatTitleCase(addressClone.country),
     postalCode: addressClone.postalCode?.toUpperCase()
   };
 };
