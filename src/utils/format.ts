@@ -39,13 +39,13 @@ export const formatAddress = (address: Address): Address => {
   const addressClone: Address = JSON.parse(JSON.stringify(address));
   return {
     careOf: formatTitleCase(addressClone.careOf),
+    poBox: formatTitleCase(addressClone.poBox),
+    premises: formatTitleCase(addressClone.premises),
     addressLine1: formatTitleCase(addressClone.addressLine1),
     addressLine2: formatTitleCase(addressClone.addressLine2),
-    poBox: formatTitleCase(addressClone.poBox),
     locality: formatTitleCase(addressClone.locality),
-    country: formatTitleCase(addressClone.country),
-    premises: formatTitleCase(addressClone.premises),
     region: formatTitleCase(addressClone.region),
+    country: formatTitleCase(addressClone.country),
     postalCode: addressClone.postalCode?.toUpperCase()
   };
 };

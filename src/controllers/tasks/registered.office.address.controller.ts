@@ -63,13 +63,13 @@ const formatAddress = (address: RegisteredOfficeAddress): RegisteredOfficeAddres
   const addressClone: RegisteredOfficeAddress = JSON.parse(JSON.stringify(address));
   return {
     careOf: formatTitleCase(addressClone.careOf),
+    poBox: formatTitleCase(addressClone.poBox),
+    premises: formatTitleCase(addressClone.premises),
     addressLineOne: formatTitleCase(addressClone.addressLineOne),
     addressLineTwo: formatTitleCase(addressClone.addressLineTwo),
-    poBox: formatTitleCase(addressClone.poBox),
     locality: formatTitleCase(addressClone.locality),
-    country: formatTitleCase(addressClone.country),
-    premises: formatTitleCase(addressClone.premises),
     region: formatTitleCase(addressClone.region),
+    country: formatTitleCase(addressClone.country),
     postalCode: addressClone.postalCode?.toUpperCase()
   };
 };
