@@ -2,21 +2,21 @@ import { NextFunction, Request, Response } from "express";
 import { urlUtils } from "../../utils/url";
 import { TASK_LIST_PATH, REGISTERED_OFFICE_ADDRESS_PATH, CHANGE_ROA_PATH } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
-import { CompanyProfile, RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../../services/company.profile.service";
 import { RADIO_BUTTON_VALUE, REGISTERED_OFFICE_ADDRESS_ERROR, SECTIONS } from "../../utils/constants";
 import {
   SectionStatus
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
-import { formatTitleCase, formatAddressForDisplay } from "../../utils/format";
+import { formatAddressForDisplay, formatRegisteredOfficeAddress } from "../../utils/format";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const companyProfile: CompanyProfile = await getCompanyProfile(companyNumber);
     const backLinkUrl = urlUtils.getUrlToPath(TASK_LIST_PATH, req);
-    const registeredOfficeAddress = formatAddressForDisplay(formatAddress(companyProfile.registeredOfficeAddress));
+    const registeredOfficeAddress = formatAddressForDisplay(formatRegisteredOfficeAddress(companyProfile.registeredOfficeAddress));
     return res.render(Templates.REGISTERED_OFFICE_ADDRESS, {
       templateName: Templates.REGISTERED_OFFICE_ADDRESS,
       backLinkUrl,
@@ -47,7 +47,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const companyProfile: CompanyProfile = await getCompanyProfile(companyNumber);
-    const registeredOfficeAddress = formatAddressForDisplay(formatAddress(companyProfile.registeredOfficeAddress));
+    const registeredOfficeAddress = formatAddressForDisplay(formatRegisteredOfficeAddress(companyProfile.registeredOfficeAddress));
     return res.render(Templates.REGISTERED_OFFICE_ADDRESS, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       roaErrorMsg: REGISTERED_OFFICE_ADDRESS_ERROR,
@@ -57,19 +57,4 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   } catch (e) {
     return next(e);
   }
-};
-
-const formatAddress = (address: RegisteredOfficeAddress): RegisteredOfficeAddress => {
-  const addressClone: RegisteredOfficeAddress = JSON.parse(JSON.stringify(address));
-  return {
-    careOf: formatTitleCase(addressClone.careOf),
-    addressLineOne: formatTitleCase(addressClone.addressLineOne),
-    addressLineTwo: formatTitleCase(addressClone.addressLineTwo),
-    poBox: formatTitleCase(addressClone.poBox),
-    country: formatTitleCase(addressClone.country),
-    locality: formatTitleCase(addressClone.locality),
-    premises: formatTitleCase(addressClone.premises),
-    region: formatTitleCase(addressClone.region),
-    postalCode: addressClone.postalCode?.toUpperCase()
-  };
 };

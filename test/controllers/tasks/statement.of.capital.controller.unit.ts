@@ -164,6 +164,7 @@ describe("Statement of Capital controller tests", () => {
 
   describe("post tests", () => {
     it("Should navigate to the task list page when statement of capital confirmed and set status to CONFIRMED.", async () => {
+      mockGetStatementOfCapitalData.mockResolvedValueOnce(mockStatementOfCapital);
       mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(STATEMENT_OF_CAPITAL_URL)
@@ -176,7 +177,22 @@ describe("Statement of Capital controller tests", () => {
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
     });
 
+    it("Should navigate to the task list page when recently filed button is selected", async () => {
+      mockGetStatementOfCapitalData.mockResolvedValueOnce(mockStatementOfCapital);
+      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
+      const response = await request(app)
+        .post(STATEMENT_OF_CAPITAL_URL)
+        .send({ statementOfCapital: "recently_filed" })
+        .send({ sharesValidation: "true" })
+        .send({ totalAmountUnpaidValidation: "false" });
+
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(TASK_LIST_URL);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+    });
+
     it("Should navigate to the statement of capital stop page when the ONLY statement of capital validation has failed.", async () => {
+      mockGetStatementOfCapitalData.mockResolvedValueOnce(mockStatementOfCapital);
       mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(STATEMENT_OF_CAPITAL_URL)
@@ -189,6 +205,7 @@ describe("Statement of Capital controller tests", () => {
     });
 
     it("Should navigate to the statement of capital stop page when ONLY the total amount unpaid is NULL.", async () => {
+      mockGetStatementOfCapitalData.mockResolvedValueOnce(mockStatementOfCapital);
       mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(STATEMENT_OF_CAPITAL_URL)
@@ -201,6 +218,7 @@ describe("Statement of Capital controller tests", () => {
     });
 
     it("Should navigate to the statement of capital stop page when BOTH the statement of capital validation has failed and the total amount unpaid is NULL.", async () => {
+      mockGetStatementOfCapitalData.mockResolvedValueOnce(mockStatementOfCapital);
       mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(STATEMENT_OF_CAPITAL_URL)
@@ -213,6 +231,7 @@ describe("Statement of Capital controller tests", () => {
     });
 
     it("Should navigate to the statement of capital stop page when statement of capital is declared incorrect", async () => {
+      mockGetStatementOfCapitalData.mockResolvedValueOnce(mockStatementOfCapital);
       mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
       const response = await request(app)
         .post(STATEMENT_OF_CAPITAL_URL)
@@ -223,6 +242,7 @@ describe("Statement of Capital controller tests", () => {
     });
 
     it("Should redisplay statement of capital page with error when radio button is not selected", async () => {
+      mockGetStatementOfCapitalData.mockResolvedValueOnce(mockStatementOfCapital);
       const response = await request(app)
         .post(STATEMENT_OF_CAPITAL_URL)
         .send({ sharesValidation: 'true' })

@@ -13,6 +13,8 @@ import { Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { createAndLogError } from "../utils/logger";
 import { links } from "../utils/constants";
 import { toReadableFormat } from "../utils/date";
+import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { getConfirmationStatement } from "../services/confirmation.statement.service";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -26,10 +28,13 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
 
     const transaction: Transaction = await getTransaction(session, transactionId);
+
+    const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
+
     return res.render(Templates.REVIEW, {
       backLinkUrl,
       company,
-      nextMadeUpToDate: toReadableFormat(company.confirmationStatement?.nextMadeUpTo as string),
+      nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
       isPaymentDue: isPaymentDue(transaction, submissionId)
     });
   } catch (e) {

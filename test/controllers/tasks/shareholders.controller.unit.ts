@@ -88,6 +88,7 @@ describe("Shareholders controller tests", () => {
   });
 
   it("Should throw an error on shareholders page when radio button is not selected", async () => {
+    mockGetShareholders.mockResolvedValueOnce(mockShareholder);
     const response = await request(app).post(SHAREHOLDERS_URL);
 
     expect(response.status).toEqual(200);

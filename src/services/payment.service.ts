@@ -13,15 +13,20 @@ export const startPaymentsSession = async (session: Session, paymentSessionUrl: 
                                            paymentResourceUri: string, submissionId: string, transactionId: string, companyNumber: string): Promise<ApiResponse<Payment>> => {
   const apiClient: ApiClient = createPaymentApiClient(session, paymentSessionUrl);
   const resourceWithHost = API_URL + paymentResourceUri;
+  const reference: string = "Confirmation_Statement_" + transactionId;
   const redirectUri: string = urlUtils
     .getUrlWithCompanyNumberTransactionIdAndSubmissionId(`${CHS_URL}${PAYMENT_CALLBACK_PATH}`,
                                                          companyNumber, transactionId, submissionId);
 
+  const state = uuidv4();
+
+  session.setExtraData("payment-nonce", state);
+
   const createPaymentRequest: CreatePaymentRequest = {
     redirectUri: redirectUri,
-    reference: "CS_REFERENCE",
+    reference: reference,
     resource: resourceWithHost,
-    state: uuidv4(),
+    state: state,
   };
   const paymentResult = await apiClient.payment.createPaymentWithFullUrl(createPaymentRequest);
 
