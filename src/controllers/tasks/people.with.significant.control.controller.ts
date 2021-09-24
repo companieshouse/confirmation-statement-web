@@ -11,7 +11,6 @@ import {
   WRONG_DETAILS_INCORRECT_PSC,
   WRONG_DETAILS_UPDATE_PSC } from "../../utils/constants";
 import {
-  Address,
   PersonOfSignificantControl,
   SectionStatus
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
