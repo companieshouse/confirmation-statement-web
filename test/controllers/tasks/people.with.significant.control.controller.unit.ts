@@ -50,6 +50,8 @@ const FORENAME_TITLE_CASE = "Bob";
 const SURNAME = "WILSON";
 const ADDRESS_LINE_1 = "ADD LINE 1";
 const ADDRESS_LINE_1_TITLE_CASE = "Add Line 1";
+const COUNTRY = "UNITED KINGDOM";
+const COUNTRY_TITLE_CASE = "United Kingdom";
 
 const mockSendUpdate = sendUpdate as jest.Mock;
 
@@ -70,7 +72,8 @@ mockGetPscs.mockResolvedValue([{
   nameElements: {
     forename: FORENAME,
     surname: SURNAME
-  }
+  },
+  serviceAddressCountryName: COUNTRY
 } as PersonOfSignificantControl ]);
 
 const mockToReadableFormat = toReadableFormat as jest.Mock;
@@ -101,6 +104,7 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain(FORENAME_TITLE_CASE);
       expect(response.text).toContain(SURNAME);
       expect(response.text).toContain(FORMATTED_DOB);
+      expect(response.text).toContain(COUNTRY_TITLE_CASE);
     });
 
     it("Should navigate to an error page if the function throws an error", async () => {

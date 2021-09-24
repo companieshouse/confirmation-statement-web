@@ -18,7 +18,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { getPscs } from "../../services/psc.service";
 import { createAndLogError, logger } from "../../utils/logger";
 import { toReadableFormat } from "../../utils/date";
-import { formatTitleCase } from "../../utils/format";
+import { formatServiceAddress, formatPSCForDisplay, formatUraAddress } from "../../utils/format";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -32,11 +32,15 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const pscAppointmentType = psc.appointmentType;
     const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
     const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);
+    const ura = formatUraAddress(formattedPsc);
+    const serviceAddress = formatServiceAddress(formattedPsc);
 
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       dob: handleDateOfBirth(pscTemplateType, psc),
       psc: formattedPsc,
+      ura,
+      serviceAddress,
       pscTemplateType,
       templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
     });
@@ -120,34 +124,3 @@ const getPscStatementUrl = (req: Request, isPscFound: boolean) => {
   return urlUtils.setQueryParam(path, URL_QUERY_PARAM.IS_PSC, isPscFound.toString());
 };
 
-const formatPSCForDisplay = (psc: PersonOfSignificantControl): PersonOfSignificantControl => {
-  const clonedPsc: PersonOfSignificantControl = JSON.parse(JSON.stringify(psc));
-  if (psc.nameElements) {
-    clonedPsc.nameElements = {
-      forename: formatTitleCase(psc.nameElements?.forename),
-      otherForenames: psc.nameElements?.otherForenames,
-      surname: psc.nameElements?.surname,
-      middleName: psc.nameElements?.middleName,
-      title: psc.nameElements?.title
-    };
-  }
-
-  if (psc.address) {
-    clonedPsc.address = {
-      addressLine1: formatTitleCase(psc.address.addressLine1),
-      addressLine2: formatTitleCase(psc.address.addressLine2),
-      careOf: formatTitleCase(psc.address.careOf),
-      country: formatTitleCase(psc.address.country),
-      locality: formatTitleCase(psc.address.locality),
-      poBox: formatTitleCase(psc.address.poBox),
-      postalCode: psc.address.postalCode,
-      premises: formatTitleCase(psc.address.premises),
-      region: formatTitleCase(psc.address.region)
-    };
-  }
-
-  clonedPsc.serviceAddressLine1 = formatTitleCase(psc.serviceAddressLine1);
-  clonedPsc.serviceAddressPostTown = formatTitleCase(psc.serviceAddressPostTown);
-
-  return clonedPsc;
-};
