@@ -4,59 +4,51 @@
       Share capital
     </p>
   </div>
-  {{ govukSummaryList({
-    classes: 'govuk-!-margin-3',
-    rows: [
-      {
-        key: {
-          text: "Share type"
-        },
-        value: {
-          text: statementOfCapital.classOfShares
-        }
-      },
-      {
-        key: {
-          text: "Currency"
-        },
-        value: {
-          text: statementOfCapital.currency
-        }
-      },
-      {
-        key: {
-          text: "Number of shares"
-        },
-        value: {
-          text: statementOfCapital.numberAllotted
-        }
-      },
-      {
-        key: {
-          text: "Value of each share"
-        },
-        value: {
-          text: statementOfCapital.aggregateNominalValue
-        }
-      },
-      {
-        key: {
-          text: "Total value"
-        },
-        value: {
-          text: +statementOfCapital.numberAllotted * +statementOfCapital.aggregateNominalValue
-        }
-      },
-      {
-        key: {
-          text: "Rights attached to this share type"
-        },
-        value: {
-          text: statementOfCapital.prescribedParticulars
-        }
-      }
-    ]
-  }) }}
+  <div  style="display: flex; border-bottom: 0" class="govuk-!-padding-1">
+    <dl class="govuk-summary-list govuk-!-margin-4 govuk-summary-list--last-child-no-border-bottom block">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Share type
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ statementOfCapital.classOfShares }}
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Currency</dt>
+        <dd class="govuk-summary-list__value">
+          {{ statementOfCapital.currency }}
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Number of shares
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ statementOfCapital.numberAllotted }}
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Value of each share
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ statementOfCapital.aggregateNominalValue }}
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Total value
+        </dt>
+        <dd class="govuk-summary-list__value rtl">
+          {{ +statementOfCapital.numberAllotted * +statementOfCapital.aggregateNominalValue }}
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Rights attached to this share type
+        </dt>
+        <dd class="govuk-summary-list__value rtl">
+          {{ statementOfCapital.prescribedParticulars }}
+        </dd>
+      </div>
+    </dl>
+  </div>
 </div>
 
 <div class="govuk-summary-card govuk-!-margin-bottom-4">
@@ -65,41 +57,35 @@
       Totals
     </p>
   </div>
-  {{ govukSummaryList({
-    classes: 'govuk-!-margin-3',
-    rows: [
-      {
-        key: {
-          text: "Currency"
-        },
-        value: {
-          text: statementOfCapital.currency
-        }
-      },
-      {
-        key: {
-          text: "Total number of shares"
-        },
-        value: {
-          text: statementOfCapital.totalNumberOfShares
-        }
-      },
-      {
-        key: {
-          text: "Total value of all shares"
-        },
-        value: {
-          text: statementOfCapital.totalAggregateNominalValue
-        }
-      },
-      {
-        key: {
-          text: "Total amount unpaid for all shares"
-        },
-        value: {
-          text: statementOfCapital.totalAmountUnpaidForCurrency
-        }
-      }
-    ]
-  }) }}
+  <div style="display: flex; border-bottom: 0" class="govuk-!-padding-1">
+    <dl class="govuk-summary-list govuk-!-margin-3 block">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Currency</dt>
+        <dd class="govuk-summary-list__value">
+          {{ statementOfCapital.currency }}
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Total number of shares
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ statementOfCapital.totalNumberOfShares }}
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Total value of all shares
+        </dt>
+        <dd class="govuk-summary-list__value rtl">
+          {{ statementOfCapital.totalAggregateNominalValue }}
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Total amount unpaid for all shares
+        </dt>
+        <dd class="govuk-summary-list__value rtl">
+          {{ statementOfCapital.totalAmountUnpaidForCurrency }}
+        </dd>
+      </div>
+    </dl>
+  </div>
 </div>
