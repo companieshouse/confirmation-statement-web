@@ -35,10 +35,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const ura = formatUraAddress(formattedPsc);
     const serviceAddress = formatServiceAddress(formattedPsc);
 
-    console.log(psc);
-    console.log(ura);
-    console.log(serviceAddress);
-
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       dob: handleDateOfBirth(pscTemplateType, psc),
