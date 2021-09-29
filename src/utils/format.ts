@@ -105,22 +105,21 @@ export const formatPSCForDisplay = (psc: PersonOfSignificantControl): PersonOfSi
 
 export const formatServiceAddress = (formattedPsc: PersonOfSignificantControl): string => {
   const addressClone: Address = {
-    addressLine1: formattedPsc.serviceAddressLine1,
     careOf: formattedPsc.serviceAddressCareOf,
-    country: formattedPsc.serviceAddressCountryName,
-    locality: formattedPsc.serviceAddressArea,
     poBox: formattedPsc.serviceAddressPoBox,
-    postalCode: formattedPsc.serviceAddressPostCode,
-    premises: formattedPsc.serviceAddressPostTown,
-    region: formattedPsc.serviceAddressRegion
+    addressLine1: formattedPsc.serviceAddressLine1,
+    locality: formattedPsc.serviceAddressArea,
+    region: formattedPsc.serviceAddressRegion,
+    country: formattedPsc.serviceAddressCountryName,
+    postalCode: formattedPsc.serviceAddressPostCode
   };
-  return formatAddressForDisplay(addressClone);
+  return formatAddressForDisplay(formatAddress(addressClone));
 };
 
 export const formatUraAddress = (formattedPsc: PersonOfSignificantControl): string => {
   let ura = "";
   if (formattedPsc.address) {
-    ura = formatAddressForDisplay(formattedPsc.address);
+    ura = formatAddressForDisplay(formatAddress(formattedPsc.address));
   }
   return ura;
 };
