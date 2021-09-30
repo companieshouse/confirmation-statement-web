@@ -100,6 +100,9 @@ export const formatPSCForDisplay = (psc: PersonOfSignificantControl): PersonOfSi
   clonedPsc.serviceAddressArea = formatTitleCase(psc.serviceAddressArea);
   clonedPsc.serviceAddressRegion = formatTitleCase(psc.serviceAddressRegion);
 
+  clonedPsc.lawGoverned = formatTitleCase(psc.lawGoverned);
+  clonedPsc.legalForm = formatTitleCase(psc.legalForm);
+
   return clonedPsc;
 };
 
