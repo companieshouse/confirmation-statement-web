@@ -26,6 +26,7 @@ const SUBMISSION_ID = "6464647";
 const COMPANY_NAME = "name";
 const REG_NO = "36363";
 const SERV_ADD_LINE_1 = "line1";
+const REGISTER_LOCATION = "UK";
 const COUNTRY_RESIDENCE = "UK";
 const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
 const TEST_RLE_NAME = "Test Rle Name";
@@ -163,6 +164,7 @@ describe("People with significant control controller tests", () => {
         },
         appointmentType: APPOINTMENT_TYPE_5008,
         companyName: COMPANY_NAME,
+        registerLocation: REGISTER_LOCATION,
         registrationNumber: REG_NO,
         serviceAddressLine1: SERV_ADD_LINE_1,
         countryOfResidence: COUNTRY_RESIDENCE
@@ -171,6 +173,7 @@ describe("People with significant control controller tests", () => {
       expect(response.statusCode).toBe(200);
       expect(response.text).toContain("1 relevant legal entity");
       expect(response.text).toContain(COMPANY_NAME);
+      expect(response.text).toContain(REGISTER_LOCATION);
       expect(response.text).toContain(REG_NO);
       expect(response.text).toContain("Line1");
       expect(response.text).toContain(COUNTRY_RESIDENCE);
