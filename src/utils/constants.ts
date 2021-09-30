@@ -34,7 +34,8 @@ export const appointmentTypes = {
 
 export const appointmentTypeNames = {
   PSC: "psc",
-  RLE: "rle"
+  RLE: "rle",
+  ORP: "orp"
 };
 
 export enum SECTIONS {

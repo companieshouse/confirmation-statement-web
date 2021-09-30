@@ -1,4 +1,8 @@
-<h2 class="govuk-heading-m">1 relevant legal entity</h2>
+{% if pscTemplateType === "rle" %}
+    <h2 class="govuk-heading-m">1 relevant legal entity</h2>
+{% elif pscTemplateType === "orp" %}
+    <h2 class="govuk-heading-m">1 other registrable person</h2>
+{% endif%}
 <div class="govuk-summary-card govuk-!-margin-bottom-4">
     <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center">
         <p class="govuk-!-font-weight-bold govuk-!-margin-0">{{ psc.nameElements.surname }}</p>
@@ -20,7 +24,7 @@
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Correspondence address</dt>
                 <dd class="govuk-summary-list__value">
-                    <p>{{ psc.serviceAddressLine1 }}, {{ psc.serviceAddressPostTown }}, {{ psc.serviceAddressPostCode }}</p>
+                    <p>{{ serviceAddress }}</p>
                 </dd>
             </div>
             {% if psc.countryOfResidence %}

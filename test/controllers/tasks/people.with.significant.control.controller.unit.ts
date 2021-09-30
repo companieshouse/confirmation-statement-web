@@ -41,6 +41,7 @@ const PSC_STATEMENT_URL =
                                                                SUBMISSION_ID);
 const APPOINTMENT_TYPE_5007 = "5007";
 const APPOINTMENT_TYPE_5008 = "5008";
+const APPOINTMENT_TYPE_5009 = "5009";
 const DOB_MONTH = 3;
 const DOB_YEAR = 1955;
 const FORMATTED_DOB = "21 March 1955";
@@ -149,8 +150,29 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain("1 relevant legal entity");
     });
 
+    it("should navigate to orp page if psc is orp type and populate with psc data", async () => {
+      mockGetPscs.mockResolvedValueOnce([ {
+        dateOfBirth: {
+          month: DOB_MONTH,
+          year: DOB_YEAR
+        },
+        appointmentType: APPOINTMENT_TYPE_5009,
+        companyName: COMPANY_NAME,
+        registrationNumber: REG_NO,
+        serviceAddressLine1: SERV_ADD_LINE_1,
+        countryOfResidence: COUNTRY_RESIDENCE
+      } ]);
+      const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(response.statusCode).toBe(200);
+      expect(response.text).toContain("1 other registrable person");
+      expect(response.text).toContain(COMPANY_NAME);
+      expect(response.text).toContain(REG_NO);
+      expect(response.text).toContain("Line1");
+      expect(response.text).toContain(COUNTRY_RESIDENCE);
+    });
+
     it("should navigate to error page if psc is unknown type", async () => {
-      mockGetPscs.mockResolvedValueOnce([ { appointmentType: "5009" } ]);
+      mockGetPscs.mockResolvedValueOnce([ { appointmentType: "5010" } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.text).toContain(ERROR_PAGE_TEXT);
     });
