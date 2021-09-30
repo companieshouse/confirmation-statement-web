@@ -105,12 +105,13 @@ const getPscTypeTemplate = (pscAppointmentType: string): string => {
   switch (pscAppointmentType) {
       case appointmentTypes.INDIVIDUAL_PSC: return appointmentTypeNames.PSC;
       case appointmentTypes.RLE_PSC: return appointmentTypeNames.RLE;
+      case appointmentTypes.LEGAL_PERSON_PSC: return appointmentTypeNames.ORP;
       default: throw createAndLogError(`Unknown PSC type: ${pscAppointmentType}`);
   }
 };
 
 const handleDateOfBirth = (pscAppointmentType: string, psc: PersonOfSignificantControl): string => {
-  if (pscAppointmentType === appointmentTypeNames.RLE) {
+  if (pscAppointmentType === appointmentTypeNames.RLE || pscAppointmentType === appointmentTypeNames.ORP) {
     return "";
   }
   if (psc.dateOfBirthIso) {

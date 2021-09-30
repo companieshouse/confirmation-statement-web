@@ -51,6 +51,8 @@
            {% include "tasks/includes/relevant-legal-entity.html" %}
         {% elif pscTemplateType === "psc" %}
            {% include "tasks/includes/normal-psc.html" %}
+        {% elif pscTemplateType === "orp" %}
+           {% include "tasks/includes/relevant-legal-entity.html" %}
         {% else %}
         {% endif %}
 
