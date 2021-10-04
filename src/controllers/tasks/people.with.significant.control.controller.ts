@@ -18,7 +18,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { getPscs } from "../../services/psc.service";
 import { createAndLogError, logger } from "../../utils/logger";
 import { toReadableFormat } from "../../utils/date";
-import { formatServiceAddress, formatPSCForDisplay, formatUraAddress } from "../../utils/format";
+import { formatPSCForDisplay, formatAddressForDisplay } from "../../utils/format";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -32,8 +32,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const pscAppointmentType = psc.appointmentType;
     const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
     const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);
-    const ura = formatUraAddress(formattedPsc);
-    const serviceAddress = formatServiceAddress(formattedPsc);
+    const ura = formattedPsc.address ? formatAddressForDisplay(formattedPsc.address) : "";
+    const serviceAddress = formattedPsc.serviceAddress ? formatAddressForDisplay(formattedPsc.serviceAddress) : "";
 
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),

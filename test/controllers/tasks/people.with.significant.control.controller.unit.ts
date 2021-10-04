@@ -75,7 +75,9 @@ mockGetPscs.mockResolvedValue([{
     forename: FORENAME,
     surname: SURNAME
   },
-  serviceAddressCountryName: COUNTRY
+  serviceAddress: {
+    country: COUNTRY
+  }
 } as PersonOfSignificantControl ]);
 
 const mockToReadableFormat = toReadableFormat as jest.Mock;
@@ -161,7 +163,9 @@ describe("People with significant control controller tests", () => {
         companyName: COMPANY_NAME,
         registerLocation: REGISTER_LOCATION,
         registrationNumber: REG_NO,
-        serviceAddressLine1: SERV_ADD_LINE_1,
+        serviceAddress: {
+          addressLine2: SERV_ADD_LINE_1
+        },
         countryOfResidence: COUNTRY_RESIDENCE
       } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
@@ -190,7 +194,9 @@ describe("People with significant control controller tests", () => {
         companyName: COMPANY_NAME,
         registerLocation: REGISTER_LOCATION,
         registrationNumber: REG_NO,
-        serviceAddressLine1: SERV_ADD_LINE_1,
+        serviceAddress: {
+          addressLine2: SERV_ADD_LINE_1
+        },
         countryOfResidence: COUNTRY_RESIDENCE
       } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
@@ -211,7 +217,9 @@ describe("People with significant control controller tests", () => {
         },
         appointmentType: APPOINTMENT_TYPE_5008,
         companyName: COMPANY_NAME,
-        serviceAddressLine1: SERV_ADD_LINE_1,
+        serviceAddress: {
+          addressLine2: SERV_ADD_LINE_1
+        }
       } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.statusCode).toBe(200);
@@ -233,7 +241,9 @@ describe("People with significant control controller tests", () => {
           forename: FORENAME,
           surname: SURNAME
         },
-        serviceAddressLine1: SERV_ADD_LINE_1,
+        serviceAddress: {
+          addressLine2: SERV_ADD_LINE_1
+        }
       } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.text).toContain(ERROR_PAGE_TEXT);
@@ -246,7 +256,9 @@ describe("People with significant control controller tests", () => {
           year: DOB_YEAR
         },
         companyName: COMPANY_NAME,
-        serviceAddressLine1: SERV_ADD_LINE_1,
+        serviceAddress: {
+          addressLine2: SERV_ADD_LINE_1
+        }
       } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.text).toContain(ERROR_PAGE_TEXT);
@@ -259,7 +271,9 @@ describe("People with significant control controller tests", () => {
           month: DOB_MONTH
         },
         companyName: COMPANY_NAME,
-        serviceAddressLine1: SERV_ADD_LINE_1,
+        serviceAddress: {
+          addressLine2: SERV_ADD_LINE_1
+        }
       } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.text).toContain(ERROR_PAGE_TEXT);
@@ -269,7 +283,9 @@ describe("People with significant control controller tests", () => {
       mockGetPscs.mockResolvedValueOnce([ {
         appointmentType: APPOINTMENT_TYPE_5007,
         companyName: COMPANY_NAME,
-        serviceAddressLine1: SERV_ADD_LINE_1,
+        serviceAddress: {
+          addressLine2: SERV_ADD_LINE_1
+        }
       } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.text).toContain(ERROR_PAGE_TEXT);
@@ -284,7 +300,9 @@ describe("People with significant control controller tests", () => {
         },
         appointmentType: APPOINTMENT_TYPE_5008,
         companyName: COMPANY_NAME,
-        serviceAddressLine1: SERV_ADD_LINE_1,
+        serviceAddress: {
+          addressLine2: SERV_ADD_LINE_1
+        }
       } ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.statusCode).toBe(200);
