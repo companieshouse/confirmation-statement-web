@@ -79,50 +79,14 @@ export const formatPSCForDisplay = (psc: PersonOfSignificantControl): PersonOfSi
   }
 
   if (psc.address) {
-    clonedPsc.address = {
-      addressLine1: formatTitleCase(psc.address.addressLine1),
-      addressLine2: formatTitleCase(psc.address.addressLine2),
-      careOf: formatTitleCase(psc.address.careOf),
-      country: formatTitleCase(psc.address.country),
-      locality: formatTitleCase(psc.address.locality),
-      poBox: formatTitleCase(psc.address.poBox),
-      postalCode: psc.address.postalCode,
-      premises: formatTitleCase(psc.address.premises),
-      region: formatTitleCase(psc.address.region)
-    };
+    clonedPsc.address = formatAddress(psc.address);
   }
-
-  clonedPsc.serviceAddressLine1 = formatTitleCase(psc.serviceAddressLine1);
-  clonedPsc.serviceAddressPostTown = formatTitleCase(psc.serviceAddressPostTown);
-  clonedPsc.serviceAddressCareOf = formatTitleCase(psc.serviceAddressCareOf);
-  clonedPsc.serviceAddressCountryName = formatTitleCase(psc.serviceAddressCountryName);
-  clonedPsc.serviceAddressPoBox = formatTitleCase(psc.serviceAddressPoBox);
-  clonedPsc.serviceAddressArea = formatTitleCase(psc.serviceAddressArea);
-  clonedPsc.serviceAddressRegion = formatTitleCase(psc.serviceAddressRegion);
+  if (psc.serviceAddress) {
+    clonedPsc.serviceAddress = formatAddress(psc.serviceAddress);
+  }
 
   clonedPsc.lawGoverned = formatTitleCase(psc.lawGoverned);
   clonedPsc.legalForm = formatTitleCase(psc.legalForm);
 
   return clonedPsc;
-};
-
-export const formatServiceAddress = (formattedPsc: PersonOfSignificantControl): string => {
-  const addressClone: Address = {
-    careOf: formattedPsc.serviceAddressCareOf,
-    poBox: formattedPsc.serviceAddressPoBox,
-    addressLine1: formattedPsc.serviceAddressLine1,
-    locality: formattedPsc.serviceAddressArea,
-    region: formattedPsc.serviceAddressRegion,
-    country: formattedPsc.serviceAddressCountryName,
-    postalCode: formattedPsc.serviceAddressPostCode
-  };
-  return formatAddressForDisplay(formatAddress(addressClone));
-};
-
-export const formatUraAddress = (formattedPsc: PersonOfSignificantControl): string => {
-  let ura = "";
-  if (formattedPsc.address) {
-    ura = formatAddressForDisplay(formatAddress(formattedPsc.address));
-  }
-  return ura;
 };
