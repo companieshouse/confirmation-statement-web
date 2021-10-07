@@ -101,7 +101,7 @@ const getSectionStatusFromButtonValue = (radioButtonValue: RADIO_BUTTON_VALUE): 
   const buttonStatusMap = {
     [RADIO_BUTTON_VALUE.YES]: SectionStatus.CONFIRMED,
     [RADIO_BUTTON_VALUE.NO]: SectionStatus.NOT_CONFIRMED,
-    [RADIO_BUTTON_VALUE.RECENTLY_FILED]: SectionStatus.RECENT_FILING
+    [RADIO_BUTTON_VALUE.RECENTLY_FILED]: SectionStatus.CONFIRMED
   };
   return buttonStatusMap[radioButtonValue];
 };

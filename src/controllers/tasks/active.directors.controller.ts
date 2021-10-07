@@ -43,7 +43,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const session: Session = req.session as Session;
     const activeDirectorDetailsBtnValue = req.body.activeDirectors;
-    if (activeDirectorDetailsBtnValue === RADIO_BUTTON_VALUE.YES) {
+    if (activeDirectorDetailsBtnValue === RADIO_BUTTON_VALUE.YES || activeDirectorDetailsBtnValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
       await sendUpdate(req, SECTIONS.ACTIVE_DIRECTOR, SectionStatus.CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     } else if (activeDirectorDetailsBtnValue === RADIO_BUTTON_VALUE.NO) {

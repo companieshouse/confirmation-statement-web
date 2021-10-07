@@ -2,20 +2,18 @@ jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/psc.service");
 jest.mock("../../../src/utils/date");
 jest.mock("../../../src/utils/logger");
-jest.mock("../../../src/utils/update.confirmation.statement.submission");
 
 import mocks from "../../mocks/all.middleware.mock";
 import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, PSC_STATEMENT_PATH, URL_QUERY_PARAM } from "../../../src/types/page.urls";
 import request from "supertest";
 import app from "../../../src/app";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
-import { PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR, RADIO_BUTTON_VALUE, SECTIONS } from "../../../src/utils/constants";
-import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
+import { PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR, RADIO_BUTTON_VALUE } from "../../../src/utils/constants";
 import { getPscs } from "../../../src/services/psc.service";
 import { toReadableFormat } from "../../../src/utils/date";
 import { urlUtils } from "../../../src/utils/url";
 import { createAndLogError } from "../../../src/utils/logger";
-import { PersonOfSignificantControl, SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { PersonOfSignificantControl } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Check the people with significant control (PSC)";
@@ -55,8 +53,6 @@ const ADDRESS_LINE_1_TITLE_CASE = "Add Line 1";
 const COUNTRY = "UNITED KINGDOM";
 const COUNTRY_TITLE_CASE = "United Kingdom";
 
-const mockSendUpdate = sendUpdate as jest.Mock;
-
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 
@@ -93,7 +89,6 @@ describe("People with significant control controller tests", () => {
     mockGetPscs.mockClear();
     mockToReadableFormat.mockClear();
     mockCreateAndLogError.mockClear();
-    mockSendUpdate.mockClear();
   });
 
   describe("get tests", () => {
@@ -332,8 +327,6 @@ describe("People with significant control controller tests", () => {
         .post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL)
         .send({ pscRadioValue: RADIO_BUTTON_VALUE.NO });
 
-      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
-      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
       expect(response.status).toEqual(200);
       expect(response.text).toContain(STOP_PAGE_HEADING);
     });
@@ -343,8 +336,6 @@ describe("People with significant control controller tests", () => {
         .post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL)
         .send({ pscRadioValue: RADIO_BUTTON_VALUE.YES });
 
-      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
-      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("true"));
     });
@@ -354,19 +345,20 @@ describe("People with significant control controller tests", () => {
         .post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL)
         .send({ pscRadioValue: RADIO_BUTTON_VALUE.RECENTLY_FILED });
 
-      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
-      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("true"));
     });
 
     it("Should return an error page if error is thrown in post function", async () => {
-      mockSendUpdate.mockImplementationOnce(() => {throw new Error();});
-      const response = await request(app)
-        .post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL)
-        .send({ pscRadioValue: RADIO_BUTTON_VALUE.YES });
+      const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
+      spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
+      const response = await request(app).post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
 
-      expect(response.text).toContain(ERROR_PAGE_TEXT);
+      expect(response.status).toEqual(500);
+      expect(response.text).toContain("Sorry, the service is unavailable");
+
+      // restore original function so it is no longer mocked
+      spyGetUrlToPath.mockRestore();
     });
   });
 });
