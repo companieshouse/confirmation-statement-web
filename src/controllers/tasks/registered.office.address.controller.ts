@@ -31,7 +31,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const roaButtonValue = req.body.registeredOfficeAddress;
 
-    if (roaButtonValue === RADIO_BUTTON_VALUE.YES) {
+    if (roaButtonValue === RADIO_BUTTON_VALUE.YES || roaButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
       await sendUpdate(req, SECTIONS.ROA, SectionStatus.CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     }

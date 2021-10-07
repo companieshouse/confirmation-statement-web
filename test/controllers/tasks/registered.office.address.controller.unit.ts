@@ -77,6 +77,17 @@ describe("Registered Office Address controller tests", () => {
     expect(response.text).not.toContain(REGISTERED_OFFICE_ADDRESS_ERROR);
   });
 
+  it("Should redirect to task list when recently filed radio button is selected", async () => {
+    const response = await request(app)
+      .post(REGISTERED_OFFICE_ADDRESS_URL)
+      .send({ registeredOfficeAddress: "recently_filed" });
+
+    expect(response.status).toEqual(302);
+    expect(response.header.location).toEqual(TASK_LIST_URL);
+    expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ROA);
+    expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+  });
+
   it("Should redisplay roa page with error when radio button is not selected", async () => {
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     const response = await request(app).post(REGISTERED_OFFICE_ADDRESS_URL);

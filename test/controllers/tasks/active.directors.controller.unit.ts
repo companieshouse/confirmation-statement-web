@@ -146,6 +146,17 @@ describe("Active directors controller tests", () => {
       expect(response.text).toContain(WRONG_OFFICER_PAGE_HEADING);
     });
 
+    it("Should redirect to task list when recently filed radio button is selected", async () => {
+      const response = await request(app)
+        .post(ACTIVE_DIRECTOR_DETAILS_URL)
+        .send({ activeDirectors: "recently_filed" });
+
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(TASK_LIST_URL);
+      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ACTIVE_DIRECTOR);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+    });
+
     it("Should redisplay active directors page with error when radio button is not selected", async () => {
       const response = await request(app).post(ACTIVE_DIRECTOR_DETAILS_URL);
       expect(response.status).toEqual(200);
