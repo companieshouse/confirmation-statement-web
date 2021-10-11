@@ -62,6 +62,7 @@ describe("Active directors controller tests", () => {
       expect(response.text).toContain(mockActiveDirectorDetailsFormatted.foreName1);
       expect(response.text).toContain(mockActiveDirectorDetailsFormatted.foreName2);
       expect(response.text).toContain(mockActiveDirectorDetailsFormatted.dateOfBirth);
+      expect(response.text).toContain(mockActiveDirectorDetailsFormatted.dateOfAppointment);
       expect(response.text).toContain(mockActiveDirectorDetailsFormatted.nationality);
       expect(response.text).toContain(FORMATTED_ADDRESS_LINE);
     });
@@ -78,6 +79,7 @@ describe("Active directors controller tests", () => {
       expect(response.text).toContain("Are the director details correct?");
       expect(response.text).toContain(mockActiveDirectorDetailsFormatted.foreName1);
       expect(response.text).toContain(mockActiveDirectorDetailsFormatted.dateOfBirth);
+      expect(response.text).toContain(mockActiveDirectorDetailsFormatted.dateOfAppointment);
       expect(response.text).toContain(mockActiveDirectorDetailsFormatted.nationality);
       expect(response.text).toContain(FORMATTED_ADDRESS_LINE);
       expect(response.text).not.toContain(fName2);
@@ -96,6 +98,7 @@ describe("Active directors controller tests", () => {
       expect(response.text).toContain("Are the director details correct?");
       expect(response.text).toContain(mockSecureActiveDirectorDetailsFormatted.foreName1);
       expect(response.text).toContain(mockSecureActiveDirectorDetailsFormatted.dateOfBirth);
+      expect(response.text).toContain(mockSecureActiveDirectorDetailsFormatted.dateOfAppointment);
       expect(response.text).toContain(mockSecureActiveDirectorDetailsFormatted.nationality);
       expect(response.text).toContain("Usual residential address");
       expect(response.text).toContain(FORMATTED_ADDRESS_LINE);
