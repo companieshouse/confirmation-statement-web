@@ -67,6 +67,7 @@ export const mockActiveDirectorDetails: ActiveDirectorDetails = {
   occupation: "singer",
   nationality: "British",
   dateOfBirth: "1 January 1960",
+  dateOfAppointment: "1 January 2009",
   serviceAddress: mockAddress1,
   residentialAddress: mockAddress2
 };
@@ -78,6 +79,7 @@ export const mockSecureActiveDirectorDetails: ActiveDirectorDetails = {
   occupation: "singer",
   nationality: "British",
   dateOfBirth: "1 January 1960",
+  dateOfAppointment: "1 January 2009",
   serviceAddress: mockAddress1,
   residentialAddress: mockSecureAddress
 };
@@ -89,6 +91,7 @@ export const mockActiveDirectorDetailsFormatted: ActiveDirectorDetails = {
   occupation: "Singer",
   nationality: "British",
   dateOfBirth: "1 January 1960",
+  dateOfAppointment: "1 January 2009",
   serviceAddress: mockAddress1Formatted,
   residentialAddress: mockAddress2Formatted
 };
@@ -101,6 +104,7 @@ export const mockSecureActiveDirectorDetailsFormatted: ActiveDirectorDetails = {
   occupation: "singer",
   nationality: "British",
   dateOfBirth: "1 January 1960",
+  dateOfAppointment: "1 January 2009",
   serviceAddress: mockAddress1Formatted,
   residentialAddress: mockSecureAddress
 };
