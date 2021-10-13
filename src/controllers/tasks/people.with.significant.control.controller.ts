@@ -7,15 +7,18 @@ import {
   appointmentTypes,
   PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
   RADIO_BUTTON_VALUE,
+  SECTIONS,
   WRONG_DETAILS_INCORRECT_PSC,
   WRONG_DETAILS_UPDATE_PSC } from "../../utils/constants";
 import {
   PersonOfSignificantControl,
+  SectionStatus
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { Session } from "@companieshouse/node-session-handler";
 import { getPscs } from "../../services/psc.service";
 import { createAndLogError, logger } from "../../utils/logger";
 import { toReadableFormat } from "../../utils/date";
+import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { formatPSCForDisplay, formatAddressForDisplay } from "../../utils/format";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -66,6 +69,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (pscButtonValue === RADIO_BUTTON_VALUE.NO) {
+      await sendUpdate(req, SECTIONS.PSC, SectionStatus.NOT_CONFIRMED);
       return res.render(Templates.WRONG_DETAILS, {
         templateName: Templates.WRONG_DETAILS,
         backLinkUrl: urlUtils.getUrlToPath(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, req),
