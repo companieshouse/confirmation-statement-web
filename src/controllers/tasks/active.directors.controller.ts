@@ -13,7 +13,7 @@ import {
   ActiveDirectorDetails,
   SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
-import { formatAddressForDisplay, formatDirectorDetails } from "../../utils/format";
+import { formatAddressForDisplay, formatDirectorDetails, formatTitleCase } from "../../utils/format";
 import { getActiveDirectorDetailsData } from "../../services/active.director.details.service";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 
@@ -25,13 +25,15 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const activeDirectorDetails = formatDirectorDetails(directorDetails);
     const serviceAddress = formatAddressForDisplay(activeDirectorDetails.serviceAddress);
     const residentialAddress = formatAddressForDisplay(activeDirectorDetails.residentialAddress);
+    const countryOfResidence = formatTitleCase(activeDirectorDetails.countryOfResidence);
 
     return res.render(Templates.ACTIVE_DIRECTORS, {
       templateName: Templates.ACTIVE_DIRECTORS,
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       activeDirectorDetails,
       serviceAddress,
-      residentialAddress
+      residentialAddress,
+      countryOfResidence
     });
   } catch (e) {
     return next(e);
