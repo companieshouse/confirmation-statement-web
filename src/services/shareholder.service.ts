@@ -6,10 +6,10 @@ import {
   Shareholder
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
-export const getShareholders = async (session: Session, companyNumber: string): Promise<Shareholder[]> => {
+export const getShareholders = async (session: Session, transactionId: string, submissionId: string): Promise<Shareholder[]> => {
   const client = createPublicOAuthApiClient(session);
   const csService: ConfirmationStatementService = client.confirmationStatementService;
-  const response: Resource<Shareholder> | ApiErrorResponse = await csService.getShareholders(companyNumber);
+  const response: Resource<Shareholder> | ApiErrorResponse = await csService.getShareholders(transactionId, submissionId);
   const status = response.httpStatusCode as number;
   if (status >= 400) {
     throw new Error("Error retrieving shareholder " + JSON.stringify(response));

@@ -21,7 +21,8 @@ mockCreateApiClient.mockReturnValue({
 
 describe("Test shareholder service", () => {
 
-  const companyNumber = "11111111";
+  const TRANSACTION_ID = "66454";
+  const SUBMISSION_ID = "435435";
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -34,8 +35,8 @@ describe("Test shareholder service", () => {
     };
     mockGetShareholder.mockReturnValueOnce(resource);
     const session =  getSessionRequest({ access_token: "token" });
-    const response = await getShareholders(session, companyNumber);
-    expect(mockGetShareholder).toBeCalledWith(companyNumber);
+    const response = await getShareholders(session, TRANSACTION_ID, SUBMISSION_ID);
+    expect(mockGetShareholder).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID);
     expect(response).toEqual(mockShareholder);
   });
 
@@ -50,7 +51,7 @@ describe("Test shareholder service", () => {
     const expectedMessage = "Error retrieving shareholder " + JSON.stringify(errorResponse);
     let actualMessage;
     try {
-      await getShareholders(session, companyNumber);
+      await getShareholders(session, TRANSACTION_ID, SUBMISSION_ID);
     } catch (e) {
       actualMessage = e.message;
     }
