@@ -21,7 +21,7 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
     const session: Session = req.session as Session;
     const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, companyNumber);
-    const sharesValidation = await validateTotalNumberOfShares(session, companyNumber, +statementOfCapital.totalNumberOfShares);
+    const sharesValidation = await validateTotalNumberOfShares(session, transactionId, submissionId, +statementOfCapital.totalNumberOfShares);
     const totalAmountUnpaidValidation = typeof statementOfCapital.totalAmountUnpaidForCurrency === 'string';
 
     statementOfCapital.classOfShares = formatTitleCase(statementOfCapital.classOfShares);
@@ -79,8 +79,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const validateTotalNumberOfShares = async (session: Session, companyNumber: string, totalNumberOfShares: number): Promise<boolean> => {
-  const shareholders: Shareholder[] = await getShareholders(session, companyNumber);
+const validateTotalNumberOfShares = async (session: Session, transactionId: string, submissionId: string, totalNumberOfShares: number): Promise<boolean> => {
+  const shareholders: Shareholder[] = await getShareholders(session, transactionId, submissionId);
   let shareholderTotalNumberOfShares: number = 0;
   shareholders.forEach(shareholder => shareholderTotalNumberOfShares = +shareholder.shares + shareholderTotalNumberOfShares);
   return totalNumberOfShares === shareholderTotalNumberOfShares;

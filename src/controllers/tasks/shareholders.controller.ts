@@ -11,9 +11,10 @@ import { formatTitleCase } from "../../utils/format";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const session: Session = req.session as Session;
-    const shareholdersData: Shareholder[] = await getShareholders(session, companyNumber);
+    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+    const shareholdersData: Shareholder[] = await getShareholders(session, transactionId, submissionId);
     const shareholders = formatShareholders(shareholdersData);
     const backLinkUrl = urlUtils.getUrlToPath(TASK_LIST_PATH, req);
     return res.render(
@@ -43,9 +44,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
-    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const session: Session = req.session as Session;
-    const shareholdersData: Shareholder[] = await getShareholders(session, companyNumber);
+    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+    const shareholdersData: Shareholder[] = await getShareholders(session, transactionId, submissionId);
     const shareholders = formatShareholders(shareholdersData);
     return res.render(Templates.SHAREHOLDERS, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
