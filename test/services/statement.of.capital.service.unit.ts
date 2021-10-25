@@ -22,7 +22,8 @@ mockCreateApiClient.mockReturnValue({
 
 describe("Test statement of capital service", () => {
 
-  const companyNumber = "11111111";
+  const TRANSACTION_ID = "66544";
+  const SUBMISSION_ID = "6464647";
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -35,8 +36,8 @@ describe("Test statement of capital service", () => {
     };
     mockGetStatementOfCapital.mockResolvedValueOnce(resource);
     const session =  getSessionRequest({ access_token: "token" });
-    const response = await getStatementOfCapitalData(session, companyNumber);
-    expect(mockGetStatementOfCapital).toBeCalledWith(companyNumber);
+    const response = await getStatementOfCapitalData(session, TRANSACTION_ID, SUBMISSION_ID);
+    expect(mockGetStatementOfCapital).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID);
     expect(response).toEqual(mockStatementOfCapital);
   });
 
@@ -51,7 +52,7 @@ describe("Test statement of capital service", () => {
     const expectedMessage = "Error retrieving statement of capital " + JSON.stringify(errorResponse);
     let actualMessage;
     try {
-      await getStatementOfCapitalData(session, companyNumber);
+      await getStatementOfCapitalData(session, TRANSACTION_ID, SUBMISSION_ID);
     } catch (e) {
       actualMessage = e.message;
     }

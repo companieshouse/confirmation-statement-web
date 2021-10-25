@@ -11,9 +11,10 @@ import { formatAddress, formatAddressForDisplay } from "../../utils/format";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const session: Session = req.session as Session;
-    const registerLocations: RegisterLocation[] = await getRegisterLocationData(session, companyNumber);
+    const registerLocations: RegisterLocation[] = await getRegisterLocationData(session, transactionId, submissionId);
     const sailAddress = formatSailForDisplay(registerLocations);
     const registers = formatRegisterForDisplay(registerLocations);
     return res.render(Templates.REGISTER_LOCATIONS, {
@@ -27,7 +28,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const session: Session = req.session as Session;
     const registerLocationsButton = req.body.registers;
 
@@ -45,7 +47,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
-    const registerLocations: RegisterLocation[] = await getRegisterLocationData(session, companyNumber);
+    const registerLocations: RegisterLocation[] = await getRegisterLocationData(session, transactionId, submissionId);
     const sailAddress = formatSailForDisplay(registerLocations);
     const registers = formatRegisterForDisplay(registerLocations);
 

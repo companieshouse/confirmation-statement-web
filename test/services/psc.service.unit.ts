@@ -28,6 +28,8 @@ mockCreateApiClient.mockReturnValue({
 
 const session = getSessionRequest({ access_token: "token" });
 const companyNumber = "11111111";
+const TRANSACTION_ID = "66544";
+const SUBMISSION_ID = "6464647";
 
 describe("Test psc service", () => {
 
@@ -43,8 +45,8 @@ describe("Test psc service", () => {
         resource: mockPersonsOfSignificantControl
       };
       mockGetPersonsOfSignificantControl.mockResolvedValueOnce(resource);
-      const response = await getPscs(session, companyNumber);
-      expect(mockGetPersonsOfSignificantControl).toBeCalledWith(companyNumber);
+      const response = await getPscs(session, TRANSACTION_ID, SUBMISSION_ID);
+      expect(mockGetPersonsOfSignificantControl).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID);
       expect(response).toEqual(mockPersonsOfSignificantControl);
     });
 
@@ -58,7 +60,7 @@ describe("Test psc service", () => {
       const expectedMessage = "Error retrieving pscs from confirmation-statement-api " + JSON.stringify(errorResponse);
       let actualMessage: any;
       try {
-        await getPscs(session, companyNumber);
+        await getPscs(session, TRANSACTION_ID, SUBMISSION_ID);
       } catch (e) {
         actualMessage = e.message;
       }
