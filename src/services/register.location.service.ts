@@ -8,10 +8,10 @@ import {
   RegisterLocation
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
-export const getRegisterLocationData = async (session: Session, companyNumber: string): Promise<RegisterLocation[]> => {
+export const getRegisterLocationData = async (session: Session, transactionId: string, submissionId: string): Promise<RegisterLocation[]> => {
   const client = createPublicOAuthApiClient(session);
   const csService: ConfirmationStatementService = client.confirmationStatementService;
-  const response: Resource<RegisterLocation[]> | ApiErrorResponse = await csService.getRegisterLocations(companyNumber);
+  const response: Resource<RegisterLocation[]> | ApiErrorResponse = await csService.getRegisterLocations(transactionId, submissionId);
   const status = response.httpStatusCode as number;
   if (status >= 400) {
     const errorResponse = response as ApiErrorResponse;

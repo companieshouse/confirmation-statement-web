@@ -20,7 +20,7 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
     const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
     const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
     const session: Session = req.session as Session;
-    const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, companyNumber);
+    const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, transactionId, submissionId);
     const sharesValidation = await validateTotalNumberOfShares(session, transactionId, submissionId, +statementOfCapital.totalNumberOfShares);
     const totalAmountUnpaidValidation = typeof statementOfCapital.totalAmountUnpaidForCurrency === 'string';
 
@@ -41,12 +41,12 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const session: Session = req.session as Session;
+    const session: Session = req.session as Session ;
     const statementOfCapitalButtonValue = req.body.statementOfCapital;
     const companyNumber = getCompanyNumber(req);
-    const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
-    const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
-    const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, companyNumber);
+    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+    const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, transactionId, submissionId);
     const sharesValidation = req.body.sharesValidation === 'true';
     const totalAmountUnpaidValidation = req.body.totalAmountUnpaidValidation === 'true';
     statementOfCapital.classOfShares = formatTitleCase(statementOfCapital.classOfShares);

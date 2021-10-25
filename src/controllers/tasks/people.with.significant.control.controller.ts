@@ -87,7 +87,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
 const getPscData = async (req: Request): Promise<PersonOfSignificantControl | undefined> => {
   const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
-  const pscs: PersonOfSignificantControl[] = await getPscs(req.session as Session, companyNumber);
+  const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+  const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+  const pscs: PersonOfSignificantControl[] = await getPscs(req.session as Session, transactionId, submissionId);
 
   if (!pscs || pscs.length === 0) {
     return undefined;

@@ -101,7 +101,7 @@ describe("People with significant control controller tests", () => {
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
       expect(response.text).toContain(PAGE_HEADING);
       expect(mockGetPscs).toBeCalledTimes(1);
-      expect(mockGetPscs.mock.calls[0][1]).toBe(COMPANY_NUMBER);
+      expect(mockGetPscs.mock.calls[0][1]).toBe(TRANSACTION_ID);
       expect(mockToReadableFormat).toBeCalledTimes(1);
       expect(mockToReadableFormat.mock.calls[0][0]).toBe(DOB_ISO);
       expect(response.text).toContain(ADDRESS_LINE_1_TITLE_CASE);
