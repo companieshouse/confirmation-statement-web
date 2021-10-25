@@ -26,7 +26,8 @@ const clone = (objectToClone: any): any => {
 
 describe("Test active director details service", () => {
 
-  const companyNumber = "12345678";
+  const TRANSACTION_ID = "66454";
+  const SUBMISSION_ID = "435435";
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -41,9 +42,9 @@ describe("Test active director details service", () => {
 
     mockGetActiveDirectorDetails.mockReturnValueOnce(resource);
     const session =  getSessionRequest({ access_token: "token" });
-    const response = await getActiveDirectorDetailsData(session, companyNumber);
+    const response = await getActiveDirectorDetailsData(session, TRANSACTION_ID, SUBMISSION_ID);
 
-    expect(mockGetActiveDirectorDetails).toBeCalledWith(companyNumber);
+    expect(mockGetActiveDirectorDetails).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID);
     expect(response).toEqual(mockActiveDirectorDetails);
 
   });
@@ -62,7 +63,7 @@ describe("Test active director details service", () => {
     let actualMessage;
 
     try {
-      await getActiveDirectorDetailsData(session, companyNumber);
+      await getActiveDirectorDetailsData(session, TRANSACTION_ID, SUBMISSION_ID);
     } catch (err) {
       actualMessage = err.message;
     }
