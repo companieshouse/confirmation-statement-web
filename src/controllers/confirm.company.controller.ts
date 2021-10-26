@@ -46,7 +46,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const session: Session = req.session as Session;
     const company: CompanyProfile = await getCompanyProfile(req.query.companyNumber as string);
-    const companyNumber = company.companyNumber as string;
+    const companyNumber = company.companyNumber;
     const eligibilityStatusCode: EligibilityStatusCode = await checkEligibility(session, companyNumber);
 
     if (!isCompanyValidForService(eligibilityStatusCode)) {
