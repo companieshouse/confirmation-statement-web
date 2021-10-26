@@ -39,17 +39,6 @@ const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission
 
 const generateSectionData = (section: SECTIONS, status: SectionStatus, extraData?: any): any => {
   switch (section) {
-      case SECTIONS.ACTIVE_DIRECTOR:
-      case SECTIONS.PSC:
-      case SECTIONS.ROA:
-      case SECTIONS.SIC:
-      case SECTIONS.SHAREHOLDER:
-      case SECTIONS.REGISTER_LOCATIONS:
-      {
-        return {
-          sectionStatus: status,
-        };
-      }
       case SECTIONS.SOC: {
         const newSocData: StatementOfCapitalData = {
           sectionStatus: status
@@ -58,6 +47,11 @@ const generateSectionData = (section: SECTIONS, status: SectionStatus, extraData
           newSocData.statementOfCapital = extraData;
         }
         return newSocData;
+      }
+      default: {
+        return {
+          sectionStatus: status,
+        };
       }
   }
 };
