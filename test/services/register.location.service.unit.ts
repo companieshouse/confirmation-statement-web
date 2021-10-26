@@ -21,7 +21,8 @@ mockCreateApiClient.mockReturnValue({
 
 describe("Test register location service", () => {
 
-  const companyNumber = "11111111";
+  const TRANSACTION_ID = "66544";
+  const SUBMISSION_ID = "6464647";
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -34,8 +35,8 @@ describe("Test register location service", () => {
     };
     mockGetRegisterLocations.mockReturnValueOnce(resource);
     const session =  getSessionRequest({ access_token: "token" });
-    const response = await getRegisterLocationData(session, companyNumber);
-    expect(mockGetRegisterLocations).toBeCalledWith(companyNumber);
+    const response = await getRegisterLocationData(session, TRANSACTION_ID, SUBMISSION_ID);
+    expect(mockGetRegisterLocations).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID);
     expect(response).toEqual(mockRegisterLocation);
   });
 
@@ -50,7 +51,7 @@ describe("Test register location service", () => {
     const expectedMessage = "Error retrieving register location data from confirmation-statment api: " + JSON.stringify(errorResponse);
     let actualMessage;
     try {
-      await getRegisterLocationData(session, companyNumber);
+      await getRegisterLocationData(session, TRANSACTION_ID, SUBMISSION_ID);
     } catch (e) {
       actualMessage = e.message;
     }

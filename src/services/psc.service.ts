@@ -10,10 +10,10 @@ import {
   PersonOfSignificantControl
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
-export const getPscs = async (session: Session, companyNumber: string): Promise<PersonOfSignificantControl[]> => {
+export const getPscs = async (session: Session, transactionId: string, submissionId: string): Promise<PersonOfSignificantControl[]> => {
   const client = createPublicOAuthApiClient(session);
   const csService: ConfirmationStatementService = client.confirmationStatementService;
-  const response: Resource<PersonOfSignificantControl[]> | ApiErrorResponse = await csService.getPersonsOfSignificantControl(companyNumber);
+  const response: Resource<PersonOfSignificantControl[]> | ApiErrorResponse = await csService.getPersonsOfSignificantControl(transactionId, submissionId);
   const status = response.httpStatusCode as number;
   if (status >= 400) {
     const errorResponse = response as ApiErrorResponse;

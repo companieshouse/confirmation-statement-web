@@ -19,9 +19,10 @@ import { sendUpdate } from "../../utils/update.confirmation.statement.submission
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const session: Session = req.session as Session;
-    const directorDetails: ActiveDirectorDetails = await getActiveDirectorDetailsData(session, companyNumber);
+    const directorDetails: ActiveDirectorDetails = await getActiveDirectorDetailsData(session, transactionId, submissionId);
     const activeDirectorDetails = formatDirectorDetails(directorDetails);
     const serviceAddress = formatAddressForDisplay(activeDirectorDetails.serviceAddress);
     const residentialAddress = formatAddressForDisplay(activeDirectorDetails.residentialAddress);
@@ -42,7 +43,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const session: Session = req.session as Session;
     const activeDirectorDetailsBtnValue = req.body.activeDirectors;
     if (activeDirectorDetailsBtnValue === RADIO_BUTTON_VALUE.YES || activeDirectorDetailsBtnValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
@@ -58,7 +60,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         pageHeading: WRONG_DETAILS_UPDATE_OFFICERS,
       });
     } else {
-      const directorDetails: ActiveDirectorDetails = await getActiveDirectorDetailsData(session, companyNumber);
+      const directorDetails: ActiveDirectorDetails = await getActiveDirectorDetailsData(session, transactionId, submissionId);
       const activeDirectorDetails = formatDirectorDetails(directorDetails);
       const serviceAddress = formatAddressForDisplay(activeDirectorDetails?.serviceAddress);
       const residentialAddress = formatAddressForDisplay(activeDirectorDetails?.residentialAddress);

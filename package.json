@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/companieshouse/confirmation-statement-web#readme",
   "dependencies": {
-    "@companieshouse/api-sdk-node": "^1.0.75",
+    "@companieshouse/api-sdk-node": "^1.0.77",
     "@companieshouse/node-session-handler": "^4.1.6",
     "@companieshouse/structured-logging-node": "^1.0.4",
     "@companieshouse/web-security-node": "^2.0.0",
@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.1",
-    "@types/jest": "^26.0.22",
+    "@types/jest": "^27.0.2",
     "@types/js-yaml": "^4.0.1",
     "@types/luxon": "^1.27.0",
     "@types/supertest": "^2.0.11",
@@ -48,11 +48,11 @@
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.27.0",
     "eslint": "^7.28.0",
-    "jest": "^26.6.3",
+    "jest": "^27.3.1",
     "sonarqube-scanner": "^2.8.1",
     "supertest": "^6.1.3",
-    "ts-jest": "^26.5.5",
-    "ts-node": "^10.0.0",
+    "ts-jest": "^27.0.7",
+    "ts-node": "^10.4.0",
     "typescript": "^4.2.4"
   }
 }

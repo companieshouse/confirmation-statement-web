@@ -7,10 +7,10 @@ import {
   ConfirmationStatementService
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
-export const getActiveDirectorDetailsData = async (session: Session, companyNumber: string): Promise<ActiveDirectorDetails> => {
+export const getActiveDirectorDetailsData = async (session: Session, transactionId: string, submissionId: string): Promise<ActiveDirectorDetails> => {
   const client = createPublicOAuthApiClient(session);
   const csService: ConfirmationStatementService = client.confirmationStatementService;
-  const response: Resource<ActiveDirectorDetails> | ApiErrorResponse = await csService.getActiveDirectorDetails(companyNumber);
+  const response: Resource<ActiveDirectorDetails> | ApiErrorResponse = await csService.getActiveDirectorDetails(transactionId, submissionId);
   const status = response.httpStatusCode as number;
 
   if (status >= 400) {

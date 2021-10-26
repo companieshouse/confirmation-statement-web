@@ -6,10 +6,10 @@ import {
   StatementOfCapital
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
-export const getStatementOfCapitalData = async (session: Session, companyNumber: string): Promise<StatementOfCapital> => {
+export const getStatementOfCapitalData = async (session: Session, transactionId: string, submissionId: string): Promise<StatementOfCapital> => {
   const client = createPublicOAuthApiClient(session);
   const csService: ConfirmationStatementService = client.confirmationStatementService;
-  const response: Resource<StatementOfCapital> | ApiErrorResponse = await csService.getStatementOfCapital(companyNumber);
+  const response: Resource<StatementOfCapital> | ApiErrorResponse = await csService.getStatementOfCapital(transactionId, submissionId);
   const status = response.httpStatusCode as number;
   if (status >= 400) {
     const errorResponse = response as ApiErrorResponse;

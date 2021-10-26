@@ -25,6 +25,7 @@ const mockEligibilityStatusCode = checkEligibility as jest.Mock;
 const mockToReadableFormat = toReadableFormat as jest.Mock;
 const mockGetNextMadeUpToDate = getNextMadeUpToDate as jest.Mock;
 
+const companyNumber = "12345678";
 const today = "2020-04-25";
 
 describe("Confirm company controller tests", () => {
@@ -32,6 +33,7 @@ describe("Confirm company controller tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockEligibilityStatusCode.mockReset();
     luxonSettings.now = () => new Date(today).valueOf();
   });
 
@@ -44,8 +46,6 @@ describe("Confirm company controller tests", () => {
   });
 
   it("Should pass the company number to the company profile service", async () => {
-    const companyNumber = "123456";
-
     await request(app)
       .get(CONFIRM_COMPANY_PATH)
       .query({ companyNumber });
@@ -78,9 +78,9 @@ describe("Confirm company controller tests", () => {
     expect(response.text).toContain("Sorry, the service is unavailable");
   });
 
-  it("Should call private sdk client and redirect to transaction using company number in query", async () => {
-    const companyNumber = "11111111";
+  it("Should call private sdk client and redirect to transaction using company number in profile retrieved from database", async () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockCreateConfirmationStatement.mockResolvedValueOnce(201);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
     const response = await request(app)
@@ -92,6 +92,7 @@ describe("Confirm company controller tests", () => {
 
   it("Should not call private sdk client id feature flag is off", async () => {
     mockIsActiveFeature.mockReturnValueOnce(false);
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
@@ -143,6 +144,7 @@ describe("Confirm company controller tests", () => {
 
   it("Should redirect to use webfiling stop screen when the eligibility status code is INVALID_TYPE_USE_WEBFILING", async () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TYPE_USE_WEB_FILING);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
@@ -153,6 +155,7 @@ describe("Confirm company controller tests", () => {
 
   it("Should redirect to use webfiling stop screen when the eligibility status code is INVALID_COMPANY_TRADED_STATUS_USE_WEBFILING", async () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TRADED_STATUS_USE_WEBFILING);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
@@ -163,6 +166,7 @@ describe("Confirm company controller tests", () => {
 
   it("Should redirect to use paper stop screen when the eligibility status code is INVALID_COMPANY_TYPE_PAPER_FILING_ONLY", async () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
@@ -204,6 +208,7 @@ describe("Confirm company controller tests", () => {
 
   it("Should redirect to use no filing required stop screen when the eligibility status code is INVALID_COMPANY_TYPE_CS01_FILING_NOT_REQUIRED", async () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TYPE_CS01_FILING_NOT_REQUIRED);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
@@ -214,6 +219,7 @@ describe("Confirm company controller tests", () => {
 
   it("Should redirect to use webfiling stop screen when the eligibility status code is INVALID_COMPANY_APPOINTMENTS_INVALID_NUMBER_OF_OFFICERS", async () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_INVALID_NUMBER_OF_OFFICERS);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
@@ -224,6 +230,7 @@ describe("Confirm company controller tests", () => {
 
   it("Should redirect to use webfiling stop screen when the eligibility status code is INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_SHAREHOLDER", async () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_SHAREHOLDER);
     const response = await request(app).post(CONFIRM_COMPANY_PATH);
     expect(response.status).toEqual(200);
