@@ -13,6 +13,7 @@ import { logger } from "./utils/logger";
 import { companyAuthenticationMiddleware } from "./middleware/company.authentication.middleware";
 
 const app = express();
+app.disable("x-powered-by");
 
 // view engine setup
 const nunjucksEnv = nunjucks.configure([
