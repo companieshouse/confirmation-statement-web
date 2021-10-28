@@ -32,10 +32,18 @@
       <p class="govuk-body-l">This service allows private limited companies to confirm that company information is correct and file a confirmation statement (previously known as an annual return).</p>
       <p class="govuk-body govuk-!-font-weight-bold">You can only use this service if the company:</p>
       <ul class="govuk-list govuk-list--bullet">
-        <li>is a private limited company</li>
-        <li>has only one director</li>
-        <li>has only one shareholder</li>
-        <li>has one person with significant control (PSC) or fewer</li>
+        {% if FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY === "true" %}
+          <li>is a private limited company</li>
+          <li>has 5 officers or less</li>
+          <li>has only one shareholder</li>
+          <li>has 5 people with significant control (PSC) or less</li>
+        {% else %}
+          <li>is a private limited company</li>
+          <li>has only one director</li>
+          <li>has only one shareholder</li>
+          <li>has one person with significant control (PSC) or fewer</li>
+        {% endif %}
+        
       </ul>
       <p>If the company does not meet these criteria, you will need to file a confirmation statement using our
         <a href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" data-event-id="webfiling-service-link-from-ncs-start-page">WebFiling service</a>.</p>
