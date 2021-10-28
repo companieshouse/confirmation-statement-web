@@ -35,6 +35,8 @@ export const INTERNAL_API_URL = getEnvironmentVariable("INTERNAL_API_URL");
 
 export const FEATURE_FLAG_PRIVATE_SDK_12052021 = getEnvironmentVariable("FEATURE_FLAG_PRIVATE_SDK_12052021");
 
+export const FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY = getEnvironmentVariable("FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021");
+
 export const PIWIK_START_GOAL_ID = getEnvironmentVariable("PIWIK_START_GOAL_ID");
 
 export const PSC_STATEMENTS_API_PAGE_SIZE = getEnvironmentVariable("PSC_STATEMENTS_API_PAGE_SIZE", "100");
