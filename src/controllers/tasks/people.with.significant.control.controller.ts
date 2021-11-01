@@ -20,29 +20,38 @@ import { createAndLogError, logger } from "../../utils/logger";
 import { toReadableFormat } from "../../utils/date";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { formatPSCForDisplay, formatAddressForDisplay } from "../../utils/format";
+import { FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY } from "../../utils/properties";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const psc: PersonOfSignificantControl | undefined = await getPscData(req);
-    if (!psc) {
+    const pscs: PersonOfSignificantControl[] | undefined = await getPscData(req);
+    const pscList = new Array(0);
+    if (!pscs) {
       const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
       logger.info(`No PSC data returned for company ${companyNumber}, redirecting to PSC Statement page`);
       return res.redirect(getPscStatementUrl(req, false));
     }
-    const pscAppointmentType = psc.appointmentType;
-    const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
-    const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);
-    const ura = formattedPsc.address ? formatAddressForDisplay(formattedPsc.address) : "";
-    const serviceAddress = formattedPsc.serviceAddress ? formatAddressForDisplay(formattedPsc.serviceAddress) : "";
+    for (const psc of pscs) {
+      const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);
+      const ura = formattedPsc.address ? formatAddressForDisplay(formattedPsc.address) : "";
+      const serviceAddress = formattedPsc.serviceAddress ? formatAddressForDisplay(formattedPsc.serviceAddress) : "";
+      const pscTemplateType: string = getPscTypeTemplate(psc.appointmentType);
+      const dob = handleDateOfBirth(pscTemplateType, psc);
+      const pscObj = {
+        formattedPsc: formattedPsc,
+        ura: ura,
+        serviceAddress: serviceAddress,
+        pscTemplateType: pscTemplateType,
+        dob: dob,
+      };
+      pscList.push(pscObj);
+    }
 
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-      dob: handleDateOfBirth(pscTemplateType, psc),
-      psc: formattedPsc,
-      ura,
-      serviceAddress,
-      pscTemplateType,
+      pscList: pscList,
       templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
+      MultiplePscFlag: FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY
     });
   } catch (e) {
     return next(e);
@@ -54,17 +63,32 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const pscButtonValue = req.body.pscRadioValue;
 
     if (!pscButtonValue) {
-      const psc: PersonOfSignificantControl = await getPscData(req) as PersonOfSignificantControl;
-      const pscAppointmentType = psc.appointmentType;
-      const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);
-      const pscTemplateType: string = getPscTypeTemplate(pscAppointmentType);
+      const pscs: PersonOfSignificantControl[] | undefined = await getPscData(req);
+      const pscList = new Array(0);
+      if (!pscs) {
+        throw createAndLogError(`No PSC data returned on error page reload`);
+      }
+      for (const psc of pscs) {
+        const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);
+        const ura = formattedPsc.address ? formatAddressForDisplay(formattedPsc.address) : "";
+        const serviceAddress = formattedPsc.serviceAddress ? formatAddressForDisplay(formattedPsc.serviceAddress) : "";
+        const pscTemplateType: string = getPscTypeTemplate(psc.appointmentType);
+        const dob = handleDateOfBirth(pscTemplateType, psc);
+        const pscObj = {
+          formattedPsc: formattedPsc,
+          ura: ura,
+          serviceAddress: serviceAddress,
+          pscTemplateType: pscTemplateType,
+          dob: dob
+        };
+        pscList.push(pscObj);
+      }
       return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
         backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        dob: handleDateOfBirth(pscTemplateType, psc),
+        pscList: pscList,
+        templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
         peopleWithSignificantControlErrorMsg: PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
-        psc: formattedPsc,
-        pscTemplateType,
-        templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL
+        MultiplePscFlag: FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY
       });
     }
 
@@ -85,7 +109,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getPscData = async (req: Request): Promise<PersonOfSignificantControl | undefined> => {
+const getPscData = async (req: Request): Promise<PersonOfSignificantControl[] | undefined> => {
   const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
   const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
   const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
@@ -95,11 +119,18 @@ const getPscData = async (req: Request): Promise<PersonOfSignificantControl | un
     return undefined;
   }
 
-  if (pscs.length > 1) {
-    throw createAndLogError(`More than one (${pscs.length}) PSC returned for company ${companyNumber}`);
+  if (FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY) {
+    if (pscs.length > 5) {
+      throw createAndLogError(`More than Five, (${pscs.length}) PSC returned for company ${companyNumber}`);
+    }
+  } else {
+    if (pscs.length > 1) {
+      throw createAndLogError(`More than one (${pscs.length}) PSC returned for company ${companyNumber}`);
+    }
   }
 
-  return pscs[0];
+
+  return pscs;
 };
 
 const getPscTypeTemplate = (pscAppointmentType: string): string => {
