@@ -228,6 +228,17 @@ describe("Confirm company controller tests", () => {
     expect(response.text).toContain("You cannot use this service - File a confirmation statement");
   });
 
+  it("Should redirect to use webfiling stop screen when the eligibility status code is INVALID_COMPANY_APPOINTMENTS_MORE_THAN_FIVE_OFFICERS", async () => {
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_FIVE_OFFICERS);
+    const response = await request(app)
+      .post(CONFIRM_COMPANY_PATH);
+    expect(response.status).toEqual(200);
+    expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
+    expect(response.text).toContain("You cannot use this service - File a confirmation statement");
+  });
+
   it("Should redirect to use webfiling stop screen when the eligibility status code is INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_SHAREHOLDER", async () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
