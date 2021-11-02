@@ -4,7 +4,7 @@ import { formatForDisplay, getCompanyProfile } from "../services/company.profile
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { createConfirmationStatement, getNextMadeUpToDate } from "../services/confirmation.statement.service";
 import { Session } from "@companieshouse/node-session-handler";
-import { FEATURE_FLAG_PRIVATE_SDK_12052021 } from "../utils/properties";
+import { FEATURE_FLAG_PRIVATE_SDK_12052021, FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 } from "../utils/properties";
 import { isActiveFeature } from "../utils/feature.flag";
 import { checkEligibility } from "../services/eligibility.service";
 import {
@@ -69,7 +69,7 @@ const displayEligibilityStopPage = (res: Response, eligibilityStatusCode: Eligib
   if (!stopPage) {
     throw new Error(`Unknown eligibilityStatusCode ${eligibilityStatusCode}`);
   }
-  return res.render(stopPage, { company, templateName: stopPage });
+  return res.render(stopPage, { company, FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021, templateName: stopPage });
 };
 
 const createNewConfirmationStatement = async (session: Session) => {
@@ -84,7 +84,9 @@ const stopPages = {
   [EligibilityStatusCode.INVALID_COMPANY_TRADED_STATUS_USE_WEBFILING]: Templates.USE_WEBFILING,
   [EligibilityStatusCode.INVALID_COMPANY_TYPE_USE_WEB_FILING]: Templates.USE_WEBFILING,
   [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_INVALID_NUMBER_OF_OFFICERS]: Templates.USE_WEBFILING,
+  [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_FIVE_OFFICERS]: Templates.USE_WEBFILING,
   [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_PSC]: Templates.USE_WEBFILING,
+  [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_FIVE_PSCS]: Templates.USE_WEBFILING,
   [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_SHAREHOLDER]: Templates.USE_WEBFILING,
   [EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY]: Templates.USE_PAPER,
   [EligibilityStatusCode.INVALID_COMPANY_TYPE_CS01_FILING_NOT_REQUIRED]: Templates.NO_FILING_REQUIRED
