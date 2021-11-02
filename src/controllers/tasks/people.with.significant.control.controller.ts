@@ -67,7 +67,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const pscs: PersonOfSignificantControl[] | undefined = await getPscData(req);
       const pscList = new Array(0);
       if (!pscs) {
-        throw createAndLogError(`No PSC data returned on error page reload`);
+        throw createAndLogError(`No PSC data found, no radio button selected`);
       }
       for (const psc of pscs) {
         const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);

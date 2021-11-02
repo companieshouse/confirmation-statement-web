@@ -418,6 +418,15 @@ describe("People with significant control controller tests", () => {
       expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("true"));
     });
 
+    it("should display error page if no psc is found when radio button is not selected", async () => {
+      mockGetPscs.mockResolvedValueOnce([ ]);
+      const response = await request(app).post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(mockCreateAndLogError).toHaveBeenCalledTimes(1);
+      expect(mockCreateAndLogError).toHaveBeenCalledWith(expect.stringContaining("No PSC data found, no radio button selected"));
+      expect(response.status).toEqual(500);
+      expect(response.text).toContain("Sorry, the service is unavailable");
+    });
+
     it("Should redirect to psc statement page when Recently Filed radio button is selected", async () => {
       const response = await request(app)
         .post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL)
