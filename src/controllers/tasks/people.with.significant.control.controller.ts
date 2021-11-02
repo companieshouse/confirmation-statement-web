@@ -21,6 +21,7 @@ import { toReadableFormat } from "../../utils/date";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { formatPSCForDisplay, formatAddressForDisplay } from "../../utils/format";
 import { FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY } from "../../utils/properties";
+import { isActiveFeature } from "../../utils/feature.flag";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -119,9 +120,9 @@ const getPscData = async (req: Request): Promise<PersonOfSignificantControl[] | 
     return undefined;
   }
 
-  if (FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY) {
+  if (isActiveFeature(FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY)) {
     if (pscs.length > 5) {
-      throw createAndLogError(`More than Five, (${pscs.length}) PSC returned for company ${companyNumber}`);
+      throw createAndLogError(`More than five, (${pscs.length}) PSC returned for company ${companyNumber}`);
     }
   } else {
     if (pscs.length > 1) {

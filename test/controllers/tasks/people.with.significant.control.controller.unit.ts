@@ -1,6 +1,7 @@
 jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/psc.service");
 jest.mock("../../../src/utils/date");
+jest.mock("../../../src/utils/feature.flag");
 jest.mock("../../../src/utils/logger");
 jest.mock("../../../src/utils/update.confirmation.statement.submission");
 
@@ -12,6 +13,7 @@ import { companyAuthenticationMiddleware } from "../../../src/middleware/company
 import { PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR, RADIO_BUTTON_VALUE, SECTIONS } from "../../../src/utils/constants";
 import { getPscs } from "../../../src/services/psc.service";
 import { toReadableFormat } from "../../../src/utils/date";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { urlUtils } from "../../../src/utils/url";
 import { createAndLogError } from "../../../src/utils/logger";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
@@ -50,12 +52,17 @@ const DOB_ISO = "1955-03-21";
 const FORENAME = "BOB";
 const FORENAME_TITLE_CASE = "Bob";
 const SURNAME = "WILSON";
+const SURNAME_2 = "STEVE";
 const ADDRESS_LINE_1 = "ADD LINE 1";
 const ADDRESS_LINE_1_TITLE_CASE = "Add Line 1";
+const ADDRESS_LINE_1_OFFICER_2 = "ADD LINE 1 OFFICER 2";
+const ADDRESS_LINE_1_OFFICER_2_TITLE_CASE = "Add Line 1 Officer 2";
 const COUNTRY = "UNITED KINGDOM";
 const COUNTRY_TITLE_CASE = "United Kingdom";
 
 const mockSendUpdate = sendUpdate as jest.Mock;
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
@@ -94,6 +101,7 @@ describe("People with significant control controller tests", () => {
     mockToReadableFormat.mockClear();
     mockCreateAndLogError.mockClear();
     mockSendUpdate.mockClear();
+    mockIsActiveFeature.mockClear();
   });
 
   describe("get tests", () => {
@@ -111,6 +119,58 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain(COUNTRY_TITLE_CASE);
     });
 
+    it("should navigate to the active pscs page with multiple PSC and multiple psc flag is on", async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetPscs.mockResolvedValueOnce([ {
+        address: {
+          addressLine1: ADDRESS_LINE_1
+        },
+        appointmentType: APPOINTMENT_TYPE_5007,
+        dateOfBirth: {
+          month: DOB_MONTH,
+          year: DOB_YEAR
+        },
+        dateOfBirthIso: DOB_ISO,
+        nameElements: {
+          forename: FORENAME,
+          surname: SURNAME
+        },
+        serviceAddress: {
+          country: COUNTRY
+        }
+      } as PersonOfSignificantControl, {
+        address: {
+          addressLine1: ADDRESS_LINE_1_OFFICER_2
+        },
+        appointmentType: APPOINTMENT_TYPE_5007,
+        dateOfBirth: {
+          month: 4,
+          year: 1999
+        },
+        dateOfBirthIso: DOB_ISO,
+        nameElements: {
+          forename: FORENAME,
+          surname: SURNAME_2
+        },
+        serviceAddress: {
+          country: COUNTRY
+        }
+      } as PersonOfSignificantControl ]);
+      const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(response.text).toContain(PAGE_HEADING);
+      expect(mockGetPscs).toBeCalledTimes(1);
+      expect(mockGetPscs.mock.calls[0][1]).toBe(TRANSACTION_ID);
+      expect(mockToReadableFormat).toBeCalledTimes(2);
+      expect(mockToReadableFormat.mock.calls[0][0]).toBe(DOB_ISO);
+      expect(response.text).toContain(ADDRESS_LINE_1_TITLE_CASE);
+      expect(response.text).toContain(FORENAME_TITLE_CASE);
+      expect(response.text).toContain(SURNAME);
+      expect(response.text).toContain(FORMATTED_DOB);
+      expect(response.text).toContain(COUNTRY_TITLE_CASE);
+      expect(response.text).toContain(SURNAME_2);
+      expect(response.text).toContain(ADDRESS_LINE_1_OFFICER_2_TITLE_CASE);
+    });
+
     it("Should navigate to an error page if the function throws an error", async () => {
       const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
       spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
@@ -125,6 +185,17 @@ describe("People with significant control controller tests", () => {
     it("should navigate to error page if more than one psc is found", async () => {
       mockGetPscs.mockResolvedValueOnce([ {}, {} ]);
       const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(mockCreateAndLogError).toHaveBeenCalledTimes(1);
+      expect(mockCreateAndLogError).toHaveBeenCalledWith(expect.stringContaining("More than one"));
+      expect(response.text).toContain(ERROR_PAGE_TEXT);
+    });
+
+    it("should navigate to error page if more than five psc is found multiple psc flag on", async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetPscs.mockResolvedValueOnce([ {}, {}, {}, {}, {}, {} ]);
+      const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
+      expect(mockCreateAndLogError).toHaveBeenCalledTimes(1);
+      expect(mockCreateAndLogError).toHaveBeenCalledWith(expect.stringContaining("More than five"));
       expect(response.text).toContain(ERROR_PAGE_TEXT);
     });
 
