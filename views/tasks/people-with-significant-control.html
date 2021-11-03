@@ -47,13 +47,19 @@
           html: pscDetails
         }) }}
 
-        {% if pscTemplateType === "rle" %}
-           {% include "tasks/includes/relevant-legal-entity.html" %}
-        {% elif pscTemplateType === "psc" %}
-           {% include "tasks/includes/normal-psc.html" %}
-        {% elif pscTemplateType === "orp" %}
-           {% include "tasks/includes/relevant-legal-entity.html" %}
+        {% if MultiplePscFlag === "true" %}
+          {% include "tasks/includes/normal-psc.html" %}
         {% else %}
+          {% for psc in pscList %}
+            {% if psc.pscTemplateType === "rle" %}
+              {% include "tasks/includes/relevant-legal-entity.html" %}
+            {% elif psc.pscTemplateType === "psc" %}
+              {% include "tasks/includes/normal-psc.html" %}
+            {% elif psc.pscTemplateType === "orp" %}
+              {% include "tasks/includes/relevant-legal-entity.html" %}
+            {% else %}
+            {% endif %}
+          {% endfor %}
         {% endif %}
 
         {{ govukRadios({
