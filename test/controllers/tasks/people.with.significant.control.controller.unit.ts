@@ -110,7 +110,7 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain(PAGE_HEADING);
       expect(mockGetPscs).toBeCalledTimes(1);
       expect(mockGetPscs.mock.calls[0][1]).toBe(TRANSACTION_ID);
-      expect(mockToReadableFormat).toBeCalledTimes(1);
+      expect(mockToReadableFormat).toBeCalledTimes(2);
       expect(mockToReadableFormat.mock.calls[0][0]).toBe(DOB_ISO);
       expect(response.text).toContain(ADDRESS_LINE_1_TITLE_CASE);
       expect(response.text).toContain(FORENAME_TITLE_CASE);
@@ -160,7 +160,7 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain(PAGE_HEADING);
       expect(mockGetPscs).toBeCalledTimes(1);
       expect(mockGetPscs.mock.calls[0][1]).toBe(TRANSACTION_ID);
-      expect(mockToReadableFormat).toBeCalledTimes(2);
+      expect(mockToReadableFormat).toBeCalledTimes(4);
       expect(mockToReadableFormat.mock.calls[0][0]).toBe(DOB_ISO);
       expect(response.text).toContain(ADDRESS_LINE_1_TITLE_CASE);
       expect(response.text).toContain(FORENAME_TITLE_CASE);
