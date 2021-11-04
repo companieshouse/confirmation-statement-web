@@ -135,12 +135,14 @@ const formatPscList = (pscs: PersonOfSignificantControl[]) => {
     const serviceAddress = formattedPsc.serviceAddress ? formatAddressForDisplay(formattedPsc.serviceAddress) : "";
     const pscTemplateType: string = getPscTypeTemplate(psc.appointmentType);
     const dob = handleDateOfBirth(pscTemplateType, psc);
+    const dateOfAppointment = toReadableFormat(psc.appointmentDate);
     const pscObj = {
       formattedPsc: formattedPsc,
       ura: ura,
       serviceAddress: serviceAddress,
       pscTemplateType: pscTemplateType,
-      dob: dob
+      dob: dob,
+      dateOfAppointment: dateOfAppointment,
     };
     pscList.push(pscObj);
   }
