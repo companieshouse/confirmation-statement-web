@@ -4,6 +4,7 @@ export enum Templates {
   CONFIRMATION = "confirmation",
   CONFIRM_COMPANY = "confirm-company",
   ERROR_404 = "page-not-found",
+  NATURAL_PERSON_SECRETARIES = "tasks/natural-person-secretaries",
   PEOPLE_WITH_SIGNIFICANT_CONTROL = "tasks/people-with-significant-control",
   PSC_STATEMENT = "tasks/psc-statement",
   SERVICE_OFFLINE = "service-offline",
