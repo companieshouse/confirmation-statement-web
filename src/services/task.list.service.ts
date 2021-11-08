@@ -6,7 +6,7 @@ import { toReadableFormat } from "../utils/date";
 import {
   SIC_PATH,
   STATEMENT_OF_CAPITAL_PATH,
-  ACTIVE_DIRECTORS_PATH,
+  ACTIVE_OFFICERS_PATH,
   REGISTERED_OFFICE_ADDRESS_PATH,
   SHAREHOLDERS_PATH,
   PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH,
@@ -25,7 +25,7 @@ export const initTaskList = (companyNumber: string,
 
   const allTasks = {
     officers: {
-      state: toTaskState(csSubmission.data?.activeDirectorDetailsData?.sectionStatus),
+      state: toTaskState(csSubmission.data?.activeOfficerDetailsData?.sectionStatus),
       url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(officerSection(), companyNumber, transactionId, submissionId)
     },
     peopleSignificantControl: {

@@ -1,5 +1,5 @@
 import { RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { ActiveDirectorDetails, Address, PersonOfSignificantControl } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { ActiveOfficerDetails, Address, PersonOfSignificantControl } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 export const formatTitleCase = (str: string|undefined): string =>  {
   if (!str) {
@@ -12,16 +12,16 @@ export const formatTitleCase = (str: string|undefined): string =>  {
     });
 };
 
-export const formatDirectorDetails = (directorDetails: ActiveDirectorDetails): ActiveDirectorDetails => {
-  const clone: ActiveDirectorDetails = JSON.parse(JSON.stringify(directorDetails));
+export const formatOfficerDetails = (officerDetails: ActiveOfficerDetails): ActiveOfficerDetails => {
+  const clone: ActiveOfficerDetails = JSON.parse(JSON.stringify(officerDetails));
 
-  clone.foreName1 = formatTitleCase(directorDetails.foreName1);
-  clone.foreName2 = formatTitleCase(directorDetails.foreName2);
-  clone.surname = directorDetails.surname;
-  clone.nationality = formatTitleCase(directorDetails.nationality);
-  clone.occupation = formatTitleCase(directorDetails.occupation);
-  clone.serviceAddress = formatAddress(directorDetails.serviceAddress);
-  clone.residentialAddress = formatAddress(directorDetails.residentialAddress);
+  clone.foreName1 = formatTitleCase(officerDetails.foreName1);
+  clone.foreName2 = formatTitleCase(officerDetails.foreName2);
+  clone.surname = officerDetails.surname;
+  clone.nationality = formatTitleCase(officerDetails.nationality);
+  clone.occupation = formatTitleCase(officerDetails.occupation);
+  clone.serviceAddress = formatAddress(officerDetails.serviceAddress);
+  clone.residentialAddress = formatAddress(officerDetails.residentialAddress);
 
   return clone;
 };

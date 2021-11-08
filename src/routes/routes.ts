@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import * as activeDirectors from "../controllers/tasks/active.directors.controller";
+import * as activeOfficers from "../controllers/tasks/active.officers.controller";
 import * as naturalPersonSecretaries from "../controllers/tasks/natural.person.secretaries.controller";
 import * as confirmCompanyRoute from "../controllers/confirm.company.controller";
 import * as companyNumberRoute from "../controllers/company.number.controller";
@@ -38,8 +38,8 @@ router.get(urls.COMPANY_NUMBER, companyNumberRoute.get);
 
 router.get(urls.ACCESSIBILITY_STATEMENT, renderTemplate(Templates.ACCESSIBILITY_STATEMENT));
 
-router.get(urls.ACTIVE_DIRECTORS, activeDirectors.get);
-router.post(urls.ACTIVE_DIRECTORS, activeDirectors.post);
+router.get(urls.ACTIVE_OFFICERS, activeOfficers.get);
+router.post(urls.ACTIVE_OFFICERS, activeOfficers.post);
 
 router.get(urls.NATURAL_PERSON_SECRETARIES, naturalPersonSecretaries.get);
 router.post(urls.NATURAL_PERSON_SECRETARIES, naturalPersonSecretaries.post);
