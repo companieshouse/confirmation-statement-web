@@ -39,7 +39,7 @@ export const appointmentTypeNames = {
 };
 
 export enum SECTIONS {
-  ACTIVE_DIRECTOR = "activeDirectorDetailsData",
+  ACTIVE_OFFICER = "activeOfficerDetailsData",
   PSC = "personsSignificantControlData",
   ROA = "registeredOfficeAddressData",
   REGISTER_LOCATIONS = "registerLocationsData",
