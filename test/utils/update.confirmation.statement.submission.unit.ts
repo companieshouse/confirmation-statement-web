@@ -40,32 +40,32 @@ describe("Update.confirmation.statement.submission util tests", () => {
 
   describe("Should create the correct submission data for each section", () => {
 
-    it("Should create activeDirectorDetails submission data", async () => {
-      await sendUpdate(request, SECTIONS.ACTIVE_DIRECTOR, SectionStatus.CONFIRMED);
+    it("Should create activeOfficerDetails submission data", async () => {
+      await sendUpdate(request, SECTIONS.ACTIVE_OFFICER, SectionStatus.CONFIRMED);
       const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
       expect(csSubmission.id).toBe(SUBMISSION_ID);
       expect(csSubmission.links.self).toBe(LINK_SELF);
-      expect(csSubmission.data.activeDirectorDetailsData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
+      expect(csSubmission.data.activeOfficerDetailsData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
       expect(csSubmission.data.confirmationStatementMadeUpToDate).toBe(MADE_UP_TO_DATE);
     });
 
     it("Should update a sections submission data sectionStatus to CONFIRMED when status has already been set to NOT_CONFIRMED", async () => {
-      const submissionWithActiveDirectorDetailsData: ConfirmationStatementSubmission = {
+      const submissionWithActiveOfficerDetailsData: ConfirmationStatementSubmission = {
         id: SUBMISSION_ID,
         links: {
           self: LINK_SELF
         },
         data: {
-          activeDirectorDetailsData: {
+          activeOfficerDetailsData: {
             sectionStatus: SectionStatus.NOT_CONFIRMED
           },
           confirmationStatementMadeUpToDate: MADE_UP_TO_DATE
         }
       };
-      mockGetConfirmationStatement.mockResolvedValueOnce(submissionWithActiveDirectorDetailsData);
-      await sendUpdate(request, SECTIONS.ACTIVE_DIRECTOR, SectionStatus.CONFIRMED);
+      mockGetConfirmationStatement.mockResolvedValueOnce(submissionWithActiveOfficerDetailsData);
+      await sendUpdate(request, SECTIONS.ACTIVE_OFFICER, SectionStatus.CONFIRMED);
       const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
-      expect(csSubmission.data.activeDirectorDetailsData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
+      expect(csSubmission.data.activeOfficerDetailsData?.sectionStatus).toBe(SectionStatus.CONFIRMED);
       expect(csSubmission.data.confirmationStatementMadeUpToDate).toBe(MADE_UP_TO_DATE);
     });
 

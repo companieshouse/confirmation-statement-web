@@ -1,4 +1,4 @@
-import { ActiveDirectorDetails, Address } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { ActiveOfficerDetails, Address } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 export const mockAddress1: Address = {
   addressLine1: "Diddly squat farm shop",
@@ -60,7 +60,7 @@ export const mockSecureAddress: Address = {
   region: undefined
 };
 
-export const mockActiveDirectorDetails: ActiveDirectorDetails = {
+export const mockActiveOfficerDetails: ActiveOfficerDetails = {
   foreName1: "JOHN",
   foreName2: "MiddleName",
   surname: "DOE",
@@ -72,7 +72,7 @@ export const mockActiveDirectorDetails: ActiveDirectorDetails = {
   residentialAddress: mockAddress2
 };
 
-export const mockSecureActiveDirectorDetails: ActiveDirectorDetails = {
+export const mockSecureActiveOfficerDetails: ActiveOfficerDetails = {
   foreName1: "JOHN",
   foreName2: "MiddleName",
   surname: "DOE",
@@ -84,7 +84,7 @@ export const mockSecureActiveDirectorDetails: ActiveDirectorDetails = {
   residentialAddress: mockSecureAddress
 };
 
-export const mockActiveDirectorDetailsFormatted: ActiveDirectorDetails = {
+export const mockActiveOfficerDetailsFormatted: ActiveOfficerDetails = {
   foreName1: "John",
   foreName2: "Middlename",
   surname: "DOE",
@@ -97,7 +97,7 @@ export const mockActiveDirectorDetailsFormatted: ActiveDirectorDetails = {
 };
 
 
-export const mockSecureActiveDirectorDetailsFormatted: ActiveDirectorDetails = {
+export const mockSecureActiveOfficerDetailsFormatted: ActiveOfficerDetails = {
   foreName1: "John",
   foreName2: "MiddleName",
   surname: "DOE",

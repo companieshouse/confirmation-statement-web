@@ -14,22 +14,22 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
       <form action="" method="post">
-        {% if directorErrorMsg %}
+        {% if officerErrorMsg %}
           {{ govukErrorSummary({
             titleText: "There is a problem",
             errorList: [
               {
-                text: directorErrorMsg,
-                href: "#active-directors"
+                text: officerErrorMsg,
+                href: "#active-officers"
             }
           ]
           }) }}
-          {% set activeDirectorsError = {
-            text: directorErrorMsg
+          {% set activeOfficersError = {
+            text: officerErrorMsg
           }
           %}
         {% else %}
-          {% set activeDirectorsError = false %}
+          {% set activeOfficersError = false %}
         {% endif %}
         <h1 class="govuk-heading-l">Check the director's details</h1>
         <h2 class="govuk-heading-m">1 Director</h2>
@@ -47,9 +47,9 @@
         }) }}
         {{ govukRadios({
           classes: "govuk-radios",
-          idPrefix: "active-directors",
-          name: "activeDirectors",
-          errorMessage: activeDirectorsError,
+          idPrefix: "active-officers",
+          name: "activeOfficers",
+          errorMessage: activeOfficersError,
           fieldset: {
             legend: {
               isPageHeading: false,
@@ -61,7 +61,7 @@
             {
               value: "yes",
               text: "Yes",
-              label: "active-director Yes",
+              label: "active-officer Yes",
               attributes: {
                 "data-event-id": "yes-radio-button"
               }
@@ -69,7 +69,7 @@
             {
               value: "no",
               text: "No",
-              label: "active-director No",
+              label: "active-officer No",
               attributes: {
                 "data-event-id": "no-radio-button"
               }
@@ -77,7 +77,7 @@
             {
               value: "yes",
               text: "No, but I've recently filed an update",
-              label: "active-director No, but I've recently filed an update",
+              label: "active-officer No, but I've recently filed an update",
               attributes: {
                 "data-event-id": "recently-filed-radio-button"
               }

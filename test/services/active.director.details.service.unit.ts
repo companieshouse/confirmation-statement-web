@@ -2,18 +2,18 @@ jest.mock("@companieshouse/api-sdk-node");
 jest.mock("@companieshouse/api-sdk-node/dist/services/confirmation-statement");
 
 import { createApiClient, Resource } from "@companieshouse/api-sdk-node";
-import { getActiveDirectorDetailsData } from "../../src/services/active.director.details.service";
-import { mockActiveDirectorDetails, mockActiveDirectorDetailsFormatted } from "../mocks/active.director.details.mock";
+import { getActiveOfficerDetailsData } from "../../src/services/active.director.details.service";
+import { mockActiveOfficerDetails, mockActiveOfficerDetailsFormatted } from "../mocks/active.director.details.mock";
 import { getSessionRequest } from "../mocks/session.mock";
 import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
-import { formatDirectorDetails } from "../../src/utils/format";
+import { formatOfficerDetails } from "../../src/utils/format";
 import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 import {
-  ActiveDirectorDetails,
+  ActiveOfficerDetails,
   ConfirmationStatementService
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
-const mockGetActiveDirectorDetails = ConfirmationStatementService.prototype.getActiveDirectorDetails as jest.Mock;
+const mockGetActiveOfficerDetails = ConfirmationStatementService.prototype.getActiveOfficerDetails as jest.Mock;
 const mockCreatePrivateApiClient = createApiClient as jest.Mock;
 
 mockCreatePrivateApiClient.mockReturnValue({
@@ -35,17 +35,17 @@ describe("Test active director details service", () => {
 
   it("Should call the sdk and get the active director details data", async () => {
 
-    const resource: Resource<ActiveDirectorDetails> = {
+    const resource: Resource<ActiveOfficerDetails> = {
       httpStatusCode: 200,
-      resource: mockActiveDirectorDetails
+      resource: mockActiveOfficerDetails
     };
 
-    mockGetActiveDirectorDetails.mockReturnValueOnce(resource);
+    mockGetActiveOfficerDetails.mockReturnValueOnce(resource);
     const session =  getSessionRequest({ access_token: "token" });
-    const response = await getActiveDirectorDetailsData(session, TRANSACTION_ID, SUBMISSION_ID);
+    const response = await getActiveOfficerDetailsData(session, TRANSACTION_ID, SUBMISSION_ID);
 
-    expect(mockGetActiveDirectorDetails).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID);
-    expect(response).toEqual(mockActiveDirectorDetails);
+    expect(mockGetActiveOfficerDetails).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID);
+    expect(response).toEqual(mockActiveOfficerDetails);
 
   });
 
@@ -57,13 +57,13 @@ describe("Test active director details service", () => {
       errors: [{ error: errorMessage }]
     };
 
-    mockGetActiveDirectorDetails.mockReturnValueOnce(errorResponse);
+    mockGetActiveOfficerDetails.mockReturnValueOnce(errorResponse);
     const session =  getSessionRequest({ access_token: "token" });
     const expectedMessage = "Error retrieving active director details: " + JSON.stringify(errorResponse);
     let actualMessage;
 
     try {
-      await getActiveDirectorDetailsData(session, TRANSACTION_ID, SUBMISSION_ID);
+      await getActiveOfficerDetailsData(session, TRANSACTION_ID, SUBMISSION_ID);
     } catch (err) {
       actualMessage = err.message;
     }
@@ -77,14 +77,14 @@ describe("Test active director details service", () => {
 
 describe("Format director details test", () => {
   it ("should convert director details to presentible format ", () => {
-    const formattedDirectorDetails: ActiveDirectorDetails = formatDirectorDetails(clone(mockActiveDirectorDetails));
-    expect(formattedDirectorDetails.foreName1).toEqual(mockActiveDirectorDetailsFormatted.foreName1);
-    expect(formattedDirectorDetails.foreName2).toEqual(mockActiveDirectorDetailsFormatted.foreName2);
-    expect(formattedDirectorDetails.surname).toEqual(mockActiveDirectorDetailsFormatted.surname);
-    expect(formattedDirectorDetails.nationality).toEqual(mockActiveDirectorDetailsFormatted.nationality);
-    expect(formattedDirectorDetails.occupation).toEqual(mockActiveDirectorDetailsFormatted.occupation);
-    expect(formattedDirectorDetails.serviceAddress).toEqual(mockActiveDirectorDetailsFormatted.serviceAddress);
-    expect(formattedDirectorDetails.residentialAddress).toEqual(mockActiveDirectorDetailsFormatted.residentialAddress);
+    const formattedOfficerDetails: ActiveOfficerDetails = formatOfficerDetails(clone(mockActiveOfficerDetails));
+    expect(formattedOfficerDetails.foreName1).toEqual(mockActiveOfficerDetailsFormatted.foreName1);
+    expect(formattedOfficerDetails.foreName2).toEqual(mockActiveOfficerDetailsFormatted.foreName2);
+    expect(formattedOfficerDetails.surname).toEqual(mockActiveOfficerDetailsFormatted.surname);
+    expect(formattedOfficerDetails.nationality).toEqual(mockActiveOfficerDetailsFormatted.nationality);
+    expect(formattedOfficerDetails.occupation).toEqual(mockActiveOfficerDetailsFormatted.occupation);
+    expect(formattedOfficerDetails.serviceAddress).toEqual(mockActiveOfficerDetailsFormatted.serviceAddress);
+    expect(formattedOfficerDetails.residentialAddress).toEqual(mockActiveOfficerDetailsFormatted.residentialAddress);
   });
 
 });
