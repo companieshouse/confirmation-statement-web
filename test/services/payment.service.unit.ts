@@ -104,7 +104,7 @@ describe("Payment Service tests", () => {
         .rejects
         .toThrow(ERROR);
 
-      expect(mockCreateAndLogError).toBeCalledWith("Http status code 401 - Failed to create payment,  {\"error1\":\"something\"}");
+      expect(mockCreateAndLogError).toBeCalledWith("payment.service Http status code 401 - Failed to create payment,  {\"error1\":\"something\"}");
     });
 
     it("Should throw error on payment failure 429 response", async () => {
@@ -118,7 +118,7 @@ describe("Payment Service tests", () => {
         .rejects
         .toThrow(ERROR);
 
-      expect(mockCreateAndLogError).toBeCalledWith("Http status code 429 - Failed to create payment,  {\"error1\":\"something\"}");
+      expect(mockCreateAndLogError).toBeCalledWith("payment.service Http status code 429 - Failed to create payment,  {\"error1\":\"something\"}");
     });
 
     it("Should throw error on payment failure with unknown http response", async () => {
@@ -132,7 +132,7 @@ describe("Payment Service tests", () => {
         .rejects
         .toThrow(ERROR);
 
-      expect(mockCreateAndLogError).toBeCalledWith('Unknown Error {"error1":"something"}');
+      expect(mockCreateAndLogError).toBeCalledWith('payment.service Unknown Error {"error1":"something"}');
     });
   });
 });
