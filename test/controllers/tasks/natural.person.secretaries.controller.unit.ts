@@ -4,7 +4,7 @@ import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
-import { NATURAL_PERSON_SECRETARIES_PATH, TASK_LIST_PATH, urlParams } from "../../../src/types/page.urls";
+import { NATURAL_PERSON_SECRETARIES_PATH, urlParams } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
 import { SECRETARY_DETAILS_ERROR, WRONG_DETAILS_UPDATE_SECRETARY } from "../../../src/utils/constants";
 
@@ -15,7 +15,6 @@ const COMPANY_NUMBER = "12345678";
 const PAGE_HEADING = "Check the secretaries' details";
 const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 const NATURAL_PERSON_SECRETARIES_URL = NATURAL_PERSON_SECRETARIES_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
-const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
 describe("Natural person secretaries controller tests", () => {
 

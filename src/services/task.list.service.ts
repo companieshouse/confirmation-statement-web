@@ -65,10 +65,10 @@ export const initTaskList = (companyNumber: string,
   };
 };
 
-const officerSection = () : string => {
+const officerSection = (): string => {
   if (FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 === 'true') {
     return NATURAL_PERSON_SECRETARIES_PATH;
   } else {
     return ACTIVE_OFFICERS_PATH;
   }
-}
+};
