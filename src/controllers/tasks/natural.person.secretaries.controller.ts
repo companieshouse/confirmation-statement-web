@@ -4,7 +4,7 @@ import { NATURAL_PERSON_SECRETARIES_PATH, TASK_LIST_PATH } from "../../types/pag
 import { urlUtils } from "../../utils/url";
 import { RADIO_BUTTON_VALUE, SECRETARY_DETAILS_ERROR, WRONG_DETAILS_UPDATE_OFFICERS, WRONG_DETAILS_UPDATE_SECRETARY } from "../../utils/constants";
 
-export const get = async (req: Request, res: Response, next: NextFunction) => {
+export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     return res.render(Templates.NATURAL_PERSON_SECRETARIES, {
       templateName: Templates.NATURAL_PERSON_SECRETARIES,
@@ -15,11 +15,11 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = async (req: Request, res: Response, next: NextFunction) => {
+export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     const natPersonSecretariesBtnValue = req.body.naturalPersonSecretaries;
     if (natPersonSecretariesBtnValue === RADIO_BUTTON_VALUE.YES || natPersonSecretariesBtnValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-      //TODO update with correct next page in journey (not task list)
+      // TODO update with correct next page in journey (not task list)
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     } else if (natPersonSecretariesBtnValue === RADIO_BUTTON_VALUE.NO) {
       return res.render(Templates.WRONG_DETAILS, {
