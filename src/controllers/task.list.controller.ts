@@ -32,7 +32,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       backLinkUrl,
       company,
       taskList,
-      reviewUrl
+      reviewUrl,
+      templateName: Templates.TASK_LIST
     });
   } catch (e) {
     return next(e);
