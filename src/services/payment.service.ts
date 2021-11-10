@@ -32,11 +32,11 @@ export const startPaymentsSession = async (session: Session, paymentSessionUrl: 
 
   if (paymentResult.isFailure()) {
     const errorResponse = paymentResult.value;
-    logger.error(`${errorResponse?.httpStatusCode} - ${JSON.stringify(errorResponse?.errors)}`);
+    logger.error(`payment.service failure to create payment - http response status code = ${errorResponse?.httpStatusCode} - ${JSON.stringify(errorResponse?.errors)}`);
     if (errorResponse.httpStatusCode === 401 || errorResponse.httpStatusCode === 429) {
-      throw createAndLogError(`Http status code ${errorResponse.httpStatusCode} - Failed to create payment,  ${JSON.stringify(errorResponse?.errors) || "Unknown Error"}`);
+      throw createAndLogError(`payment.service Http status code ${errorResponse.httpStatusCode} - Failed to create payment,  ${JSON.stringify(errorResponse?.errors) || "Unknown Error"}`);
     } else {
-      throw createAndLogError(`Unknown Error ${JSON.stringify(errorResponse?.errors) || "No Errors found in response"}`);
+      throw createAndLogError(`payment.service Unknown Error ${JSON.stringify(errorResponse?.errors) || "No Errors found in response"}`);
     }
   } else {
     logger.info(`Create payment, status_code=${paymentResult.value.httpStatusCode}`);
