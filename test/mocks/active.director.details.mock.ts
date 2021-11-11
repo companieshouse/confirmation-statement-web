@@ -69,7 +69,15 @@ export const mockActiveOfficerDetails: ActiveOfficerDetails = {
   dateOfBirth: "1 January 1960",
   dateOfAppointment: "1 January 2009",
   serviceAddress: mockAddress1,
-  residentialAddress: mockAddress2
+  residentialAddress: mockAddress2,
+  isCorporate: false,
+  role: "DIRECTOR",
+  placeRegistered: null,
+  registrationNumber: null,
+  lawGoverned: null,
+  legalForm: null,
+  identificationType: null,
+  countryOfResidence: "UNITED KINGDOM"
 };
 
 export const mockSecureActiveOfficerDetails: ActiveOfficerDetails = {
@@ -81,7 +89,15 @@ export const mockSecureActiveOfficerDetails: ActiveOfficerDetails = {
   dateOfBirth: "1 January 1960",
   dateOfAppointment: "1 January 2009",
   serviceAddress: mockAddress1,
-  residentialAddress: mockSecureAddress
+  residentialAddress: mockSecureAddress,
+  isCorporate: false,
+  role: "DIRECTOR",
+  placeRegistered: null,
+  registrationNumber: null,
+  lawGoverned: null,
+  legalForm: null,
+  identificationType: null,
+  countryOfResidence: "UNITED KINGDOM"
 };
 
 export const mockActiveOfficerDetailsFormatted: ActiveOfficerDetails = {
@@ -93,7 +109,15 @@ export const mockActiveOfficerDetailsFormatted: ActiveOfficerDetails = {
   dateOfBirth: "1 January 1960",
   dateOfAppointment: "1 January 2009",
   serviceAddress: mockAddress1Formatted,
-  residentialAddress: mockAddress2Formatted
+  residentialAddress: mockAddress2Formatted,
+  isCorporate: false,
+  role: "DIRECTOR",
+  placeRegistered: null,
+  registrationNumber: null,
+  lawGoverned: null,
+  legalForm: null,
+  identificationType: null,
+  countryOfResidence: "UNITED KINGDOM"
 };
 
 
@@ -106,5 +130,13 @@ export const mockSecureActiveOfficerDetailsFormatted: ActiveOfficerDetails = {
   dateOfBirth: "1 January 1960",
   dateOfAppointment: "1 January 2009",
   serviceAddress: mockAddress1Formatted,
-  residentialAddress: mockSecureAddress
+  residentialAddress: mockSecureAddress,
+  isCorporate: false,
+  role: "DIRECTOR",
+  placeRegistered: null,
+  registrationNumber: null,
+  lawGoverned: null,
+  legalForm: null,
+  identificationType: null,
+  countryOfResidence: "UNITED KINGDOM"
 };
