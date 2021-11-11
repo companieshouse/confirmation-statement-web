@@ -72,11 +72,11 @@ export const mockActiveOfficerDetails: ActiveOfficerDetails = {
   residentialAddress: mockAddress2,
   isCorporate: false,
   role: "DIRECTOR",
-  placeRegistered: null,
-  registrationNumber: null,
-  lawGoverned: null,
-  legalForm: null,
-  identificationType: null,
+  placeRegistered: undefined,
+  registrationNumber: undefined,
+  lawGoverned: undefined,
+  legalForm: undefined,
+  identificationType: undefined,
   countryOfResidence: "UNITED KINGDOM"
 };
 
@@ -92,11 +92,11 @@ export const mockSecureActiveOfficerDetails: ActiveOfficerDetails = {
   residentialAddress: mockSecureAddress,
   isCorporate: false,
   role: "DIRECTOR",
-  placeRegistered: null,
-  registrationNumber: null,
-  lawGoverned: null,
-  legalForm: null,
-  identificationType: null,
+  placeRegistered: undefined,
+  registrationNumber: undefined,
+  lawGoverned: undefined,
+  legalForm: undefined,
+  identificationType: undefined,
   countryOfResidence: "UNITED KINGDOM"
 };
 
@@ -112,11 +112,11 @@ export const mockActiveOfficerDetailsFormatted: ActiveOfficerDetails = {
   residentialAddress: mockAddress2Formatted,
   isCorporate: false,
   role: "DIRECTOR",
-  placeRegistered: null,
-  registrationNumber: null,
-  lawGoverned: null,
-  legalForm: null,
-  identificationType: null,
+  placeRegistered: undefined,
+  registrationNumber: undefined,
+  lawGoverned: undefined,
+  legalForm: undefined,
+  identificationType: undefined,
   countryOfResidence: "UNITED KINGDOM"
 };
 
@@ -133,10 +133,10 @@ export const mockSecureActiveOfficerDetailsFormatted: ActiveOfficerDetails = {
   residentialAddress: mockSecureAddress,
   isCorporate: false,
   role: "DIRECTOR",
-  placeRegistered: null,
-  registrationNumber: null,
-  lawGoverned: null,
-  legalForm: null,
-  identificationType: null,
+  placeRegistered: undefined,
+  registrationNumber: undefined,
+  lawGoverned: undefined,
+  legalForm: undefined,
+  identificationType: undefined,
   countryOfResidence: "UNITED KINGDOM"
 };
