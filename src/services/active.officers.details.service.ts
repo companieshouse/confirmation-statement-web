@@ -15,7 +15,7 @@ export const getActiveOfficersDetailsData = async (session: Session, transaction
 
   if (status >= 400) {
     const errorResponse = response as ApiErrorResponse;
-    throw new Error(`Error retrieving active director details: ${JSON.stringify(errorResponse)}`);
+    throw new Error(`Error retrieving active officer details: ${JSON.stringify(errorResponse)}`);
   }
   const successfulResponse = response as Resource<ActiveOfficerDetails[]>;
   return successfulResponse.resource as ActiveOfficerDetails[];
