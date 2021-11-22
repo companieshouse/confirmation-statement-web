@@ -9,7 +9,7 @@ import { companyAuthenticationMiddleware } from "../../../src/middleware/company
 import { NATURAL_PERSON_SECRETARIES_PATH, urlParams } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
 import { SECRETARY_DETAILS_ERROR, WRONG_DETAILS_UPDATE_SECRETARY } from "../../../src/utils/constants";
-import { formatAddressForDisplay } from "../../../src/utils/format";
+import { formatSecretaryList } from "../../../src/utils/format";
 import { getActiveOfficersDetailsData } from "../../../src/services/active.officers.details.service";
 import { ActiveOfficerDetails } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
@@ -27,8 +27,13 @@ const ROLE = "Secretary";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
-const mockFormatAddressForDisplay = formatAddressForDisplay as jest.Mock;
-mockFormatAddressForDisplay.mockReturnValue(FORMATTED_SERVICE_ADDRESS);
+const mockformatSecretaryList = formatSecretaryList as jest.Mock;
+mockformatSecretaryList.mockReturnValue([{
+  forename: FORENAME,
+  surname: SURNAME,
+  dateOfAppointment: DATE_OF_APPOINTMENT,
+  serviceAddress: FORMATTED_SERVICE_ADDRESS
+}]);
 const mockGetActiveOfficerDetails = getActiveOfficersDetailsData as jest.Mock;
 mockGetActiveOfficerDetails.mockResolvedValue([{
   residentialAddress: {

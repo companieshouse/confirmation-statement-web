@@ -6,7 +6,7 @@ import { RADIO_BUTTON_VALUE, SECRETARY_DETAILS_ERROR, WRONG_DETAILS_UPDATE_OFFIC
 import { Session } from "@companieshouse/node-session-handler";
 import { ActiveOfficerDetails } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getActiveOfficersDetailsData } from "../../services/active.officers.details.service";
-import { formatAddress, formatAddressForDisplay, formatTitleCase } from "../../utils/format";
+import { formatSecretaryList } from "../../utils/format";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -15,6 +15,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const session: Session = req.session as Session;
     const officers: ActiveOfficerDetails[] = await getActiveOfficersDetailsData(session, transactionId, submissionId);
     const secretaryList = formatSecretaryList(officers);
+    console.log(secretaryList);
     return res.render(Templates.NATURAL_PERSON_SECRETARIES, {
       templateName: Templates.NATURAL_PERSON_SECRETARIES,
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
@@ -55,23 +56,4 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   } catch (e) {
     return next(e);
   }
-};
-
-const formatSecretaryList = (officers: ActiveOfficerDetails[]) => {
-  const secretaryList = new Array(0);
-  for (const officer of officers) {
-    if (officer.role === "Secretary" && officer.isCorporate === false ) {
-      const serviceAddress = formatAddressForDisplay(formatAddress(officer.serviceAddress));
-      const surname = officer.surname;
-      const forename = formatTitleCase(officer.foreName1);
-      const secretaryObj = {
-        forename,
-        surname,
-        dateOfAppointment: officer.dateOfAppointment,
-        serviceAddress,
-      };
-      secretaryList.push(secretaryObj);
-    }
-  }
-  return secretaryList;
 };
