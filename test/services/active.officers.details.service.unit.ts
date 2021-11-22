@@ -35,7 +35,7 @@ describe("Test active officers details service", () => {
 
   it("Should call the sdk and get the active officers details data", async () => {
 
-    const resource: Resource<ActiveOfficerDetails> = {
+    const resource: Resource<ActiveOfficerDetails[]> = {
       httpStatusCode: 200,
       resource: mockActiveOfficersDetails
     };
@@ -77,7 +77,7 @@ describe("Test active officers details service", () => {
 
 describe("Format officers details test", () => {
   it ("should convert officers details to presentible format ", () => {
-    const formattedOfficerDetails: ActiveOfficerDetails = formatOfficerDetails(clone(mockActiveOfficersDetails));
+    const formattedOfficerDetails: ActiveOfficerDetails = formatOfficerDetails(clone(mockActiveOfficersDetails[0]));
     expect(formattedOfficerDetails.foreName1).toEqual(mockActiveOfficersDetailsFormatted.foreName1);
     expect(formattedOfficerDetails.foreName2).toEqual(mockActiveOfficersDetailsFormatted.foreName2);
     expect(formattedOfficerDetails.surname).toEqual(mockActiveOfficersDetailsFormatted.surname);

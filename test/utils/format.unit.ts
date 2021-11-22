@@ -1,5 +1,6 @@
-import { formatAddressForDisplay, formatTitleCase } from "../../src/utils/format";
+import { formatAddressForDisplay, formatSecretaryList, formatTitleCase } from "../../src/utils/format";
 import { Address } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { mockActiveOfficersDetails } from "../mocks/active.officers.details.mock";
 
 
 describe("formatTitleCase tests", () => {
@@ -26,3 +27,18 @@ describe("formatAddressForDisplay tests", () => {
     expect(formattedAddress).toBe("10 my street, South Glamorgan, UK, CF1 1AA");
   });
 });
+
+describe("formatSecretaryList tests", () => {
+  it("should return formated secretary list", () => {
+    const formattedOfficer = formatSecretaryList(mockActiveOfficersDetails);
+    const expectedOfficer = {
+      forename: "West",
+      surname: "HAM",
+      dateOfAppointment: "1 January 2009",
+      serviceAddress: "Diddly Squat Farm Shop, Chadlington, Thisshire, England, OX7 3PE"
+    };
+
+    expect(formattedOfficer[0]).toEqual(expectedOfficer);
+  });
+});
+
