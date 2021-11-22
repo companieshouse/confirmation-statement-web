@@ -3,20 +3,33 @@ import { Templates } from "../../types/template.paths";
 import { NATURAL_PERSON_SECRETARIES_PATH, TASK_LIST_PATH } from "../../types/page.urls";
 import { urlUtils } from "../../utils/url";
 import { RADIO_BUTTON_VALUE, SECRETARY_DETAILS_ERROR, WRONG_DETAILS_UPDATE_OFFICERS, WRONG_DETAILS_UPDATE_SECRETARY } from "../../utils/constants";
+import { Session } from "@companieshouse/node-session-handler";
+import { ActiveOfficerDetails } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { getActiveOfficersDetailsData } from "../../services/active.officers.details.service";
+import { formatAddress, formatAddressForDisplay, formatTitleCase } from "../../utils/format";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+    const session: Session = req.session as Session;
+    const officers: ActiveOfficerDetails[] = await getActiveOfficersDetailsData(session, transactionId, submissionId);
+    const secretaryList = formatSecretaryList(officers);
     return res.render(Templates.NATURAL_PERSON_SECRETARIES, {
       templateName: Templates.NATURAL_PERSON_SECRETARIES,
-      backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req)
+      backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+      secretaryList
     });
   } catch (e) {
     return next(e);
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+    const session: Session = req.session as Session;
     const natPersonSecretariesBtnValue = req.body.naturalPersonSecretaries;
     if (natPersonSecretariesBtnValue === RADIO_BUTTON_VALUE.YES || natPersonSecretariesBtnValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
       // TODO update with correct next page in journey (not task list)
@@ -30,13 +43,35 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
         pageHeading: WRONG_DETAILS_UPDATE_OFFICERS,
       });
     } else {
+      const officers: ActiveOfficerDetails[] = await getActiveOfficersDetailsData(session, transactionId, submissionId);
+      const secretaryList = formatSecretaryList(officers);
       return res.render(Templates.NATURAL_PERSON_SECRETARIES, {
         backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
         secretaryErrorMsg: SECRETARY_DETAILS_ERROR,
-        templateName: Templates.NATURAL_PERSON_SECRETARIES
+        templateName: Templates.NATURAL_PERSON_SECRETARIES,
+        secretaryList
       });
     }
   } catch (e) {
     return next(e);
   }
+};
+
+const formatSecretaryList = (officers: ActiveOfficerDetails[]) => {
+  const secretaryList = new Array(0);
+  for (const officer of officers) {
+    if (officer.role === "Secretary" && officer.isCorporate === false ) {
+      const serviceAddress = formatAddressForDisplay(formatAddress(officer.serviceAddress));
+      const surname = officer.surname;
+      const forename = formatTitleCase(officer.foreName1);
+      const secretaryObj = {
+        forename,
+        surname,
+        dateOfAppointment: officer.dateOfAppointment,
+        serviceAddress,
+      };
+      secretaryList.push(secretaryObj);
+    }
+  }
+  return secretaryList;
 };
