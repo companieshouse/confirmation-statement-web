@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { Templates } from "../../types/template.paths";
-import { NATURAL_PERSON_SECRETARIES_PATH, TASK_LIST_PATH } from "../../types/page.urls";
+import { CORPORATE_DIRECTORS_PATH, CORPORATE_SECRETARIES_PATH, NATURAL_PERSON_DIRECTORS_PATH, NATURAL_PERSON_SECRETARIES_PATH, TASK_LIST_PATH } from "../../types/page.urls";
 import { urlUtils } from "../../utils/url";
 import { RADIO_BUTTON_VALUE, SECRETARY_DETAILS_ERROR, WRONG_DETAILS_UPDATE_OFFICERS, WRONG_DETAILS_UPDATE_SECRETARY } from "../../utils/constants";
 import { Session } from "@companieshouse/node-session-handler";
@@ -31,9 +31,31 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const session: Session = req.session as Session;
+    const officers: ActiveOfficerDetails[] = await getActiveOfficersDetailsData(session, transactionId, submissionId);
     const natPersonSecretariesBtnValue = req.body.naturalPersonSecretaries;
+
     if (natPersonSecretariesBtnValue === RADIO_BUTTON_VALUE.YES || natPersonSecretariesBtnValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-      // TODO update with correct next page in journey (not task list)
+      let corpSecretary = false;
+      let director = false;
+      let corpDirector = false;
+      officers.forEach(officer => {
+        if (officer.role === "SECRETARY" && officer.isCorporate){
+          corpSecretary = true;
+        } else if (officer.role === "DIRECTOR" && !officer.isCorporate){
+          director = true;
+        } else if (officer.role === "DIRECTOR" && officer.isCorporate){
+          corpDirector = true;
+        }
+      });
+
+      if (corpSecretary){
+        return res.redirect(urlUtils.getUrlToPath(CORPORATE_SECRETARIES_PATH, req));
+      } else if (director){
+        return res.redirect(urlUtils.getUrlToPath(NATURAL_PERSON_DIRECTORS_PATH, req));
+      } else if (corpDirector){
+        return res.redirect(urlUtils.getUrlToPath(CORPORATE_DIRECTORS_PATH, req));
+      }
+
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     } else if (natPersonSecretariesBtnValue === RADIO_BUTTON_VALUE.NO) {
       return res.render(Templates.WRONG_DETAILS, {

@@ -6,24 +6,17 @@ import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
-import { NATURAL_PERSON_SECRETARIES_PATH, urlParams } from "../../../src/types/page.urls";
+import { CORPORATE_SECRETARIES_PATH, NATURAL_PERSON_SECRETARIES_PATH, urlParams } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
 import { SECRETARY_DETAILS_ERROR, WRONG_DETAILS_UPDATE_SECRETARY } from "../../../src/utils/constants";
 import { formatSecretaryList } from "../../../src/utils/format";
 import { getActiveOfficersDetailsData } from "../../../src/services/active.officers.details.service";
-import { ActiveOfficerDetails } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { mockActiveOfficersDetails } from "../../mocks/active.officers.details.mock";
 
 const FORMATTED_SERVICE_ADDRESS = "Formatted Service Address";
-const COUNTRY = "England";
-const DATE_OF_BIRTH = "12-06-1980";
-const NATIONALITY = "nationality";
-const COUNTRY_OF_RESIDENCE = "England";
 const FORENAME = "DUMMYFORENAME";
 const SURNAME = "DUMMYSURNAME";
 const DATE_OF_APPOINTMENT = "03 August 2003";
-const OCCUPATION = "Occupation";
-const IS_CORPORTATE = false;
-const ROLE = "Secretary";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
@@ -35,28 +28,14 @@ mockformatSecretaryList.mockReturnValue([{
   serviceAddress: FORMATTED_SERVICE_ADDRESS
 }]);
 const mockGetActiveOfficerDetails = getActiveOfficersDetailsData as jest.Mock;
-mockGetActiveOfficerDetails.mockResolvedValue([{
-  residentialAddress: {
-    country: COUNTRY
-  },
-  serviceAddress: {
-    country: COUNTRY
-  },
-  dateOfBirth: DATE_OF_BIRTH,
-  nationality: NATIONALITY,
-  countryOfResidence: COUNTRY_OF_RESIDENCE,
-  foreName1: FORENAME,
-  surname: SURNAME,
-  dateOfAppointment: DATE_OF_APPOINTMENT,
-  occupation: OCCUPATION,
-  isCorporate: IS_CORPORTATE,
-  role: ROLE
-} as ActiveOfficerDetails ]);
+mockGetActiveOfficerDetails.mockResolvedValue(mockActiveOfficersDetails);
 
 const COMPANY_NUMBER = "12345678";
 const PAGE_HEADING = "Check the secretaries' details";
 const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 const NATURAL_PERSON_SECRETARIES_URL = NATURAL_PERSON_SECRETARIES_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+const CORPORATE_SECRETARIES_URL = CORPORATE_SECRETARIES_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+
 
 describe("Natural person secretaries controller tests", () => {
 
@@ -88,6 +67,14 @@ describe("Natural person secretaries controller tests", () => {
   });
 
   describe("post tests", () => {
+
+    it("Should go to next relevant page when secretary details radio button is yes", async () => {
+      const response = await request(app).post(NATURAL_PERSON_SECRETARIES_URL)
+        .send({ naturalPersonSecretaries: "yes" });
+
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(CORPORATE_SECRETARIES_URL);
+    });
 
     it("Should go to stop page when secretary details radio button is no", async () => {
       const response = await request(app).post(NATURAL_PERSON_SECRETARIES_URL)
