@@ -8,7 +8,8 @@ import { sendTradingStatusUpdate } from "../utils/update.confirmation.statement.
 export const get = (req: Request, res: Response) => {
   const companyNumber: string = getCompanyNumber(req);
   return res.render(Templates.TRADING_STATUS, {
-    backLinkUrl: getConfirmCompanyUrl(companyNumber)
+    backLinkUrl: getConfirmCompanyUrl(companyNumber),
+    templateName: Templates.TRADING_STATUS
   });
 };
 
@@ -31,6 +32,7 @@ export const post = async (req: Request, res: Response) => {
   return res.render(Templates.TRADING_STATUS, {
     tradingStatusErrorMsg: TRADING_STATUS_ERROR,
     backLinkUrl: getConfirmCompanyUrl(companyNumber),
+    templateName: Templates.TRADING_STATUS
   });
 };
 

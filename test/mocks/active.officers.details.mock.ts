@@ -60,27 +60,48 @@ export const mockSecureAddress: Address = {
   region: undefined
 };
 
-export const mockActiveOfficerDetails: ActiveOfficerDetails = {
-  foreName1: "JOHN",
-  foreName2: "MiddleName",
-  surname: "DOE",
-  occupation: "singer",
-  nationality: "British",
-  dateOfBirth: "1 January 1960",
-  dateOfAppointment: "1 January 2009",
-  serviceAddress: mockAddress1,
-  residentialAddress: mockAddress2,
-  isCorporate: false,
-  role: "DIRECTOR",
-  placeRegistered: undefined,
-  registrationNumber: undefined,
-  lawGoverned: undefined,
-  legalForm: undefined,
-  identificationType: undefined,
-  countryOfResidence: "UNITED KINGDOM"
-};
+export const mockActiveOfficersDetails: ActiveOfficerDetails[] = [
+  {
+    foreName1: "JOHN",
+    foreName2: "MiddleName",
+    surname: "DOE",
+    occupation: "singer",
+    nationality: "British",
+    dateOfBirth: "1 January 1960",
+    dateOfAppointment: "1 January 2009",
+    serviceAddress: mockAddress1,
+    residentialAddress: mockAddress2,
+    isCorporate: false,
+    role: "DIRECTOR",
+    placeRegistered: undefined,
+    registrationNumber: undefined,
+    lawGoverned: undefined,
+    legalForm: undefined,
+    identificationType: undefined,
+    countryOfResidence: "UNITED KINGDOM"
+  },
+  {
+    foreName1: "WEST",
+    foreName2: "MiddleName",
+    surname: "HAM",
+    occupation: "singer",
+    nationality: "British",
+    dateOfBirth: "1 January 1960",
+    dateOfAppointment: "1 January 2009",
+    serviceAddress: mockAddress1,
+    residentialAddress: mockAddress2,
+    isCorporate: false,
+    role: "SECRETARY",
+    placeRegistered: undefined,
+    registrationNumber: undefined,
+    lawGoverned: undefined,
+    legalForm: undefined,
+    identificationType: undefined,
+    countryOfResidence: "UNITED KINGDOM"
+  }
+];
 
-export const mockSecureActiveOfficerDetails: ActiveOfficerDetails = {
+export const mockSecureActiveOfficersDetails: ActiveOfficerDetails = {
   foreName1: "JOHN",
   foreName2: "MiddleName",
   surname: "DOE",
@@ -100,7 +121,7 @@ export const mockSecureActiveOfficerDetails: ActiveOfficerDetails = {
   countryOfResidence: "UNITED KINGDOM"
 };
 
-export const mockActiveOfficerDetailsFormatted: ActiveOfficerDetails = {
+export const mockActiveOfficersDetailsFormatted: ActiveOfficerDetails = {
   foreName1: "John",
   foreName2: "Middlename",
   surname: "DOE",
@@ -121,7 +142,7 @@ export const mockActiveOfficerDetailsFormatted: ActiveOfficerDetails = {
 };
 
 
-export const mockSecureActiveOfficerDetailsFormatted: ActiveOfficerDetails = {
+export const mockSecureActiveOfficersDetailsFormatted: ActiveOfficerDetails = {
   foreName1: "John",
   foreName2: "MiddleName",
   surname: "DOE",

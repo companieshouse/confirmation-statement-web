@@ -90,3 +90,22 @@ export const formatPSCForDisplay = (psc: PersonOfSignificantControl): PersonOfSi
 
   return clonedPsc;
 };
+
+export const formatSecretaryList = (officers: ActiveOfficerDetails[]): any[] => {
+  const secretaryList = new Array(0);
+  for (const officer of officers) {
+    if (officer.role === "SECRETARY" && officer.isCorporate === false ) {
+      const serviceAddress = formatAddressForDisplay(formatAddress(officer.serviceAddress));
+      const surname = officer.surname;
+      const forename = formatTitleCase(officer.foreName1);
+      const secretaryObj = {
+        forename,
+        surname,
+        dateOfAppointment: officer.dateOfAppointment,
+        serviceAddress,
+      };
+      secretaryList.push(secretaryObj);
+    }
+  }
+  return secretaryList;
+};
