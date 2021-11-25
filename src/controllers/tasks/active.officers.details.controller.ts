@@ -18,10 +18,12 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     let containsCorpDirector = false;
 
     officers.forEach(officer => {
-      if (officer.role === OFFICER_ROLE.SECRETARY && !officer.isCorporate) {containsSecretary = true;}
-      if (officer.role === OFFICER_ROLE.SECRETARY && officer.isCorporate) {containsCorpSecretary = true;}
-      if (officer.role === OFFICER_ROLE.DIRECTOR && !officer.isCorporate) {containsDirector = true;}
-      if (officer.role === OFFICER_ROLE.DIRECTOR && officer.isCorporate) {containsCorpDirector = true;}
+      if (officer.role === OFFICER_ROLE.SECRETARY) {
+        officer.isCorporate ? containsCorpSecretary = true : containsSecretary = true;
+      }
+      if (officer.role === OFFICER_ROLE.DIRECTOR) {
+        officer.isCorporate ? containsCorpDirector = true : containsDirector = true;
+      }
     });
 
     if (containsSecretary) {return res.redirect(urlUtils.getUrlToPath(NATURAL_PERSON_SECRETARIES_PATH, req));}
