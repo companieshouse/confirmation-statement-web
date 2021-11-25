@@ -25,15 +25,6 @@
         </p>
         {% endset %}
 
-        {% set registeredAddress %}
-          {{company.registeredOfficeAddress.addressLineOne}}
-          <br/>
-          {{company.registeredOfficeAddress.addressLineTwo}}
-          <br/>
-          {{company.registeredOfficeAddress.postalCode}}
-        {% endset %}
-
-
         {{ govukSummaryList({
           rows: [
             {
@@ -67,14 +58,6 @@
               },
               value: {
                 text: company.type
-              }
-            },
-            {
-              key: {
-                text: "Registered office address"
-              },
-              value: {
-                html: registeredAddress
               }
             },
             {
