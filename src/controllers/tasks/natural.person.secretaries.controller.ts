@@ -41,8 +41,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
       officers.forEach(officer => {
         if (officer.role === OFFICER_ROLE.SECRETARY && officer.isCorporate) {containsCorpSecretary = true;}
-        if (officer.role === OFFICER_ROLE.DIRECTOR && !officer.isCorporate) {containsDirector = true;}
-        if (officer.role === OFFICER_ROLE.DIRECTOR && officer.isCorporate) {containsCorpDirector = true;}
+        if (officer.role === OFFICER_ROLE.DIRECTOR) {
+          officer.isCorporate ? containsCorpDirector = true : containsDirector = true;
+        }
       });
 
       if (containsCorpSecretary) {return res.redirect(urlUtils.getUrlToPath(CORPORATE_SECRETARIES_PATH, req));}
@@ -50,7 +51,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       if (containsCorpDirector) {return res.redirect(urlUtils.getUrlToPath(CORPORATE_DIRECTORS_PATH, req));}
 
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
-    } else if (natPersonSecretariesBtnValue === RADIO_BUTTON_VALUE.NO) {
+    }
+
+    if (natPersonSecretariesBtnValue === RADIO_BUTTON_VALUE.NO) {
       return res.render(Templates.WRONG_DETAILS, {
         templateName: Templates.WRONG_DETAILS,
         backLinkUrl: urlUtils.getUrlToPath(NATURAL_PERSON_SECRETARIES_PATH, req),
@@ -58,16 +61,17 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         stepOneHeading: WRONG_DETAILS_UPDATE_SECRETARY,
         pageHeading: WRONG_DETAILS_UPDATE_OFFICERS,
       });
-    } else {
-      const officers: ActiveOfficerDetails[] = await getActiveOfficersDetailsData(session, transactionId, submissionId);
-      const secretaryList = formatSecretaryList(officers);
-      return res.render(Templates.NATURAL_PERSON_SECRETARIES, {
-        backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        secretaryErrorMsg: SECRETARY_DETAILS_ERROR,
-        templateName: Templates.NATURAL_PERSON_SECRETARIES,
-        secretaryList
-      });
     }
+
+    // show error message on screen
+    const secretaryList = formatSecretaryList(officers);
+    return res.render(Templates.NATURAL_PERSON_SECRETARIES, {
+      backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+      secretaryErrorMsg: SECRETARY_DETAILS_ERROR,
+      templateName: Templates.NATURAL_PERSON_SECRETARIES,
+      secretaryList
+    });
+
   } catch (e) {
     return next(e);
   }
