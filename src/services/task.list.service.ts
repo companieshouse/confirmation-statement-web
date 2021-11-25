@@ -10,11 +10,13 @@ import {
   SHAREHOLDERS_PATH,
   PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH,
   REGISTER_LOCATIONS_PATH,
-  ACTIVE_OFFICERS_DETAILS_PATH
+  ACTIVE_OFFICERS_DETAILS_PATH,
+  ACTIVE_OFFICERS_PATH
 } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { toTaskState } from "../utils/task/task.state.mapper";
 import { getTaskCompletedCount } from "../utils/task/task.counter";
+import { FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 } from "../utils/properties";
 
 export const initTaskList = (companyNumber: string,
                              transactionId: string,
@@ -24,7 +26,7 @@ export const initTaskList = (companyNumber: string,
   const allTasks = {
     officers: {
       state: toTaskState(csSubmission.data?.activeOfficerDetailsData?.sectionStatus),
-      url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(ACTIVE_OFFICERS_DETAILS_PATH, companyNumber, transactionId, submissionId)
+      url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(officerSection(), companyNumber, transactionId, submissionId)
     },
     peopleSignificantControl: {
       state: toTaskState(csSubmission.data?.personsSignificantControlData?.sectionStatus),
@@ -61,4 +63,12 @@ export const initTaskList = (companyNumber: string,
     allTasksCompleted: isTasksCompleted,
     csDue: false
   };
+};
+
+const officerSection = (): string => {
+  if (FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 === 'true') {
+    return ACTIVE_OFFICERS_DETAILS_PATH;
+  } else {
+    return ACTIVE_OFFICERS_PATH;
+  }
 };

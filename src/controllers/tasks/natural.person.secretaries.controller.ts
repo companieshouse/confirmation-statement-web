@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { Templates } from "../../types/template.paths";
 import { CORPORATE_DIRECTORS_PATH, CORPORATE_SECRETARIES_PATH, NATURAL_PERSON_DIRECTORS_PATH, NATURAL_PERSON_SECRETARIES_PATH, TASK_LIST_PATH } from "../../types/page.urls";
 import { urlUtils } from "../../utils/url";
-import { RADIO_BUTTON_VALUE, SECRETARY_DETAILS_ERROR, WRONG_DETAILS_UPDATE_OFFICERS, WRONG_DETAILS_UPDATE_SECRETARY } from "../../utils/constants";
+import { OFFICER_ROLE, RADIO_BUTTON_VALUE, SECRETARY_DETAILS_ERROR, WRONG_DETAILS_UPDATE_OFFICERS, WRONG_DETAILS_UPDATE_SECRETARY } from "../../utils/constants";
 import { Session } from "@companieshouse/node-session-handler";
 import { ActiveOfficerDetails } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getActiveOfficersDetailsData } from "../../services/active.officers.details.service";
@@ -35,26 +35,19 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const natPersonSecretariesBtnValue = req.body.naturalPersonSecretaries;
 
     if (natPersonSecretariesBtnValue === RADIO_BUTTON_VALUE.YES || natPersonSecretariesBtnValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-      let corpSecretary = false;
-      let director = false;
-      let corpDirector = false;
+      let containsCorpSecretary = false;
+      let containsDirector = false;
+      let containsCorpDirector = false;
+
       officers.forEach(officer => {
-        if (officer.role === "SECRETARY" && officer.isCorporate){
-          corpSecretary = true;
-        } else if (officer.role === "DIRECTOR" && !officer.isCorporate){
-          director = true;
-        } else if (officer.role === "DIRECTOR" && officer.isCorporate){
-          corpDirector = true;
-        }
+        if (officer.role === OFFICER_ROLE.SECRETARY && officer.isCorporate) {containsCorpSecretary = true;}
+        if (officer.role === OFFICER_ROLE.DIRECTOR && !officer.isCorporate) {containsDirector = true;}
+        if (officer.role === OFFICER_ROLE.DIRECTOR && officer.isCorporate) {containsCorpDirector = true;}
       });
 
-      if (corpSecretary){
-        return res.redirect(urlUtils.getUrlToPath(CORPORATE_SECRETARIES_PATH, req));
-      } else if (director){
-        return res.redirect(urlUtils.getUrlToPath(NATURAL_PERSON_DIRECTORS_PATH, req));
-      } else if (corpDirector){
-        return res.redirect(urlUtils.getUrlToPath(CORPORATE_DIRECTORS_PATH, req));
-      }
+      if (containsCorpSecretary) {return res.redirect(urlUtils.getUrlToPath(CORPORATE_SECRETARIES_PATH, req));}
+      if (containsDirector) {return res.redirect(urlUtils.getUrlToPath(NATURAL_PERSON_DIRECTORS_PATH, req));}
+      if (containsCorpDirector) {return res.redirect(urlUtils.getUrlToPath(CORPORATE_DIRECTORS_PATH, req));}
 
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     } else if (natPersonSecretariesBtnValue === RADIO_BUTTON_VALUE.NO) {

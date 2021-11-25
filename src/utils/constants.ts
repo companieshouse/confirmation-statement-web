@@ -62,3 +62,8 @@ export const headers = {
 export const links = {
   COSTS: "costs"
 };
+
+export enum OFFICER_ROLE {
+  SECRETARY = "SECRETARY",
+  DIRECTOR = "DIRECTOR"
+}
