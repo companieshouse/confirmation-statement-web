@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Templates } from "../types/template.paths";
 import { urlUtils } from "../utils/url";
-import {Session} from "@companieshouse/node-session-handler";
+import { Session } from "@companieshouse/node-session-handler";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
