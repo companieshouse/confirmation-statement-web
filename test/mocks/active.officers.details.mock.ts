@@ -98,7 +98,45 @@ export const mockActiveOfficersDetails: ActiveOfficerDetails[] = [
     legalForm: undefined,
     identificationType: undefined,
     countryOfResidence: "UNITED KINGDOM"
-  }
+  },
+  {
+    foreName1: "MICHEAL",
+    foreName2: "MiddleName",
+    surname: "MYERS",
+    occupation: "singer",
+    nationality: "British",
+    dateOfBirth: "1 January 1960",
+    dateOfAppointment: "1 January 2009",
+    serviceAddress: mockAddress1,
+    residentialAddress: mockAddress2,
+    isCorporate: true,
+    role: "SECRETARY",
+    placeRegistered: undefined,
+    registrationNumber: undefined,
+    lawGoverned: undefined,
+    legalForm: undefined,
+    identificationType: undefined,
+    countryOfResidence: "UNITED KINGDOM"
+  },
+  {
+    foreName1: "BOND",
+    foreName2: "MiddleName",
+    surname: "JAMES",
+    occupation: "singer",
+    nationality: "British",
+    dateOfBirth: "1 January 1960",
+    dateOfAppointment: "1 January 2009",
+    serviceAddress: mockAddress1,
+    residentialAddress: mockAddress2,
+    isCorporate: true,
+    role: "DIRECTOR",
+    placeRegistered: undefined,
+    registrationNumber: undefined,
+    lawGoverned: undefined,
+    legalForm: undefined,
+    identificationType: undefined,
+    countryOfResidence: "UNITED KINGDOM"
+  },
 ];
 
 export const mockSecureActiveOfficersDetails: ActiveOfficerDetails = {

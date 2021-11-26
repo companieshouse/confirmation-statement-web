@@ -6,17 +6,17 @@ import { toReadableFormat } from "../utils/date";
 import {
   SIC_PATH,
   STATEMENT_OF_CAPITAL_PATH,
-  ACTIVE_OFFICERS_PATH,
   REGISTERED_OFFICE_ADDRESS_PATH,
   SHAREHOLDERS_PATH,
   PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH,
   REGISTER_LOCATIONS_PATH,
-  NATURAL_PERSON_SECRETARIES_PATH
+  ACTIVE_OFFICERS_DETAILS_PATH,
+  ACTIVE_OFFICERS_PATH
 } from "../types/page.urls";
-import { FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 } from "../utils/properties";
 import { urlUtils } from "../utils/url";
 import { toTaskState } from "../utils/task/task.state.mapper";
 import { getTaskCompletedCount } from "../utils/task/task.counter";
+import { FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 } from "../utils/properties";
 
 export const initTaskList = (companyNumber: string,
                              transactionId: string,
@@ -67,7 +67,7 @@ export const initTaskList = (companyNumber: string,
 
 const officerSection = (): string => {
   if (FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 === 'true') {
-    return NATURAL_PERSON_SECRETARIES_PATH;
+    return ACTIVE_OFFICERS_DETAILS_PATH;
   } else {
     return ACTIVE_OFFICERS_PATH;
   }
