@@ -6,6 +6,7 @@ import {
   ActiveOfficerDetails,
   ConfirmationStatementService
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { OFFICER_ROLE, OFFICER_TYPE } from "../utils/constants";
 
 export const getActiveOfficersDetailsData = async (session: Session, transactionId: string, submissionId: string): Promise<ActiveOfficerDetails[]> => {
   const client = createPublicOAuthApiClient(session);
@@ -19,4 +20,23 @@ export const getActiveOfficersDetailsData = async (session: Session, transaction
   }
   const successfulResponse = response as Resource<ActiveOfficerDetails[]>;
   return successfulResponse.resource as ActiveOfficerDetails[];
+};
+
+export const getOfficerTypeList = (officerList: ActiveOfficerDetails[]) => {
+  const officerTypeList = new Array(0);
+  for (const officer of officerList){
+    if (officer.role === OFFICER_ROLE.SECRETARY && !officer.isCorporate){
+      officerTypeList.push(OFFICER_TYPE.NATURAL_SECRETARY);
+    }
+    if (officer.role === OFFICER_ROLE.SECRETARY && officer.isCorporate){
+      officerTypeList.push(OFFICER_TYPE.CORPORATE_SECRETARIES);
+    }
+    if (officer.role === OFFICER_ROLE.DIRECTOR && !officer.isCorporate){
+      officerTypeList.push(OFFICER_TYPE.NATURAL_DIRECTOR);
+    }
+    if (officer.role === OFFICER_ROLE.DIRECTOR && officer.isCorporate){
+      officerTypeList.push(OFFICER_TYPE.CORPORATE_DIRECTORS);
+    }
+  }
+  return officerTypeList;
 };

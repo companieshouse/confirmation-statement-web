@@ -2,7 +2,7 @@ jest.mock("@companieshouse/api-sdk-node");
 jest.mock("@companieshouse/api-sdk-node/dist/services/confirmation-statement");
 
 import { createApiClient, Resource } from "@companieshouse/api-sdk-node";
-import { getActiveOfficersDetailsData } from "../../src/services/active.officers.details.service";
+import { getActiveOfficersDetailsData, getOfficerTypeList } from "../../src/services/active.officers.details.service";
 import { mockActiveOfficersDetails, mockActiveOfficersDetailsFormatted } from "../mocks/active.officers.details.mock";
 import { getSessionRequest } from "../mocks/session.mock";
 import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
@@ -85,6 +85,15 @@ describe("Format officers details test", () => {
     expect(formattedOfficerDetails.occupation).toEqual(mockActiveOfficersDetailsFormatted.occupation);
     expect(formattedOfficerDetails.serviceAddress).toEqual(mockActiveOfficersDetailsFormatted.serviceAddress);
     expect(formattedOfficerDetails.residentialAddress).toEqual(mockActiveOfficersDetailsFormatted.residentialAddress);
+  });
+
+});
+
+describe("Get the list of officer types present", () => {
+  it ("should return a list of officer types from the officers list ", () => {
+    const officerTypeList = getOfficerTypeList(mockActiveOfficersDetails);
+    expect(officerTypeList).toContain("naturalSecretary");
+    expect(officerTypeList).toContain("corporateSecretary");
   });
 
 });
