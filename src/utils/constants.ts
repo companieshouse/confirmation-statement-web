@@ -64,8 +64,8 @@ export const links = {
 };
 
 export enum OFFICER_ROLE {
-  SECRETARY = "Secretary",
-  DIRECTOR = "Director"
+  SECRETARY = "SECRETARY",
+  DIRECTOR = "DIRECTOR"
 }
 
 export enum OFFICER_TYPE {
