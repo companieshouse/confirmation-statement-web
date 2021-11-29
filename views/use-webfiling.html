@@ -11,7 +11,7 @@
         You cannot use this service
       </h1>
 
-      <p>You cannot file a confirmation statement on this service because : {{ company.companyName }}</p>
+      <p>You cannot file a confirmation statement on this service because {{ company.companyName }}:</p>
       <ul class="govuk-list govuk-list--bullet">
         {% if FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 === "true" %}
           <li>is not a private limited company</li>
@@ -21,7 +21,7 @@
           <li>has traded shares on a market</li>
         {% else %}
           <li>is not a private limited company</li>
-          <li>has more than one officer</li>
+          <li>has more than one director</li>
           <li>has more than one shareholder</li>
           <li>has more than one person with significant control</li>
           <li>has traded shares on a market</li>
