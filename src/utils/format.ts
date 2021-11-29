@@ -94,7 +94,7 @@ export const formatPSCForDisplay = (psc: PersonOfSignificantControl): PersonOfSi
 export const formatSecretaryList = (officers: ActiveOfficerDetails[]): any[] => {
   const secretaryList = new Array(0);
   for (const officer of officers) {
-    if (officer.role === "SECRETARY" && officer.isCorporate === false ) {
+    if (officer.role === "Secretary" && officer.isCorporate === false ) {
       const serviceAddress = formatAddressForDisplay(formatAddress(officer.serviceAddress));
       const surname = officer.surname;
       const forename = formatTitleCase(officer.foreName1);
