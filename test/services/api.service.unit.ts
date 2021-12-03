@@ -1,6 +1,6 @@
 jest.mock("../../src/utils/logger");
 
-import { createPublicOAuthApiClient } from "../../src/services/api.service";
+import { createPublicApiKeyClient, createPublicOAuthApiClient } from "../../src/services/api.service";
 import { getEmptySessionRequest, getSessionRequest } from "../mocks/session.mock";
 import { Session } from "@companieshouse/node-session-handler";
 import { createAndLogError } from "../../src/utils/logger";
@@ -48,5 +48,10 @@ describe ("Test node session handler authorization for private sdk", () => {
     } catch (error) {
       expect(mockCreateAndLogError).toBeCalledWith(PUBLIC_ERROR_MESSAGE);
     }
+  });
+
+  it ("Should obtain public node sdk client using api key", () => {
+    const client = createPublicApiKeyClient();
+    expect(client.transaction).not.toBeNull();
   });
 });
