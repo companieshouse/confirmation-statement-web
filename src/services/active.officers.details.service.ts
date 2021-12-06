@@ -3,6 +3,8 @@ import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/res
 import { createPublicApiKeyClient } from "./api.service";
 import { CompanyOfficer, CompanyOfficers } from "@companieshouse/api-sdk-node/dist/services/company-officers";
 import { createAndLogError } from "../utils/logger";
+import { ActiveOfficerDetails } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { OFFICER_ROLE, OFFICER_TYPE } from "../utils/constants";
 
 export const getActiveOfficersDetailsData = async (companyNumber: string): Promise<CompanyOfficer[]> => {
   const client = createPublicApiKeyClient();
@@ -21,4 +23,23 @@ export const getActiveOfficersDetailsData = async (companyNumber: string): Promi
   }
 
   return companyOfficersDetails.items.filter(companyOfficer => !companyOfficer.resignedOn);
+};
+
+export const getOfficerTypeList = (officerList: ActiveOfficerDetails[]) => {
+  const officerTypeList = new Array(0);
+  for (const officer of officerList){
+    if (officer.role === OFFICER_ROLE.SECRETARY && !officer.isCorporate){
+      officerTypeList.push(OFFICER_TYPE.NATURAL_SECRETARY);
+    }
+    if (officer.role === OFFICER_ROLE.SECRETARY && officer.isCorporate){
+      officerTypeList.push(OFFICER_TYPE.CORPORATE_SECRETARIES);
+    }
+    if (officer.role === OFFICER_ROLE.DIRECTOR && !officer.isCorporate){
+      officerTypeList.push(OFFICER_TYPE.NATURAL_DIRECTOR);
+    }
+    if (officer.role === OFFICER_ROLE.DIRECTOR && officer.isCorporate){
+      officerTypeList.push(OFFICER_TYPE.CORPORATE_DIRECTORS);
+    }
+  }
+  return officerTypeList;
 };
