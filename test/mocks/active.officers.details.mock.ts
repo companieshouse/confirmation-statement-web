@@ -103,7 +103,7 @@ export const mockActiveOfficersDetails: CompanyOfficer[] = [
     nationality: "British",
     occupation: "singer",
     officerRole: "director",
-    resignedOn: undefined
+    resignedOn: "1 February 2020"
   },
 ];
 
