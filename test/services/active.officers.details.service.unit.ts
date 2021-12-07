@@ -8,6 +8,7 @@ import { getActiveOfficersDetailsData } from "../../src/services/active.officers
 import { CompanyOfficers } from "@companieshouse/api-sdk-node/dist/services/company-officers";
 import CompanyOfficersService from "@companieshouse/api-sdk-node/dist/services/company-officers/service";
 import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
+import { COMPANY_OFFICERS_ACTIVE_MAX_ALLOWED, COMPANY_OFFICERS_API_PAGE_SIZE } from "../../src/utils/properties";
 
 const mockGetCompanyOfficers = CompanyOfficersService.prototype.getCompanyOfficers as jest.Mock;
 const mockCreatePublicApiKeyClient = createApiClient as jest.Mock;
@@ -19,6 +20,7 @@ mockCreatePublicApiKeyClient.mockReturnValue({
 describe("Test active officers details service", () => {
 
   const COMPANY_NUMBER = "11111111";
+  const PAGE_SIZE: number = parseInt(COMPANY_OFFICERS_API_PAGE_SIZE, 10);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -32,7 +34,7 @@ describe("Test active officers details service", () => {
         activeCount: "4",
         etag: "etag",
         inactiveCount: "0",
-        itemsPerPage: "5",
+        itemsPerPage: COMPANY_OFFICERS_API_PAGE_SIZE,
         kind: "kind",
         resignedCount: "0",
         startIndex: "0",
@@ -42,7 +44,7 @@ describe("Test active officers details service", () => {
     mockGetCompanyOfficers.mockResolvedValue(resource);
     const response = await getActiveOfficersDetailsData(COMPANY_NUMBER);
 
-    expect(mockGetCompanyOfficers).toBeCalledWith(COMPANY_NUMBER, 5, 0, false, "resigned_on");
+    expect(mockGetCompanyOfficers).toBeCalledWith(COMPANY_NUMBER, PAGE_SIZE, 0, false, "resigned_on");
     // last officer should be not active so should not be returned from function
     expect(response).not.toContain(mockActiveOfficersDetails[3]);
 
@@ -73,7 +75,7 @@ describe("Test active officers details service", () => {
     expect(actualMessage).toEqual(expectedMessage);
   });
 
-  it("should throw error when > 5 active officers are returned from sdk", async () => {
+  it(`should throw error when > ${COMPANY_OFFICERS_ACTIVE_MAX_ALLOWED} active officers are returned from sdk`, async () => {
     const resource: Resource<CompanyOfficers> = {
       httpStatusCode: 200,
       resource: {
@@ -81,7 +83,7 @@ describe("Test active officers details service", () => {
         activeCount: "6",
         etag: "etag",
         inactiveCount: "0",
-        itemsPerPage: "5",
+        itemsPerPage: COMPANY_OFFICERS_API_PAGE_SIZE,
         kind: "kind",
         resignedCount: "0",
         startIndex: "0",
@@ -90,7 +92,7 @@ describe("Test active officers details service", () => {
 
     mockGetCompanyOfficers.mockResolvedValue(resource);
     const companyOfficers: CompanyOfficers = resource.resource as CompanyOfficers;
-    const expectedMessage = `Active officer count for company ${COMPANY_NUMBER} is greater than 5 with value of ${companyOfficers.activeCount}`;
+    const expectedMessage = `Active officer count for company ${COMPANY_NUMBER} is greater than ${COMPANY_OFFICERS_ACTIVE_MAX_ALLOWED} with value of ${companyOfficers.activeCount}`;
     let actualMessage: any;
 
     try {
@@ -111,7 +113,7 @@ describe("Test active officers details service", () => {
         activeCount: "0",
         etag: "etag",
         inactiveCount: "0",
-        itemsPerPage: "5",
+        itemsPerPage: COMPANY_OFFICERS_API_PAGE_SIZE,
         kind: "kind",
         resignedCount: "0",
         startIndex: "0",
