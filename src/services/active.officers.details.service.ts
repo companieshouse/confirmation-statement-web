@@ -10,7 +10,7 @@ export const getActiveOfficersDetailsData = async (companyNumber: string): Promi
   const client = createPublicApiKeyClient();
   const companyOfficersDetailsResource: Resource<CompanyOfficers> = await client.companyOfficers.getCompanyOfficers(companyNumber, 5, 0, false, "resigned_on");
   const companyOfficersDetails: CompanyOfficers = companyOfficersDetailsResource.resource as CompanyOfficers;
-  const status = companyOfficersDetailsResource.httpStatusCode as number;
+  const status = companyOfficersDetailsResource.httpStatusCode;
   if (status >= 400) {
     const errorResponse = companyOfficersDetailsResource as ApiErrorResponse;
     throw new Error(`Error retrieving active officer details: ${JSON.stringify(errorResponse)}`);
