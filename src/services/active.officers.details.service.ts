@@ -28,16 +28,16 @@ export const getActiveOfficersDetailsData = async (companyNumber: string): Promi
 export const getOfficerTypeList = (officerList: ActiveOfficerDetails[]) => {
   const officerTypeList = new Array(0);
   for (const officer of officerList){
-    if (officer.role === OFFICER_ROLE.SECRETARY && !officer.isCorporate){
+    if (OFFICER_ROLE.SECRETARY.localeCompare(officer.role, 'en', { sensitivity: 'accent' }) === 0 && !officer.isCorporate){
       officerTypeList.push(OFFICER_TYPE.NATURAL_SECRETARY);
     }
-    if (officer.role === OFFICER_ROLE.SECRETARY && officer.isCorporate){
+    if (OFFICER_ROLE.SECRETARY.localeCompare(officer.role, 'en', { sensitivity: 'accent' }) === 0 && officer.isCorporate){
       officerTypeList.push(OFFICER_TYPE.CORPORATE_SECRETARIES);
     }
-    if (officer.role === OFFICER_ROLE.DIRECTOR && !officer.isCorporate){
+    if (OFFICER_ROLE.DIRECTOR.localeCompare(officer.role, 'en', { sensitivity: 'accent' }) === 0 && !officer.isCorporate){
       officerTypeList.push(OFFICER_TYPE.NATURAL_DIRECTOR);
     }
-    if (officer.role === OFFICER_ROLE.DIRECTOR && officer.isCorporate){
+    if (OFFICER_ROLE.DIRECTOR.localeCompare(officer.role, 'en', { sensitivity: 'accent' }) === 0 && officer.isCorporate){
       officerTypeList.push(OFFICER_TYPE.CORPORATE_DIRECTORS);
     }
   }
