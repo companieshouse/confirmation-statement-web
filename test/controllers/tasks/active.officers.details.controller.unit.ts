@@ -11,7 +11,6 @@ import { ACTIVE_OFFICERS_DETAILS_PATH, urlParams } from "../../../src/types/page
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
 import { getActiveOfficersDetailsData, getOfficerTypeList } from "../../../src/services/active.officers.details.service";
 
-
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 const mockGetActiveOfficerDetailsData = getActiveOfficersDetailsData as jest.Mock;
@@ -19,11 +18,7 @@ const mockGetOfficerTypeList = getOfficerTypeList as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
 const ACTIVE_OFFICER_DETAILS_URL = ACTIVE_OFFICERS_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
-// const CORPORATE_SECRETARIES_URL = CORPORATE_SECRETARIES_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
-// const CORPORATE_DIRECTORS_URL = CORPORATE_DIRECTORS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 // const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
-// const NATURAL_PERSON_SECRETARIES_URL = NATURAL_PERSON_SECRETARIES_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
-// const NATURAL_PERSON_DIRECTORS_URL = NATURAL_PERSON_DIRECTORS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
 describe("Active officers controller tests", () => {
 
@@ -41,45 +36,6 @@ describe("Active officers controller tests", () => {
 
       expect(response.header.location).toEqual("TODO");
     });
-
-    //   it("Should navigate to natural secretary page if natural secretary is present", async () => {
-    //     mockGetOfficerTypeList.mockReturnValue([
-    //       "naturalSecretary",
-    //       "corporateSecretary"
-    //     ]);
-    //     const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
-
-    //     expect(response.header.location).toEqual(NATURAL_PERSON_SECRETARIES_URL);
-    //   });
-
-    //   it("Should navigate to corporate secretary page if corporate secretary is present", async () => {
-    //     mockGetOfficerTypeList.mockReturnValue([
-    //       "corporateSecretary",
-    //       "naturalDirector"
-    //     ]);
-    //     const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
-
-    //     expect(response.header.location).toEqual(CORPORATE_SECRETARIES_URL);
-    //   });
-
-    //   it("Should navigate to natural director page if natural director is present", async () => {
-    //     mockGetOfficerTypeList.mockReturnValue([
-    //       "naturalDirector",
-    //       "corporateDirector"
-    //     ]);
-    //     const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
-
-    //     expect(response.header.location).toEqual(NATURAL_PERSON_DIRECTORS_URL);
-    //   });
-
-    //   it("Should navigate to corporate director page if corporate director is present", async () => {
-    //     mockGetOfficerTypeList.mockReturnValue([
-    //       "corporateDirector",
-    //     ]);
-    //     const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
-
-    //     expect(response.header.location).toEqual(CORPORATE_DIRECTORS_URL);
-    //   });
 
     //   it("Should navigate to an error page if the called service throws an error", async () => {
     //     mockGetActiveOfficerDetailsData.mockImplementationOnce(() => {throw new Error(); });
