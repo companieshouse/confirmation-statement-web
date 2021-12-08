@@ -11,4 +11,6 @@ export default () => {
   process.env.FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 = "false";
   process.env.CHS_URL = "http://chs.local";
   process.env.PIWIK_START_GOAL_ID = "3";
+  process.env.COMPANY_OFFICERS_API_PAGE_SIZE = "5";
+  process.env.COMPANY_OFFICERS_ACTIVE_MAX_ALLOWED = "5";
 };

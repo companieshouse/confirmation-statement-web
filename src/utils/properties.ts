@@ -40,3 +40,7 @@ export const FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 = getEnvironmen
 export const PIWIK_START_GOAL_ID = getEnvironmentVariable("PIWIK_START_GOAL_ID");
 
 export const PSC_STATEMENTS_API_PAGE_SIZE = getEnvironmentVariable("PSC_STATEMENTS_API_PAGE_SIZE", "100");
+
+export const COMPANY_OFFICERS_API_PAGE_SIZE = getEnvironmentVariable("COMPANY_OFFICERS_API_PAGE_SIZE", "35");
+
+export const COMPANY_OFFICERS_ACTIVE_MAX_ALLOWED = getEnvironmentVariable("COMPANY_OFFICERS_ACTIVE_MAX_ALLOWED");
