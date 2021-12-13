@@ -74,6 +74,7 @@ describe("Registered Office Address controller tests", () => {
     expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
     expect(response.status).toEqual(200);
     expect(response.text).toContain(STOP_PAGE_HEADING);
+    expect(response.text).toContain("Incorrect RO");
     expect(response.text).not.toContain(REGISTERED_OFFICE_ADDRESS_ERROR);
   });
 
