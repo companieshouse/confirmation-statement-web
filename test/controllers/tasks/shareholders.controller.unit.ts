@@ -73,6 +73,7 @@ describe("Shareholders controller tests", () => {
     expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.SHAREHOLDER);
     expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
     expect(response.status).toEqual(200);
+    expect(response.text).toContain("Incorrect Shareholder Details");
     expect(response.text).toContain(STOP_PAGE_MESSAGE);
   });
 
