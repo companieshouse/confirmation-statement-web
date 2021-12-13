@@ -113,6 +113,7 @@ describe("Register locations controller tests", () => {
     expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
     expect(response.status).toEqual(200);
     expect(response.text).toContain(STOP_PAGE_MESSAGE);
+    expect(response.text).toContain("Incorrect Registers");
   });
 
   it("Should return an error page if error is thrown in post function", async () => {
