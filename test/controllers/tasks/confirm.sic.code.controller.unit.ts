@@ -14,7 +14,7 @@ import { companyAuthenticationMiddleware } from "../../../src/middleware/company
 import { urlUtils } from "../../../src/utils/url";
 import { getCompanyProfile } from "../../../src/services/company.profile.service";
 import { validCompanyProfile } from "../../mocks/company.profile.mock";
-import { SECTIONS, SIC_CODE_ERROR } from "../../../src/utils/constants";
+import { pageTitle, SECTIONS, SIC_CODE_ERROR } from "../../../src/utils/constants";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
@@ -65,6 +65,7 @@ describe("Confirm sic code controller tests", () => {
     expect(response.status).toEqual(200);
     expect(response.text).toContain(STOP_PAGE_TEXT);
     expect(response.text).not.toContain(SIC_CODE_DETAILS);
+    expect(response.text).toContain(pageTitle.STOP_PAGE_SIC);
     expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
   });
 
