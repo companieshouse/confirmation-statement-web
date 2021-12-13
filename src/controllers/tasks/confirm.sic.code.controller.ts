@@ -5,7 +5,7 @@ import { Templates } from "../../types/template.paths";
 import { lookupSicCodeDescription } from "../../utils/api.enumerations";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../../services/company.profile.service";
-import { RADIO_BUTTON_VALUE, SECTIONS, SIC_CODE_ERROR } from "../../utils/constants";
+import { pageTitle, RADIO_BUTTON_VALUE, SECTIONS, SIC_CODE_ERROR } from "../../utils/constants";
 import { SectionStatus, SicCode } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 
@@ -33,6 +33,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     await sendUpdate(req, SECTIONS.SIC, SectionStatus.NOT_CONFIRMED);
     return res.render(Templates.WRONG_SIC, {
       backLinkUrl: urlUtils.getUrlToPath(SIC_PATH, req),
+      pageTitle: pageTitle.STOP_PAGE_SIC,
       templateName: Templates.SIC,
       sickCodeStatus: sicButtonValue
     });
