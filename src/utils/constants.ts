@@ -74,7 +74,3 @@ export enum OFFICER_TYPE {
   NATURAL_DIRECTOR = "naturalDirector",
   CORPORATE_DIRECTORS = "corporateDirector"
 }
-
-export const pageTitle = {
-  STOP_PAGE_SIC: "Incorrect SIC"
-};
