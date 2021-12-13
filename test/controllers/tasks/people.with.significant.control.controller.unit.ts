@@ -21,6 +21,7 @@ import { PersonOfSignificantControl, SectionStatus } from "@companieshouse/api-s
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Check the people with significant control (PSC)";
+const STOP_PAGE_TITLE = "Incorrect PSC Details";
 const STOP_PAGE_HEADING = "Update the people with significant control (PSC) details";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66544";
@@ -398,13 +399,14 @@ describe("People with significant control controller tests", () => {
       expect(response.text).toContain(FORMATTED_DOB);
     });
 
-    it("Should display wrong psc data page when no radio button is selected", async () => {
+    it("Should display wrong psc data page when the no radio button is selected", async () => {
       const response = await request(app)
         .post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL)
         .send({ pscRadioValue: RADIO_BUTTON_VALUE.NO });
 
       expect(response.status).toEqual(200);
       expect(response.text).toContain(STOP_PAGE_HEADING);
+      expect(response.text).toContain(STOP_PAGE_TITLE);
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
     });
