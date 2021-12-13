@@ -35,7 +35,7 @@ const mockGetShareholders = getShareholders as jest.Mock;
 const mockSendUpdate = sendUpdate as jest.Mock;
 
 const PAGE_HEADING = "Review the statement of capital";
-const STOP_PAGE_HEADING = "You cannot use this service - File a confirmation statement";
+const STOP_PAGE_HEADING = "Incorrect SOC";
 const SHARES_TOTALS_INVALID_WARNING = "The company's share capital does not match the number of shares held by its shareholders.";
 const UNPAID_AMOUNT_NULL_WARNING = "The total amount unpaid for all shares is missing on this company’s statement of capital.";
 const COMPANY_NUMBER = "12345678";
