@@ -15,7 +15,7 @@ export const WRONG_DETAILS_UPDATE_PSC = "Update the people with significant cont
 export const WRONG_DETAILS_INCORRECT_PSC = "Incorrect people with significant control - File a confirmation statement";
 export const WRONG_DETAILS_UPDATE_SECRETARY = "Update the secretary details";
 export const WRONG_DETAILS_UPDATE_DIRECTOR = "Update the director details";
-export const WRONG_DETAILS_UPDATE_OFFICERS = "Update officers - File a confirmation statement";
+export const WRONG_DETAILS_UPDATE_OFFICERS = "Incorrect Officer Details";
 export const PSC_STATEMENT_NAME_PLACEHOLDER = "{linked_psc_name}";
 
 export enum RADIO_BUTTON_VALUE {

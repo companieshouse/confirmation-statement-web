@@ -32,7 +32,7 @@ const mockSendUpdate = sendUpdate as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
 const PAGE_HEADING = "Check the director's details";
-const WRONG_OFFICER_PAGE_HEADING = "Update officers - File a confirmation statement";
+const WRONG_OFFICER_PAGE_HEADING = "Incorrect Officer Details";
 const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 const ACTIVE_OFFICER_DETAILS_URL = ACTIVE_OFFICERS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
