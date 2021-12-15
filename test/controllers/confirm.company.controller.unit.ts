@@ -29,7 +29,7 @@ const companyNumber = "12345678";
 const today = "2020-04-25";
 const STOP_PAGE_TITLE_COMPANY_DETAILS = "You cannot use this service - Company Details";
 const STOP_PAGE_TITLE_COMPANY_TYPE = "You cannot use this service - Company Type";
-
+const STOP_PAGE_TITLE_COMPANY_STATUS = "You cannot use this service - Company Status";
 
 describe("Confirm company controller tests", () => {
   const PAGE_HEADING = "Confirm this is the correct company";
@@ -272,6 +272,17 @@ describe("Confirm company controller tests", () => {
     expect(response.status).toEqual(200);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
     expect(response.text).toContain(STOP_PAGE_TITLE_COMPANY_DETAILS);
+  });
+
+  it("Should redirect to cannot use service stop screen when the eligibility status code is INVALID_COMPANY_STATUS", async () => {
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_STATUS);
+    const response = await request(app)
+      .post(CONFIRM_COMPANY_PATH);
+    expect(response.status).toEqual(200);
+    expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
+    expect(response.text).toContain(STOP_PAGE_TITLE_COMPANY_STATUS);
   });
 
   it("Should display a warning if filing is not due", async () => {
