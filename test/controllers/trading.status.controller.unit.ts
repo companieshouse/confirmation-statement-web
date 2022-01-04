@@ -14,7 +14,7 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next(
 const mockSendTradingStatusUpdate = sendTradingStatusUpdate as jest.Mock;
 
 const PAGE_HEADING = "Check the trading status";
-const STOP_PAGE_HEADING = "Trading status not supported";
+const STOP_PAGE_HEADING = "You cannot use this service - Company Trading Status";
 const COMPANY_NUMBER = "12345678";
 const TRADING_STATUS_URL = TRADING_STATUS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
