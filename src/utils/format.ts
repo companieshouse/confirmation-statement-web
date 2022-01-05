@@ -79,6 +79,9 @@ export const formatPSCForDisplay = (psc: PersonOfSignificantControl): PersonOfSi
     };
   }
 
+  clonedPsc.nationality = formatTitleCase(psc.nationality);
+  clonedPsc.countryOfResidence = formatTitleCase(psc.countryOfResidence);
+
   if (psc.address) {
     clonedPsc.address = formatAddress(psc.address);
   }
