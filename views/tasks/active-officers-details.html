@@ -1,0 +1,352 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  {% if errorList.length > 0 %}
+    Error:
+  {% endif %}
+  Review the officers
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-three-quarters">
+    {% if errorList.length > 0 %}
+    {{ govukErrorSummary({
+    titleText: "There is a problem",
+    errorList: [
+    {
+    text: "Select yes if the director details are correct",
+    href: "#officers"
+    }
+    ]
+    }) }}
+    {% endif %}
+    <form action="" method="post">
+      <h1 class="govuk-heading-l">Check the officers' details</h1>
+
+      {% set secretaryHTML %}
+      <h2 class="govuk-heading-">1 secretary</h2>
+      <div class="govuk-summary-card govuk-!-margin-bottom-4">
+        <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center">
+          <p class="govuk-!-font-weight-bold govuk-!-margin-0">IRVING, Kylie</p>
+          {{govukTag({
+          text: "Active",
+          classes: "govuk-tag--green"
+          })}}
+        </div>
+        <div style="display: flex" class="govuk-!-padding-1">
+          <dl style="display: block" class="govuk-summary-list govuk-!-margin-3">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Appointment date</dt>
+              <dd class="govuk-summary-list__value">
+                <p>20 June 2019</p>
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Correspondence address</dt>
+              <dd class="govuk-summary-list__value">
+                <p>2 Nets Way, Newcastle, NE2 3BB</p>
+              </dd>
+            </div>
+
+          </dl>
+        </div>
+        {% endset %}
+
+        {% set corpSecretaryHTML %}
+        <h2 class="govuk-heading-">1 corporate secretary</h2>
+        <div class="govuk-summary-card govuk-!-margin-bottom-4">
+          <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center">
+            <p class="govuk-!-font-weight-bold govuk-!-margin-0">BROOKLYNETTES LIMITED</p>
+            {{govukTag({
+            text: "Active",
+            classes: "govuk-tag--green"
+            })}}
+          </div>
+          <div style="display: flex" class="govuk-!-padding-1">
+            <dl style="display: block" class="govuk-summary-list govuk-!-margin-3">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Correspondence address</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>2 Nets Way, Newcastle, NE2 3BB</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Appointed date</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>1 January 2020</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Identification type</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>UK limited company</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Law governed</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>Company Law</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Legal form</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>Limited</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Place registered</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>United Kingdom</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Registration number</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>04512345</p>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+        {% endset %}
+
+        {% set directorHTML %}
+        <h2 class="govuk-heading-">2 directors</h2>
+        <div class="govuk-summary-card govuk-!-margin-bottom-4">
+          <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center">
+            <p class="govuk-!-font-weight-bold govuk-!-margin-0">IRVING, Kyrie</p>
+            {{govukTag({
+            text: "Active",
+            classes: "govuk-tag--green"
+            })}}
+          </div>
+          <div style="display: flex" class="govuk-!-padding-1">
+            <dl style="display: block" class="govuk-summary-list govuk-!-margin-3">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Nationality</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>British</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Country of residence</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>United Kingdom</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Date of birth</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>1 January 1988</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Appointment date</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>20 June 2019</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Occupation</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>Director</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Correspondence address</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>2 Nets Way, Newcastle, NE2 3BB</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Usual residential address</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>2 Nets Way, Newcastle, NE2 3BB</p>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+        <div class="govuk-summary-card govuk-!-margin-bottom-4">
+          <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center">
+            <p class="govuk-!-font-weight-bold govuk-!-margin-0">DURANT, Kevin</p>
+            {{govukTag({
+            text: "Active",
+            classes: "govuk-tag--green"
+            })}}
+          </div>
+          <div style="display: flex" class="govuk-!-padding-1">
+            <dl style="display: block" class="govuk-summary-list govuk-!-margin-3">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Nationality</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>British</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Country of residence</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>United Kingdom</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Date of birth</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>16 March 1982</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Appointment date</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>20 June 2019</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Occupation</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>Director</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Correspondence address</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>2 Nets Way, Newcastle, NE2 3BB</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Usual residential address</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>3 Dunk Street, Newcastle, NE2 4TD</p>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+        {% endset %}
+
+        {% set corpDirectorsHTML %}
+        <h2 class="govuk-heading-">1 corporate director</h2>
+        <div class="govuk-summary-card govuk-!-margin-bottom-4">
+          <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center">
+            <p class="govuk-!-font-weight-bold govuk-!-margin-0">BROOKLYN NETS LTD</p>
+            {{govukTag({
+            text: "Active",
+            classes: "govuk-tag--green"
+            })}}
+          </div>
+          <div style="display: flex" class="govuk-!-padding-1">
+            <dl style="display: block" class="govuk-summary-list govuk-!-margin-3">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Correspondence address</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>2 Nets Way, Newcastle, NE2 3BB</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Appointed date</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>20 June 2019</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Identification type</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>UK limited company</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Law governed</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>Company Law</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Legal form</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>Limited</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Place registered</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>United Kingdom</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Registration number</dt>
+                <dd class="govuk-summary-list__value">
+                  <p>0111222</p>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+        {% endset %}
+
+        {{ govukTable({
+
+        rows: [
+        [
+        {
+        html: secretaryHTML
+        }
+        ],
+        [
+        {
+        html: corpSecretaryHTML
+        }
+        ],
+        [
+        {
+        html: directorHTML
+        }
+        ],
+        [
+        {
+        html: corpDirectorsHTML
+        }
+        ]
+        ]
+        }) }}
+        {{ govukRadios({
+        classes: "govuk-radios",
+        idPrefix: "officers",
+        name: "officers",
+        errorMessage: directorDetailsError,
+        fieldset: {
+        legend: {
+        html: "Are the officer details correct?",
+        isPageHeading: false,
+        classes: "govuk-fieldset__legend--l"
+        }
+        },
+        hint: {
+        html: officerHTML
+        },
+        items: [
+        {
+        value: "yes",
+        text: "Yes"
+        },
+        {
+        value: "no",
+        text: "No"
+        },
+        {
+        value: "yes",
+        text: "No, but an update has been submitted"
+        }
+        ]
+        }) }}
+
+      {% include "includes/continue-button.html" %}
+    </form>
+  </div>
+</div>
+{% endblock %}

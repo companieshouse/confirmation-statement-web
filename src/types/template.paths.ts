@@ -1,6 +1,7 @@
 export enum Templates {
   ACCESSIBILITY_STATEMENT = "accessibility-statement",
   ACTIVE_OFFICERS = "tasks/active-officers",
+  ACTIVE_OFFICERS_DETAILS = "tasks/active-officers-details",
   CONFIRMATION = "confirmation",
   CONFIRM_COMPANY = "confirm-company",
   ERROR_404 = "page-not-found",
