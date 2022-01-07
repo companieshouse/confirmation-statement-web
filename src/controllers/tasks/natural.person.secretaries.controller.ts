@@ -15,7 +15,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const session: Session = req.session as Session;
     const officers: ActiveOfficerDetails[] = await getActiveOfficersDetailsData(session, transactionId, submissionId);
     const secretaryList = formatSecretaryList(officers);
-    console.log(secretaryList);
     return res.render(Templates.NATURAL_PERSON_SECRETARIES, {
       templateName: Templates.NATURAL_PERSON_SECRETARIES,
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),

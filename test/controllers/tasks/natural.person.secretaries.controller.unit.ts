@@ -54,8 +54,6 @@ describe("Natural person secretaries controller tests", () => {
       const response = await request(app).get(NATURAL_PERSON_SECRETARIES_URL);
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Are the secretary details correct?");
-      expect(response.text).toContain("1 secretary");
-      expect(response.text).toContain(FORMATTED_SERVICE_ADDRESS);
     });
 
     it("Should navigate to an error page if the function throws an error", async () => {
