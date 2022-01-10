@@ -1,6 +1,5 @@
 import { RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { ActiveOfficerDetails, Address, PersonOfSignificantControl } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
-import { OFFICER_ROLE } from "./constants";
 
 export const formatTitleCase = (str: string|undefined): string =>  {
   if (!str) {
@@ -93,23 +92,4 @@ export const formatPSCForDisplay = (psc: PersonOfSignificantControl): PersonOfSi
   clonedPsc.legalForm = formatTitleCase(psc.legalForm);
 
   return clonedPsc;
-};
-
-export const formatSecretaryList = (officers: ActiveOfficerDetails[]): any[] => {
-  const secretaryList = new Array(0);
-  for (const officer of officers) {
-    if (OFFICER_ROLE.SECRETARY.localeCompare(officer.role, 'en', { sensitivity: 'accent' }) === 0 && !officer.isCorporate ) {
-      const serviceAddress = formatAddressForDisplay(formatAddress(officer.serviceAddress));
-      const surname = officer.surname;
-      const forename = formatTitleCase(officer.foreName1);
-      const secretaryObj = {
-        forename,
-        surname,
-        dateOfAppointment: officer.dateOfAppointment,
-        serviceAddress,
-      };
-      secretaryList.push(secretaryObj);
-    }
-  }
-  return secretaryList;
 };

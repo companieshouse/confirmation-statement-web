@@ -9,24 +9,17 @@ import { companyAuthenticationMiddleware } from "../../../src/middleware/company
 import { CORPORATE_DIRECTORS_PATH, CORPORATE_SECRETARIES_PATH, NATURAL_PERSON_DIRECTORS_PATH, NATURAL_PERSON_SECRETARIES_PATH, urlParams } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
 import { SECRETARY_DETAILS_ERROR, WRONG_DETAILS_UPDATE_SECRETARY } from "../../../src/utils/constants";
-import { formatSecretaryList } from "../../../src/utils/format";
 import { getActiveOfficersDetailsData, getOfficerTypeList } from "../../../src/services/active.officers.details.service";
 import { mockActiveOfficersDetails } from "../../mocks/active.officers.details.mock";
 
-const FORMATTED_SERVICE_ADDRESS = "Formatted Service Address";
-const FORENAME = "DUMMYFORENAME";
-const SURNAME = "DUMMYSURNAME";
-const DATE_OF_APPOINTMENT = "03 August 2003";
+// const FORMATTED_SERVICE_ADDRESS = "Formatted Service Address";
+// const FORENAME = "DUMMYFORENAME";
+// const SURNAME = "DUMMYSURNAME";
+// const DATE_OF_APPOINTMENT = "03 August 2003";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
-const mockformatSecretaryList = formatSecretaryList as jest.Mock;
-mockformatSecretaryList.mockReturnValue([{
-  forename: FORENAME,
-  surname: SURNAME,
-  dateOfAppointment: DATE_OF_APPOINTMENT,
-  serviceAddress: FORMATTED_SERVICE_ADDRESS
-}]);
+
 const mockGetActiveOfficerDetails = getActiveOfficersDetailsData as jest.Mock;
 mockGetActiveOfficerDetails.mockResolvedValue(mockActiveOfficersDetails);
 const mockGetOfficerTypeList = getOfficerTypeList as jest.Mock;
