@@ -6,19 +6,18 @@ import { OFFICER_TYPE, RADIO_BUTTON_VALUE, SECRETARY_DETAILS_ERROR, WRONG_DETAIL
 import { Session } from "@companieshouse/node-session-handler";
 import { ActiveOfficerDetails } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getActiveOfficersDetailsData, getOfficerTypeList } from "../../services/active.officers.details.service";
-import { formatSecretaryList } from "../../utils/format";
 
-export const get = async (req: Request, res: Response, next: NextFunction) => {
+export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
-    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
-    const session: Session = req.session as Session;
-    const officers: ActiveOfficerDetails[] = await getActiveOfficersDetailsData(session, transactionId, submissionId);
-    const secretaryList = formatSecretaryList(officers);
+    // const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    // const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+    // const session: Session = req.session as Session;
+    // const officers: ActiveOfficerDetails[] = await getActiveOfficersDetailsData(session, transactionId, submissionId);
+    // const secretaryList = formatSecretaryList(officers);
     return res.render(Templates.NATURAL_PERSON_SECRETARIES, {
       templateName: Templates.NATURAL_PERSON_SECRETARIES,
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-      secretaryList
+      // secretaryList
     });
   } catch (e) {
     return next(e);
@@ -60,12 +59,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     // show error message on screen
-    const secretaryList = formatSecretaryList(officers);
+    // const secretaryList = formatSecretaryList(officers);
     return res.render(Templates.NATURAL_PERSON_SECRETARIES, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       secretaryErrorMsg: SECRETARY_DETAILS_ERROR,
       templateName: Templates.NATURAL_PERSON_SECRETARIES,
-      secretaryList
+      // secretaryList
     });
 
   } catch (e) {
