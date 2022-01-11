@@ -32,7 +32,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 const buildSecretaryList = (officers: ActiveOfficerDetails[]): any[] => {
   return officers
-    .filter(officer => OFFICER_ROLE.SECRETARY.localeCompare(officer.role, 'en', { sensitivity: 'accent' }) === 0 && !officer.isCorporate)
+    .filter(officer => equalsIgnoreCase(officer.role, OFFICER_ROLE.SECRETARY) && !officer.isCorporate)
     .map(officer => {
       return {
         forename: formatTitleCase(officer.foreName1),
@@ -45,7 +45,7 @@ const buildSecretaryList = (officers: ActiveOfficerDetails[]): any[] => {
 
 const buildCorporateOfficerList = (officers: ActiveOfficerDetails[], wantedOfficerRole: OFFICER_ROLE): any[] => {
   return officers
-    .filter(officer => wantedOfficerRole.localeCompare(officer.role, 'en', { sensitivity: 'accent' }) === 0 && officer.isCorporate)
+    .filter(officer => equalsIgnoreCase(officer.role, wantedOfficerRole) && officer.isCorporate)
     .map(officer => {
       return {
         dateOfAppointment: officer.dateOfAppointment,
@@ -63,7 +63,7 @@ const buildCorporateOfficerList = (officers: ActiveOfficerDetails[], wantedOffic
 
 const buildDirectorList = (officers: ActiveOfficerDetails[]): any[] => {
   return officers
-    .filter(officer => OFFICER_ROLE.DIRECTOR.localeCompare(officer.role, 'en', { sensitivity: 'accent' }) === 0 && !officer.isCorporate)
+    .filter(officer => equalsIgnoreCase(officer.role, OFFICER_ROLE.DIRECTOR) && !officer.isCorporate)
     .map(officer => {
       return {
         forename: formatTitleCase(officer.foreName1),
@@ -77,4 +77,8 @@ const buildDirectorList = (officers: ActiveOfficerDetails[]): any[] => {
         residentialAddress: formatAddressForDisplay(formatAddress(officer.residentialAddress))
       };
     });
+};
+
+const equalsIgnoreCase = (officerRole: string, wantedOfficerRole: OFFICER_ROLE): boolean => {
+  return wantedOfficerRole.localeCompare(officerRole, 'en', { sensitivity: 'accent' }) === 0;
 };

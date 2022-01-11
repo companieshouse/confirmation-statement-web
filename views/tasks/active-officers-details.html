@@ -103,7 +103,9 @@
       {% if naturalSecretaryList %}
         {% set officerRows = (officerRows.push([{html: naturalSecretaryHTML}]), officerRows) %}
       {% endif %}
-      {% set officerRows = (officerRows.push([{html: corporateSecretaryHTML}]), officerRows) %}
+      {% if corporateSecretaryList %}
+        {% set officerRows = (officerRows.push([{html: corporateSecretaryHTML}]), officerRows) %}
+      {% endif %}
       {% set officerRows = (officerRows.push([{html: directorHTML}]), officerRows) %}
       {% set officerRows = (officerRows.push([{html: corpDirectorsHTML}]), officerRows) %}
 
