@@ -23,7 +23,7 @@ const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 const PAGE_HEADING = "Check the officers' details";
 
 
-describe("Active directors controller tests", () => {
+describe("Active officers details controller tests", () => {
 
   beforeEach(() => {
     mocks.mockAuthenticationMiddleware.mockClear();
@@ -48,6 +48,16 @@ describe("Active directors controller tests", () => {
       expect(response.text).toContain("HAM");
       expect(response.text).toContain("1 January 2009");
       expect(response.text).toContain("Diddly Squat Farm Shop, Chadlington, Thisshire, England, OX7 3PE");
+    });
+
+    it("Should display corporate secretary details", async () => {
+      const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
+
+      expect(mockGetActiveOfficerDetails).toHaveBeenCalled();
+      expect(response.text).toContain("MYERS, Micheal");
+      expect(response.text).toContain("Diddly Squat Farm Shop, Chadlington, Thisshire, England, OX7 3PE");
+      expect(response.text).toContain("1 January 2009");
+      expect(response.text).toContain("0111222");
     });
 
     it("Should navigate to an error page if the called service throws an error", async () => {
