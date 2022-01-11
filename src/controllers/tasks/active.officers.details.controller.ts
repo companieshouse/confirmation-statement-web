@@ -1,7 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import {
-  TASK_LIST_PATH
-} from "../../types/page.urls";
+import { TASK_LIST_PATH } from "../../types/page.urls";
 import { urlUtils } from "../../utils/url";
 import { Templates } from "../../types/template.paths";
 import { Session } from "@companieshouse/node-session-handler";
@@ -17,7 +15,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const session: Session = req.session as Session;
     const officers: ActiveOfficerDetails[] = await getActiveOfficersDetailsData(session, transactionId, submissionId);
     const naturalSecretaryList = buildSecretaryList(officers);
-    const corporateSecretaryList = buildCorporateSecretaryList(officers);
+    const corporateSecretaryList = buildCorporateOfficerList(officers, OFFICER_ROLE.SECRETARY);
     const naturalDirectorList = buildDirectorList(officers);
 
     return res.render(Templates.ACTIVE_OFFICERS_DETAILS, {
@@ -45,9 +43,9 @@ const buildSecretaryList = (officers: ActiveOfficerDetails[]): any[] => {
     });
 };
 
-const buildCorporateSecretaryList = (officers: ActiveOfficerDetails[]): any[] => {
+const buildCorporateOfficerList = (officers: ActiveOfficerDetails[], wantedOfficerRole: OFFICER_ROLE): any[] => {
   return officers
-    .filter(officer => OFFICER_ROLE.SECRETARY.localeCompare(officer.role, 'en', { sensitivity: 'accent' }) === 0 && officer.isCorporate)
+    .filter(officer => wantedOfficerRole.localeCompare(officer.role, 'en', { sensitivity: 'accent' }) === 0 && officer.isCorporate)
     .map(officer => {
       return {
         dateOfAppointment: officer.dateOfAppointment,
