@@ -124,8 +124,8 @@ export const mockActiveOfficersDetails: ActiveOfficerDetails[] = [
     isCorporate: true,
     role: "Secretary",
     placeRegistered: undefined,
-    registrationNumber: undefined,
-    lawGoverned: undefined,
+    registrationNumber: "11223344",
+    lawGoverned: "Specific Law",
     legalForm: undefined,
     identificationType: undefined,
     countryOfResidence: "UNITED KINGDOM"

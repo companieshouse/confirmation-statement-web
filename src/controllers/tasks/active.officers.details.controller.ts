@@ -1,7 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import {
-  TASK_LIST_PATH
-} from "../../types/page.urls";
+import { TASK_LIST_PATH } from "../../types/page.urls";
 import { urlUtils } from "../../utils/url";
 import { Templates } from "../../types/template.paths";
 import { Session } from "@companieshouse/node-session-handler";
@@ -17,11 +15,13 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const session: Session = req.session as Session;
     const officers: ActiveOfficerDetails[] = await getActiveOfficersDetailsData(session, transactionId, submissionId);
     const naturalSecretaryList = buildSecretaryList(officers);
+    const corporateSecretaryList = buildCorporateOfficerList(officers, OFFICER_ROLE.SECRETARY);
     const naturalDirectorList = buildDirectorList(officers);
 
     return res.render(Templates.ACTIVE_OFFICERS_DETAILS, {
       templateName: Templates.ACTIVE_OFFICERS_DETAILS,
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+      corporateSecretaryList,
       naturalSecretaryList,
       naturalDirectorList,
     });
@@ -32,7 +32,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 const buildSecretaryList = (officers: ActiveOfficerDetails[]): any[] => {
   return officers
-    .filter(officer => OFFICER_ROLE.SECRETARY.localeCompare(officer.role, 'en', { sensitivity: 'accent' }) === 0 && !officer.isCorporate)
+    .filter(officer => equalsIgnoreCase(officer.role, OFFICER_ROLE.SECRETARY) && !officer.isCorporate)
     .map(officer => {
       return {
         forename: formatTitleCase(officer.foreName1),
@@ -43,9 +43,27 @@ const buildSecretaryList = (officers: ActiveOfficerDetails[]): any[] => {
     });
 };
 
+const buildCorporateOfficerList = (officers: ActiveOfficerDetails[], wantedOfficerRole: OFFICER_ROLE): any[] => {
+  return officers
+    .filter(officer => equalsIgnoreCase(officer.role, wantedOfficerRole) && officer.isCorporate)
+    .map(officer => {
+      return {
+        dateOfAppointment: officer.dateOfAppointment,
+        forename: formatTitleCase(officer.foreName1),
+        identificationType: officer.identificationType,
+        lawGoverned: officer.lawGoverned,
+        legalForm: officer.legalForm,
+        placeRegistered: officer.placeRegistered,
+        registrationNumber: officer.registrationNumber,
+        serviceAddress: formatAddressForDisplay(formatAddress(officer.serviceAddress)),
+        surname: officer.surname
+      };
+    });
+};
+
 const buildDirectorList = (officers: ActiveOfficerDetails[]): any[] => {
   return officers
-    .filter(officer => OFFICER_ROLE.DIRECTOR.localeCompare(officer.role, 'en', { sensitivity: 'accent' }) === 0 && !officer.isCorporate)
+    .filter(officer => equalsIgnoreCase(officer.role, OFFICER_ROLE.DIRECTOR) && !officer.isCorporate)
     .map(officer => {
       return {
         forename: formatTitleCase(officer.foreName1),
@@ -59,4 +77,8 @@ const buildDirectorList = (officers: ActiveOfficerDetails[]): any[] => {
         residentialAddress: formatAddressForDisplay(formatAddress(officer.residentialAddress))
       };
     });
+};
+
+const equalsIgnoreCase = (officerRole: string, wantedOfficerRole: OFFICER_ROLE): boolean => {
+  return wantedOfficerRole.localeCompare(officerRole, 'en', { sensitivity: 'accent' }) === 0;
 };
