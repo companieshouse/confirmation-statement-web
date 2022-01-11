@@ -8,7 +8,6 @@ export const PSC_STATEMENT_CONTROL_ERROR = "Select yes if the company PSC Statem
 export const REGISTER_LOCATIONS_ERROR = "Please select yes if the Company records location is correct";
 export const REGISTERED_OFFICE_ADDRESS_ERROR = "Select yes if the Registered Office Address is correct";
 export const DIRECTOR_DETAILS_ERROR = "Select yes if director details are correct";
-export const SECRETARY_DETAILS_ERROR = "Select yes if secretary details are correct";
 export const SHAREHOLDERS_ERROR = "Select yes if the active shareholders are correct";
 export const PSC_STATEMENT_NOT_FOUND = "No additional statements relating to PSCs are currently held on the public register.";
 export const WRONG_DETAILS_UPDATE_PSC = "Update the people with significant control (PSC) details";
@@ -66,11 +65,4 @@ export const links = {
 export enum OFFICER_ROLE {
   SECRETARY = "SECRETARY",
   DIRECTOR = "DIRECTOR"
-}
-
-export enum OFFICER_TYPE {
-  NATURAL_SECRETARY = "naturalSecretary",
-  CORPORATE_SECRETARIES = "corporateSecretary",
-  NATURAL_DIRECTOR = "naturalDirector",
-  CORPORATE_DIRECTORS = "corporateDirector"
 }
