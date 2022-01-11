@@ -7,7 +7,8 @@ import { Templates } from "../../types/template.paths";
 import { Session } from "@companieshouse/node-session-handler";
 import { ActiveOfficerDetails } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getActiveOfficersDetailsData } from "../../services/active.officers.details.service";
-import { formatSecretaryList } from "../../utils/format";
+import { OFFICER_ROLE } from "../../utils/constants";
+import { formatAddress, formatAddressForDisplay, formatTitleCase } from "../../utils/format";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -15,7 +16,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const session: Session = req.session as Session;
     const officers: ActiveOfficerDetails[] = await getActiveOfficersDetailsData(session, transactionId, submissionId);
-    const naturalSecretaryList = formatSecretaryList(officers);
+    const naturalSecretaryList = buildSecretaryList(officers);
     const naturalDirectorList = [{
       foreName1: "Kyrie",
       surname: "IRVING",
@@ -37,4 +38,17 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   } catch (e) {
     return next(e);
   }
+};
+
+const buildSecretaryList = (officers: ActiveOfficerDetails[]): any[] => {
+  return officers
+    .filter(officer => OFFICER_ROLE.SECRETARY.localeCompare(officer.role, 'en', { sensitivity: 'accent' }) === 0 && !officer.isCorporate)
+    .map(officer => {
+      return {
+        forename: formatTitleCase(officer.foreName1),
+        surname: officer.surname,
+        dateOfAppointment: officer.dateOfAppointment,
+        serviceAddress: formatAddressForDisplay(formatAddress(officer.serviceAddress))
+      };
+    });
 };
