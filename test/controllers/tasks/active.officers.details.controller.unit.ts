@@ -47,7 +47,20 @@ describe("Active directors controller tests", () => {
       expect(response.text).toContain("West");
       expect(response.text).toContain("HAM");
       expect(response.text).toContain("1 January 2009");
+      expect(response.text).toContain("10 Secretary Road, Secrettown, Secretshire, Secretland, SE1 7SE");
+    });
+
+    it("Should display non corporate director details", async () => {
+      const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
+
+      expect(mockGetActiveOfficerDetails).toHaveBeenCalled();
+      expect(response.text).toContain("John");
+      expect(response.text).toContain("DOE");
+      expect(response.text).toContain("1 January 1965");
+      expect(response.text).toContain("1 January 2012");
       expect(response.text).toContain("Diddly Squat Farm Shop, Chadlington, Thisshire, England, OX7 3PE");
+      expect(response.text).toContain("Abc, 1, 10, 10 This Road, This, This Town, Thisshire, Thisland, TH1 1AB");
+      expect(response.text).toContain("singer");
     });
 
     it("Should navigate to an error page if the called service throws an error", async () => {
