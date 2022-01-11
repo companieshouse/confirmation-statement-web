@@ -17,17 +17,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const session: Session = req.session as Session;
     const officers: ActiveOfficerDetails[] = await getActiveOfficersDetailsData(session, transactionId, submissionId);
     const naturalSecretaryList = buildSecretaryList(officers);
-    const naturalDirectorList = [{
-      foreName1: "Kyrie",
-      surname: "IRVING",
-      occupation: "Director",
-      nationality: "British",
-      dateOfBirth: "1 January 1988",
-      dateOfAppointment: "20 June 2019",
-      countryOfResidence: "United Kingdom",
-      serviceAddress: "2 Nets Way, Newcastle, NE2 3BB",
-      residentialAddress: "2 Nets Way, Newcastle, NE2 3BB"
-    }];
+    const naturalDirectorList = buildDirectorList(officers);
 
     return res.render(Templates.ACTIVE_OFFICERS_DETAILS, {
       templateName: Templates.ACTIVE_OFFICERS_DETAILS,
@@ -49,6 +39,24 @@ const buildSecretaryList = (officers: ActiveOfficerDetails[]): any[] => {
         surname: officer.surname,
         dateOfAppointment: officer.dateOfAppointment,
         serviceAddress: formatAddressForDisplay(formatAddress(officer.serviceAddress))
+      };
+    });
+};
+
+const buildDirectorList = (officers: ActiveOfficerDetails[]): any[] => {
+  return officers
+    .filter(officer => OFFICER_ROLE.DIRECTOR.localeCompare(officer.role, 'en', { sensitivity: 'accent' }) === 0 && !officer.isCorporate)
+    .map(officer => {
+      return {
+        forename: formatTitleCase(officer.foreName1),
+        surname: officer.surname,
+        occupation: officer.occupation,
+        nationality: officer.nationality,
+        dateOfBirth: officer.dateOfBirth,
+        dateOfAppointment: officer.dateOfAppointment,
+        countryOfResidence: officer.countryOfResidence,
+        serviceAddress: formatAddressForDisplay(formatAddress(officer.serviceAddress)),
+        residentialAddress: formatAddressForDisplay(formatAddress(officer.residentialAddress))
       };
     });
 };
