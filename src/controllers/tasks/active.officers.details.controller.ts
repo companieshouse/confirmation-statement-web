@@ -18,13 +18,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const officers: ActiveOfficerDetails[] = await getActiveOfficersDetailsData(session, transactionId, submissionId);
     const naturalSecretaryList = buildSecretaryList(officers);
     const corporateSecretaryList = buildCorporateSecretaryList(officers);
-
+    const naturalDirectorList = buildDirectorList(officers);
 
     return res.render(Templates.ACTIVE_OFFICERS_DETAILS, {
       templateName: Templates.ACTIVE_OFFICERS_DETAILS,
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       corporateSecretaryList,
       naturalSecretaryList,
+      naturalDirectorList,
     });
   } catch (e) {
     return next(e);
@@ -58,6 +59,24 @@ const buildCorporateSecretaryList = (officers: ActiveOfficerDetails[]): any[] =>
         registrationNumber: officer.registrationNumber,
         serviceAddress: formatAddressForDisplay(formatAddress(officer.serviceAddress)),
         surname: officer.surname
+      };
+    });
+};
+
+const buildDirectorList = (officers: ActiveOfficerDetails[]): any[] => {
+  return officers
+    .filter(officer => OFFICER_ROLE.DIRECTOR.localeCompare(officer.role, 'en', { sensitivity: 'accent' }) === 0 && !officer.isCorporate)
+    .map(officer => {
+      return {
+        forename: formatTitleCase(officer.foreName1),
+        surname: officer.surname,
+        occupation: officer.occupation,
+        nationality: officer.nationality,
+        dateOfBirth: officer.dateOfBirth,
+        dateOfAppointment: officer.dateOfAppointment,
+        countryOfResidence: officer.countryOfResidence,
+        serviceAddress: formatAddressForDisplay(formatAddress(officer.serviceAddress)),
+        residentialAddress: formatAddressForDisplay(formatAddress(officer.residentialAddress))
       };
     });
 };

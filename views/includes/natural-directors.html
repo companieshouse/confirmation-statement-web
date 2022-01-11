@@ -1,0 +1,65 @@
+{% if naturalDirectorList.length > 1 %}
+  <h2 class="govuk-heading-m">{{ naturalDirectorList.length }} directors</h2>
+{% elseif naturalDirectorList.length === 1 %}
+  <h2 class="govuk-heading-m">1 director</h2>
+{% endif %}
+{% for director in naturalDirectorList %}
+  <div class="govuk-summary-card govuk-!-margin-bottom-4">
+    <div
+      class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3
+        govuk-!-padding-left-3"
+      style="display: flex; justify-content: space-between; align-items: center">
+      <p class="govuk-!-font-weight-bold govuk-!-margin-0">{{director.surname}}, {{director.forename}}</p>
+      {{ govukTag({
+            text: "Active",
+            classes: "govuk-tag--green"
+            }) }}
+    </div>
+    <div style="display: flex" class="govuk-!-padding-1">
+      <dl style="display: block" class="govuk-summary-list govuk-!-margin-3">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Nationality</dt>
+          <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+            <p>{{director.nationality}}</p>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Country of residence</dt>
+          <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+            <p>{{director.countryOfResidence}}</p>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Date of birth</dt>
+          <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+            <p>{{director.dateOfBirth}}</p>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Appointment date</dt>
+          <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+            <p>{{director.dateOfAppointment}}</p>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Occupation</dt>
+          <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+            <p>{{director.occupation}}</p>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Correspondence address</dt>
+          <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+            <p>{{director.serviceAddress}}</p>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Usual residential address</dt>
+          <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+            <p>{{director.residentialAddress}}</p>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+{% endfor %}

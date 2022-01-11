@@ -48,6 +48,18 @@ export const mockAddress2Formatted: Address = {
   region: "Thisshire"
 };
 
+export const mockAddress3: Address = {
+  addressLine1: "10 Secretary Road",
+  addressLine2: undefined,
+  careOf: undefined,
+  country: "Secretland",
+  locality: "Secrettown",
+  poBox: undefined,
+  postalCode: "SE1 7SE",
+  premises: undefined,
+  region: "Secretshire"
+};
+
 export const mockSecureAddress: Address = {
   addressLine1: "Companies House Cannot Disclose this Home Address",
   addressLine2: undefined,
@@ -67,8 +79,8 @@ export const mockActiveOfficersDetails: ActiveOfficerDetails[] = [
     surname: "DOE",
     occupation: "singer",
     nationality: "British",
-    dateOfBirth: "1 January 1960",
-    dateOfAppointment: "1 January 2009",
+    dateOfBirth: "1 January 1965",
+    dateOfAppointment: "1 January 2012",
     serviceAddress: mockAddress1,
     residentialAddress: mockAddress2,
     isCorporate: false,
@@ -88,7 +100,7 @@ export const mockActiveOfficersDetails: ActiveOfficerDetails[] = [
     nationality: "British",
     dateOfBirth: "1 January 1960",
     dateOfAppointment: "1 January 2009",
-    serviceAddress: mockAddress1,
+    serviceAddress: mockAddress3,
     residentialAddress: mockAddress2,
     isCorporate: false,
     role: "Secretary",
