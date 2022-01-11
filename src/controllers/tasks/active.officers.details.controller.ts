@@ -16,12 +16,23 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const session: Session = req.session as Session;
     const officers: ActiveOfficerDetails[] = await getActiveOfficersDetailsData(session, transactionId, submissionId);
     const naturalSecretaryList = formatSecretaryList(officers);
-
+    const naturalDirectorList = [{
+      foreName1: "Kyrie",
+      surname: "IRVING",
+      occupation: "Director",
+      nationality: "British",
+      dateOfBirth: "1 January 1988",
+      dateOfAppointment: "20 June 2019",
+      countryOfResidence: "United Kingdom",
+      serviceAddress: "2 Nets Way, Newcastle, NE2 3BB",
+      residentialAddress: "2 Nets Way, Newcastle, NE2 3BB"
+    }];
 
     return res.render(Templates.ACTIVE_OFFICERS_DETAILS, {
       templateName: Templates.ACTIVE_OFFICERS_DETAILS,
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       naturalSecretaryList,
+      naturalDirectorList,
     });
   } catch (e) {
     return next(e);
