@@ -28,21 +28,21 @@
     <form action="" method="post">
       <h1 class="govuk-heading-l">Check the officers' details</h1>
 
-        {% set naturalSecretaryHTML %}
-          {% include "includes/natural-secretaries.html" %}
-        {% endset %}
+      {% set naturalSecretaryHTML %}
+        {% include "includes/natural-secretaries.html" %}
+      {% endset %}
 
-        {% set corporateSecretaryHTML %}
-          {% include "includes/corporate-secretaries.html" %}
-        {% endset %}
+      {% set corporateSecretaryHTML %}
+        {% include "includes/corporate-secretaries.html" %}
+      {% endset %}
 
-        {% set directorHTML %}
-           {% include "includes/natural-directors.html" %}
-        {% endset %}
+      {% set directorHTML %}
+        {% include "includes/natural-directors.html" %}
+      {% endset %}
 
-        {% set corpDirectorsHTML %}
-           {% include "includes/corporate-directors.html" %}
-        {% endset %}
+      {% set corpDirectorsHTML %}
+        {% include "includes/corporate-directors.html" %}
+      {% endset %}
 
       {% set officerRows = [] %}
       {% if naturalSecretaryList %}
@@ -51,43 +51,47 @@
       {% if corporateSecretaryList %}
         {% set officerRows = (officerRows.push([{html: corporateSecretaryHTML}]), officerRows) %}
       {% endif %}
-      {% set officerRows = (officerRows.push([{html: directorHTML}]), officerRows) %}
-      {% set officerRows = (officerRows.push([{html: corpDirectorsHTML}]), officerRows) %}
+      {% if naturalDirectorList %}
+        {% set officerRows = (officerRows.push([{html: directorHTML}]), officerRows) %}
+      {% endif %}
+      {% if corporateDirectorList %}
+        {% set officerRows = (officerRows.push([{html: corpDirectorsHTML}]), officerRows) %}
+      {% endif %}
 
-        {{ govukTable({
-          rows: officerRows
-        }) }}
+      {{ govukTable({
+        rows: officerRows
+      }) }}
 
-        {{ govukRadios({
+      {{ govukRadios({
         classes: "govuk-radios",
         idPrefix: "officers",
         name: "officers",
         errorMessage: directorDetailsError,
         fieldset: {
-        legend: {
-        html: "Are the officer details correct?",
-        isPageHeading: false,
-        classes: "govuk-fieldset__legend--l"
-        }
+          legend: {
+            html: "Are the officer details correct?",
+            isPageHeading: false,
+            classes: "govuk-fieldset__legend--l"
+          }
         },
         hint: {
-        html: officerHTML
+          html: officerHTML
         },
         items: [
-        {
-        value: "yes",
-        text: "Yes"
-        },
-        {
-        value: "no",
-        text: "No"
-        },
-        {
-        value: "yes",
-        text: "No, but an update has been submitted"
-        }
+          {
+            value: "yes",
+            text: "Yes"
+          },
+          {
+            value: "no",
+            text: "No"
+          },
+          {
+            value: "yes",
+            text: "No, but an update has been submitted"
+          }
         ]
-        }) }}
+       }) }}
 
       {% include "includes/continue-button.html" %}
     </form>
