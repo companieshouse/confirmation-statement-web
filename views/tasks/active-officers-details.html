@@ -16,13 +16,13 @@
   <div class="govuk-grid-column-three-quarters">
     {% if errorList.length > 0 %}
     {{ govukErrorSummary({
-    titleText: "There is a problem",
-    errorList: [
-    {
-    text: "Select yes if the director details are correct",
-    href: "#officers"
-    }
-    ]
+      titleText: "There is a problem",
+      errorList: [
+        {
+          text: "Select yes if the director details are correct",
+          href: "#officers"
+        }
+      ]
     }) }}
     {% endif %}
     <form action="" method="post">
