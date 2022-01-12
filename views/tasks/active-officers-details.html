@@ -100,13 +100,15 @@
         {% endset %}
 
       {% set officerRows = [] %}
-      {% if naturalSecretaryList %}
+      {% if naturalSecretaryList|length %}
         {% set officerRows = (officerRows.push([{html: naturalSecretaryHTML}]), officerRows) %}
       {% endif %}
-      {% if corporateSecretaryList %}
+      {% if corporateSecretaryList|length %}
         {% set officerRows = (officerRows.push([{html: corporateSecretaryHTML}]), officerRows) %}
       {% endif %}
-      {% set officerRows = (officerRows.push([{html: directorHTML}]), officerRows) %}
+      {% if naturalDirectorList|length %}
+        {% set officerRows = (officerRows.push([{html: directorHTML}]), officerRows) %}
+      {% endif %}
       {% set officerRows = (officerRows.push([{html: corpDirectorsHTML}]), officerRows) %}
 
         {{ govukTable({
