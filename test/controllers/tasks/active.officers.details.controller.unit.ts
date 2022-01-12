@@ -68,10 +68,21 @@ describe("Active officers details controller tests", () => {
 
       expect(mockGetActiveOfficerDetails).toHaveBeenCalled();
       expect(response.text).toContain("MYERS, Micheal");
-      expect(response.text).toContain("Diddly Squat Farm Shop, Chadlington, Thisshire, England, OX7 3PE");
-      expect(response.text).toContain("1 January 2009");
+      expect(response.text).toContain("10 Corpsecret Road, Corpsecrettown, Corpsecretshire, Corpsecretland, CS1 7SC");
+      expect(response.text).toContain("1 January 2010");
       expect(response.text).toContain("Specific Law");
       expect(response.text).toContain("11223344");
+    });
+
+    it("Should display corporate director details", async () => {
+      const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
+
+      expect(mockGetActiveOfficerDetails).toHaveBeenCalled();
+      expect(response.text).toContain("BOND, James");
+      expect(response.text).toContain("10 Corpdir Road, Corpdirtown, Corpdirshire, Corpdirland, CD1 7DC");
+      expect(response.text).toContain("1 January 2011");
+      expect(response.text).toContain("Company Law");
+      expect(response.text).toContain("11111111");
     });
 
     it("Should navigate to an error page if the called service throws an error", async () => {

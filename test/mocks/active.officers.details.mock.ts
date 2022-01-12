@@ -60,6 +60,30 @@ export const mockAddress3: Address = {
   region: "Secretshire"
 };
 
+export const mockAddress4: Address = {
+  addressLine1: "10 Corpsecret Road",
+  addressLine2: undefined,
+  careOf: undefined,
+  country: "Corpsecretland",
+  locality: "Corpsecrettown",
+  poBox: undefined,
+  postalCode: "CS1 7SC",
+  premises: undefined,
+  region: "Corpsecretshire"
+};
+
+export const mockAddress5: Address = {
+  addressLine1: "10 Corpdir Road",
+  addressLine2: undefined,
+  careOf: undefined,
+  country: "Corpdirland",
+  locality: "Corpdirtown",
+  poBox: undefined,
+  postalCode: "CD1 7DC",
+  premises: undefined,
+  region: "Corpdirshire"
+};
+
 export const mockSecureAddress: Address = {
   addressLine1: "Companies House Cannot Disclose this Home Address",
   addressLine2: undefined,
@@ -115,11 +139,11 @@ export const mockActiveOfficersDetails: ActiveOfficerDetails[] = [
     foreName1: "MICHEAL",
     foreName2: "MiddleName",
     surname: "MYERS",
-    occupation: "singer",
+    occupation: "secret",
     nationality: "British",
-    dateOfBirth: "1 January 1960",
-    dateOfAppointment: "1 January 2009",
-    serviceAddress: mockAddress1,
+    dateOfBirth: "1 January 1966",
+    dateOfAppointment: "1 January 2010",
+    serviceAddress: mockAddress4,
     residentialAddress: mockAddress2,
     isCorporate: true,
     role: "Secretary",
@@ -131,20 +155,20 @@ export const mockActiveOfficersDetails: ActiveOfficerDetails[] = [
     countryOfResidence: "UNITED KINGDOM"
   },
   {
-    foreName1: "BOND",
+    foreName1: "JAMES",
     foreName2: "MiddleName",
-    surname: "JAMES",
-    occupation: "singer",
+    surname: "BOND",
+    occupation: "secret agent",
     nationality: "British",
-    dateOfBirth: "1 January 1960",
-    dateOfAppointment: "1 January 2009",
-    serviceAddress: mockAddress1,
+    dateOfBirth: "1 January 1967",
+    dateOfAppointment: "1 January 2011",
+    serviceAddress: mockAddress5,
     residentialAddress: mockAddress2,
     isCorporate: true,
     role: "Director",
     placeRegistered: undefined,
-    registrationNumber: undefined,
-    lawGoverned: undefined,
+    registrationNumber: "11111111",
+    lawGoverned: "Company Law",
     legalForm: undefined,
     identificationType: undefined,
     countryOfResidence: "UNITED KINGDOM"
