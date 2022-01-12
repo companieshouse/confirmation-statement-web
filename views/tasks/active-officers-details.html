@@ -40,22 +40,22 @@
         {% include "includes/natural-directors.html" %}
       {% endset %}
 
-      {% set corpDirectorsHTML %}
+      {% set corporateDirectorsHTML %}
         {% include "includes/corporate-directors.html" %}
       {% endset %}
 
       {% set officerRows = [] %}
-      {% if naturalSecretaryList %}
+      {% if naturalSecretaryList|length %}
         {% set officerRows = (officerRows.push([{html: naturalSecretaryHTML}]), officerRows) %}
       {% endif %}
-      {% if corporateSecretaryList %}
+      {% if corporateSecretaryList|length %}
         {% set officerRows = (officerRows.push([{html: corporateSecretaryHTML}]), officerRows) %}
       {% endif %}
-      {% if naturalDirectorList %}
+      {% if naturalDirectorList|length %}
         {% set officerRows = (officerRows.push([{html: directorHTML}]), officerRows) %}
       {% endif %}
-      {% if corporateDirectorList %}
-        {% set officerRows = (officerRows.push([{html: corpDirectorsHTML}]), officerRows) %}
+      {% if corporateDirectorList|length %}
+        {% set officerRows = (officerRows.push([{html: corporateDirectorsHTML}]), officerRows) %}
       {% endif %}
 
       {{ govukTable({
