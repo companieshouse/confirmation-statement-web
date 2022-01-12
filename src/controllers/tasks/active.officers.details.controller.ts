@@ -17,13 +17,15 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const naturalSecretaryList = buildSecretaryList(officers);
     const corporateSecretaryList = buildCorporateOfficerList(officers, OFFICER_ROLE.SECRETARY);
     const naturalDirectorList = buildDirectorList(officers);
+    const corporateDirectorList = buildCorporateOfficerList(officers, OFFICER_ROLE.DIRECTOR);
 
     return res.render(Templates.ACTIVE_OFFICERS_DETAILS, {
       templateName: Templates.ACTIVE_OFFICERS_DETAILS,
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-      corporateSecretaryList,
       naturalSecretaryList,
+      corporateSecretaryList,
       naturalDirectorList,
+      corporateDirectorList
     });
   } catch (e) {
     return next(e);

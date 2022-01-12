@@ -41,62 +41,7 @@
         {% endset %}
 
         {% set corpDirectorsHTML %}
-        <h2 class="govuk-heading-">1 corporate director</h2>
-        <div class="govuk-summary-card govuk-!-margin-bottom-4">
-          <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center">
-            <p class="govuk-!-font-weight-bold govuk-!-margin-0">BROOKLYN NETS LTD</p>
-            {{govukTag({
-            text: "Active",
-            classes: "govuk-tag--green"
-            })}}
-          </div>
-          <div style="display: flex" class="govuk-!-padding-1">
-            <dl style="display: block" class="govuk-summary-list govuk-!-margin-3">
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Correspondence address</dt>
-                <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
-                  <p>2 Nets Way, Newcastle, NE2 3BB</p>
-                </dd>
-              </div>
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Appointed date</dt>
-                <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
-                  <p>20 June 2019</p>
-                </dd>
-              </div>
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Identification type</dt>
-                <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
-                  <p>UK limited company</p>
-                </dd>
-              </div>
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Law governed</dt>
-                <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
-                  <p>Company Law</p>
-                </dd>
-              </div>
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Legal form</dt>
-                <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
-                  <p>Limited</p>
-                </dd>
-              </div>
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Place registered</dt>
-                <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
-                  <p>United Kingdom</p>
-                </dd>
-              </div>
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Registration number</dt>
-                <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
-                  <p>0111222</p>
-                </dd>
-              </div>
-            </dl>
-          </div>
-        </div>
+           {% include "includes/corporate-directors.html" %}
         {% endset %}
 
       {% set officerRows = [] %}
