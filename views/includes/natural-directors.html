@@ -1,7 +1,7 @@
 {% if naturalDirectorList.length > 1 %}
-  <h2 class="govuk-heading-m">{{ naturalDirectorList.length }} directors</h2>
+  <h2 class="govuk-heading-">{{ naturalDirectorList.length }} directors</h2>
 {% elseif naturalDirectorList.length === 1 %}
-  <h2 class="govuk-heading-m">1 director</h2>
+  <h2 class="govuk-heading-">1 director</h2>
 {% endif %}
 {% for director in naturalDirectorList %}
   <div class="govuk-summary-card govuk-!-margin-bottom-4">
