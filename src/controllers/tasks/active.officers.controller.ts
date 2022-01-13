@@ -6,7 +6,7 @@ import {
   DIRECTOR_DETAILS_ERROR,
   RADIO_BUTTON_VALUE,
   SECTIONS,
-  WRONG_DETAILS_UPDATE_DIRECTOR,
+  WRONG_DETAILS_UPDATE_OFFICER,
   WRONG_DETAILS_UPDATE_OFFICERS } from "../../utils/constants";
 import { Session } from "@companieshouse/node-session-handler";
 import {
@@ -56,7 +56,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         templateName: Templates.WRONG_DETAILS,
         backLinkUrl: urlUtils.getUrlToPath(ACTIVE_OFFICERS_PATH, req),
         returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        stepOneHeading: WRONG_DETAILS_UPDATE_DIRECTOR,
+        stepOneHeading: WRONG_DETAILS_UPDATE_OFFICER,
         pageHeading: WRONG_DETAILS_UPDATE_OFFICERS,
       });
     } else {
