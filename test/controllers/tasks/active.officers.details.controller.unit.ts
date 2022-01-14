@@ -67,7 +67,7 @@ describe("Active officers details controller tests", () => {
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
 
       expect(mockGetActiveOfficerDetails).toHaveBeenCalled();
-      expect(response.text).toContain("MYERS, Micheal");
+      expect(response.text).toContain("MYERS");
       expect(response.text).toContain("10 Corpsecret Road, Corpsecrettown, Corpsecretshire, Corpsecretland, CS1 7SC");
       expect(response.text).toContain("1 January 2010");
       expect(response.text).toContain("Specific Law");
@@ -78,7 +78,7 @@ describe("Active officers details controller tests", () => {
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
 
       expect(mockGetActiveOfficerDetails).toHaveBeenCalled();
-      expect(response.text).toContain("BOND, James");
+      expect(response.text).toContain("BOND");
       expect(response.text).toContain("10 Corpdir Road, Corpdirtown, Corpdirshire, Corpdirland, CD1 7DC");
       expect(response.text).toContain("1 January 2011");
       expect(response.text).toContain("Company Law");
