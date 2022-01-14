@@ -72,6 +72,7 @@ describe("Active officers details controller tests", () => {
       expect(response.text).toContain("1 January 2010");
       expect(response.text).toContain("Specific Law");
       expect(response.text).toContain("11223344");
+      expect(response.text).toContain("Non European Economic Area");
     });
 
     it("Should display corporate director details", async () => {
@@ -83,6 +84,7 @@ describe("Active officers details controller tests", () => {
       expect(response.text).toContain("1 January 2011");
       expect(response.text).toContain("Company Law");
       expect(response.text).toContain("11111111");
+      expect(response.text).toContain("UK Limited Company");
     });
 
     it("Should navigate to an error page if the called service throws an error", async () => {

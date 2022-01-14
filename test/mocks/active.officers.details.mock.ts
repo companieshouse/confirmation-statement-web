@@ -151,7 +151,7 @@ export const mockActiveOfficersDetails: ActiveOfficerDetails[] = [
     registrationNumber: "11223344",
     lawGoverned: "Specific Law",
     legalForm: undefined,
-    identificationType: undefined,
+    identificationType: "non-eea",
     countryOfResidence: "UNITED KINGDOM"
   },
   {
@@ -170,7 +170,7 @@ export const mockActiveOfficersDetails: ActiveOfficerDetails[] = [
     registrationNumber: "11111111",
     lawGoverned: "Company Law",
     legalForm: undefined,
-    identificationType: undefined,
+    identificationType: "uk-limited-company",
     countryOfResidence: "UNITED KINGDOM"
   },
 ];
