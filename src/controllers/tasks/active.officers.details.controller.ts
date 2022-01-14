@@ -7,7 +7,7 @@ import { ActiveOfficerDetails } from "@companieshouse/api-sdk-node/dist/services
 import { getActiveOfficersDetailsData } from "../../services/active.officers.details.service";
 import { OFFICER_ROLE } from "../../utils/constants";
 import { formatAddress, formatAddressForDisplay, formatTitleCase } from "../../utils/format";
-import {lookupIdentificationType} from "../../utils/api.enumerations";
+import { lookupIdentificationType } from "../../utils/api.enumerations";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
