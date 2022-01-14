@@ -6,7 +6,9 @@ const KEY = "key";
 const SIC_CODE_KEY = "00011";
 const SIC_CODE_DESCRIPTION = "Test sic-code description";
 const PSC_STATEMENT_KEY = "psc-details-not-confirmed";
+const IDENTIFICATION_TYPE_KEY = "uk-limited-company";
 const PSC_STATEMENT_DESCRIPTION = "Test psc-details-not-confirmed description";
+const IDENTIFICATION_TYPE_DESCRIPTION = "UK Limited Company";
 
 jest.mock("js-yaml", () => {
   return {
@@ -23,13 +25,22 @@ jest.mock("js-yaml", () => {
         },
         statement_description: {
           [PSC_STATEMENT_KEY]: PSC_STATEMENT_DESCRIPTION
-        }
+        },
+        identification_type: {
+          [IDENTIFICATION_TYPE_KEY]: IDENTIFICATION_TYPE_DESCRIPTION
+        },
       };
     }),
   };
 });
 
-import { lookupCompanyStatus, lookupCompanyType, lookupPscStatementDescription, lookupSicCodeDescription } from "../../src/utils/api.enumerations";
+import {
+  lookupCompanyStatus,
+  lookupCompanyType,
+  lookupIdentificationType,
+  lookupPscStatementDescription,
+  lookupSicCodeDescription
+} from "../../src/utils/api.enumerations";
 
 describe("api enumeration tests", () => {
 
@@ -71,5 +82,20 @@ describe("api enumeration tests", () => {
   it("should return original psc statement key when there is no match for the psc statement key", () => {
     const readablePscStatement: string = lookupPscStatementDescription(KEY);
     expect(readablePscStatement).toEqual(KEY);
+  });
+
+  it("should return an identification type description when given a identification type statement key", () => {
+    const readableLookupIdentificationType: string = lookupIdentificationType(IDENTIFICATION_TYPE_KEY);
+    expect(readableLookupIdentificationType).toEqual(IDENTIFICATION_TYPE_DESCRIPTION);
+  });
+
+  it("should return original identification type key when there is no match for the identification type key", () => {
+    const readableLookupIdentificationType: string = lookupIdentificationType(KEY);
+    expect(readableLookupIdentificationType).toEqual(KEY);
+  });
+
+  it("should return an empty string when the identification type key is empty", () => {
+    const readableLookupIdentificationType: string = lookupIdentificationType("");
+    expect(readableLookupIdentificationType).toEqual("");
   });
 });

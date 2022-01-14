@@ -53,8 +53,7 @@ const buildCorporateOfficerList = (officers: ActiveOfficerDetails[], wantedOffic
       return {
         dateOfAppointment: officer.dateOfAppointment,
         forename: formatTitleCase(officer.foreName1),
-        identificationType: lookupIdentificationType(
-          officer.identificationType ? lookupIdentificationType(officer.identificationType) : ""),
+        identificationType: officer.identificationType ? lookupIdentificationType(officer.identificationType) : "",
         lawGoverned: officer.lawGoverned,
         legalForm: officer.legalForm,
         placeRegistered: officer.placeRegistered,
