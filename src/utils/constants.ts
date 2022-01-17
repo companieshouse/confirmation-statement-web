@@ -68,4 +68,4 @@ export enum OFFICER_ROLE {
   DIRECTOR = "DIRECTOR"
 }
 
-export const LEGAL_FORM_FORMAT_EXCLUDE_WORDS = ["LLC", "LTDA"];
+export const LEGAL_FORM_FORMAT_EXCLUDE_WORDS = ["LLC", "LTDA", "IBC"];

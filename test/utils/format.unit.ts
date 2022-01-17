@@ -1,7 +1,6 @@
 import { formatAddressForDisplay, formatTitleCase } from "../../src/utils/format";
 import { Address } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
-
-const EXCLUDED_WORDS = ["LLC", "LTDA"];
+import { LEGAL_FORM_FORMAT_EXCLUDE_WORDS } from "../../src/utils/constants";
 
 describe("formatTitleCase tests", () => {
   it("should return title case", () => {
@@ -21,8 +20,8 @@ describe("formatTitleCase tests", () => {
   });
 
   it("should not format excluded words", () => {
-    const result: string = formatTitleCase("THIS LLC should not BE converted LTDA", EXCLUDED_WORDS);
-    expect(result).toEqual("This LLC Should Not Be Converted LTDA");
+    const result: string = formatTitleCase("THIS LLC should not BE IBC converted LTDA", LEGAL_FORM_FORMAT_EXCLUDE_WORDS);
+    expect(result).toEqual("This LLC Should Not Be IBC Converted LTDA");
   });
 });
 
