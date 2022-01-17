@@ -8,7 +8,7 @@ import { lookupIdentificationType } from "../../../src/utils/api.enumerations";
 const mockGetActiveOfficerDetails = getActiveOfficersDetailsData as jest.Mock;
 const mockLookupIdentificationType = lookupIdentificationType as jest.Mock;
 
-describe("Active officers details controller tests", () => {
+describe("Api enumerations lookup tests for active officers", () => {
 
   beforeEach(() => {
     mockLookupIdentificationType.mockClear();
