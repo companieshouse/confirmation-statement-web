@@ -5,7 +5,7 @@ import { Templates } from "../../types/template.paths";
 import { Session } from "@companieshouse/node-session-handler";
 import { ActiveOfficerDetails } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getActiveOfficersDetailsData } from "../../services/active.officers.details.service";
-import { OFFICER_ROLE } from "../../utils/constants";
+import { LOCALE_EN, OFFICER_ROLE } from "../../utils/constants";
 import { formatAddress, formatAddressForDisplay, formatTitleCase } from "../../utils/format";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -38,7 +38,7 @@ const buildSecretaryList = (officers: ActiveOfficerDetails[]): any[] => {
     .map(officer => {
       return {
         forename: formatTitleCase(officer.foreName1),
-        surname: officer.surname,
+        surname: officer.surname.toLocaleUpperCase(LOCALE_EN),
         dateOfAppointment: officer.dateOfAppointment,
         serviceAddress: formatAddressForDisplay(formatAddress(officer.serviceAddress))
       };
@@ -53,12 +53,12 @@ const buildCorporateOfficerList = (officers: ActiveOfficerDetails[], wantedOffic
         dateOfAppointment: officer.dateOfAppointment,
         forename: formatTitleCase(officer.foreName1),
         identificationType: officer.identificationType,
-        lawGoverned: officer.lawGoverned,
-        legalForm: officer.legalForm,
-        placeRegistered: officer.placeRegistered,
+        lawGoverned: formatTitleCase(officer.lawGoverned),
+        legalForm: formatTitleCase(officer.legalForm),
+        placeRegistered: formatTitleCase(officer.placeRegistered),
         registrationNumber: officer.registrationNumber,
         serviceAddress: formatAddressForDisplay(formatAddress(officer.serviceAddress)),
-        surname: officer.surname
+        surname: officer.surname.toLocaleUpperCase(LOCALE_EN),
       };
     });
 };
@@ -69,12 +69,12 @@ const buildDirectorList = (officers: ActiveOfficerDetails[]): any[] => {
     .map(officer => {
       return {
         forename: formatTitleCase(officer.foreName1),
-        surname: officer.surname,
-        occupation: officer.occupation,
-        nationality: officer.nationality,
+        surname: officer.surname.toLocaleUpperCase(LOCALE_EN),
+        occupation: formatTitleCase(officer.occupation),
+        nationality: formatTitleCase(officer.nationality),
         dateOfBirth: officer.dateOfBirth,
         dateOfAppointment: officer.dateOfAppointment,
-        countryOfResidence: officer.countryOfResidence,
+        countryOfResidence: formatTitleCase(officer.countryOfResidence),
         serviceAddress: formatAddressForDisplay(formatAddress(officer.serviceAddress)),
         residentialAddress: formatAddressForDisplay(formatAddress(officer.residentialAddress))
       };
@@ -82,5 +82,5 @@ const buildDirectorList = (officers: ActiveOfficerDetails[]): any[] => {
 };
 
 const equalsIgnoreCase = (officerRole: string, wantedOfficerRole: OFFICER_ROLE): boolean => {
-  return wantedOfficerRole.localeCompare(officerRole, 'en', { sensitivity: 'accent' }) === 0;
+  return wantedOfficerRole.localeCompare(officerRole, LOCALE_EN, { sensitivity: 'accent' }) === 0;
 };

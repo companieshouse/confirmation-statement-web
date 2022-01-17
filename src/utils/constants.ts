@@ -16,6 +16,7 @@ export const WRONG_DETAILS_UPDATE_SECRETARY = "Update the secretary details";
 export const WRONG_DETAILS_UPDATE_OFFICER = "Update the officer details";
 export const WRONG_DETAILS_UPDATE_OFFICERS = "Incorrect Officer Details";
 export const PSC_STATEMENT_NAME_PLACEHOLDER = "{linked_psc_name}";
+export const LOCALE_EN = "en";
 
 export enum RADIO_BUTTON_VALUE {
   NO = "no",
