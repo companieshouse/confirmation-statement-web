@@ -1,11 +1,9 @@
 jest.mock("../../../src/utils/api.enumerations");
-jest.mock("../../../src/services/active.officers.details.service");
 
-import { getActiveOfficersDetailsData } from "../../../src/services/active.officers.details.service";
+import { activeOfficerDetails } from "../../../src/controllers/tasks/active.officers.details.controller";
 import { mockCorporateOfficerWithNullIdentificationType } from "../../mocks/active.officers.details.mock";
 import { lookupIdentificationType } from "../../../src/utils/api.enumerations";
 
-const mockGetActiveOfficerDetails = getActiveOfficersDetailsData as jest.Mock;
 const mockLookupIdentificationType = lookupIdentificationType as jest.Mock;
 
 describe("Api enumerations lookup tests for active officers", () => {
@@ -15,8 +13,10 @@ describe("Api enumerations lookup tests for active officers", () => {
   });
 
   it("Should not call identification type lookup when identification type is null", () => {
-    mockGetActiveOfficerDetails.mockResolvedValueOnce([
-      mockCorporateOfficerWithNullIdentificationType]);
+    const spyGetActiveOfficerDetails = jest.spyOn(activeOfficerDetails, "buildCorporateOfficerList");
+    spyGetActiveOfficerDetails.mockImplementationOnce(() => {
+      return [mockCorporateOfficerWithNullIdentificationType];
+    });
     expect(mockLookupIdentificationType).not.toHaveBeenCalled();
   });
 });

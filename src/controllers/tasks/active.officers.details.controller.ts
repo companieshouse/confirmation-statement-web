@@ -85,3 +85,7 @@ const buildDirectorList = (officers: ActiveOfficerDetails[]): any[] => {
 const equalsIgnoreCase = (officerRole: string, wantedOfficerRole: OFFICER_ROLE): boolean => {
   return wantedOfficerRole.localeCompare(officerRole, 'en', { sensitivity: 'accent' }) === 0;
 };
+
+export const activeOfficerDetails = {
+  buildCorporateOfficerList
+};
