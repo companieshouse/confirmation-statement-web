@@ -7,6 +7,7 @@ import { ActiveOfficerDetails } from "@companieshouse/api-sdk-node/dist/services
 import { getActiveOfficersDetailsData } from "../../services/active.officers.details.service";
 import { LOCALE_EN, OFFICER_ROLE } from "../../utils/constants";
 import { formatAddress, formatAddressForDisplay, formatTitleCase } from "../../utils/format";
+import { lookupIdentificationType } from "../../utils/api.enumerations";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -52,7 +53,7 @@ const buildCorporateOfficerList = (officers: ActiveOfficerDetails[], wantedOffic
       return {
         dateOfAppointment: officer.dateOfAppointment,
         forename: formatTitleCase(officer.foreName1),
-        identificationType: officer.identificationType,
+        identificationType: officer.identificationType ? lookupIdentificationType(officer.identificationType) : "",
         lawGoverned: formatTitleCase(officer.lawGoverned),
         legalForm: formatTitleCase(officer.legalForm),
         placeRegistered: formatTitleCase(officer.placeRegistered),

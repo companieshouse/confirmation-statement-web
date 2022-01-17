@@ -67,3 +67,5 @@ export enum OFFICER_ROLE {
   SECRETARY = "SECRETARY",
   DIRECTOR = "DIRECTOR"
 }
+
+export const legalFormUpperCaseOnlyValues = ["LLC", "LTDA"];
