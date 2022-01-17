@@ -3,6 +3,7 @@ jest.mock("../../../src/services/active.officers.details.service");
 jest.mock("../../../src/services/confirmation.statement.service");
 jest.mock("../../../src/utils/update.confirmation.statement.submission");
 jest.mock("../../../src/middleware/company.authentication.middleware");
+jest.mock("../../../src/utils/api.enumerations");
 
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
@@ -10,12 +11,17 @@ import app from "../../../src/app";
 import { ACTIVE_OFFICERS_DETAILS_PATH, urlParams } from "../../../src/types/page.urls";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
 import { getActiveOfficersDetailsData } from "../../../src/services/active.officers.details.service";
-import { mockActiveOfficersDetails } from "../../mocks/active.officers.details.mock";
+import {
+  mockActiveOfficersDetails,
+  mockCorporateOfficerWithNullIdentificationType } from "../../mocks/active.officers.details.mock";
+import { lookupIdentificationType } from "../../../src/utils/api.enumerations";
+
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 const mockGetActiveOfficerDetails = getActiveOfficersDetailsData as jest.Mock;
 mockGetActiveOfficerDetails.mockResolvedValue(mockActiveOfficersDetails);
+const mockLookupIdentificationType = lookupIdentificationType as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
 const ACTIVE_OFFICER_DETAILS_URL = ACTIVE_OFFICERS_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
@@ -30,6 +36,7 @@ describe("Active officers details controller tests", () => {
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
     mockGetActiveOfficerDetails.mockClear();
+    mockLookupIdentificationType.mockClear();
   });
 
   describe("get tests", () => {
@@ -64,6 +71,7 @@ describe("Active officers details controller tests", () => {
     });
 
     it("Should display corporate secretary details", async () => {
+      mockLookupIdentificationType.mockReturnValueOnce("Non European Economic Area");
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
 
       expect(mockGetActiveOfficerDetails).toHaveBeenCalled();
@@ -76,6 +84,7 @@ describe("Active officers details controller tests", () => {
     });
 
     it("Should display corporate director details", async () => {
+      mockLookupIdentificationType.mockReturnValueOnce("UK Limited Company");
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
 
       expect(mockGetActiveOfficerDetails).toHaveBeenCalled();
@@ -93,6 +102,15 @@ describe("Active officers details controller tests", () => {
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
 
       expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+    });
+
+    it("Should not call identification type lookup when identification type is null", async () => {
+      mockGetActiveOfficerDetails.mockReturnValueOnce([
+        mockCorporateOfficerWithNullIdentificationType]);
+
+      await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
+
+      expect(mockLookupIdentificationType).not.toHaveBeenCalled();
     });
 
   });
