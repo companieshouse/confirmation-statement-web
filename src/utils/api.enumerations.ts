@@ -26,3 +26,7 @@ export const lookupSicCodeDescription = (sicCode: string): string => {
 export const lookupPscStatementDescription = (pscStatementKey: string): string => {
   return pscDescriptions.statement_description[pscStatementKey] || pscStatementKey;
 };
+
+export const lookupIdentificationType = (identificationTypeKey: string): string => {
+  return apiConstants.identification_type[identificationTypeKey] || identificationTypeKey;
+};

@@ -151,7 +151,7 @@ export const mockActiveOfficersDetails: ActiveOfficerDetails[] = [
     registrationNumber: "11223344",
     lawGoverned: "Specific Law",
     legalForm: undefined,
-    identificationType: undefined,
+    identificationType: "non-eea",
     countryOfResidence: "UNITED KINGDOM"
   },
   {
@@ -170,10 +170,30 @@ export const mockActiveOfficersDetails: ActiveOfficerDetails[] = [
     registrationNumber: "11111111",
     lawGoverned: "Company Law",
     legalForm: undefined,
-    identificationType: undefined,
+    identificationType: "uk-limited-company",
     countryOfResidence: "UNITED KINGDOM"
   },
 ];
+
+export const mockCorporateOfficerWithNullIdentificationType: ActiveOfficerDetails = {
+  foreName1: "JAMES",
+  foreName2: "MiddleName",
+  surname: "BOND",
+  occupation: "secret agent",
+  nationality: "British",
+  dateOfBirth: "1 January 1967",
+  dateOfAppointment: "1 January 2011",
+  serviceAddress: mockAddress5,
+  residentialAddress: mockAddress2,
+  isCorporate: true,
+  role: "Director",
+  placeRegistered: undefined,
+  registrationNumber: "11111111",
+  lawGoverned: "Company Law",
+  legalForm: undefined,
+  identificationType: undefined,
+  countryOfResidence: "UNITED KINGDOM"
+};
 
 export const mockSecureActiveOfficersDetails: ActiveOfficerDetails = {
   foreName1: "JOHN",
