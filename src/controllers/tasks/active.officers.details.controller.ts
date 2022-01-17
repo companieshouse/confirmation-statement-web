@@ -5,7 +5,7 @@ import { Templates } from "../../types/template.paths";
 import { Session } from "@companieshouse/node-session-handler";
 import { ActiveOfficerDetails } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getActiveOfficersDetailsData } from "../../services/active.officers.details.service";
-import { LOCALE_EN, OFFICER_ROLE } from "../../utils/constants";
+import { LEGAL_FORM_FORMAT_EXCLUDE_WORDS, LOCALE_EN, OFFICER_ROLE } from "../../utils/constants";
 import { formatAddress, formatAddressForDisplay, formatTitleCase } from "../../utils/format";
 import { lookupIdentificationType } from "../../utils/api.enumerations";
 
@@ -55,7 +55,7 @@ const buildCorporateOfficerList = (officers: ActiveOfficerDetails[], wantedOffic
         forename: formatTitleCase(officer.foreName1),
         identificationType: officer.identificationType ? lookupIdentificationType(officer.identificationType) : "",
         lawGoverned: formatTitleCase(officer.lawGoverned),
-        legalForm: formatTitleCase(officer.legalForm),
+        legalForm: formatTitleCase(officer.legalForm, LEGAL_FORM_FORMAT_EXCLUDE_WORDS),
         placeRegistered: formatTitleCase(officer.placeRegistered),
         registrationNumber: officer.registrationNumber,
         serviceAddress: formatAddressForDisplay(formatAddress(officer.serviceAddress)),

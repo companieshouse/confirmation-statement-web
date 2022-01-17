@@ -1,14 +1,17 @@
 import { RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { ActiveOfficerDetails, Address, PersonOfSignificantControl } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
-export const formatTitleCase = (str: string|undefined): string =>  {
+export const formatTitleCase = (str: string|undefined, excludeWords?: string[]): string =>  {
   if (!str) {
     return "";
   }
 
   return str.replace(
     /\w\S*/g, (word) => {
-      return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
+      if (excludeWords && excludeWords.includes(word)) {
+        return word;
+      }
+      return word.charAt(0).toUpperCase() + word.substring(1).toLowerCase();
     });
 };
 
