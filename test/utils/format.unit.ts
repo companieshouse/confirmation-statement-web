@@ -1,9 +1,7 @@
 import { formatAddressForDisplay, formatTitleCase } from "../../src/utils/format";
 import { Address } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
-const LLC = "LLC";
-const LTDA = "LTDA";
-const EXCLUDED_WORDS = [LLC, LTDA];
+const EXCLUDED_WORDS = ["LLC", "LTDA"];
 
 describe("formatTitleCase tests", () => {
   it("should return title case", () => {
