@@ -74,7 +74,9 @@ describe("Active officers details controller tests", () => {
       expect(response.text).toContain("1 January 2012");
       expect(response.text).toContain("Diddly Squat Farm Shop, Chadlington, Thisshire, England, OX7 3PE");
       expect(response.text).toContain("Abc, 1, 10, 10 This Road, This, This Town, Thisshire, Thisland, TH1 1AB");
-      expect(response.text).toContain("singer");
+      expect(response.text).toContain("Singer");
+      expect(response.text).toContain("British");
+      expect(response.text).toContain("United Kingdom");
     });
 
     it("Should display corporate secretary details", async () => {
@@ -88,6 +90,11 @@ describe("Active officers details controller tests", () => {
       expect(response.text).toContain("Specific Law");
       expect(response.text).toContain("11223344");
       expect(response.text).toContain("Non European Economic Area");
+      expect(response.text).toContain("British");
+      expect(response.text).toContain("United Kingdom");
+      expect(response.text).toContain("PRIVATE LIMITED");
+      expect(response.text).toContain("Specific Law");
+      expect(response.text).toContain("Scunthorpe");
     });
 
     it("Should display corporate director details", async () => {
@@ -95,12 +102,16 @@ describe("Active officers details controller tests", () => {
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
 
       expect(mockGetActiveOfficerDetails).toHaveBeenCalled();
-      expect(response.text).toContain("BOND");
+      expect(response.text).toContain("COMPANY LTD");
       expect(response.text).toContain("10 Corpdir Road, Corpdirtown, Corpdirshire, Corpdirland, CD1 7DC");
       expect(response.text).toContain("1 January 2011");
       expect(response.text).toContain("Company Law");
       expect(response.text).toContain("11111111");
       expect(response.text).toContain("UK Limited Company");
+      expect(response.text).toContain("British");
+      expect(response.text).toContain("United Kingdom");
+      expect(response.text).toContain("Stranraer");
+      expect(response.text).toContain("LLC");
     });
 
     it("Should navigate to an error page if the called service throws an error", async () => {

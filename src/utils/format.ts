@@ -8,7 +8,7 @@ export const formatTitleCase = (str: string|undefined): string =>  {
 
   return str.replace(
     /\w\S*/g, (word) => {
-      return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
+      return word.charAt(0).toUpperCase() + word.substring(1).toLowerCase();
     });
 };
 
@@ -92,4 +92,11 @@ export const formatPSCForDisplay = (psc: PersonOfSignificantControl): PersonOfSi
   clonedPsc.legalForm = formatTitleCase(psc.legalForm);
 
   return clonedPsc;
+};
+
+export const toUpperCase = (str: string | undefined): string => {
+  if (!str) {
+    return "";
+  }
+  return str.toUpperCase();
 };
