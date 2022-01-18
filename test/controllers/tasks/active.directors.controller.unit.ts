@@ -9,7 +9,7 @@ import request from "supertest";
 import app from "../../../src/app";
 import { ACTIVE_OFFICERS_PATH, TASK_LIST_PATH, urlParams } from "../../../src/types/page.urls";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
-import { OFFICER_DETAILS_ERROR, SECTIONS } from "../../../src/utils/constants";
+import { DIRECTOR_DETAILS_ERROR, SECTIONS } from "../../../src/utils/constants";
 import { urlUtils } from "../../../src/utils/url";
 import { mockActiveOfficerDetails, mockActiveOfficerDetailsFormatted, mockSecureActiveOfficerDetailsFormatted } from "../../mocks/active.director.details.mock";
 import { formatAddressForDisplay, formatOfficerDetails } from "../../../src/utils/format";
@@ -164,7 +164,7 @@ describe("Active directors controller tests", () => {
       const response = await request(app).post(ACTIVE_OFFICER_DETAILS_URL);
       expect(response.status).toEqual(200);
       expect(response.text).toContain(PAGE_HEADING);
-      expect(response.text).toContain(OFFICER_DETAILS_ERROR);
+      expect(response.text).toContain(DIRECTOR_DETAILS_ERROR);
     });
 
     it("Should return an error page if error is thrown in post function", async () => {
