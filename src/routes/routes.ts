@@ -42,6 +42,7 @@ router.get(urls.ACTIVE_OFFICERS, activeOfficers.get);
 router.post(urls.ACTIVE_OFFICERS, activeOfficers.post);
 
 router.get(urls.ACTIVE_OFFICERS_DETAILS, activeOfficersDetails.get);
+router.post(urls.ACTIVE_OFFICERS_DETAILS, activeOfficersDetails.post);
 
 router.get(urls.CONFIRM_COMPANY, confirmCompanyRoute.get);
 router.post(urls.CONFIRM_COMPANY, confirmCompanyRoute.post);

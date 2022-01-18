@@ -3,7 +3,7 @@ import { Templates } from "../../types/template.paths";
 import { ACTIVE_OFFICERS_PATH, TASK_LIST_PATH } from "../../types/page.urls";
 import { urlUtils } from "../../utils/url";
 import {
-  DIRECTOR_DETAILS_ERROR,
+  OFFICER_DETAILS_ERROR,
   RADIO_BUTTON_VALUE,
   SECTIONS,
   WRONG_DETAILS_UPDATE_OFFICER,
@@ -66,7 +66,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const residentialAddress = formatAddressForDisplay(activeOfficerDetails?.residentialAddress);
       return res.render(Templates.ACTIVE_OFFICERS, {
         backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        officerErrorMsg: DIRECTOR_DETAILS_ERROR,
+        officerErrorMsg: OFFICER_DETAILS_ERROR,
         templateName: Templates.ACTIVE_OFFICERS,
         activeOfficerDetails,
         serviceAddress,

@@ -14,16 +14,22 @@
 {% block content %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-three-quarters">
-    {% if errorList.length > 0 %}
-    {{ govukErrorSummary({
-      titleText: "There is a problem",
-      errorList: [
-        {
-          text: "Select yes if the director details are correct",
-          href: "#officers"
-        }
-      ]
-    }) }}
+    {% if officerErrorMsg %}
+      {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: [
+          {
+            text: officerErrorMsg,
+            href: "#officers"
+          }
+        ]
+      }) }}
+      {% set activeOfficersError = {
+        text: officerErrorMsg
+      }
+      %}
+    {% else %}
+      {% set activeOfficersError = false %}
     {% endif %}
     <form action="" method="post">
       <h1 class="govuk-heading-l">Check the officers' details</h1>
@@ -65,8 +71,8 @@
       {{ govukRadios({
         classes: "govuk-radios",
         idPrefix: "officers",
-        name: "officers",
-        errorMessage: directorDetailsError,
+        name: "activeOfficers",
+        errorMessage: activeOfficersError,
         fieldset: {
           legend: {
             html: "Are the officer details correct?",
