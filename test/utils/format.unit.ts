@@ -1,4 +1,4 @@
-import { formatAddressForDisplay, formatTitleCase } from "../../src/utils/format";
+import { formatAddressForDisplay, formatTitleCase, toUpperCase } from "../../src/utils/format";
 import { Address } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 describe("formatTitleCase tests", () => {
@@ -30,5 +30,22 @@ describe("formatAddressForDisplay tests", () => {
     const formattedAddress: string = formatAddressForDisplay(address);
 
     expect(formattedAddress).toBe("10 my street, South Glamorgan, UK, CF1 1AA");
+  });
+});
+
+describe("toUpperCase tests", () => {
+  it("should convert to upper case", () => {
+    const result: string = toUpperCase("this is a test");
+    expect(result).toBe("THIS IS A TEST");
+  });
+
+  it("should convert to upper case with special chars", () => {
+    const result: string = toUpperCase("thîs is á têst");
+    expect(result).toBe("THÎS IS Á TÊST");
+  });
+
+  it("should return empty string if passed undefined", () => {
+    const result: string = toUpperCase(undefined);
+    expect(result).toBe("");
   });
 });

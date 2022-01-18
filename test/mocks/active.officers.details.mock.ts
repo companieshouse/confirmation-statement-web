@@ -235,7 +235,6 @@ export const mockActiveOfficersDetailsFormatted: ActiveOfficerDetails = {
   countryOfResidence: "UNITED KINGDOM"
 };
 
-
 export const mockSecureActiveOfficersDetailsFormatted: ActiveOfficerDetails = {
   foreName1: "John",
   foreName2: "MiddleName",
