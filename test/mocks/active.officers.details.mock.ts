@@ -150,7 +150,7 @@ export const mockActiveOfficersDetails: ActiveOfficerDetails[] = [
     placeRegistered: "scunthorpe",
     registrationNumber: "11223344",
     lawGoverned: "specific law",
-    legalForm: "PRIVATE LIMITED",
+    legalForm: "private limited",
     identificationType: "non-eea",
     countryOfResidence: "UNITED KINGDOM"
   },

@@ -85,7 +85,7 @@ describe("Active officers details controller tests", () => {
       expect(response.text).toContain("Non European Economic Area");
       expect(response.text).toContain("British");
       expect(response.text).toContain("United Kingdom");
-      expect(response.text).toContain("Private Limited");
+      expect(response.text).toContain("PRIVATE LIMITED");
       expect(response.text).toContain("Specific Law");
       expect(response.text).toContain("Scunthorpe");
     });
