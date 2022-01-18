@@ -1,12 +1,21 @@
 import { NextFunction, Request, Response } from "express";
-import { TASK_LIST_PATH } from "../../types/page.urls";
+import { ACTIVE_OFFICERS_DETAILS_PATH, TASK_LIST_PATH } from "../../types/page.urls";
 import { urlUtils } from "../../utils/url";
 import { Templates } from "../../types/template.paths";
 import { Session } from "@companieshouse/node-session-handler";
-import { ActiveOfficerDetails } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { ActiveOfficerDetails, SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getActiveOfficersDetailsData } from "../../services/active.officers.details.service";
-import { LOCALE_EN, OFFICER_ROLE } from "../../utils/constants";
+import {
+  LOCALE_EN,
+  OFFICER_DETAILS_ERROR,
+  OFFICER_ROLE,
+  RADIO_BUTTON_VALUE,
+  SECTIONS,
+  WRONG_DETAILS_UPDATE_OFFICER,
+  WRONG_DETAILS_UPDATE_OFFICERS
+} from "../../utils/constants";
 import { formatAddress, formatAddressForDisplay, formatTitleCase, toUpperCase } from "../../utils/format";
+import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { lookupIdentificationType } from "../../utils/api.enumerations";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -15,19 +24,52 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const session: Session = req.session as Session;
     const officers: ActiveOfficerDetails[] = await getActiveOfficersDetailsData(session, transactionId, submissionId);
-    const naturalSecretaryList = buildSecretaryList(officers);
-    const corporateSecretaryList = buildCorporateOfficerList(officers, OFFICER_ROLE.SECRETARY);
-    const naturalDirectorList = buildDirectorList(officers);
-    const corporateDirectorList = buildCorporateOfficerList(officers, OFFICER_ROLE.DIRECTOR);
+    const officerLists = buildOfficerLists(officers);
 
     return res.render(Templates.ACTIVE_OFFICERS_DETAILS, {
       templateName: Templates.ACTIVE_OFFICERS_DETAILS,
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-      naturalSecretaryList,
-      corporateSecretaryList,
-      naturalDirectorList,
-      corporateDirectorList
+      naturalSecretaryList: officerLists.naturalSecretaryList,
+      corporateSecretaryList: officerLists.corporateSecretaryList,
+      naturalDirectorList: officerLists.naturalDirectorList,
+      corporateDirectorList: officerLists.corporateDirectorList
     });
+  } catch (e) {
+    return next(e);
+  }
+};
+
+export const post = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const officersDetailsBtnValue = req.body.activeOfficers;
+    if (officersDetailsBtnValue === RADIO_BUTTON_VALUE.YES || officersDetailsBtnValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
+      await sendUpdate(req, SECTIONS.ACTIVE_OFFICER, SectionStatus.CONFIRMED);
+      return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
+    } else if (officersDetailsBtnValue === RADIO_BUTTON_VALUE.NO) {
+      await sendUpdate(req, SECTIONS.ACTIVE_OFFICER, SectionStatus.NOT_CONFIRMED);
+      return res.render(Templates.WRONG_DETAILS, {
+        templateName: Templates.WRONG_DETAILS,
+        backLinkUrl: urlUtils.getUrlToPath(ACTIVE_OFFICERS_DETAILS_PATH, req),
+        returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+        stepOneHeading: WRONG_DETAILS_UPDATE_OFFICER,
+        pageHeading: WRONG_DETAILS_UPDATE_OFFICERS,
+      });
+    } else {
+      const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+      const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+      const session: Session = req.session as Session;
+      const officers: ActiveOfficerDetails[] = await getActiveOfficersDetailsData(session, transactionId, submissionId);
+      const officerLists = buildOfficerLists(officers);
+      return res.render(Templates.ACTIVE_OFFICERS_DETAILS, {
+        backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+        officerErrorMsg: OFFICER_DETAILS_ERROR,
+        templateName: Templates.ACTIVE_OFFICERS_DETAILS,
+        naturalSecretaryList: officerLists.naturalSecretaryList,
+        corporateSecretaryList: officerLists.corporateSecretaryList,
+        naturalDirectorList: officerLists.naturalDirectorList,
+        corporateDirectorList: officerLists.corporateDirectorList
+      });
+    }
   } catch (e) {
     return next(e);
   }
@@ -80,6 +122,15 @@ const buildDirectorList = (officers: ActiveOfficerDetails[]): any[] => {
         residentialAddress: formatAddressForDisplay(formatAddress(officer.residentialAddress))
       };
     });
+};
+
+const buildOfficerLists = (officers: ActiveOfficerDetails[]): any => {
+  return {
+    naturalSecretaryList: buildSecretaryList(officers),
+    corporateSecretaryList: buildCorporateOfficerList(officers, OFFICER_ROLE.SECRETARY),
+    naturalDirectorList: buildDirectorList(officers),
+    corporateDirectorList: buildCorporateOfficerList(officers, OFFICER_ROLE.DIRECTOR),
+  };
 };
 
 const equalsIgnoreCase = (officerRole: string, wantedOfficerRole: OFFICER_ROLE): boolean => {

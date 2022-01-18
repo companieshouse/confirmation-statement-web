@@ -8,25 +8,31 @@ jest.mock("../../../src/utils/api.enumerations");
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
-import { ACTIVE_OFFICERS_DETAILS_PATH, urlParams } from "../../../src/types/page.urls";
+import { ACTIVE_OFFICERS_DETAILS_PATH, TASK_LIST_PATH, urlParams } from "../../../src/types/page.urls";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
 import { getActiveOfficersDetailsData } from "../../../src/services/active.officers.details.service";
 import {
   mockActiveOfficersDetails,
   mockCorporateOfficerWithNullIdentificationType } from "../../mocks/active.officers.details.mock";
 import { lookupIdentificationType } from "../../../src/utils/api.enumerations";
-
+import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { OFFICER_DETAILS_ERROR, SECTIONS } from "../../../src/utils/constants";
+import { urlUtils } from "../../../src/utils/url";
+import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 const mockGetActiveOfficerDetails = getActiveOfficersDetailsData as jest.Mock;
 mockGetActiveOfficerDetails.mockResolvedValue(mockActiveOfficersDetails);
 const mockLookupIdentificationType = lookupIdentificationType as jest.Mock;
+const mockSendUpdate = sendUpdate as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
 const ACTIVE_OFFICER_DETAILS_URL = ACTIVE_OFFICERS_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 const PAGE_HEADING = "Check the officers' details";
+const WRONG_OFFICER_PAGE_HEADING = "Incorrect Officer Details";
 
 
 describe("Active officers details controller tests", () => {
@@ -37,6 +43,7 @@ describe("Active officers details controller tests", () => {
     mocks.mockSessionMiddleware.mockClear();
     mockGetActiveOfficerDetails.mockClear();
     mockLookupIdentificationType.mockClear();
+    mockSendUpdate.mockClear();
   });
 
   describe("get tests", () => {
@@ -123,6 +130,58 @@ describe("Active officers details controller tests", () => {
 
       expect(mockLookupIdentificationType).not.toHaveBeenCalled();
     });
+  });
 
+  describe("post tests", () => {
+
+    it("Should return to task list page when officer details are confirmed", async () => {
+      const response = await request(app)
+        .post(ACTIVE_OFFICER_DETAILS_URL)
+        .send({ activeOfficers: "yes" });
+
+      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ACTIVE_OFFICER);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(TASK_LIST_URL);
+    });
+
+    it("Should go to stop page when officer details radio button is no", async () => {
+      const response = await request(app)
+        .post(ACTIVE_OFFICER_DETAILS_URL)
+        .send({ activeOfficers: "no" });
+
+      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ACTIVE_OFFICER);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(WRONG_OFFICER_PAGE_HEADING);
+    });
+
+    it("Should redirect to task list when recently filed radio button is selected", async () => {
+      const response = await request(app)
+        .post(ACTIVE_OFFICER_DETAILS_URL)
+        .send({ activeOfficers: "recently_filed" });
+
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(TASK_LIST_URL);
+      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ACTIVE_OFFICER);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+    });
+
+    it("Should redisplay active officers details page with error when radio button is not selected", async () => {
+      const response = await request(app).post(ACTIVE_OFFICER_DETAILS_URL);
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain(OFFICER_DETAILS_ERROR);
+    });
+
+    it("Should return an error page if error is thrown in post function", async () => {
+      const spyGetUrl = jest.spyOn(urlUtils, "getUrlToPath");
+      spyGetUrl.mockImplementationOnce(() => { throw new Error(); });
+      const response = await request(app).post(ACTIVE_OFFICER_DETAILS_URL);
+
+      expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+      // restore original function so it is no longer mocked
+      spyGetUrl.mockRestore();
+    });
   });
 });

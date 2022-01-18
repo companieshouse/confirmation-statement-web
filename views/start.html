@@ -22,7 +22,7 @@
       {% endset %}
 
       {% set insetHTML %}
-        <p>Your WebFiling details will not work with this service. You will need to register a Companies House account if you do not already have one, which you can do within this service.</p>
+        <p>You cannot pay with a Companies House payment account in this service.</p>
       {% endset %}
 
       <h1 class="govuk-heading-xl">
@@ -33,7 +33,7 @@
       <p class="govuk-body govuk-!-font-weight-bold">You can only use this service if the company:</p>
       <ul class="govuk-list govuk-list--bullet">
         {% if FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 === "true" %}
-          <li>is a private limited company</li>
+          <li>is a private company limited by shares</li>
           <li>has only one shareholder</li>
           <li>has 5 officers or less</li>
           <li>has 5 people with significant control (PSCs) or less</li>
