@@ -1,6 +1,5 @@
 import { RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { ActiveOfficerDetails, Address, PersonOfSignificantControl } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
-import { LOCALE_EN } from "./constants";
 
 export const formatTitleCase = (str: string|undefined): string =>  {
   if (!str) {
@@ -99,5 +98,5 @@ export const toUpperCase = (str: string | undefined): string => {
   if (!str) {
     return "";
   }
-  return str.toLocaleUpperCase(LOCALE_EN);
+  return str.toUpperCase();
 };
