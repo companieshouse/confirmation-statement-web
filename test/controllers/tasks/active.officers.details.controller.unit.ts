@@ -2,7 +2,6 @@ jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/active.officers.details.service");
 jest.mock("../../../src/services/confirmation.statement.service");
 jest.mock("../../../src/utils/update.confirmation.statement.submission");
-jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/utils/api.enumerations");
 
 import mocks from "../../mocks/all.middleware.mock";

@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import * as activeOfficers from "../controllers/tasks/active.officers.controller";
 import * as activeOfficersDetails from "../controllers/tasks/active.officers.details.controller";
+import * as activePscDetails from "../controllers/tasks/active.psc.details.controller";
 import * as confirmCompanyRoute from "../controllers/confirm.company.controller";
 import * as companyNumberRoute from "../controllers/company.number.controller";
 import * as createTransactionRoute from "../controllers/create.transaction.controller";
@@ -63,6 +64,8 @@ router.post(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.post);
 
 router.get(urls.PEOPLE_WITH_SIGNIFICANT_CONTROL, peopleWithSignificantControlRoute.get);
 router.post(urls.PEOPLE_WITH_SIGNIFICANT_CONTROL, peopleWithSignificantControlRoute.post);
+
+router.get(urls.ACTIVE_PSC_DETAILS, activePscDetails.get);
 
 router.get(urls.PSC_STATEMENT, pscStatementRoute.get);
 router.post(urls.PSC_STATEMENT, pscStatementRoute.post);
