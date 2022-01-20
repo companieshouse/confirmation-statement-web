@@ -7,10 +7,7 @@
 {% endblock %}
 
 {% block backLink %}
-  {{ govukBackLink({
-    text: "Back",
-    href: "/task-list"
-   }) }}
+  {% include "includes/back-link.html" %}
 {% endblock %}
 
 {% block content %}
