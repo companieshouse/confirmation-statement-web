@@ -1,5 +1,3 @@
-import {mockPscList} from "../../mocks/active.psc.details.controller.mock";
-
 jest.mock("../../../src/services/psc.service");
 
 import mocks from "../../mocks/all.middleware.mock";
@@ -7,6 +5,7 @@ import request from "supertest";
 import app from "../../../src/app";
 import { ACTIVE_PSC_DETAILS_PATH, urlParams } from "../../../src/types/page.urls";
 import { getPscs } from "../../../src/services/psc.service";
+import { mockPscList } from "../../mocks/active.psc.details.controller.mock";
 
 const COMPANY_NUMBER = "12345678";
 const ACTIVE_PSC_DETAILS_URL = ACTIVE_PSC_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);

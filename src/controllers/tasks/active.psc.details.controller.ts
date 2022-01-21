@@ -5,11 +5,9 @@ import { urlUtils } from "../../utils/url";
 import { PersonOfSignificantControl } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getPscs } from "../../services/psc.service";
 import { Session } from "@companieshouse/node-session-handler";
-import { appointmentTypes, LOCALE_EN } from "../../utils/constants";
-import { formatAddressForDisplay, formatPSCForDisplay } from "../../utils/format";
+import { appointmentTypes } from "../../utils/constants";
+import { equalsIgnoreCase, formatAddressForDisplay, formatPSCForDisplay } from "../../utils/format";
 import { toReadableFormat } from "../../utils/date";
-
-
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -51,8 +49,4 @@ const buildIndividualPscList = (pscs: PersonOfSignificantControl[]): any[] => {
         dateOfAppointment: dateOfAppointment
       };
     });
-};
-
-const equalsIgnoreCase = (pscType: string, wantedPscType: string): boolean => {
-  return wantedPscType.localeCompare(pscType, LOCALE_EN, { sensitivity: 'accent' }) === 0;
 };
