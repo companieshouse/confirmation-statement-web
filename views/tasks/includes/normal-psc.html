@@ -15,12 +15,6 @@
     <div style="display: flex; border-bottom: 0" class="govuk-!-padding-1">
       <dl style="display: block" class="govuk-summary-list govuk-!-margin-3">
         <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">Notification date</dt>
-          <dd class="govuk-summary-list__value">
-            <p>{{ psc.dateOfAppointment }}</p>
-          </dd>
-        </div>
-        <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Nationality</dt>
           <dd class="govuk-summary-list__value">
             <p>{{ psc.formattedPsc.nationality }}</p>
@@ -36,6 +30,12 @@
           <dt class="govuk-summary-list__key">Date of birth</dt>
           <dd class="govuk-summary-list__value">
             <p>{{ psc.dob }}</p>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Notification date</dt>
+          <dd class="govuk-summary-list__value">
+            <p>{{ psc.dateOfAppointment }}</p>
           </dd>
         </div>
         <div class="govuk-summary-list__row">
