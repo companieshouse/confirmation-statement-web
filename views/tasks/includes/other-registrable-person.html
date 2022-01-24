@@ -1,0 +1,57 @@
+{% if orpPscList.length > 1 %}
+  <h2 class="govuk-heading-m">{{ orpPscList.length }} other registrable people</h2>
+{% else %}
+  <h2 class="govuk-heading-m">1 other registrable person</h2>
+{% endif %}
+{% for orp in orpPscList %}
+  <div class="govuk-summary-card govuk-!-margin-bottom-4">
+    <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center">
+      <p class="govuk-!-font-weight-bold govuk-!-margin-0">{{ rle.formattedPsc.nameElements.surname }}</p>
+      {{govukTag({
+        text: "Active",
+        classes: "govuk-tag--green"
+      }) }}
+    </div>
+    <div style="display: flex" class="govuk-!-padding-1" style="border-bottom: 0px">
+      <dl style="display: block" class="govuk-summary-list govuk-!-margin-3">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Notification date</dt>
+          <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+            <p>{{ orp.dateOfAppointment }}</p>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Correspondence address</dt>
+          <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+            <p>{{ orp.serviceAddress }}</p>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Legal form</dt>
+          <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+            <p>{{ orp.formattedPsc.legalForm }}</p>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Law governed</dt>
+          <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+            <p>{{ orp.formattedPsc.lawGoverned }}</p>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Nature of control</dt>
+          <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+            <ul class="govuk-bullet__list">
+              {% for noc in orp.formattedPsc.naturesOfControl %}
+                <li>
+                  <p>{{ noc }}</p>
+                </li>
+              {% endfor %}
+            </ul>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+{% endfor %}
+
