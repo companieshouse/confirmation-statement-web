@@ -41,70 +41,11 @@
             html: pscDetails
           }) }}
 
-          {% set pscHTML %}
-            <h2 class="govuk-heading-m">1 individual person</h2>
-            <div class="govuk-summary-card govuk-!-margin-bottom-4">
-              <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center">
-                <p class="govuk-!-font-weight-bold govuk-!-margin-0">IRVING, Kyrie</p>
-                  {{govukTag({
-                    text: "Active",
-                    classes: "govuk-tag--green"
-                  })}}
-              </div>
-              <div style="display: flex" class="govuk-!-padding-1" style="border-bottom: 0px">
-                <dl style="display: block" class="govuk-summary-list govuk-!-margin-3">
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Nationality</dt>
-                      <dd class="govuk-summary-list__value">
-                        <p>British</p>
-                      </dd>
-                  </div>
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Country of residence</dt>
-                      <dd class="govuk-summary-list__value">
-                        <p>England</p>
-                      </dd>
-                  </div>
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Date of birth</dt>
-                      <dd class="govuk-summary-list__value">
-                        <p>1 January 1988</p>
-                      </dd>
-                  </div>
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Notification date</dt>
-                      <dd class="govuk-summary-list__value">
-                        <p>1 January 2019</p>
-                      </dd>
-                  </div>
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Correspondence address</dt>
-                      <dd class="govuk-summary-list__value">
-                        <p>2 Nets Way, Newcastle, NE2 3BB</p>
-                      </dd>
-                  </div>
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Usual residential address</dt>
-                      <dd class="govuk-summary-list__value">
-                        <p>1 Bucks Street, Birmingham, BD6 6JD</p>
-                      </dd>
-                  </div>
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Nature of control</dt>
-                    <dd class="govuk-summary-list__value">
-                      <ul class="govuk-bullet__list">
-                        <li>
-                          <p>Ownership of voting rights - more than 50%</p>
-                        </li>
-                        <li>
-                          <p>Ownership of shares - more than 50%</p>
-                        </li>
-                      </ul>
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-            </div>
+          {% set individualPscHtml %}
+            {% include "tasks/includes/normal-psc.html" %}
+          {% endset %}
+
+          {% set todoHtml %}
             <h2 class="govuk-heading-m">1 relevant legal entity</h2>
             <div class="govuk-summary-card govuk-!-margin-bottom-4">
               <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center">
@@ -177,10 +118,10 @@
             <div class="govuk-summary-card govuk-!-margin-bottom-4">
               <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center">
                 <p class="govuk-!-font-weight-bold govuk-!-margin-0">AYR BAPTIST CHURCH</p>
-                 {{govukTag({
+                {{govukTag({
                   text: "Active",
                   classes: "govuk-tag--green"
-                 })}}
+                })}}
               </div>
               <div style="display: flex" class="govuk-!-padding-1" style="border-bottom: 0px">
                 <dl style="display: block" class="govuk-summary-list govuk-!-margin-3">
@@ -223,15 +164,14 @@
             </div>
           {% endset %}
 
+          {% set pscHTML = [] %}
+          {% if pscList|length %}
+            {% set pscHTML = (pscHTML.push([{html: individualPscHtml}]), pscHTML) %}
+          {% endif %}
+          {% set pscHTML = (pscHTML.push([{html: todoHtml}]), pscHTML) %}
+
           {{ govukTable({
-            rows:
-            [
-              [
-                {
-                  html: pscHTML
-                }
-              ]
-            ]
+            rows: pscHTML
           }) }}
           {% if scenario.company.recentFiling === 'yes' %}
             {% if psc === 'yes' %}

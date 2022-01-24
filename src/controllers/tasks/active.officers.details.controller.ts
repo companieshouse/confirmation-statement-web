@@ -6,7 +6,6 @@ import { Session } from "@companieshouse/node-session-handler";
 import { ActiveOfficerDetails, SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getActiveOfficersDetailsData } from "../../services/active.officers.details.service";
 import {
-  LOCALE_EN,
   OFFICER_DETAILS_ERROR,
   OFFICER_ROLE,
   RADIO_BUTTON_VALUE,
@@ -14,7 +13,13 @@ import {
   WRONG_DETAILS_UPDATE_OFFICER,
   WRONG_DETAILS_UPDATE_OFFICERS
 } from "../../utils/constants";
-import { formatAddress, formatAddressForDisplay, formatTitleCase, toUpperCase } from "../../utils/format";
+import {
+  equalsIgnoreCase,
+  formatAddress,
+  formatAddressForDisplay,
+  formatTitleCase,
+  toUpperCase
+} from "../../utils/format";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { lookupIdentificationType } from "../../utils/api.enumerations";
 
@@ -131,8 +136,4 @@ const buildOfficerLists = (officers: ActiveOfficerDetails[]): any => {
     naturalDirectorList: buildDirectorList(officers),
     corporateDirectorList: buildCorporateOfficerList(officers, OFFICER_ROLE.DIRECTOR),
   };
-};
-
-const equalsIgnoreCase = (officerRole: string, wantedOfficerRole: OFFICER_ROLE): boolean => {
-  return wantedOfficerRole.localeCompare(officerRole, LOCALE_EN, { sensitivity: 'accent' }) === 0;
 };
