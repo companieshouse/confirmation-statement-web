@@ -52,11 +52,11 @@
         {% else %}
           {% for psc in pscList %}
             {% if psc.pscTemplateType === "rle" %}
-              {% include "tasks/includes/relevant-legal-entity.html" %}
+              {% include "tasks/includes/legacy-relevant-legal-entity.html" %}
             {% elif psc.pscTemplateType === "psc" %}
               {% include "tasks/includes/normal-psc.html" %}
             {% elif psc.pscTemplateType === "orp" %}
-              {% include "tasks/includes/relevant-legal-entity.html" %}
+              {% include "tasks/includes/legacy-relevant-legal-entity.html" %}
             {% else %}
             {% endif %}
           {% endfor %}

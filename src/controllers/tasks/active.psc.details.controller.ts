@@ -19,7 +19,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     return res.render(Templates.ACTIVE_PSC_DETAILS, {
       templateName: Templates.ACTIVE_PSC_DETAILS,
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-      pscList: pscLists.individualPscList
+      pscList: pscLists.individualPscList,
+      relevantLegalEntityList: pscLists.relevantLegalEntityList
     });
   } catch (e) {
     return next(e);
@@ -28,7 +29,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 const buildPscLists = (pscs: PersonOfSignificantControl[]): any => {
   return {
-    individualPscList: buildIndividualPscList(pscs)
+    individualPscList: buildIndividualPscList(pscs),
+    relevantLegalEntityList: buildRlePscList(pscs)
   };
 };
 
@@ -47,6 +49,26 @@ const buildIndividualPscList = (pscs: PersonOfSignificantControl[]): any[] => {
         serviceAddress: serviceAddress,
         dob: dob,
         dateOfAppointment: dateOfAppointment
+      };
+    });
+};
+
+const buildRlePscList = (pscs: PersonOfSignificantControl[]): any[] => {
+  return pscs
+    .filter(psc => equalsIgnoreCase(psc.appointmentType, appointmentTypes.RLE_PSC))
+    .map(psc  => {
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + JSON.stringify(psc))
+      const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);
+      const dateOfAppointment = toReadableFormat(psc.appointmentDate);
+      const serviceAddress = formattedPsc.serviceAddress ? formatAddressForDisplay(formattedPsc.serviceAddress) : "";
+      const registerLocation = formattedPsc.address ? formatAddressForDisplay(formattedPsc.address) : "";
+      const registrationNumber = psc.registrationNumber;
+      return {
+        formattedPsc: formattedPsc,
+        dateOfAppointment: dateOfAppointment,
+        serviceAddress: serviceAddress,
+        registerLocation: registerLocation,
+        registrationNumber: registrationNumber
       };
     });
 };
