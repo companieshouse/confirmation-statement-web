@@ -57,7 +57,6 @@ const buildRlePscList = (pscs: PersonOfSignificantControl[]): any[] => {
   return pscs
     .filter(psc => equalsIgnoreCase(psc.appointmentType, appointmentTypes.RLE_PSC))
     .map(psc  => {
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + JSON.stringify(psc))
       const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);
       const dateOfAppointment = toReadableFormat(psc.appointmentDate);
       const serviceAddress = formattedPsc.serviceAddress ? formatAddressForDisplay(formattedPsc.serviceAddress) : "";
