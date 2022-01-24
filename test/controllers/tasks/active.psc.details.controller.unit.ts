@@ -46,11 +46,11 @@ describe("Active psc details controller tests", () => {
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("THE LEGAL EAGLE");
       expect(response.text).toContain("1 January 2013");
-      expect(response.text).toContain("10 New Road, The Red City, Farshire, Floatland, AB1 1BA");
       expect(response.text).toContain("10 That Road, The Tall City, Thatregion, Neverland, TA1 1TA");
       expect(response.text).toContain("The Law");
       expect(response.text).toContain("The Legal Form");
       expect(response.text).toContain("123456789");
+      expect(response.text).toContain("MIDDLE EARTH");
       expect(response.text).toContain("Middle Earth");
       expect(response.text).toContain("50% or more of shares held as a person");
       expect(response.text).toContain("Ownership of voting rights - more than 50%");

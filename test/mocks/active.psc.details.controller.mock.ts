@@ -35,18 +35,6 @@ const mockPscServiceAddress: Address = {
   region: "Thisshire"
 };
 
-const mockRleUra: Address = {
-  addressLine1: "10 New road",
-  addressLine2: undefined,
-  careOf: undefined,
-  country: "Floatland",
-  locality: "The Red City",
-  poBox: undefined,
-  postalCode: "AB1 1BA",
-  premises: undefined,
-  region: "Farshire"
-};
-
 const mockRleServiceAddress: Address = {
   addressLine1: "10 That Road",
   addressLine2: undefined,
@@ -79,7 +67,7 @@ export const mockPscList: any[] = [
     nameElements: mockRleNameElements,
     nationality: "Elf",
     countryOfResidence: "Middle Earth",
-    address: mockRleUra,
+    registerLocation: "MIDDLE EARTH",
     serviceAddress: mockRleServiceAddress,
     appointmentDate: "1 January 2013",
     lawGoverned: "THE LAW",

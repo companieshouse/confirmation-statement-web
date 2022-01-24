@@ -57,11 +57,12 @@ const buildRlePscList = (pscs: PersonOfSignificantControl[]): any[] => {
   return pscs
     .filter(psc => equalsIgnoreCase(psc.appointmentType, appointmentTypes.RLE_PSC))
     .map(psc  => {
+      console.log(">>>>>>>>>>>>>>>>>>>>" + JSON.stringify(psc));
       const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);
       const dateOfAppointment = toReadableFormat(psc.appointmentDate);
       const serviceAddress = formattedPsc.serviceAddress ? formatAddressForDisplay(formattedPsc.serviceAddress) : "";
-      const registerLocation = formattedPsc.address ? formatAddressForDisplay(formattedPsc.address) : "";
       const registrationNumber = psc.registrationNumber;
+      const registerLocation = psc.registerLocation;
       return {
         formattedPsc: formattedPsc,
         dateOfAppointment: dateOfAppointment,
