@@ -64,7 +64,7 @@ const buildIndividualPscList = (pscs: PersonOfSignificantControl[]): any[] => {
 const buildRlePscList = (pscs: PersonOfSignificantControl[]): any[] => {
   return pscs
     .filter(psc => equalsIgnoreCase(psc.appointmentType, appointmentTypes.RLE_PSC))
-    .map(psc  => {
+    .map(psc => {
       const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);
       const dateOfAppointment = toReadableFormat(psc.appointmentDate);
       const serviceAddress = formattedPsc.serviceAddress ? formatAddressForDisplay(formattedPsc.serviceAddress) : "";
@@ -83,7 +83,7 @@ const buildRlePscList = (pscs: PersonOfSignificantControl[]): any[] => {
 const buildOrpPscList = (pscs: PersonOfSignificantControl[]): any[] => {
   return pscs
     .filter(psc => equalsIgnoreCase(psc.appointmentType, appointmentTypes.LEGAL_PERSON_PSC))
-    .map(psc  => {
+    .map(psc => {
       const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);
       return {
         formattedPsc: formattedPsc,

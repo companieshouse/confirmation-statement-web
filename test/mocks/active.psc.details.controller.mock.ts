@@ -77,5 +77,16 @@ export const mockPscList: any[] = [
       "50% or more of shares held as a person",
       "Ownership of voting rights - more than 50%"
     ]
+  },
+  {
+    appointmentType: appointmentTypes.LEGAL_PERSON_PSC,
+    nameElements: mockRleNameElements,
+    serviceAddress: mockRleServiceAddress,
+    appointmentDate: "1 January 2014",
+    lawGoverned: "UK",
+    legalForm: "Charity - Unincorporated Association",
+    naturesOfControl: [
+      "Ownership of voting rights - more than 75%"
+    ]
   }
 ];
