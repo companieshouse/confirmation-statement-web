@@ -1,9 +1,9 @@
-{% if individualPscList.length > 1 %}
-  <h2 class="govuk-heading-m">{{ individualPscList.length }} individual people</h2>
+{% if pscList.length > 1 %}
+  <h2 class="govuk-heading-m">{{ pscList.length }} individual people</h2>
 {% else %}
   <h2 class="govuk-heading-m">1 individual person</h2>
 {% endif %}
-{% for psc in individualPscList %}
+{% for psc in pscList %}
   <div class="govuk-summary-card govuk-!-margin-bottom-4">
     <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center">
       <p class="govuk-!-font-weight-bold govuk-!-margin-0">{{ psc.formattedPsc.nameElements.surname }},  {{ psc.formattedPsc.nameElements.forename }}</p>

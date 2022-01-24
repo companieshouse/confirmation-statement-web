@@ -34,7 +34,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const pscList = formatPscList(pscs);
     return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-      individualPscList: pscList,
+      pscList: pscList,
       templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
       MultiplePscFlag: FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021
     });
@@ -55,7 +55,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const pscList = formatPscList(pscs);
       return res.render(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL, {
         backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        individualPscList: pscList,
+        pscList: pscList,
         templateName: Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL,
         peopleWithSignificantControlErrorMsg: PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
         MultiplePscFlag: FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021

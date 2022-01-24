@@ -25,7 +25,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     return res.render(Templates.ACTIVE_PSC_DETAILS, {
       templateName: Templates.ACTIVE_PSC_DETAILS,
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-      individualPscList: pscLists.individualPscList,
+      pscList: pscLists.individualPscList,
       relevantLegalEntityList: pscLists.relevantLegalEntityList,
       otherRegistrablePersonList: pscLists.otherRegistrablePersonList
     });

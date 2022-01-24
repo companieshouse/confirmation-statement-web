@@ -54,7 +54,7 @@
           {% endset %}
 
           {% set pscHTML = [] %}
-          {% if individualPscList|length %}
+          {% if pscList|length %}
             {% set pscHTML = (pscHTML.push([{html: individualPscHtml}]), pscHTML) %}
           {% endif %}
           {% if relevantLegalEntityList|length %}
