@@ -21,7 +21,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const pscs: PersonOfSignificantControl[] = await getPscs(req.session as Session, transactionId, submissionId);
-    if (pscs.length < 1) {
+    if (!pscs || pscs.length < 1) {
       const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
       logger.info(`No PSC data returned for company ${companyNumber}, redirecting to PSC Statement page`);
       return res.redirect(getPscStatementUrl(req, false));
