@@ -15,6 +15,7 @@ export const mockPersonsOfSignificantControl: PersonOfSignificantControl[] = [
       region: "region"
     },
     appointmentType: "5007",
+    appointmentDate: "1999-11-23",
     companyName: "comp name",
     countryOfResidence: "UK",
     dateOfBirth: {
@@ -33,9 +34,11 @@ export const mockPersonsOfSignificantControl: PersonOfSignificantControl[] = [
     nationality: "nationality",
     naturesOfControl: [ "noc1", "noc2" ],
     registrationNumber: "reg no",
-    serviceAddressLine1: "serv line 1",
-    serviceAddressPostCode: "serv post code",
-    serviceAddressPostTown: "serv town"
+    serviceAddress: {
+      addressLine1: "serv line 1",
+      locality: "serv post code",
+      postalCode: "serv town",
+    }
   }
 ];
 
