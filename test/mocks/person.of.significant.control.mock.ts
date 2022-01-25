@@ -36,8 +36,8 @@ export const mockPersonsOfSignificantControl: PersonOfSignificantControl[] = [
     registrationNumber: "reg no",
     serviceAddress: {
       addressLine1: "serv line 1",
-      locality: "serv post code",
-      postalCode: "serv town",
+      locality: "serv town",
+      postalCode: "serv post code",
     }
   }
 ];
