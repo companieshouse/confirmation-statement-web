@@ -42,7 +42,7 @@
           }) }}
 
           {% set individualPscHtml %}
-            {% include "tasks/includes/normal-psc.html" %}
+            {% include "tasks/includes/individual-psc.html" %}
           {% endset %}
 
           {% set relevantLegalEntityHtml %}
@@ -54,7 +54,7 @@
           {% endset %}
 
           {% set pscHTML = [] %}
-          {% if pscList|length %}
+          {% if individualPscList|length %}
             {% set pscHTML = (pscHTML.push([{html: individualPscHtml}]), pscHTML) %}
           {% endif %}
           {% if relevantLegalEntityList|length %}

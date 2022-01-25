@@ -1,0 +1,70 @@
+{% if individualPscList.length > 1 %}
+  <h2 class="govuk-heading-m">{{ individualPscList.length }} individual people</h2>
+{% else %}
+  <h2 class="govuk-heading-m">1 individual person</h2>
+{% endif %}
+{% for psc in individualPscList %}
+  <div class="govuk-summary-card govuk-!-margin-bottom-4">
+    <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center">
+      <p class="govuk-!-font-weight-bold govuk-!-margin-0">{{ psc.formattedPsc.nameElements.surname }},  {{ psc.formattedPsc.nameElements.forename }}</p>
+      {{govukTag({
+          text: "Active",
+          classes: "govuk-tag--green"
+      }) }}
+    </div>
+    <div style="display: flex; border-bottom: 0" class="govuk-!-padding-1">
+      <dl style="display: block" class="govuk-summary-list govuk-!-margin-3">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Nationality</dt>
+          <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+            <p>{{ psc.formattedPsc.nationality }}</p>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Country of residence</dt>
+          <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+            <p>{{ psc.formattedPsc.countryOfResidence }}</p>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Date of birth</dt>
+          <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+            <p>{{ psc.dob }}</p>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Notification date</dt>
+          <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+            <p>{{ psc.dateOfAppointment }}</p>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Correspondence address</dt>
+          <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+            <p>{{ psc.serviceAddress }}</p>
+          </dd>
+        </div>
+        {% if psc.ura.length > 0 %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Usual residential address</dt>
+            <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <p>{{ psc.ura }}</p>
+            </dd>
+          </div>
+        {% endif %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Nature of control</dt>
+          <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+            <ul class="govuk-bullet__list">
+              {% for noc in psc.formattedPsc.naturesOfControl %}
+                <li>
+                  <p>{{ noc }}</p>
+                </li>
+              {% endfor %}
+            </ul>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+{% endfor %}
