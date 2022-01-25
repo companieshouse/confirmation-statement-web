@@ -1,3 +1,5 @@
+import {Templates} from "../../../src/types/template.paths";
+
 jest.mock("../../../src/services/psc.service");
 
 import mocks from "../../mocks/all.middleware.mock";
@@ -66,6 +68,12 @@ describe("Active psc details controller tests", () => {
       expect(response.text).toContain("UK");
       expect(response.text).toContain("Charity - Unincorporated Association");
       expect(response.text).toContain("Ownership of voting rights - more than 75%");
+    });
+
+    it("Should back-link to the task list page", async () => {
+      mockGetPscs.mockResolvedValueOnce(mockPscList);
+      const response = await request(app).get(ACTIVE_PSC_DETAILS_URL);
+      expect(response.text).toContain(Templates.TASK_LIST);
     });
   });
 });
