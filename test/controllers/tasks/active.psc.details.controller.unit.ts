@@ -1,16 +1,17 @@
-import {Templates} from "../../../src/types/template.paths";
-
 jest.mock("../../../src/services/psc.service");
 
+import { Templates } from "../../../src/types/template.paths";
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
-import { ACTIVE_PSC_DETAILS_PATH, urlParams } from "../../../src/types/page.urls";
+import { ACTIVE_PSC_DETAILS_PATH, PSC_STATEMENT_PATH, URL_QUERY_PARAM, urlParams } from "../../../src/types/page.urls";
 import { getPscs } from "../../../src/services/psc.service";
 import { mockPscList } from "../../mocks/active.psc.details.controller.mock";
+import { urlUtils } from "../../../src/utils/url";
 
 const COMPANY_NUMBER = "12345678";
 const ACTIVE_PSC_DETAILS_URL = ACTIVE_PSC_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+const PSC_STATEMENT_URL = PSC_STATEMENT_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const PAGE_HEADING = "Review the people with significant control";
 
 const mockGetPscs = getPscs as jest.Mock;
@@ -70,6 +71,20 @@ describe("Active psc details controller tests", () => {
       expect(response.text).toContain("Ownership of voting rights - more than 75%");
     });
 
+    it("should navigate to psc statement page if no psc is found", async () => {
+      mockGetPscs.mockResolvedValueOnce([ ]);
+      const response = await request(app).get(ACTIVE_PSC_DETAILS_URL);
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("false"));
+    });
+
+    it("should navigate to psc statement page if pscs is undefined", async () => {
+      mockGetPscs.mockResolvedValueOnce(undefined);
+      const response = await request(app).get(ACTIVE_PSC_DETAILS_URL);
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("false"));
+    });
+
     it("Should back-link to the task list page", async () => {
       mockGetPscs.mockResolvedValueOnce(mockPscList);
       const response = await request(app).get(ACTIVE_PSC_DETAILS_URL);
@@ -77,3 +92,7 @@ describe("Active psc details controller tests", () => {
     });
   });
 });
+
+const pscStatementPathWithIsPscParam = (isPscParam: string) => {
+  return urlUtils.setQueryParam(PSC_STATEMENT_URL, URL_QUERY_PARAM.IS_PSC, isPscParam);
+};
