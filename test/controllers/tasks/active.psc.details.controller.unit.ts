@@ -7,6 +7,7 @@ import { ACTIVE_PSC_DETAILS_PATH, PSC_STATEMENT_PATH, URL_QUERY_PARAM, urlParams
 import { getPscs } from "../../../src/services/psc.service";
 import { mockPscList } from "../../mocks/active.psc.details.controller.mock";
 import { urlUtils } from "../../../src/utils/url";
+import { Templates } from "../../../src/types/template.paths";
 
 const COMPANY_NUMBER = "12345678";
 const ACTIVE_PSC_DETAILS_URL = ACTIVE_PSC_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
@@ -82,6 +83,12 @@ describe("Active psc details controller tests", () => {
       const response = await request(app).get(ACTIVE_PSC_DETAILS_URL);
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("false"));
+    });
+
+    it("Should back-link to the task list page", async () => {
+      mockGetPscs.mockResolvedValueOnce(mockPscList);
+      const response = await request(app).get(ACTIVE_PSC_DETAILS_URL);
+      expect(response.text).toContain(Templates.TASK_LIST);
     });
   });
 });
