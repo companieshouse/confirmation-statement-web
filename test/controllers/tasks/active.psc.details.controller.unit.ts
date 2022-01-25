@@ -55,5 +55,17 @@ describe("Active psc details controller tests", () => {
       expect(response.text).toContain("50% or more of shares held as a person");
       expect(response.text).toContain("Ownership of voting rights - more than 50%");
     });
+
+    it("Should navigate to psc page and display other registrable person details", async () => {
+      mockGetPscs.mockResolvedValueOnce(mockPscList);
+      const response = await request(app).get(ACTIVE_PSC_DETAILS_URL);
+      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain("THE LEGAL EAGLE");
+      expect(response.text).toContain("1 January 2014");
+      expect(response.text).toContain("10 That Road, The Tall City, Thatregion, Neverland, TA1 1TA");
+      expect(response.text).toContain("UK");
+      expect(response.text).toContain("Charity - Unincorporated Association");
+      expect(response.text).toContain("Ownership of voting rights - more than 75%");
+    });
   });
 });

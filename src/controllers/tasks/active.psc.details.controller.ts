@@ -6,7 +6,13 @@ import { PersonOfSignificantControl } from "@companieshouse/api-sdk-node/dist/se
 import { getPscs } from "../../services/psc.service";
 import { Session } from "@companieshouse/node-session-handler";
 import { appointmentTypes } from "../../utils/constants";
-import { equalsIgnoreCase, formatAddressForDisplay, formatPSCForDisplay } from "../../utils/format";
+import {
+  equalsIgnoreCase,
+  formatAddressForDisplay,
+  formatPSCForDisplay,
+  formatTitleCase,
+  toUpperCase
+} from "../../utils/format";
 import { toReadableFormat } from "../../utils/date";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -20,7 +26,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       templateName: Templates.ACTIVE_PSC_DETAILS,
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       pscList: pscLists.individualPscList,
-      relevantLegalEntityList: pscLists.relevantLegalEntityList
+      relevantLegalEntityList: pscLists.relevantLegalEntityList,
+      otherRegistrablePersonList: pscLists.otherRegistrablePersonList
     });
   } catch (e) {
     return next(e);
@@ -30,7 +37,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 const buildPscLists = (pscs: PersonOfSignificantControl[]): any => {
   return {
     individualPscList: buildIndividualPscList(pscs),
-    relevantLegalEntityList: buildRlePscList(pscs)
+    relevantLegalEntityList: buildRlePscList(pscs),
+    otherRegistrablePersonList: buildOrpPscList(pscs)
   };
 };
 
@@ -56,7 +64,7 @@ const buildIndividualPscList = (pscs: PersonOfSignificantControl[]): any[] => {
 const buildRlePscList = (pscs: PersonOfSignificantControl[]): any[] => {
   return pscs
     .filter(psc => equalsIgnoreCase(psc.appointmentType, appointmentTypes.RLE_PSC))
-    .map(psc  => {
+    .map(psc => {
       const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);
       const dateOfAppointment = toReadableFormat(psc.appointmentDate);
       const serviceAddress = formattedPsc.serviceAddress ? formatAddressForDisplay(formattedPsc.serviceAddress) : "";
@@ -68,6 +76,21 @@ const buildRlePscList = (pscs: PersonOfSignificantControl[]): any[] => {
         serviceAddress: serviceAddress,
         registerLocation: registerLocation,
         registrationNumber: registrationNumber
+      };
+    });
+};
+
+const buildOrpPscList = (pscs: PersonOfSignificantControl[]): any[] => {
+  return pscs
+    .filter(psc => equalsIgnoreCase(psc.appointmentType, appointmentTypes.LEGAL_PERSON_PSC))
+    .map(psc => {
+      const formattedPsc: PersonOfSignificantControl = formatPSCForDisplay(psc);
+      return {
+        formattedPsc: formattedPsc,
+        dateOfAppointment: toReadableFormat(psc.appointmentDate),
+        serviceAddress: formattedPsc.serviceAddress ? formatAddressForDisplay(formattedPsc.serviceAddress) : "",
+        legalForm: toUpperCase(psc.legalForm),
+        lawGoverned: formatTitleCase(psc.lawGoverned),
       };
     });
 };

@@ -49,56 +49,8 @@
             {% include "tasks/includes/relevant-legal-entity.html" %}
           {% endset %}
 
-          {% set todoHtml %}
-
-            <h2 class="govuk-heading-m">1 other registrable person</h2>
-            <div class="govuk-summary-card govuk-!-margin-bottom-4">
-              <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center">
-                <p class="govuk-!-font-weight-bold govuk-!-margin-0">AYR BAPTIST CHURCH</p>
-                {{govukTag({
-                  text: "Active",
-                  classes: "govuk-tag--green"
-                })}}
-              </div>
-              <div style="display: flex" class="govuk-!-padding-1" style="border-bottom: 0px">
-                <dl style="display: block" class="govuk-summary-list govuk-!-margin-3">
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Notification date</dt>
-                    <dd class="govuk-summary-list__value">
-                      <p>1 January 2019</p>
-                    </dd>
-                  </div>
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Correspondence address</dt>
-                    <dd class="govuk-summary-list__value">
-                      <p>9 Mews Lane, Ayr, Scotland</p>
-                    </dd>
-                  </div>
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Legal form</dt>
-                    <dd class="govuk-summary-list__value">
-                      <p>Charity - Unincorporated Association</p>
-                    </dd>
-                  </div>
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Law governed</dt>
-                    <dd class="govuk-summary-list__value">
-                      <p>UK</p>
-                    </dd>
-                  </div>
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Nature of control</dt>
-                    <dd class="govuk-summary-list__value">
-                      <ul class="govuk-bullet__list">
-                        <li>
-                          <p>Ownership of voting rights - more than 75%</p>
-                        </li>
-                      </ul>
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-            </div>
+          {% set otherRegistrablePersonHtml %}
+            {% include "tasks/includes/other-registrable-person.html" %}
           {% endset %}
 
           {% set pscHTML = [] %}
@@ -108,183 +60,49 @@
           {% if relevantLegalEntityList|length %}
             {% set pscHTML = (pscHTML.push([{html: relevantLegalEntityHtml}]), pscHTML) %}
           {% endif %}
-          {% set pscHTML = (pscHTML.push([{html: todoHtml}]), pscHTML) %}
+          {% if otherRegistrablePersonList|length %}
+            {% set pscHTML = (pscHTML.push([{html: otherRegistrablePersonHtml}]), pscHTML) %}
+          {% endif %}
 
           {{ govukTable({
             rows: pscHTML
           }) }}
-          {% if scenario.company.recentFiling === 'yes' %}
-            {% if psc === 'yes' %}
-              {{ govukRadios({
-                classes: "govuk-radios",
-                idPrefix: "psc",
-                name: "psc",
-                errorMessage: pscDetailsError,
-                fieldset: {
-                  legend: {
-                    html: "Are the PSC details correct?",
-                    isPageHeading: true,
-                    classes: "govuk-fieldset__legend--l"
-                  }
-                },
-
-                items: [
-                {
-                  value: "yes",
-                  text: "Yes"
-                },
-                {
-                  value: "no",
-                  text: "No"
-                },
-                {
-                  value: "yes",
-                  text: "No, but an update has been submitted"
+          {{ govukRadios({
+            classes: "govuk-radios",
+            idPrefix: "psc",
+            name: "psc",
+            errorMessage: pscDetailsError,
+            fieldset: {
+              legend: {
+                html: "Are the PSC details correct?",
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l"
+              }
+            },
+            items: [
+              {
+                value: "yes",
+                text: "Yes",
+                attributes: {
+                  "data-event-id": "yes-radio-button"
                 }
-              ]
-            }) }}
-            {% elseif psc === 'no' %}
-              {{ govukRadios({
-                classes: "govuk-radios",
-                idPrefix: "psc",
-                name: "psc",
-                errorMessage: pscDetailsError,
-                fieldset: {
-                  legend: {
-                    html: "Are the PSC details correct?",
-                    isPageHeading: true,
-                    classes: "govuk-fieldset__legend--l"
-                  }
-                },
-                items: [
-                  {
-                    value: "yes",
-                    text: "Yes"
-                  },
-                  {
-                    value: "no",
-                    text: "No",
-                    checked: true
-                  },
-                  {
-                    value: "yes",
-                    text: "No, but an update has been submitted"
-                  }
-                ]
-              }) }}
-            {% else %}
-              {{ govukRadios({
-                classes: "govuk-radios",
-                idPrefix: "psc",
-                name: "psc",
-                errorMessage: pscDetailsError,
-                fieldset: {
-                  legend: {
-                    html: "Are the PSC details correct?",
-                    isPageHeading: true,
-                    classes: "govuk-fieldset__legend--l"
-                  }
-                },
-                items: [
-                  {
-                    value: "yes",
-                    text: "Yes"
-                  },
-                  {
-                    value: "no",
-                    text: "No"
-                  },
-                  {
-                    value: "yes",
-                    text: "No, but an update has been submitted"
-                  }
-                ]
-              }) }}
-              {% endif %}
-            {% else %}
-            {% if psc === 'yes' %}
-              {{ govukRadios({
-                classes: "govuk-radios",
-                idPrefix: "psc",
-                name: "psc",
-                errorMessage: pscDetailsError,
-                  fieldset: {
-                    legend: {
-                      html: "Are the PSC details correct?",
-                      isPageHeading: true,
-                      classes: "govuk-fieldset__legend--l"
-                    }
-                },
-                items: [
-                  {
-                    value: "yes",
-                    text: "Yes"
-                  },
-                  {
-                     value: "no",
-                     text: "No"
-                  }
-                ]
-              }) }}
-            {% elseif psc === 'no' %}
-              {{ govukRadios({
-                classes: "govuk-radios",
-                idPrefix: "psc",
-                name: "psc",
-                errorMessage: pscDetailsError,
-                fieldset: {
-                  legend: {
-                    html: "Are the PSC details correct?",
-                    isPageHeading: true,
-                    classes: "govuk-fieldset__legend--l"
-                  }
-                },
-                items: [
-                  {
-                    value: "yes",
-                    text: "Yes"
-                  },
-                  {
-                    value: "no",
-                    text: "No",
-                    checked: true
-                  },
-                  {
-                    value: "yes",
-                    text: "No, but an update has been submitted"
-                  }
-                ]
-              }) }}
-            {% else %}
-              {{ govukRadios({
-                classes: "govuk-radios",
-                idPrefix: "psc",
-                name: "psc",
-                errorMessage: pscDetailsError,
-                fieldset: {
-                  legend: {
-                    html: "Are the PSC details correct?",
-                    isPageHeading: true,
-                    classes: "govuk-fieldset__legend--l"
-                  }
-                },
-                items: [
-                  {
-                    value: "yes",
-                    text: "Yes"
-                  },
-                  {
-                    value: "no",
-                    text: "No"
-                  },
-                  {
-                    value: "yes",
-                    text: "No, but an update has been submitted"
-                  }
-                ]
-              }) }}
-            {% endif %}
-          {% endif %}
+              },
+              {
+                value: "no",
+                text: "No",
+                attributes: {
+                  "data-event-id": "no-radio-button"
+                }
+              },
+              {
+                value: "yes",
+                text: "No, but an update has been submitted",
+                attributes: {
+                  "data-event-id": "recently-filed-radio-button"
+                }
+              }
+            ]
+          }) }}
 
           {% include "includes/continue-button.html" %}
         </form>
