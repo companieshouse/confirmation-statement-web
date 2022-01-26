@@ -18,7 +18,6 @@ import {
   RADIO_BUTTON_VALUE,
   SECTIONS
 } from "../../../src/utils/constants";
-import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
 
 const COMPANY_NUMBER = "12345678";
 const ACTIVE_PSC_DETAILS_URL = ACTIVE_PSC_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
@@ -28,8 +27,6 @@ const STOP_PAGE_HEADING = "Update the people with significant control (PSC) deta
 const STOP_PAGE_TITLE = "Incorrect PSC Details";
 const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 
-const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
-mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 const mockGetPscs = getPscs as jest.Mock;
 const mockSendUpdate = sendUpdate as jest.Mock;
 
