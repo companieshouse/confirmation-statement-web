@@ -28,6 +28,9 @@
           }
         ]
         }) }}
+        {% set activePscsError = { text: pscDetailsError } %}
+      {% else %}
+        {% set activePscsError = false %}
       {% endif %}
       <form action="" method="post">
         <h1 class="govuk-heading-l">Check the people with significant control (PSCs) details</h1>
@@ -72,7 +75,7 @@
           classes: "govuk-radios",
           idPrefix: "psc",
           name: "psc",
-          errorMessage: pscDetailsError,
+          errorMessage: activePscsError,
           fieldset: {
             legend: {
               html: "Are the PSC details correct?",

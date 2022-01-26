@@ -138,10 +138,10 @@ describe("Active psc details controller tests", () => {
         .post(ACTIVE_PSC_DETAILS_URL)
         .send({ psc: RADIO_BUTTON_VALUE.RECENTLY_FILED });
 
-      expect(response.status).toEqual(302);
-      expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("true"));
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("true"));
     });
 
     it("Should render stop page when the no radio button is selected", async () => {
