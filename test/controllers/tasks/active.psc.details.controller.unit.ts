@@ -1,4 +1,7 @@
 jest.mock("../../../src/services/psc.service");
+jest.mock("../../../src/services/confirmation.statement.service");
+jest.mock("../../../src/utils/update.confirmation.statement.submission");
+jest.mock("../../../src/utils/api.enumerations");
 
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
@@ -8,13 +11,27 @@ import { getPscs } from "../../../src/services/psc.service";
 import { mockPscList } from "../../mocks/active.psc.details.controller.mock";
 import { urlUtils } from "../../../src/utils/url";
 import { Templates } from "../../../src/types/template.paths";
+import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
+import {
+  PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
+  RADIO_BUTTON_VALUE,
+  SECTIONS
+} from "../../../src/utils/constants";
+import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
 
 const COMPANY_NUMBER = "12345678";
 const ACTIVE_PSC_DETAILS_URL = ACTIVE_PSC_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const PSC_STATEMENT_URL = PSC_STATEMENT_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const PAGE_HEADING = "Review the people with significant control";
+const STOP_PAGE_HEADING = "Update the people with significant control (PSC) details";
+const STOP_PAGE_TITLE = "Incorrect PSC Details";
+const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 
+const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
+mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 const mockGetPscs = getPscs as jest.Mock;
+const mockSendUpdate = sendUpdate as jest.Mock;
 
 describe("Active psc details controller tests", () => {
 
@@ -23,6 +40,7 @@ describe("Active psc details controller tests", () => {
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
     mockGetPscs.mockClear();
+    mockSendUpdate.mockClear();
   });
 
   describe("get tests", () => {
@@ -89,6 +107,73 @@ describe("Active psc details controller tests", () => {
       mockGetPscs.mockResolvedValueOnce(mockPscList);
       const response = await request(app).get(ACTIVE_PSC_DETAILS_URL);
       expect(response.text).toContain(Templates.TASK_LIST);
+    });
+
+    it("Should return an error page if error is thrown in get function", async () => {
+      const spyGetUrl = jest.spyOn(urlUtils, "getUrlToPath");
+      spyGetUrl.mockImplementationOnce(() => { throw new Error(); });
+      const response = await request(app).get(ACTIVE_PSC_DETAILS_URL);
+
+      expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+      // restore original function so it is no longer mocked
+      spyGetUrl.mockRestore();
+    });
+  });
+
+  describe("post tests", () => {
+
+    it("Should navigate to psc statement page when yes radio button is selected", async () => {
+      const response = await request(app)
+        .post(ACTIVE_PSC_DETAILS_URL)
+        .send({ psc: RADIO_BUTTON_VALUE.YES });
+
+      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("true"));
+    });
+
+    it("Should navigate to psc statement page when recently filed radio button is selected", async () => {
+      const response = await request(app)
+        .post(ACTIVE_PSC_DETAILS_URL)
+        .send({ psc: RADIO_BUTTON_VALUE.RECENTLY_FILED });
+
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("true"));
+      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+    });
+
+    it("Should render stop page when the no radio button is selected", async () => {
+      mockGetPscs.mockResolvedValueOnce(mockPscList);
+      const response = await request(app)
+        .post(ACTIVE_PSC_DETAILS_URL)
+        .send({ psc: RADIO_BUTTON_VALUE.NO });
+
+      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(STOP_PAGE_HEADING);
+      expect(response.text).toContain(STOP_PAGE_TITLE);
+
+    });
+
+    it("Should redisplay psc details page with error when radio button is not selected", async () => {
+      mockGetPscs.mockResolvedValueOnce(mockPscList);
+      const response = await request(app).post(ACTIVE_PSC_DETAILS_URL);
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain(PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR);
+    });
+
+    it("Should return an error page if error is thrown in post function", async () => {
+      const spyGetUrl = jest.spyOn(urlUtils, "getUrlToPath");
+      spyGetUrl.mockImplementationOnce(() => { throw new Error(); });
+      const response = await request(app).post(ACTIVE_PSC_DETAILS_URL);
+
+      expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+      // restore original function so it is no longer mocked
+      spyGetUrl.mockRestore();
     });
   });
 });

@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  {% if errorList.length > 0 %}
+  {% if pscDetailsError %}
     Error:
   {% endif %}
   Review the people with significant control
@@ -18,94 +18,95 @@
   {% endset %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
-      {% if errorList.length > 0 %}
+      {% if pscDetailsError %}
         {{ govukErrorSummary({
           titleText: "There is a problem",
           errorList: [
           {
-            text: "Select yes if the PSC details are correct",
+            text: pscDetailsError,
             href: "#psc"
           }
         ]
         }) }}
+      {% endif %}
+      <form action="" method="post">
+        <h1 class="govuk-heading-l">Check the people with significant control (PSCs) details</h1>
+        {% set pscDetails %}
+          <p>A person with significant control (PSC) is someone who owns or controls the company. For example, anyone with voting rights or more than 25% of the shares. For more information,
+            <a href="https://www.gov.uk/guidance/people-with-significant-control-pscs">read the guidance on PSCs</a>.</p>
+        {% endset %}
+
+        {{ govukDetails({
+          summaryText: "More about people with significant control",
+          html: pscDetails
+        }) }}
+
+        {% set individualPscHtml %}
+          {% include "tasks/includes/individual-psc.html" %}
+        {% endset %}
+
+        {% set relevantLegalEntityHtml %}
+          {% include "tasks/includes/relevant-legal-entity.html" %}
+        {% endset %}
+
+        {% set otherRegistrablePersonHtml %}
+          {% include "tasks/includes/other-registrable-person.html" %}
+        {% endset %}
+
+        {% set pscHTML = [] %}
+        {% if individualPscList|length %}
+          {% set pscHTML = (pscHTML.push([{html: individualPscHtml}]), pscHTML) %}
         {% endif %}
-        <form action="" method="post">
-          <h1 class="govuk-heading-l">Check the people with significant control (PSCs) details</h1>
-          {% set pscDetails %}
-            <p>A person with significant control (PSC) is someone who owns or controls the company. For example, anyone with voting rights or more than 25% of the shares. For more information,
-              <a href="https://www.gov.uk/guidance/people-with-significant-control-pscs">read the guidance on PSCs</a>.</p>
-          {% endset %}
+        {% if relevantLegalEntityList|length %}
+          {% set pscHTML = (pscHTML.push([{html: relevantLegalEntityHtml}]), pscHTML) %}
+        {% endif %}
+        {% if otherRegistrablePersonList|length %}
+          {% set pscHTML = (pscHTML.push([{html: otherRegistrablePersonHtml}]), pscHTML) %}
+        {% endif %}
 
-          {{ govukDetails({
-            summaryText: "More about people with significant control",
-            html: pscDetails
-          }) }}
+        {{ govukTable({
+          rows: pscHTML
+        }) }}
 
-          {% set individualPscHtml %}
-            {% include "tasks/includes/individual-psc.html" %}
-          {% endset %}
-
-          {% set relevantLegalEntityHtml %}
-            {% include "tasks/includes/relevant-legal-entity.html" %}
-          {% endset %}
-
-          {% set otherRegistrablePersonHtml %}
-            {% include "tasks/includes/other-registrable-person.html" %}
-          {% endset %}
-
-          {% set pscHTML = [] %}
-          {% if individualPscList|length %}
-            {% set pscHTML = (pscHTML.push([{html: individualPscHtml}]), pscHTML) %}
-          {% endif %}
-          {% if relevantLegalEntityList|length %}
-            {% set pscHTML = (pscHTML.push([{html: relevantLegalEntityHtml}]), pscHTML) %}
-          {% endif %}
-          {% if otherRegistrablePersonList|length %}
-            {% set pscHTML = (pscHTML.push([{html: otherRegistrablePersonHtml}]), pscHTML) %}
-          {% endif %}
-
-          {{ govukTable({
-            rows: pscHTML
-          }) }}
-          {{ govukRadios({
-            classes: "govuk-radios",
-            idPrefix: "psc",
-            name: "psc",
-            errorMessage: pscDetailsError,
-            fieldset: {
-              legend: {
-                html: "Are the PSC details correct?",
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--l"
+        {{ govukRadios({
+          classes: "govuk-radios",
+          idPrefix: "psc",
+          name: "psc",
+          errorMessage: pscDetailsError,
+          fieldset: {
+            legend: {
+              html: "Are the PSC details correct?",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes",
+              attributes: {
+                "data-event-id": "yes-radio-button"
               }
             },
-            items: [
-              {
-                value: "yes",
-                text: "Yes",
-                attributes: {
-                  "data-event-id": "yes-radio-button"
-                }
-              },
-              {
-                value: "no",
-                text: "No",
-                attributes: {
-                  "data-event-id": "no-radio-button"
-                }
-              },
-              {
-                value: "yes",
-                text: "No, but an update has been submitted",
-                attributes: {
-                  "data-event-id": "recently-filed-radio-button"
-                }
+            {
+              value: "no",
+              text: "No",
+              attributes: {
+                "data-event-id": "no-radio-button"
               }
-            ]
-          }) }}
+            },
+            {
+              value: "yes",
+              text: "No, but an update has been submitted",
+              attributes: {
+                "data-event-id": "recently-filed-radio-button"
+              }
+            }
+          ]
+        }) }}
 
-          {% include "includes/continue-button.html" %}
-        </form>
+        {% include "includes/continue-button.html" %}
+      </form>
     </div>
   </div>
 {% endblock %}
