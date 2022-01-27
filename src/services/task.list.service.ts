@@ -18,6 +18,7 @@ import { urlUtils } from "../utils/url";
 import { toTaskState } from "../utils/task/task.state.mapper";
 import { getTaskCompletedCount } from "../utils/task/task.counter";
 import { FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 } from "../utils/properties";
+import {isActiveFeature} from "../utils/feature.flag";
 
 export const initTaskList = (companyNumber: string,
                              transactionId: string,
@@ -75,7 +76,7 @@ const officerSection = (): string => {
 };
 
 const getPscSectionUrl = (): string => {
-  if (FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 === 'true') {
+  if (isActiveFeature(FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021)) {
     return ACTIVE_PSC_DETAILS_PATH;
   } else {
     return PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH;
