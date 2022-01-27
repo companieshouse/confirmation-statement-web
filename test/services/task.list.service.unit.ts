@@ -2,16 +2,27 @@ jest.mock("../../src/utils/task/task.counter");
 jest.mock("../../src/utils/date");
 jest.mock("../../src/utils/task/task.state.mapper");
 jest.mock("../../src/utils/url");
+jest.mock("../../src/utils/feature.flag");
 
 import { ConfirmationStatementSubmission, ConfirmationStatementSubmissionData } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { initTaskList } from "../../src/services/task.list.service";
-import { ACTIVE_OFFICERS_PATH, PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, REGISTERED_OFFICE_ADDRESS_PATH, REGISTER_LOCATIONS_PATH, SHAREHOLDERS_PATH, SIC_PATH, STATEMENT_OF_CAPITAL_PATH } from "../../src/types/page.urls";
+import {
+  ACTIVE_OFFICERS_PATH,
+  PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH,
+  REGISTERED_OFFICE_ADDRESS_PATH,
+  REGISTER_LOCATIONS_PATH,
+  SHAREHOLDERS_PATH,
+  SIC_PATH,
+  STATEMENT_OF_CAPITAL_PATH,
+  ACTIVE_PSC_DETAILS_PATH
+} from "../../src/types/page.urls";
 import { TaskList, TaskState } from "../../src/types/task.list";
 import { toReadableFormat } from "../../src/utils/date";
 import { getTaskCompletedCount } from "../../src/utils/task/task.counter";
 import { toTaskState } from "../../src/utils/task/task.state.mapper";
 import { urlUtils } from "../../src/utils/url";
 import { mockConfirmationStatementSubmission } from "../mocks/confirmation.statement.submission.mock";
+import { isActiveFeature } from "../../src/utils/feature.flag";
 
 const COMPANY_NUMBER = "1242222";
 const TRANSACTION_ID = "4646464";
@@ -36,7 +47,13 @@ mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mockReturnValue(TASK_URL
 const mockGetUrlWithCompanyNumber = urlUtils.getUrlWithCompanyNumber as jest.Mock;
 mockGetUrlWithCompanyNumber.mockReturnValue(TASK_URL);
 
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+
 describe("Task List Service tests", () => {
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   describe("initTaskList tests", () => {
     it("Should return a populated task list", () => {
@@ -99,6 +116,22 @@ describe("Task List Service tests", () => {
 
       expect(taskList.tasksCompletedCount).toBe(ALL_TASK_COMPLETED_COUNT);
       expect(taskList.allTasksCompleted).toBe(true);
+    });
+
+    it("Should return single psc page when five or more feature flag is false", () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      const taskList: TaskList = initTaskList(COMPANY_NUMBER, TRANSACTION_ID, CS_SUBMISSION_ID, mockConfirmationStatementSubmission);
+      expect(taskList.tasks.peopleSignificantControl.state).toBe(TaskState.CHECKED);
+      expect(taskList.tasks.peopleSignificantControl.url).toBe(TASK_URL);
+      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[1][0]).toBe(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH);
+    });
+
+    it("Should return multiple psc page when five or more feature flag is true", () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      const taskList: TaskList = initTaskList(COMPANY_NUMBER, TRANSACTION_ID, CS_SUBMISSION_ID, mockConfirmationStatementSubmission);
+      expect(taskList.tasks.peopleSignificantControl.state).toBe(TaskState.CHECKED);
+      expect(taskList.tasks.peopleSignificantControl.url).toBe(TASK_URL);
+      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[1][0]).toBe(ACTIVE_PSC_DETAILS_PATH);
     });
   });
 });
