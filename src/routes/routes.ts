@@ -66,6 +66,7 @@ router.get(urls.PEOPLE_WITH_SIGNIFICANT_CONTROL, peopleWithSignificantControlRou
 router.post(urls.PEOPLE_WITH_SIGNIFICANT_CONTROL, peopleWithSignificantControlRoute.post);
 
 router.get(urls.ACTIVE_PSC_DETAILS, activePscDetails.get);
+router.post(urls.ACTIVE_PSC_DETAILS, activePscDetails.post);
 
 router.get(urls.PSC_STATEMENT, pscStatementRoute.get);
 router.post(urls.PSC_STATEMENT, pscStatementRoute.post);
