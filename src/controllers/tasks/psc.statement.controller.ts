@@ -7,7 +7,13 @@ import {
   SECTIONS,
   WRONG_DETAILS_INCORRECT_PSC,
   WRONG_DETAILS_UPDATE_PSC } from "../../utils/constants";
-import { PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, PSC_STATEMENT_PATH, TASK_LIST_PATH, URL_QUERY_PARAM } from "../../types/page.urls";
+import {
+  ACTIVE_PSC_DETAILS_PATH,
+  PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH,
+  PSC_STATEMENT_PATH,
+  TASK_LIST_PATH,
+  URL_QUERY_PARAM
+} from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
 import { getMostRecentActivePscStatement } from "../../services/psc.service";
@@ -16,6 +22,8 @@ import { lookupPscStatementDescription } from "../../utils/api.enumerations";
 import { createAndLogError } from "../../utils/logger";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 } from "../../utils/properties";
+import { isActiveFeature } from "../../utils/feature.flag";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -90,6 +98,9 @@ const getPscStatementText = async (req: Request): Promise<string> => {
 
 const getBackLinkUrl = (req: Request): string => {
   let path = PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH;
+  if (isActiveFeature(FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021)) {
+    path = ACTIVE_PSC_DETAILS_PATH;
+  }
 
   if (req.query[URL_QUERY_PARAM.IS_PSC] === "false") {
     path = TASK_LIST_PATH;
