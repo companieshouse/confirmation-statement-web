@@ -1,6 +1,7 @@
 jest.mock("../../../src/services/psc.service");
 jest.mock("../../../src/utils/api.enumerations");
 jest.mock("../../../src/utils/update.confirmation.statement.submission");
+jest.mock("../../../src/utils/feature.flag");
 
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
@@ -19,6 +20,7 @@ import { lookupPscStatementDescription } from "../../../src/utils/api.enumeratio
 import { Templates } from "../../../src/types/template.paths";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Is the PSC statement correct?";
@@ -46,6 +48,8 @@ mockLookupPscStatementDescription.mockReturnValue(PSC_STATEMENT_TEXT);
 
 const mockSendUpdate = sendUpdate as jest.Mock;
 
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+
 describe("PSC Statement controller tests", () => {
 
   beforeEach(() => {
@@ -71,6 +75,14 @@ describe("PSC Statement controller tests", () => {
       expect(response.text).toContain(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL);
     });
 
+    it("Should back-link to the psc details page (multiple psc journey)", async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      const response = await request(app)
+        .get(pscStatementPathWithIsPscParam("true"));
+
+      expect(response.text).toContain(Templates.ACTIVE_PSC_DETAILS);
+    });
+
     it("Should back-link to the psc details page when no query param is provided", async () => {
       const response = await request(app)
         .get(PSC_STATEMENT_URL);
@@ -79,6 +91,14 @@ describe("PSC Statement controller tests", () => {
     });
 
     it("Should back-link to the task list page", async () => {
+      const response = await request(app)
+        .get(pscStatementPathWithIsPscParam("false"));
+
+      expect(response.text).toContain(Templates.TASK_LIST);
+    });
+
+    it("Should back-link to the task list page (multiple psc journey)", async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
       const response = await request(app)
         .get(pscStatementPathWithIsPscParam("false"));
 
