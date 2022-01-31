@@ -8,7 +8,7 @@ import request from "supertest";
 import app from "../../../src/app";
 import { ACTIVE_PSC_DETAILS_PATH, PSC_STATEMENT_PATH, URL_QUERY_PARAM, urlParams } from "../../../src/types/page.urls";
 import { getPscs } from "../../../src/services/psc.service";
-import { mockPscList } from "../../mocks/active.psc.details.controller.mock";
+import { mockMultiPscList, mockPscList } from "../../mocks/active.psc.details.controller.mock";
 import { urlUtils } from "../../../src/utils/url";
 import { Templates } from "../../../src/types/template.paths";
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
@@ -84,6 +84,15 @@ describe("Active psc details controller tests", () => {
       expect(response.text).toContain("UK");
       expect(response.text).toContain("Charity - Unincorporated Association");
       expect(response.text).toContain("Ownership of voting rights - more than 75%");
+    });
+
+    it("Should show correct count of officers", async () => {
+      mockGetPscs.mockResolvedValueOnce(mockMultiPscList);
+      const response = await request(app).get(ACTIVE_PSC_DETAILS_URL);
+      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain("1 individual person");
+      expect(response.text).toContain("2 relevant legal entities");
+      expect(response.text).toContain("2 other registrable people");
     });
 
     it("should navigate to psc statement page if no psc is found", async () => {
