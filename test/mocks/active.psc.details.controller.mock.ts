@@ -90,3 +90,74 @@ export const mockPscList: any[] = [
     ]
   }
 ];
+
+export const mockMultiPscList: any[] = [
+  {
+    appointmentType: appointmentTypes.INDIVIDUAL_PSC,
+    nameElements: mockNameElements,
+    nationality: "British",
+    countryOfResidence: "United Kingdom",
+    address: mockPscUra,
+    serviceAddress: mockPscServiceAddress,
+    dateOfBirthIso: "1965-03-21",
+    appointmentDate: "1 January 2012",
+    naturesOfControl: [
+      "75% or more of shares held as a person",
+      "Ownership of voting rights - more than 75%"
+    ]
+  },
+  {
+    appointmentType: appointmentTypes.RLE_PSC,
+    nameElements: mockRleNameElements,
+    nationality: "Elf",
+    countryOfResidence: "Middle Earth",
+    registerLocation: "MIDDLE EARTH",
+    serviceAddress: mockRleServiceAddress,
+    appointmentDate: "1 January 2013",
+    lawGoverned: "THE LAW",
+    legalForm: "THE LEGAL FORM",
+    registrationNumber: "123456789",
+    naturesOfControl: [
+      "50% or more of shares held as a person",
+      "Ownership of voting rights - more than 50%"
+    ]
+  },
+  {
+    appointmentType: appointmentTypes.RLE_PSC,
+    nameElements: mockRleNameElements,
+    nationality: "Orc",
+    countryOfResidence: "Middle Earth",
+    registerLocation: "MIDDLE EARTH",
+    serviceAddress: mockRleServiceAddress,
+    appointmentDate: "1 January 2014",
+    lawGoverned: "THE LAW",
+    legalForm: "THE LEGAL FORM",
+    registrationNumber: "987654321",
+    naturesOfControl: [
+      "40% or more of shares held as a person",
+      "Ownership of voting rights - more than 40%"
+    ]
+  },
+  {
+    appointmentType: appointmentTypes.LEGAL_PERSON_PSC,
+    nameElements: mockRleNameElements,
+    serviceAddress: mockRleServiceAddress,
+    appointmentDate: "1 January 2014",
+    lawGoverned: "UK",
+    legalForm: "Charity - Unincorporated Association",
+    naturesOfControl: [
+      "Ownership of voting rights - more than 75%"
+    ]
+  },
+  {
+    appointmentType: appointmentTypes.LEGAL_PERSON_PSC,
+    nameElements: mockRleNameElements,
+    serviceAddress: mockRleServiceAddress,
+    appointmentDate: "1 January 2015",
+    lawGoverned: "UK",
+    legalForm: "Charity - Unincorporated Association",
+    naturesOfControl: [
+      "Ownership of voting rights - more than 25%"
+    ]
+  }
+];
