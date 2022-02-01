@@ -11,7 +11,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <form action="" method="post">
-        <h1 class="govuk-heading-l">
+        <h1 class="govuk-heading-xl">
           You need to update the company details
         </h1>
 
@@ -38,7 +38,7 @@
               <ol class="app-step-nav__list " data-length="1">
                 <li class="app-step-nav__list-item js-list-item">
                   <p>You will need to
-                    <a href="/change-data/change-address" target="_blank">update the registered office address (opens in a new tab)</a>
+                    <a href="{{changeRoaUrl}}" target="_blank" rel="noopener noreferrer" data-event-id="update-roa-link">update the registered office address (opens in a new tab)</a>
                     before you can file a confirmation statement.</p>
                 </li>
               </ol>
@@ -91,7 +91,7 @@
               </h2>
             </div>
             <div>
-              <p>Return to the <a href="/confirmation-statement/ro">Registered office address</a> section and confirm that an update has been submitted.</p>
+              <p>Return to the <a href="{{changeRoaUrl}}" target="_blank" rel="noopener noreferrer" data-event-id="update-roa-link">Registered office address</a> section and confirm that an update has been submitted.</p>
             </div>
           </li>
         </ol>
