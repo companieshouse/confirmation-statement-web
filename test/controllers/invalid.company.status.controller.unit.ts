@@ -11,7 +11,7 @@ import { urlUtils } from "../../src/utils/url";
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 
 const STOP_PAGE_TITLE_COMPANY_STATUS = "You cannot use this service - Company Status";
-const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
+const SERVICE_UNAVAILABLE_TEXT = "Sorry, the service is unavailable";
 
 describe("Invalid company status controller tests", () => {
 
@@ -43,7 +43,7 @@ describe("Invalid company status controller tests", () => {
 
       const response = await request(app).get(invalidCompanyStatusPath);
 
-      expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+      expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
     });
   });
 });
