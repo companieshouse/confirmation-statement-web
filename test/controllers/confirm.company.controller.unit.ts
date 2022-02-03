@@ -104,10 +104,10 @@ describe("Confirm company controller tests", () => {
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
   });
 
-  it("Should render eligibility error page when company status is not valid", async () => {
+  it("Should redirect to invalid.company.status.controller when eligibility code is INVALID_COMPANY_STATUS", async () => {
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_STATUS);
-    const invalidCompanyStatusPath = urlUtils.setQueryParam(INVALID_COMPANY_STATUS_PATH, URL_QUERY_PARAM.COMPANY_NUMBER, validCompanyProfile.companyNumber);
+    const invalidCompanyStatusPath = urlUtils.setQueryParam(INVALID_COMPANY_STATUS_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
     expect(response.status).toEqual(302);

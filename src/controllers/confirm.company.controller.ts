@@ -68,7 +68,7 @@ const displayEligibilityStopPage = (res: Response, eligibilityStatusCode: Eligib
   const stopPagePath: string = stopPagesPathMap[eligibilityStatusCode];
   if (stopPagePath) {
     // setQueryParam should 'inject' the param if it is present. Not all paths will need a param so should be unaffected by the setQueryParam
-    return res.redirect(urlUtils.setQueryParam(stopPagePath, URL_QUERY_PARAM.COMPANY_NUMBER, company.companyNumber));
+    return res.redirect(urlUtils.setQueryParam(stopPagePath, URL_QUERY_PARAM.COMPANY_NUM, company.companyNumber));
   }
 
   const stopPage: string = stopPages[eligibilityStatusCode];

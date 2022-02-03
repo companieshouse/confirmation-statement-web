@@ -6,7 +6,7 @@ import { URL_QUERY_PARAM } from "../types/page.urls";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const companyNumber = req.query[URL_QUERY_PARAM.COMPANY_NUMBER];
+    const companyNumber = req.query[URL_QUERY_PARAM.COMPANY_NUM];
     const company: CompanyProfile = await getCompanyProfile(companyNumber as string);
     return res.render(Templates.INVALID_COMPANY_STATUS, {
       company,

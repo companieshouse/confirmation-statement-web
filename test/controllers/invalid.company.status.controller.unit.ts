@@ -26,7 +26,7 @@ describe("Invalid company status controller tests", () => {
 
     it("Should render the invalid company status stop page", async () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-      const invalidCompanyStatusPath = urlUtils.setQueryParam(INVALID_COMPANY_STATUS_PATH, URL_QUERY_PARAM.COMPANY_NUMBER, validCompanyProfile.companyNumber);
+      const invalidCompanyStatusPath = urlUtils.setQueryParam(INVALID_COMPANY_STATUS_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
 
       const response = await request(app).get(invalidCompanyStatusPath);
 
@@ -39,7 +39,7 @@ describe("Invalid company status controller tests", () => {
 
     it("Should return an error page if error is thrown in get function", async () => {
       mockGetCompanyProfile.mockImplementationOnce(() => { throw new Error(); });
-      const invalidCompanyStatusPath = urlUtils.setQueryParam(INVALID_COMPANY_STATUS_PATH, URL_QUERY_PARAM.COMPANY_NUMBER, validCompanyProfile.companyNumber);
+      const invalidCompanyStatusPath = urlUtils.setQueryParam(INVALID_COMPANY_STATUS_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
 
       const response = await request(app).get(invalidCompanyStatusPath);
 
