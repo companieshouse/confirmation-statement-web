@@ -10,7 +10,7 @@ import { checkEligibility } from "../services/eligibility.service";
 import {
   EligibilityStatusCode, NextMadeUpToDate
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
-import { CREATE_TRANSACTION_PATH } from "../types/page.urls";
+import { CREATE_TRANSACTION_PATH, INVALID_COMPANY_STATUS_PATH, URL_QUERY_PARAM } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { toReadableFormat } from "../utils/date";
 
@@ -65,6 +65,11 @@ const isCompanyValidForService = (eligibilityStatusCode: EligibilityStatusCode):
   eligibilityStatusCode === EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE;
 
 const displayEligibilityStopPage = (res: Response, eligibilityStatusCode: EligibilityStatusCode, company: CompanyProfile) => {
+  const stopPagePath: string = stopPagesPathMap[eligibilityStatusCode];
+  if (stopPagePath) {
+    return res.redirect(urlUtils.setQueryParam(stopPagePath, URL_QUERY_PARAM.COMPANY_NUMBER, company.companyNumber));
+  }
+
   const stopPage: string = stopPages[eligibilityStatusCode];
   if (!stopPage) {
     throw new Error(`Unknown eligibilityStatusCode ${eligibilityStatusCode}`);
@@ -79,8 +84,11 @@ const createNewConfirmationStatement = async (session: Session) => {
   }
 };
 
+const stopPagesPathMap = {
+  [EligibilityStatusCode.INVALID_COMPANY_STATUS]: INVALID_COMPANY_STATUS_PATH
+};
+
 const stopPages = {
-  [EligibilityStatusCode.INVALID_COMPANY_STATUS]: Templates.INVALID_COMPANY_STATUS,
   [EligibilityStatusCode.INVALID_COMPANY_TRADED_STATUS_USE_WEBFILING]: Templates.USE_WEBFILING,
   [EligibilityStatusCode.INVALID_COMPANY_TYPE_USE_WEB_FILING]: Templates.USE_WEBFILING,
   [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_INVALID_NUMBER_OF_OFFICERS]: Templates.USE_WEBFILING,
