@@ -10,12 +10,13 @@ import { createConfirmationStatement, getNextMadeUpToDate } from "../../src/serv
 import mocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
-import { CONFIRM_COMPANY_PATH } from "../../src/types/page.urls";
+import { CONFIRM_COMPANY_PATH, INVALID_COMPANY_STATUS_PATH, URL_QUERY_PARAM } from "../../src/types/page.urls";
 import { getCompanyProfile, formatForDisplay } from "../../src/services/company.profile.service";
 import { validCompanyProfile } from "../mocks/company.profile.mock";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { toReadableFormat } from "../../src/utils/date";
 import { Settings as luxonSettings } from "luxon";
+import { urlUtils } from "../../src/utils/url";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockFormatForDisplay = formatForDisplay as jest.Mock;
@@ -29,7 +30,7 @@ const companyNumber = "12345678";
 const today = "2020-04-25";
 const STOP_PAGE_TITLE_COMPANY_DETAILS = "You cannot use this service - Company Details";
 const STOP_PAGE_TITLE_COMPANY_TYPE = "You cannot use this service - Company Type";
-const STOP_PAGE_TITLE_COMPANY_STATUS = "You cannot use this service - Company Status";
+const SERVICE_UNAVAILABLE_TEXT = "Sorry, the service is unavailable";
 
 describe("Confirm company controller tests", () => {
   const PAGE_HEADING = "Confirm this is the correct company";
@@ -78,7 +79,7 @@ describe("Confirm company controller tests", () => {
     const response = await request(app)
       .get(CONFIRM_COMPANY_PATH);
 
-    expect(response.text).toContain("Sorry, the service is unavailable");
+    expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
   });
 
   it("Should call private sdk client and redirect to transaction using company number in profile retrieved from database", async () => {
@@ -104,49 +105,46 @@ describe("Confirm company controller tests", () => {
   });
 
   it("Should render eligibility error page when company status is not valid", async () => {
-    mockIsActiveFeature.mockReturnValueOnce(true);
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_STATUS);
+    const invalidCompanyStatusPath = urlUtils.setQueryParam(INVALID_COMPANY_STATUS_PATH, URL_QUERY_PARAM.COMPANY_NUMBER, validCompanyProfile.companyNumber);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
-    expect(response.status).toEqual(200);
+    expect(response.status).toEqual(302);
+    expect(response.header.location).toEqual(invalidCompanyStatusPath);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
-    expect(response.text).toContain("dissolved and struck off the register");
-    expect(response.text).toContain(`cannot be filed for ${validCompanyProfile.companyName}`);
   });
 
   it("Should redirect to error page when unrecognised eligibility code is returned", async () => {
-    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce("abcdefg");
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
     expect(response.status).toEqual(500);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
-    expect(response.text).toContain("Sorry, the service is unavailable");
+    expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
   });
 
   it("Should redirect to error page when promise fails", async () => {
-    mockIsActiveFeature.mockReturnValueOnce(true);
     mockEligibilityStatusCode.mockRejectedValueOnce(new Error());
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
     expect(response.status).toEqual(500);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
-    expect(response.text).toContain("Sorry, the service is unavailable");
+    expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
   });
 
   it("Should redirect to error page when the eligibility status code is undefined", async () => {
-    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce(undefined);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
     expect(response.status).toEqual(500);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
-    expect(response.text).toContain("Sorry, the service is unavailable");
+    expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
   });
 
   it("Should redirect to use webfiling stop screen when the eligibility status code is INVALID_TYPE_USE_WEBFILING", async () => {
-    mockIsActiveFeature.mockReturnValueOnce(true);
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TYPE_USE_WEB_FILING);
     const response = await request(app)
@@ -157,7 +155,6 @@ describe("Confirm company controller tests", () => {
   });
 
   it("Should redirect to use webfiling stop screen when the eligibility status code is INVALID_COMPANY_TRADED_STATUS_USE_WEBFILING", async () => {
-    mockIsActiveFeature.mockReturnValueOnce(true);
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TRADED_STATUS_USE_WEBFILING);
     const response = await request(app)
@@ -168,7 +165,6 @@ describe("Confirm company controller tests", () => {
   });
 
   it("Should redirect to use paper stop screen when the eligibility status code is INVALID_COMPANY_TYPE_PAPER_FILING_ONLY", async () => {
-    mockIsActiveFeature.mockReturnValueOnce(true);
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY);
     const response = await request(app)
@@ -261,17 +257,6 @@ describe("Confirm company controller tests", () => {
     expect(response.status).toEqual(200);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
     expect(response.text).toContain(STOP_PAGE_TITLE_COMPANY_DETAILS);
-  });
-
-  it("Should redirect to cannot use service stop screen when the eligibility status code is INVALID_COMPANY_STATUS", async () => {
-    mockIsActiveFeature.mockReturnValueOnce(true);
-    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_STATUS);
-    const response = await request(app)
-      .post(CONFIRM_COMPANY_PATH);
-    expect(response.status).toEqual(200);
-    expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
-    expect(response.text).toContain(STOP_PAGE_TITLE_COMPANY_STATUS);
   });
 
   it("Should display a warning if filing is not due", async () => {
