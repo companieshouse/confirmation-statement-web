@@ -22,7 +22,7 @@ describe("Invalid company status controller tests", () => {
     mockGetCompanyProfile.mockClear();
   });
 
-  describe("get tests", () => {
+  describe("get function tests", () => {
 
     it("Should render the invalid company status stop page", async () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
