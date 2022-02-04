@@ -7,6 +7,7 @@ export enum urlParams {
 }
 
 export enum URL_QUERY_PARAM {
+  COMPANY_NUM = "companyNumber",
   IS_PSC = "isPsc"
 }
 
@@ -16,6 +17,9 @@ export const COMPANY_AUTH_PROTECTED_BASE = `/company/:${urlParams.PARAM_COMPANY_
 export const ACTIVE_SUBMISSION_BASE = COMPANY_AUTH_PROTECTED_BASE +
   `transaction/:${urlParams.PARAM_TRANSACTION_ID}/submission/:${urlParams.PARAM_SUBMISSION_ID}/`;
 
+
+// Use _PATH consts for redirects
+// Use const without _PATH to match the url in the routes.ts
 export const ACCESSIBILITY_STATEMENT = SEPARATOR + Templates.ACCESSIBILITY_STATEMENT;
 export const CONFIRM_COMPANY = SEPARATOR + Templates.CONFIRM_COMPANY;
 export const CONFIRMATION_STATEMENT = "/confirmation-statement";
@@ -55,3 +59,5 @@ export const CONFIRMATION = ACTIVE_SUBMISSION_BASE + "confirmation";
 export const CONFIRMATION_PATH = CONFIRMATION_STATEMENT + CONFIRMATION;
 export const PAYMENT_CALLBACK = ACTIVE_SUBMISSION_BASE + "payment-callback";
 export const PAYMENT_CALLBACK_PATH = CONFIRMATION_STATEMENT + PAYMENT_CALLBACK;
+export const INVALID_COMPANY_STATUS = "/invalid-company-status";
+export const INVALID_COMPANY_STATUS_PATH = CONFIRMATION_STATEMENT + INVALID_COMPANY_STATUS + `?${URL_QUERY_PARAM.COMPANY_NUM}={${URL_QUERY_PARAM.COMPANY_NUM}}`;
