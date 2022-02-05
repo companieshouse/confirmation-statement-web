@@ -11,6 +11,7 @@ import { sessionMiddleware } from "./middleware/session.middleware";
 import cookieParser from "cookie-parser";
 import { logger } from "./utils/logger";
 import { companyAuthenticationMiddleware } from "./middleware/company.authentication.middleware";
+import { urlQueryValidationMiddleware } from "./middleware/url.query.validation.middleware";
 
 const app = express();
 app.disable("x-powered-by");
@@ -38,6 +39,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "html");
 
 // apply middleware
+app.use(urlQueryValidationMiddleware);
 app.use(cookieParser());
 app.use(serviceAvailabilityMiddleware);
 app.use(`${urls.CONFIRMATION_STATEMENT}*`, sessionMiddleware);

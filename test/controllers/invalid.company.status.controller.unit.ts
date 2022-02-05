@@ -19,7 +19,7 @@ describe("Invalid company status controller tests", () => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
-    mockGetCompanyProfile.mockClear();
+    mockGetCompanyProfile.mockReset();
   });
 
   describe("get function tests", () => {

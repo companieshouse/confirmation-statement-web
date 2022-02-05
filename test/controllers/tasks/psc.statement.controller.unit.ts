@@ -7,7 +7,7 @@ import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
 import { urlUtils } from "../../../src/utils/url";
-import { PSC_STATEMENT_PATH, TASK_LIST_PATH, URL_QUERY_PARAM } from "../../../src/types/page.urls";
+import { CONFIRMATION_STATEMENT, PSC_STATEMENT, PSC_STATEMENT_PATH, TASK_LIST_PATH, URL_QUERY_PARAM } from "../../../src/types/page.urls";
 import {
   PSC_STATEMENT_CONTROL_ERROR,
   RADIO_BUTTON_VALUE,
@@ -34,6 +34,12 @@ const PSC_STATEMENT_URL =
                                                                      COMPANY_NUMBER,
                                                                      TRANSACTION_ID,
                                                                      SUBMISSION_ID);
+const PSC_STATEMENT_URL_NO_QUERY_PARAM =
+        urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(CONFIRMATION_STATEMENT + PSC_STATEMENT,
+                                                                     COMPANY_NUMBER,
+                                                                     TRANSACTION_ID,
+                                                                     SUBMISSION_ID);
+
 const TASK_LIST_URL =
         urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH,
                                                                      COMPANY_NUMBER,
@@ -62,7 +68,7 @@ describe("PSC Statement controller tests", () => {
   describe("get tests", () => {
     it("Should show the psc statement page", async () => {
       const response = await request(app)
-        .get(PSC_STATEMENT_URL);
+        .get(pscStatementPathWithIsPscParam("true"));
 
       expect(response.statusCode).toBe(200);
       expect(response.text).toContain(PAGE_HEADING);
@@ -85,7 +91,7 @@ describe("PSC Statement controller tests", () => {
 
     it("Should back-link to the psc details page when no query param is provided", async () => {
       const response = await request(app)
-        .get(PSC_STATEMENT_URL);
+        .get(PSC_STATEMENT_URL_NO_QUERY_PARAM);
 
       expect(response.text).toContain(Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL);
     });
@@ -107,7 +113,7 @@ describe("PSC Statement controller tests", () => {
 
     it("Should show the psc statement text", async () => {
       const response = await request(app)
-        .get(PSC_STATEMENT_URL);
+        .get(pscStatementPathWithIsPscParam("true"));
 
       expect(response.text).toContain(PSC_STATEMENT_TEXT);
       expect(mockLookupPscStatementDescription).toBeCalledWith(mockSingleActivePsc.statement);
@@ -116,7 +122,7 @@ describe("PSC Statement controller tests", () => {
     it("Should show the not found psc statement text", async () => {
       mockGetMostRecentActivePscStatement.mockResolvedValueOnce(undefined);
       const response = await request(app)
-        .get(PSC_STATEMENT_URL);
+        .get(pscStatementPathWithIsPscParam("true"));
 
       expect(response.text).toContain(PSC_STATEMENT_NOT_FOUND);
       expect(mockLookupPscStatementDescription).not.toHaveBeenCalled();
@@ -125,7 +131,7 @@ describe("PSC Statement controller tests", () => {
     it("Should replace the name placeholder in psc statement text", async () => {
       mockLookupPscStatementDescription.mockReturnValueOnce(`test ${PSC_STATEMENT_NAME_PLACEHOLDER} test`);
       const response = await request(app)
-        .get(PSC_STATEMENT_URL);
+        .get(pscStatementPathWithIsPscParam("true"));
 
       expect(response.text).toContain(`test ${mockSingleActivePsc.linkedPscName} test`);
     });
@@ -143,7 +149,7 @@ describe("PSC Statement controller tests", () => {
         linkedPscName: undefined
       });
       const response = await request(app)
-        .get(PSC_STATEMENT_URL);
+        .get(pscStatementPathWithIsPscParam("true"));
 
       expect(response.text).toContain(`test ${PSC_STATEMENT_NAME_PLACEHOLDER} test`);
     });
@@ -151,7 +157,7 @@ describe("PSC Statement controller tests", () => {
     it("Should return error page if unable to lookup statement description", async () => {
       mockLookupPscStatementDescription.mockReturnValueOnce(undefined);
       const response = await request(app)
-        .get(PSC_STATEMENT_URL);
+        .get(pscStatementPathWithIsPscParam("true"));
 
       expect(response.status).toEqual(500);
       expect(response.text).toContain("Sorry, the service is unavailable");
@@ -171,9 +177,10 @@ describe("PSC Statement controller tests", () => {
     });
   });
 
-  describe("post tests", function () {
+  describe("post tests", () => {
     it("Should redisplay psc page with error when radio button is not selected", async () => {
-      const response = await request(app).post(PSC_STATEMENT_URL);
+      const response = await request(app)
+        .post(pscStatementPathWithIsPscParam("true"));
 
       expect(response.status).toEqual(200);
       expect(response.text).toContain(PAGE_TITLE);
@@ -183,7 +190,7 @@ describe("PSC Statement controller tests", () => {
 
     it("Should display wrong psc data page when no radio button is selected", async () => {
       const response = await request(app)
-        .post(PSC_STATEMENT_URL)
+        .post(pscStatementPathWithIsPscParam("true"))
         .send({ pscStatementValue: RADIO_BUTTON_VALUE.NO });
 
       expect(response.status).toEqual(200);
@@ -194,7 +201,7 @@ describe("PSC Statement controller tests", () => {
 
     it("Should redirect to task list when yes radio button is selected", async () => {
       const response = await request(app)
-        .post(PSC_STATEMENT_URL)
+        .post(pscStatementPathWithIsPscParam("true"))
         .send({ pscStatementValue: RADIO_BUTTON_VALUE.YES });
 
       expect(response.status).toEqual(302);
@@ -205,7 +212,7 @@ describe("PSC Statement controller tests", () => {
 
     it("Should redirect to task list when recently filed radio button is selected", async () => {
       const response = await request(app)
-        .post(PSC_STATEMENT_URL)
+        .post(pscStatementPathWithIsPscParam("true"))
         .send({ pscStatementValue: RADIO_BUTTON_VALUE.RECENTLY_FILED });
 
       expect(response.status).toEqual(302);
@@ -217,7 +224,7 @@ describe("PSC Statement controller tests", () => {
     it("Should return an error page if error is thrown", async () => {
       const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
       spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
-      const response = await request(app).post(PSC_STATEMENT_URL);
+      const response = await request(app).post(pscStatementPathWithIsPscParam("true"));
 
       expect(response.status).toEqual(500);
       expect(response.text).toContain("Sorry, the service is unavailable");
