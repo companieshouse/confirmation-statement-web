@@ -1,4 +1,5 @@
 jest.mock("../../src/services/company.profile.service");
+jest.mock("../../src/validators/company.number.validator");
 
 import mocks from "../mocks/all.middleware.mock";
 import request from "supertest";
@@ -7,8 +8,11 @@ import { getCompanyProfile } from "../../src/services/company.profile.service";
 import { validCompanyProfile } from "../mocks/company.profile.mock";
 import { INVALID_COMPANY_STATUS_PATH, URL_QUERY_PARAM } from "../../src/types/page.urls";
 import { urlUtils } from "../../src/utils/url";
+import { isCompanyNumberValid } from "../../src/validators/company.number.validator";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
+const mockIsCompanyNumberValid = isCompanyNumberValid as jest.Mock;
+mockIsCompanyNumberValid.mockReturnValue(true);
 
 const STOP_PAGE_TITLE_COMPANY_STATUS = "You cannot use this service - Company Status";
 const SERVICE_UNAVAILABLE_TEXT = "Sorry, the service is unavailable";
@@ -20,6 +24,7 @@ describe("Invalid company status controller tests", () => {
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
     mockGetCompanyProfile.mockClear();
+    mockIsCompanyNumberValid.mockClear();
   });
 
   describe("get function tests", () => {
@@ -39,6 +44,15 @@ describe("Invalid company status controller tests", () => {
 
     it("Should return an error page if error is thrown in get function", async () => {
       mockGetCompanyProfile.mockImplementationOnce(() => { throw new Error(); });
+      const invalidCompanyStatusPath = urlUtils.setQueryParam(INVALID_COMPANY_STATUS_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
+
+      const response = await request(app).get(invalidCompanyStatusPath);
+
+      expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
+    });
+
+    it("Should return an error page if invalid company number is entered in url query param", async () => {
+      mockIsCompanyNumberValid.mockReturnValueOnce(false);
       const invalidCompanyStatusPath = urlUtils.setQueryParam(INVALID_COMPANY_STATUS_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
 
       const response = await request(app).get(invalidCompanyStatusPath);
