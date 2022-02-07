@@ -8,14 +8,13 @@ import { isCompanyNumberValid } from "../validators/company.number.validator";
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const companyNumber = req.query[URL_QUERY_PARAM.COMPANY_NUM] as string;
-
     if (!isCompanyNumberValid(companyNumber)) {
       return next(new Error("Invalid company number entered in invalid.company.status url query parameter"));
     }
-
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
     return res.render(Templates.USE_PAPER, {
-      company
+      company,
+      templateName: Templates.USE_PAPER
     });
   } catch (e) {
     return next(e);
