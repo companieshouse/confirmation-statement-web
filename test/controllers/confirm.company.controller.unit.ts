@@ -10,7 +10,12 @@ import { createConfirmationStatement, getNextMadeUpToDate } from "../../src/serv
 import mocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
-import { CONFIRM_COMPANY_PATH, INVALID_COMPANY_STATUS_PATH, URL_QUERY_PARAM } from "../../src/types/page.urls";
+import {
+  CONFIRM_COMPANY_PATH,
+  INVALID_COMPANY_STATUS_PATH,
+  URL_QUERY_PARAM,
+  USE_PAPER_PATH
+} from "../../src/types/page.urls";
 import { getCompanyProfile, formatForDisplay } from "../../src/services/company.profile.service";
 import { validCompanyProfile } from "../mocks/company.profile.mock";
 import { isActiveFeature } from "../../src/utils/feature.flag";
@@ -29,7 +34,6 @@ const mockGetNextMadeUpToDate = getNextMadeUpToDate as jest.Mock;
 const companyNumber = "12345678";
 const today = "2020-04-25";
 const STOP_PAGE_TITLE_COMPANY_DETAILS = "You cannot use this service - Company Details";
-const STOP_PAGE_TITLE_COMPANY_TYPE = "You cannot use this service - Company Type";
 const SERVICE_UNAVAILABLE_TEXT = "Sorry, the service is unavailable";
 
 describe("Confirm company controller tests", () => {
@@ -167,12 +171,12 @@ describe("Confirm company controller tests", () => {
   it("Should redirect to use paper stop screen when the eligibility status code is INVALID_COMPANY_TYPE_PAPER_FILING_ONLY", async () => {
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY);
+    const usePaperFilingPath = urlUtils.setQueryParam(USE_PAPER_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
-    expect(response.status).toEqual(200);
+    expect(response.status).toEqual(302);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
-    expect(response.text).toContain(STOP_PAGE_TITLE_COMPANY_TYPE);
-    expect(response.text).toContain("https://www.gov.uk/government/publications/confirmation-statement-cs01");
+    expect(response.header.location).toEqual(usePaperFilingPath);
   });
 
   it("Should redirect to use paper stop screen when the eligibility status code is INVALID_COMPANY_TYPE_PAPER_FILING_ONLY, type scottish-partnership", async () => {
@@ -181,13 +185,13 @@ describe("Confirm company controller tests", () => {
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockIsActiveFeature.mockReturnValueOnce(true);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY);
+    const usePaperFilingPath = urlUtils.setQueryParam(USE_PAPER_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
     validCompanyProfile.type  = originalType;
-    expect(response.status).toEqual(200);
+    expect(response.status).toEqual(302);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
-    expect(response.text).toContain(STOP_PAGE_TITLE_COMPANY_TYPE);
-    expect(response.text).toContain("https://www.gov.uk/government/publications/confirmation-statement-for-a-scottish-qualifying-partnership-sqp-cs01");
+    expect(response.header.location).toEqual(usePaperFilingPath);
   });
 
   it("Should redirect to use paper stop screen when the eligibility status code is INVALID_COMPANY_TYPE_PAPER_FILING_ONLY, type limited-partnership", async () => {
@@ -196,13 +200,13 @@ describe("Confirm company controller tests", () => {
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockIsActiveFeature.mockReturnValueOnce(true);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY);
+    const usePaperFilingPath = urlUtils.setQueryParam(USE_PAPER_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
     validCompanyProfile.type  = originalType;
-    expect(response.status).toEqual(200);
+    expect(response.status).toEqual(302);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
-    expect(response.text).toContain(STOP_PAGE_TITLE_COMPANY_TYPE);
-    expect(response.text).toContain("https://www.gov.uk/government/publications/confirmation-statement-for-a-scottish-limited-partnership-slp-cs01");
+    expect(response.header.location).toEqual(usePaperFilingPath);
   });
 
   it("Should redirect to use no filing required stop screen when the eligibility status code is INVALID_COMPANY_TYPE_CS01_FILING_NOT_REQUIRED", async () => {
