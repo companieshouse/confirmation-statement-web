@@ -14,7 +14,8 @@ import {
   CREATE_TRANSACTION_PATH,
   INVALID_COMPANY_STATUS_PATH,
   URL_QUERY_PARAM,
-  USE_PAPER_PATH
+  USE_PAPER_PATH,
+  USE_WEBFILING_PATH
 } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { toReadableFormat } from "../utils/date";
@@ -76,6 +77,7 @@ const displayEligibilityStopPage = (res: Response, eligibilityStatusCode: Eligib
     return res.redirect(urlUtils.setQueryParam(stopPagePath, URL_QUERY_PARAM.COMPANY_NUM, company.companyNumber));
   }
 
+  // TODO remove this bit when all stop pages are converted to paths
   const stopPage: string = stopPages[eligibilityStatusCode];
   if (!stopPage) {
     throw new Error(`Unknown eligibilityStatusCode ${eligibilityStatusCode}`);
@@ -92,15 +94,15 @@ const createNewConfirmationStatement = async (session: Session) => {
 
 const stopPagesPathMap = {
   [EligibilityStatusCode.INVALID_COMPANY_STATUS]: INVALID_COMPANY_STATUS_PATH,
-  [EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY]: USE_PAPER_PATH
+  [EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY]: USE_PAPER_PATH,
+  [EligibilityStatusCode.INVALID_COMPANY_TRADED_STATUS_USE_WEBFILING]: USE_WEBFILING_PATH,
+  [EligibilityStatusCode.INVALID_COMPANY_TYPE_USE_WEB_FILING]: USE_WEBFILING_PATH,
+  [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_INVALID_NUMBER_OF_OFFICERS]: USE_WEBFILING_PATH,
+  [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_PSC]: USE_WEBFILING_PATH,
+  [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_FIVE_PSCS]: USE_WEBFILING_PATH,
+  [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_SHAREHOLDER]: USE_WEBFILING_PATH
 };
 
 const stopPages = {
-  [EligibilityStatusCode.INVALID_COMPANY_TRADED_STATUS_USE_WEBFILING]: Templates.USE_WEBFILING,
-  [EligibilityStatusCode.INVALID_COMPANY_TYPE_USE_WEB_FILING]: Templates.USE_WEBFILING,
-  [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_INVALID_NUMBER_OF_OFFICERS]: Templates.USE_WEBFILING,
-  [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_PSC]: Templates.USE_WEBFILING,
-  [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_FIVE_PSCS]: Templates.USE_WEBFILING,
-  [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_SHAREHOLDER]: Templates.USE_WEBFILING,
   [EligibilityStatusCode.INVALID_COMPANY_TYPE_CS01_FILING_NOT_REQUIRED]: Templates.NO_FILING_REQUIRED
 };
