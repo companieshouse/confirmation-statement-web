@@ -53,7 +53,7 @@ describe("Invalid company status controller tests", () => {
 
     it("Should return an error page if invalid company number is entered in url query param", async () => {
       mockIsCompanyNumberValid.mockReturnValueOnce(false);
-      const invalidCompanyStatusPath = urlUtils.setQueryParam(INVALID_COMPANY_STATUS_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
+      const invalidCompanyStatusPath = urlUtils.setQueryParam(INVALID_COMPANY_STATUS_PATH, URL_QUERY_PARAM.COMPANY_NUM, "this is not a valid number");
 
       const response = await request(app).get(invalidCompanyStatusPath);
 
