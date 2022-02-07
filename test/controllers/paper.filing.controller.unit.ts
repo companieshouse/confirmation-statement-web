@@ -62,6 +62,15 @@ describe("User paper filing controller tests", () => {
       expect(response.text).toContain("SQP CSO1 confirmation statement paper form");
     });
 
+    it("Should return an error page if error is thrown in get function", async () => {
+      mockGetCompanyProfile.mockImplementationOnce(() => { throw new Error(); });
+      const usePaperFilingPath = urlUtils.setQueryParam(USE_PAPER_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
+
+      const response = await request(app).get(usePaperFilingPath);
+
+      expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
+    });
+
     it("Should return an error page if invalid company number is entered in url query param", async () => {
       mockIsCompanyNumberValid.mockReturnValueOnce(false);
       const invalidCompanyStatusPath = urlUtils.setQueryParam(USE_PAPER_PATH, URL_QUERY_PARAM.COMPANY_NUM, "this is not a valid number");
