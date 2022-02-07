@@ -12,7 +12,8 @@ import {
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import {
   CREATE_TRANSACTION_PATH,
-  INVALID_COMPANY_STATUS_PATH, NO_FILING_REQUIRED_PATH,
+  INVALID_COMPANY_STATUS_PATH,
+  NO_FILING_REQUIRED_PATH,
   URL_QUERY_PARAM,
   USE_PAPER_PATH
 } from "../types/page.urls";

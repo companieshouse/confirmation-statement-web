@@ -30,8 +30,8 @@ describe("No filing required controller tests", () => {
 
     it("Should render the no filing required stop page", async () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-      const usePaperFilingPath = urlUtils.setQueryParam(NO_FILING_REQUIRED_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
-      const response = await request(app).get(usePaperFilingPath);
+      const noFilingRequiredPath = urlUtils.setQueryParam(NO_FILING_REQUIRED_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
+      const response = await request(app).get(noFilingRequiredPath);
 
       expect(mockGetCompanyProfile).toBeCalledWith(validCompanyProfile.companyNumber);
       expect(response.text).toContain(NO_FILING_REQUIRED_PAGE_TITLE);
@@ -40,16 +40,16 @@ describe("No filing required controller tests", () => {
 
     it("Should return an error page if error is thrown in get function", async () => {
       mockGetCompanyProfile.mockImplementationOnce(() => { throw new Error(); });
-      const usePaperFilingPath = urlUtils.setQueryParam(NO_FILING_REQUIRED_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
-      const response = await request(app).get(usePaperFilingPath);
+      const noFilingRequiredPath = urlUtils.setQueryParam(NO_FILING_REQUIRED_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
+      const response = await request(app).get(noFilingRequiredPath);
 
       expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
     });
 
     it("Should return an error page if invalid company number is entered in url query param", async () => {
       mockIsCompanyNumberValid.mockReturnValueOnce(false);
-      const invalidCompanyStatusPath = urlUtils.setQueryParam(NO_FILING_REQUIRED_PATH, URL_QUERY_PARAM.COMPANY_NUM, "this is not a valid number");
-      const response = await request(app).get(invalidCompanyStatusPath);
+      const noFilingRequiredPath = urlUtils.setQueryParam(NO_FILING_REQUIRED_PATH, URL_QUERY_PARAM.COMPANY_NUM, "this is not a valid number");
+      const response = await request(app).get(noFilingRequiredPath);
 
       expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
     });
