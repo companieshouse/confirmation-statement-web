@@ -12,7 +12,7 @@ import {
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import {
   CREATE_TRANSACTION_PATH,
-  INVALID_COMPANY_STATUS_PATH,
+  INVALID_COMPANY_STATUS_PATH, NO_FILING_REQUIRED_PATH,
   URL_QUERY_PARAM,
   USE_PAPER_PATH
 } from "../types/page.urls";
@@ -92,7 +92,8 @@ const createNewConfirmationStatement = async (session: Session) => {
 
 const stopPagesPathMap = {
   [EligibilityStatusCode.INVALID_COMPANY_STATUS]: INVALID_COMPANY_STATUS_PATH,
-  [EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY]: USE_PAPER_PATH
+  [EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY]: USE_PAPER_PATH,
+  [EligibilityStatusCode.INVALID_COMPANY_TYPE_CS01_FILING_NOT_REQUIRED]: NO_FILING_REQUIRED_PATH
 };
 
 const stopPages = {
@@ -101,6 +102,5 @@ const stopPages = {
   [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_INVALID_NUMBER_OF_OFFICERS]: Templates.USE_WEBFILING,
   [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_PSC]: Templates.USE_WEBFILING,
   [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_FIVE_PSCS]: Templates.USE_WEBFILING,
-  [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_SHAREHOLDER]: Templates.USE_WEBFILING,
-  [EligibilityStatusCode.INVALID_COMPANY_TYPE_CS01_FILING_NOT_REQUIRED]: Templates.NO_FILING_REQUIRED
+  [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_SHAREHOLDER]: Templates.USE_WEBFILING
 };
