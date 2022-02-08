@@ -17,7 +17,7 @@ mockIsCompanyNumberValid.mockReturnValue(true);
 const STOP_PAGE_TITLE_USE_WEBFILING = "You cannot use this service - Company Details";
 const SERVICE_UNAVAILABLE_TEXT = "Sorry, the service is unavailable";
 
-describe("Invalid company status controller tests", () => {
+describe("Use Webfiling controller tests", () => {
 
   beforeEach(() => {
     mocks.mockAuthenticationMiddleware.mockClear();
