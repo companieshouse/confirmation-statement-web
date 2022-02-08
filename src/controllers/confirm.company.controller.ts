@@ -4,7 +4,7 @@ import { formatForDisplay, getCompanyProfile } from "../services/company.profile
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { createConfirmationStatement, getNextMadeUpToDate } from "../services/confirmation.statement.service";
 import { Session } from "@companieshouse/node-session-handler";
-import { FEATURE_FLAG_PRIVATE_SDK_12052021, FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 } from "../utils/properties";
+import { FEATURE_FLAG_PRIVATE_SDK_12052021 } from "../utils/properties";
 import { isActiveFeature } from "../utils/feature.flag";
 import { checkEligibility } from "../services/eligibility.service";
 import {
@@ -13,6 +13,7 @@ import {
 import {
   CREATE_TRANSACTION_PATH,
   INVALID_COMPANY_STATUS_PATH,
+  NO_FILING_REQUIRED_PATH,
   URL_QUERY_PARAM,
   USE_PAPER_PATH,
   USE_WEBFILING_PATH
@@ -72,17 +73,11 @@ const isCompanyValidForService = (eligibilityStatusCode: EligibilityStatusCode):
 
 const displayEligibilityStopPage = (res: Response, eligibilityStatusCode: EligibilityStatusCode, company: CompanyProfile) => {
   const stopPagePath: string = stopPagesPathMap[eligibilityStatusCode];
-  if (stopPagePath) {
-    // setQueryParam should 'inject' the param if it is present. Not all paths will need a param so should be unaffected by the setQueryParam
-    return res.redirect(urlUtils.setQueryParam(stopPagePath, URL_QUERY_PARAM.COMPANY_NUM, company.companyNumber));
-  }
-
-  // TODO remove this bit when all stop pages are converted to paths
-  const stopPage: string = stopPages[eligibilityStatusCode];
-  if (!stopPage) {
+  if (!stopPagePath) {
     throw new Error(`Unknown eligibilityStatusCode ${eligibilityStatusCode}`);
   }
-  return res.render(stopPage, { company, FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021, templateName: stopPage });
+
+  return res.redirect(urlUtils.setQueryParam(stopPagePath, URL_QUERY_PARAM.COMPANY_NUM, company.companyNumber));
 };
 
 const createNewConfirmationStatement = async (session: Session) => {
@@ -100,9 +95,6 @@ const stopPagesPathMap = {
   [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_INVALID_NUMBER_OF_OFFICERS]: USE_WEBFILING_PATH,
   [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_PSC]: USE_WEBFILING_PATH,
   [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_FIVE_PSCS]: USE_WEBFILING_PATH,
-  [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_SHAREHOLDER]: USE_WEBFILING_PATH
-};
-
-const stopPages = {
-  [EligibilityStatusCode.INVALID_COMPANY_TYPE_CS01_FILING_NOT_REQUIRED]: Templates.NO_FILING_REQUIRED
+  [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_SHAREHOLDER]: USE_WEBFILING_PATH,
+  [EligibilityStatusCode.INVALID_COMPANY_TYPE_CS01_FILING_NOT_REQUIRED]: NO_FILING_REQUIRED_PATH
 };

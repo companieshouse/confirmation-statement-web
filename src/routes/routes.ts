@@ -21,6 +21,7 @@ import * as paymentCallbackRoute from "../controllers/payment.callback.controlle
 import * as invalidCompanyStatusRoute from "../controllers/invalid.company.status.controller";
 import * as paperFilingRoute from "../controllers/paper.filing.controller";
 import * as useWebFilingRoute from "../controllers/use.webfiling.controller";
+import * as noFilingRequiredRoute from "../controllers/no.filing.required.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 
@@ -95,3 +96,5 @@ router.get(urls.INVALID_COMPANY_STATUS, invalidCompanyStatusRoute.get);
 router.get(urls.USE_PAPER, paperFilingRoute.get);
 
 router.get(urls.USE_WEBFILING, useWebFilingRoute.get);
+
+router.get(urls.NO_FILING_REQUIRED, noFilingRequiredRoute.get);

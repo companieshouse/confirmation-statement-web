@@ -12,7 +12,7 @@ import request from "supertest";
 import app from "../../src/app";
 import {
   CONFIRM_COMPANY_PATH,
-  INVALID_COMPANY_STATUS_PATH,
+  INVALID_COMPANY_STATUS_PATH, NO_FILING_REQUIRED_PATH,
   URL_QUERY_PARAM,
   USE_PAPER_PATH,
   USE_WEBFILING_PATH
@@ -215,11 +215,12 @@ describe("Confirm company controller tests", () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TYPE_CS01_FILING_NOT_REQUIRED);
+    const noFilingRequiredPath = urlUtils.setQueryParam(NO_FILING_REQUIRED_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
-    expect(response.status).toEqual(200);
+    expect(response.status).toEqual(302);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
-    expect(response.text).toContain("which means it is not required to file confirmation statements.");
+    expect(response.header.location).toEqual(noFilingRequiredPath);
   });
 
   it("Should redirect to use webfiling stop screen when the eligibility status code is INVALID_COMPANY_APPOINTMENTS_INVALID_NUMBER_OF_OFFICERS", async () => {
