@@ -76,7 +76,6 @@ const displayEligibilityStopPage = (res: Response, eligibilityStatusCode: Eligib
   if (!stopPagePath) {
     throw new Error(`Unknown eligibilityStatusCode ${eligibilityStatusCode}`);
   }
-
   return res.redirect(urlUtils.setQueryParam(stopPagePath, URL_QUERY_PARAM.COMPANY_NUM, company.companyNumber));
 };
 
