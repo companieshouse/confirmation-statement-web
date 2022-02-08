@@ -14,7 +14,8 @@ import {
   CONFIRM_COMPANY_PATH,
   INVALID_COMPANY_STATUS_PATH, NO_FILING_REQUIRED_PATH,
   URL_QUERY_PARAM,
-  USE_PAPER_PATH
+  USE_PAPER_PATH,
+  USE_WEBFILING_PATH
 } from "../../src/types/page.urls";
 import { getCompanyProfile, formatForDisplay } from "../../src/services/company.profile.service";
 import { validCompanyProfile } from "../mocks/company.profile.mock";
@@ -33,8 +34,9 @@ const mockGetNextMadeUpToDate = getNextMadeUpToDate as jest.Mock;
 
 const companyNumber = "12345678";
 const today = "2020-04-25";
-const STOP_PAGE_TITLE_COMPANY_DETAILS = "You cannot use this service - Company Details";
 const SERVICE_UNAVAILABLE_TEXT = "Sorry, the service is unavailable";
+
+const useWebFilingRedirectPath = urlUtils.setQueryParam(USE_WEBFILING_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
 
 describe("Confirm company controller tests", () => {
   const PAGE_HEADING = "Confirm this is the correct company";
@@ -153,9 +155,9 @@ describe("Confirm company controller tests", () => {
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TYPE_USE_WEB_FILING);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
-    expect(response.status).toEqual(200);
+    expect(response.status).toEqual(302);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
-    expect(response.text).toContain(STOP_PAGE_TITLE_COMPANY_DETAILS);
+    expect(response.header.location).toBe(useWebFilingRedirectPath);
   });
 
   it("Should redirect to use webfiling stop screen when the eligibility status code is INVALID_COMPANY_TRADED_STATUS_USE_WEBFILING", async () => {
@@ -163,9 +165,9 @@ describe("Confirm company controller tests", () => {
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_TRADED_STATUS_USE_WEBFILING);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
-    expect(response.status).toEqual(200);
+    expect(response.status).toEqual(302);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
-    expect(response.text).toContain(STOP_PAGE_TITLE_COMPANY_DETAILS);
+    expect(response.header.location).toBe(useWebFilingRedirectPath);
   });
 
   it("Should redirect to use paper stop screen when the eligibility status code is INVALID_COMPANY_TYPE_PAPER_FILING_ONLY", async () => {
@@ -227,9 +229,9 @@ describe("Confirm company controller tests", () => {
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_INVALID_NUMBER_OF_OFFICERS);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
-    expect(response.status).toEqual(200);
+    expect(response.status).toEqual(302);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
-    expect(response.text).toContain(STOP_PAGE_TITLE_COMPANY_DETAILS);
+    expect(response.text).toContain(useWebFilingRedirectPath);
   });
 
   it("Should redirect to use webfiling stop screen when the eligibility status code is INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_PSC", async () => {
@@ -238,9 +240,9 @@ describe("Confirm company controller tests", () => {
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_PSC);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
-    expect(response.status).toEqual(200);
+    expect(response.status).toEqual(302);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
-    expect(response.text).toContain(STOP_PAGE_TITLE_COMPANY_DETAILS);
+    expect(response.text).toContain(useWebFilingRedirectPath);
   });
 
   it("Should redirect to use webfiling stop screen when the eligibility status code is INVALID_COMPANY_APPOINTMENTS_MORE_THAN_FIVE_PSCS", async () => {
@@ -249,9 +251,9 @@ describe("Confirm company controller tests", () => {
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_FIVE_PSCS);
     const response = await request(app)
       .post(CONFIRM_COMPANY_PATH);
-    expect(response.status).toEqual(200);
+    expect(response.status).toEqual(302);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
-    expect(response.text).toContain(STOP_PAGE_TITLE_COMPANY_DETAILS);
+    expect(response.text).toContain(useWebFilingRedirectPath);
   });
 
   it("Should redirect to use webfiling stop screen when the eligibility status code is INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_SHAREHOLDER", async () => {
@@ -259,9 +261,9 @@ describe("Confirm company controller tests", () => {
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_SHAREHOLDER);
     const response = await request(app).post(CONFIRM_COMPANY_PATH);
-    expect(response.status).toEqual(200);
+    expect(response.status).toEqual(302);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
-    expect(response.text).toContain(STOP_PAGE_TITLE_COMPANY_DETAILS);
+    expect(response.text).toContain(useWebFilingRedirectPath);
   });
 
   it("Should display a warning if filing is not due", async () => {
