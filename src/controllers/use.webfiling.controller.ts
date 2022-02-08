@@ -15,7 +15,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       return next(new Error(`Invalid company number entered in ${USE_WEBFILING_PATH} url query parameter`));
     }
 
-    const company: CompanyProfile = await getCompanyProfile(companyNumber as string);
+    const company: CompanyProfile = await getCompanyProfile(companyNumber);
     return res.render(Templates.USE_WEBFILING, {
       company,
       FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021,

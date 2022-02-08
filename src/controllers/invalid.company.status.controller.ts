@@ -13,7 +13,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       return next(new Error(`Invalid company number entered in ${INVALID_COMPANY_STATUS_PATH} url query parameter`));
     }
 
-    const company: CompanyProfile = await getCompanyProfile(companyNumber as string);
+    const company: CompanyProfile = await getCompanyProfile(companyNumber);
     return res.render(Templates.INVALID_COMPANY_STATUS, {
       company,
       templateName: Templates.INVALID_COMPANY_STATUS
