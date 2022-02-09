@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
 import { Templates } from "../types/template.paths";
-import { CONFIRM_COMPANY_PATH, TASK_LIST_PATH, TRADING_STATUS_PATH, urlParams } from "../types/page.urls";
+import {
+  CONFIRM_COMPANY_PATH,
+  TASK_LIST_PATH,
+  TRADING_STOP_PATH,
+  urlParams
+} from "../types/page.urls";
 import { RADIO_BUTTON_VALUE, TRADING_STATUS_ERROR } from "../utils/constants";
 import { urlUtils } from "../utils/url";
 import { sendTradingStatusUpdate } from "../utils/update.confirmation.statement.submission";
@@ -24,9 +29,7 @@ export const post = async (req: Request, res: Response) => {
 
   if (tradingStatusButtonValue === RADIO_BUTTON_VALUE.NO) {
     await sendTradingStatusUpdate(req, false);
-    return res.render(Templates.TRADING_STOP, {
-      backLinkUrl: urlUtils.getUrlToPath(TRADING_STATUS_PATH, req)
-    });
+    return res.redirect(urlUtils.getUrlToPath(TRADING_STOP_PATH, req));
   }
 
   return res.render(Templates.TRADING_STATUS, {
