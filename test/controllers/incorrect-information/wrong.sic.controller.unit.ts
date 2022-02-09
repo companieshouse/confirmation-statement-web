@@ -1,12 +1,17 @@
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
-import { WRONG_SIC_PATH } from "../../../src/types/page.urls";
+import { SIC_PATH, WRONG_SIC_PATH } from "../../../src/types/page.urls";
+import { urlUtils } from "../../../src/utils/url";
 
 const STOP_PAGE_TEXT = "Currently, changes to the company SIC codes can only be made by filing a confirmation statement";
 const SIC_CODE = "123";
 const SIC_CODE_DESCRIPTIONS = "Test SIC code descriptions";
 const SIC_CODE_DETAILS = "<strong>" + SIC_CODE + "</strong> - " + SIC_CODE_DESCRIPTIONS;
+const COMPANY_NUMBER = "12345678";
+const TRANSACTION_ID = "12345-12345";
+const SUBMISSION_ID = "86dfssfds";
+const populatedWrongSicPath = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(WRONG_SIC_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 
 describe("Wrong sic stop controller tests", () => {
 
@@ -19,12 +24,13 @@ describe("Wrong sic stop controller tests", () => {
   describe("test for the get function", () => {
 
     it("Should render the wrong sic stop page", async () => {
-      const response = await request(app).get(WRONG_SIC_PATH);
+      const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(SIC_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
+      const response = await request(app).get(populatedWrongSicPath);
 
       expect(response.text).toContain(STOP_PAGE_TEXT);
       expect(response.text).not.toContain(SIC_CODE_DETAILS);
       expect(response.text).toContain("Incorrect SIC");
-      expect(response.text).toContain("/confirmation-statement/company/:companyNumber/transaction/:transactionId/submission/:submissionId/sic");
+      expect(response.text).toContain(backLinkUrl);
     });
   });
 });
