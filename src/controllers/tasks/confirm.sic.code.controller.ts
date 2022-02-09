@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { urlUtils } from "../../utils/url";
-import { TASK_LIST_PATH, SIC_PATH } from "../../types/page.urls";
+import { TASK_LIST_PATH, WRONG_SIC_PATH } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { lookupSicCodeDescription } from "../../utils/api.enumerations";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
@@ -31,11 +31,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
   if (sicButtonValue === RADIO_BUTTON_VALUE.NO) {
     await sendUpdate(req, SECTIONS.SIC, SectionStatus.NOT_CONFIRMED);
-    return res.render(Templates.WRONG_SIC, {
-      backLinkUrl: urlUtils.getUrlToPath(SIC_PATH, req),
-      templateName: Templates.SIC,
-      sickCodeStatus: sicButtonValue
-    });
+    return res.redirect(urlUtils.getUrlToPath(WRONG_SIC_PATH, req));
   }
 
   try {

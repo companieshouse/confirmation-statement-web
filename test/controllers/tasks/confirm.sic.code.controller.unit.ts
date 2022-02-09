@@ -4,12 +4,11 @@ const COMPANY_NUMBER = "12345678";
 const EXPECTED_TEXT = "Check the SIC codes";
 const SIC_CODE_DETAILS = "<strong>" + SIC_CODE + "</strong> - " + SIC_CODE_DESCRIPTIONS;
 const SIC_CODE_ERROR_HEADING = "There is a problem";
-const STOP_PAGE_TEXT = "Currently, changes to the company SIC codes can only be made by filing a confirmation statement";
 
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
-import { SIC_PATH, TASK_LIST_PATH, urlParams } from "../../../src/types/page.urls";
+import { SIC_PATH, TASK_LIST_PATH, urlParams, WRONG_SIC_PATH } from "../../../src/types/page.urls";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
 import { urlUtils } from "../../../src/utils/url";
 import { getCompanyProfile } from "../../../src/services/company.profile.service";
@@ -24,6 +23,7 @@ const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockSendUpdate = sendUpdate as jest.Mock;
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const SIC_CODE_URL = SIC_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+const WRONG_SIC_URL = WRONG_SIC_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
 jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/company.profile.service");
@@ -62,10 +62,8 @@ describe("Confirm sic code controller tests", () => {
       .send({ sicCodeStatus: "no" });
     expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.SIC);
     expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
-    expect(response.status).toEqual(200);
-    expect(response.text).toContain(STOP_PAGE_TEXT);
-    expect(response.text).not.toContain(SIC_CODE_DETAILS);
-    expect(response.text).toContain("Incorrect SIC");
+    expect(response.status).toEqual(302);
+    expect(response.header.location).toEqual(WRONG_SIC_URL);
     expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
   });
 
