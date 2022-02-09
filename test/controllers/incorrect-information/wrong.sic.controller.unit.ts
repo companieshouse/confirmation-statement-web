@@ -24,6 +24,7 @@ describe("Wrong sic stop controller tests", () => {
       expect(response.text).toContain(STOP_PAGE_TEXT);
       expect(response.text).not.toContain(SIC_CODE_DETAILS);
       expect(response.text).toContain("Incorrect SIC");
+      expect(response.text).toContain("/confirmation-statement/company/:companyNumber/transaction/:transactionId/submission/:submissionId/sic");
     });
   });
 });
