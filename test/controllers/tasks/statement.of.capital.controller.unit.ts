@@ -35,7 +35,6 @@ const mockGetShareholders = getShareholders as jest.Mock;
 const mockSendUpdate = sendUpdate as jest.Mock;
 
 const PAGE_HEADING = "Review the statement of capital";
-const STOP_PAGE_HEADING = "Incorrect SOC";
 const SHARES_TOTALS_INVALID_WARNING = "The company's share capital does not match the number of shares held by its shareholders.";
 const UNPAID_AMOUNT_NULL_WARNING = "The total amount unpaid for all shares is missing on this company’s statement of capital.";
 const COMPANY_NUMBER = "12345678";
@@ -199,8 +198,7 @@ describe("Statement of Capital controller tests", () => {
         .send({ sharesValidation: "false" })
         .send({ totalAmountUnpaidValidation: "true" });
 
-      expect(response.status).toEqual(200);
-      expect(response.text).toContain(STOP_PAGE_HEADING);
+      expect(response.status).toEqual(302);
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
     });
 
@@ -212,8 +210,7 @@ describe("Statement of Capital controller tests", () => {
         .send({ sharesValidation: "true" })
         .send({ totalAmountUnpaidValidation: "false" });
 
-      expect(response.status).toEqual(200);
-      expect(response.text).toContain(STOP_PAGE_HEADING);
+      expect(response.status).toEqual(302);
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
     });
 
@@ -225,8 +222,7 @@ describe("Statement of Capital controller tests", () => {
         .send({ sharesValidation: "false" })
         .send({ totalAmountUnpaidValidation: "false" });
 
-      expect(response.status).toEqual(200);
-      expect(response.text).toContain(STOP_PAGE_HEADING);
+      expect(response.status).toEqual(302);
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
     });
 
@@ -237,8 +233,7 @@ describe("Statement of Capital controller tests", () => {
         .post(STATEMENT_OF_CAPITAL_URL)
         .send({ statementOfCapital: "no" });
 
-      expect(response.status).toEqual(200);
-      expect(response.text).toContain(STOP_PAGE_HEADING);
+      expect(response.status).toEqual(302);
     });
 
     it("Should redisplay statement of capital page with error when radio button is not selected", async () => {

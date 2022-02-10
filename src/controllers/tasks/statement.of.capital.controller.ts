@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { RADIO_BUTTON_VALUE, SECTIONS, STATEMENT_OF_CAPITAL_ERROR } from "../../utils/constants";
-import { STATEMENT_OF_CAPITAL_PATH, TASK_LIST_PATH, urlParams } from "../../types/page.urls";
+import {
+  TASK_LIST_PATH,
+  urlParams,
+  WRONG_STATEMENT_OF_CAPITAL_PATH
+} from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
 import { getStatementOfCapitalData } from "../../services/statement.of.capital.service";
@@ -57,13 +61,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId));
     } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO || !sharesValidation || !totalAmountUnpaidValidation) {
       await sendUpdate(req, SECTIONS.SOC, SectionStatus.NOT_CONFIRMED);
-      return res.render(Templates.WRONG_STATEMENT_OF_CAPITAL, {
-        templateName: Templates.WRONG_STATEMENT_OF_CAPITAL,
-        backLinkUrl: urlUtils
-          .getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, companyNumber, transactionId, submissionId),
-        sharesValidation,
-        totalAmountUnpaidValidation
-      });
+      return res.redirect(urlUtils.getUrlToPath(WRONG_STATEMENT_OF_CAPITAL_PATH, req));
     }
 
     return res.render(Templates.STATEMENT_OF_CAPITAL, {
@@ -79,7 +77,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const validateTotalNumberOfShares = async (session: Session, transactionId: string, submissionId: string, totalNumberOfShares: number): Promise<boolean> => {
+export const validateTotalNumberOfShares = async (session: Session, transactionId: string, submissionId: string, totalNumberOfShares: number): Promise<boolean> => {
   const shareholders: Shareholder[] = await getShareholders(session, transactionId, submissionId);
   let shareholderTotalNumberOfShares: number = 0;
   shareholders.forEach(shareholder => shareholderTotalNumberOfShares = +shareholder.shares + shareholderTotalNumberOfShares);
