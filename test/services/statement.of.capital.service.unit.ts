@@ -1,5 +1,6 @@
 jest.mock("@companieshouse/api-sdk-node");
 jest.mock("@companieshouse/api-sdk-node/dist/services/confirmation-statement");
+jest.mock("../../src/services/shareholder.service");
 
 import {
   ConfirmationStatementService,
@@ -8,13 +9,15 @@ import {
 import { createApiClient } from "@companieshouse/api-sdk-node";
 import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 import { Resource } from "@companieshouse/api-sdk-node";
-import { getStatementOfCapitalData } from "../../src/services/statement.of.capital.service";
+import { getStatementOfCapitalData, validateTotalNumberOfShares } from "../../src/services/statement.of.capital.service";
 import { getSessionRequest } from "../mocks/session.mock";
 import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { mockStatementOfCapital } from "../mocks/confirmation.statement.submission.mock";
+import { getShareholders } from "../../src/services/shareholder.service";
 
 const mockGetStatementOfCapital = ConfirmationStatementService.prototype.getStatementOfCapital as jest.Mock;
 const mockCreateApiClient = createApiClient as jest.Mock;
+const mockGetShareholders =  getShareholders as jest.Mock;
 
 mockCreateApiClient.mockReturnValue({
   confirmationStatementService: ConfirmationStatementService.prototype
@@ -58,5 +61,19 @@ describe("Test statement of capital service", () => {
     }
     expect(actualMessage).toBeTruthy();
     expect(actualMessage).toEqual(expectedMessage);
+  });
+
+  it("should return true when share capital matches", async () => {
+    mockGetShareholders.mockResolvedValue([{ shares: "100" }]);
+    const session =  getSessionRequest({ access_token: "token" });
+    const response = await validateTotalNumberOfShares(session, TRANSACTION_ID, SUBMISSION_ID, 100);
+    expect(response).toBe(true);
+  });
+
+  it("should return false when share capital mismatches", async () => {
+    mockGetShareholders.mockResolvedValue([{ shares: "100" }]);
+    const session =  getSessionRequest({ access_token: "token" });
+    const response = await validateTotalNumberOfShares(session, TRANSACTION_ID, SUBMISSION_ID, 1000);
+    expect(response).toBe(false);
   });
 });

@@ -9,8 +9,11 @@ import {
   WRONG_STATEMENT_OF_CAPITAL_PATH
 } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
-import { getStatementOfCapitalData } from "../../../src/services/statement.of.capital.service";
-import { validateTotalNumberOfShares } from "../../../src/controllers/tasks/statement.of.capital.controller";
+import {
+  getStatementOfCapitalData,
+  validateTotalNumberOfShares
+} from "../../../src/services/statement.of.capital.service";
+
 
 const mockGetStatementOfCapitalData = getStatementOfCapitalData as jest.Mock;
 const mockValidateTotalNumberOfShares = validateTotalNumberOfShares as jest.Mock;

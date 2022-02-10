@@ -7,16 +7,14 @@ import {
 } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
-import { getStatementOfCapitalData } from "../../services/statement.of.capital.service";
+import { getStatementOfCapitalData, validateTotalNumberOfShares } from "../../services/statement.of.capital.service";
 import { Session } from "@companieshouse/node-session-handler";
 import {
   SectionStatus,
-  Shareholder,
   StatementOfCapital
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { formatTitleCase } from "../../utils/format";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
-import { getShareholders } from "../../services/shareholder.service";
 
 export const get = async(req: Request, res: Response, next: NextFunction) => {
   try {
@@ -75,13 +73,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   } catch (e) {
     return next(e);
   }
-};
-
-export const validateTotalNumberOfShares = async (session: Session, transactionId: string, submissionId: string, totalNumberOfShares: number): Promise<boolean> => {
-  const shareholders: Shareholder[] = await getShareholders(session, transactionId, submissionId);
-  let shareholderTotalNumberOfShares: number = 0;
-  shareholders.forEach(shareholder => shareholderTotalNumberOfShares = +shareholder.shares + shareholderTotalNumberOfShares);
-  return totalNumberOfShares === shareholderTotalNumberOfShares;
 };
 
 const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];

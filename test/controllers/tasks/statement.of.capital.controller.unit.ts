@@ -1,5 +1,4 @@
 jest.mock("../../../src/middleware/company.authentication.middleware");
-jest.mock("../../../src/services/shareholder.service");
 jest.mock("../../../src/utils/update.confirmation.statement.submission");
 jest.mock("../../../src/services/statement.of.capital.service");
 jest.mock("../../../src/services/confirmation.statement.service");
@@ -11,16 +10,18 @@ import {
 import request from "supertest";
 import mocks from "../../mocks/all.middleware.mock";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
-import { STATEMENT_OF_CAPITAL_PATH, TASK_LIST_PATH } from "../../../src/types/page.urls";
+import { STATEMENT_OF_CAPITAL_PATH, TASK_LIST_PATH, WRONG_STATEMENT_OF_CAPITAL_PATH } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
 import app from "../../../src/app";
 import { STATEMENT_OF_CAPITAL_ERROR } from "../../../src/utils/constants";
-import { getStatementOfCapitalData } from "../../../src/services/statement.of.capital.service";
+import {
+  getStatementOfCapitalData,
+  validateTotalNumberOfShares
+} from "../../../src/services/statement.of.capital.service";
 import {
   mockConfirmationStatementSubmission,
   mockStatementOfCapital
 } from "../../mocks/confirmation.statement.submission.mock";
-import { getShareholders } from "../../../src/services/shareholder.service";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
@@ -31,7 +32,9 @@ const mockGetStatementOfCapitalData = getStatementOfCapitalData as jest.Mock;
 const mockUpdateConfirmationStatement = updateConfirmationStatement as jest.Mock;
 
 const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
-const mockGetShareholders = getShareholders as jest.Mock;
+
+const mockValidateTotalNumberOfShares = validateTotalNumberOfShares as jest.Mock;
+
 const mockSendUpdate = sendUpdate as jest.Mock;
 
 const PAGE_HEADING = "Review the statement of capital";
@@ -42,6 +45,7 @@ const SUBMISSION_ID = "a80f09e2";
 const TRANSACTION_ID = "111-111-111";
 const STATEMENT_OF_CAPITAL_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 const TASK_LIST_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
+const WRONG_STATEMENT_OF_CAPITAL_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(WRONG_STATEMENT_OF_CAPITAL_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 
 describe("Statement of Capital controller tests", () => {
 
@@ -51,7 +55,7 @@ describe("Statement of Capital controller tests", () => {
     mocks.mockSessionMiddleware.mockClear();
     mockGetStatementOfCapitalData.mockClear();
     mockUpdateConfirmationStatement.mockClear();
-    mockGetShareholders.mockClear();
+    mockValidateTotalNumberOfShares.mockClear();
     mockSendUpdate.mockClear();
   });
 
@@ -62,10 +66,10 @@ describe("Statement of Capital controller tests", () => {
         totalNumberOfShares: "100",
         totalAmountUnpaidForCurrency: null
       });
-      mockGetShareholders.mockResolvedValue([{ shares: "123" }]);
+      mockValidateTotalNumberOfShares.mockReturnValueOnce(false);
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
 
-      expect(mockGetShareholders).toBeCalledTimes(1);
+      expect(mockValidateTotalNumberOfShares).toBeCalledTimes(1);
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Check the statement of capital");
       expect(response.text).toContain(UNPAID_AMOUNT_NULL_WARNING);
@@ -78,10 +82,10 @@ describe("Statement of Capital controller tests", () => {
         totalNumberOfShares: "100",
         totalAmountUnpaidForCurrency: undefined
       });
-      mockGetShareholders.mockResolvedValue([{ shares: "100" }]);
+      mockValidateTotalNumberOfShares.mockReturnValueOnce(true);
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
 
-      expect(mockGetShareholders).toBeCalledTimes(1);
+      expect(mockValidateTotalNumberOfShares).toBeCalledTimes(1);
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Check the statement of capital");
       expect(response.text).toContain(UNPAID_AMOUNT_NULL_WARNING);
@@ -94,10 +98,10 @@ describe("Statement of Capital controller tests", () => {
         totalNumberOfShares: "100",
         totalAmountUnpaidForCurrency: null
       });
-      mockGetShareholders.mockResolvedValue([{ shares: "100" }]);
+      mockValidateTotalNumberOfShares.mockReturnValueOnce(true);
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
 
-      expect(mockGetShareholders).toBeCalledTimes(1);
+      expect(mockValidateTotalNumberOfShares).toBeCalledTimes(1);
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Check the statement of capital");
       expect(response.text).toContain(UNPAID_AMOUNT_NULL_WARNING);
@@ -107,10 +111,9 @@ describe("Statement of Capital controller tests", () => {
 
     it("should navigate to the statement of capital page with NO buttons visible and a share-capital-mismatch-warning message if share totals DO NOT match the shareholders'.", async () => {
       mockGetStatementOfCapitalData.mockResolvedValueOnce(mockStatementOfCapital);
-      mockGetShareholders.mockResolvedValue([{ shares: "123" }]);
+      mockValidateTotalNumberOfShares.mockReturnValueOnce(false);
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
-
-      expect(mockGetShareholders).toBeCalledTimes(1);
+      expect(mockValidateTotalNumberOfShares).toBeCalledTimes(1);
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Check the statement of capital");
       expect(response.text).toContain(SHARES_TOTALS_INVALID_WARNING);
@@ -120,10 +123,9 @@ describe("Statement of Capital controller tests", () => {
 
     it("should navigate to the statement of capital page with buttons visible and no warning messages if Share totals match and amount unpaid is NOT NULL.", async () => {
       mockGetStatementOfCapitalData.mockResolvedValueOnce(mockStatementOfCapital);
-      mockGetShareholders.mockResolvedValue([{ shares: "100" }]);
+      mockValidateTotalNumberOfShares.mockReturnValueOnce(true);
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
-
-      expect(mockGetShareholders).toBeCalledTimes(1);
+      expect(mockValidateTotalNumberOfShares).toBeCalledTimes(1);
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Check the statement of capital");
       expect(response.text).toContain("Is the statement of capital correct?");
@@ -153,7 +155,6 @@ describe("Statement of Capital controller tests", () => {
         numberAllotted: "110",
         aggregateNominalValue: "2"
       });
-      mockGetShareholders.mockResolvedValue([{ shares: "123" }]);
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).toContain("Check the statement of capital");
@@ -199,6 +200,7 @@ describe("Statement of Capital controller tests", () => {
         .send({ totalAmountUnpaidValidation: "true" });
 
       expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(WRONG_STATEMENT_OF_CAPITAL_URL);
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
     });
 
@@ -211,6 +213,7 @@ describe("Statement of Capital controller tests", () => {
         .send({ totalAmountUnpaidValidation: "false" });
 
       expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(WRONG_STATEMENT_OF_CAPITAL_URL);
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
     });
 
@@ -223,6 +226,7 @@ describe("Statement of Capital controller tests", () => {
         .send({ totalAmountUnpaidValidation: "false" });
 
       expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(WRONG_STATEMENT_OF_CAPITAL_URL);
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
     });
 
@@ -234,6 +238,7 @@ describe("Statement of Capital controller tests", () => {
         .send({ statementOfCapital: "no" });
 
       expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(WRONG_STATEMENT_OF_CAPITAL_URL);
     });
 
     it("Should redisplay statement of capital page with error when radio button is not selected", async () => {
