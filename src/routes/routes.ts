@@ -24,6 +24,7 @@ import * as useWebFilingRoute from "../controllers/use.webfiling.controller";
 import * as noFilingRequiredRoute from "../controllers/no.filing.required.controller";
 import * as tradingStopRoute from "../controllers/trading.stop.controller";
 import * as wrongSicRoute from "../controllers/incorrect-information/wrong.sic.controller";
+import * as wrongStatementOfCapitalRoute from "../controllers/incorrect-information/wrong.statement.of.capital.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 
@@ -104,3 +105,5 @@ router.get(urls.NO_FILING_REQUIRED, noFilingRequiredRoute.get);
 router.get(urls.TRADING_STOP, tradingStopRoute.get);
 
 router.get(urls.WRONG_SIC, wrongSicRoute.get);
+
+router.get(urls.WRONG_STATEMENT_OF_CAPITAL, wrongStatementOfCapitalRoute.get);

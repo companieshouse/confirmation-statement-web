@@ -1,18 +1,20 @@
 import { NextFunction, Request, Response } from "express";
 import { RADIO_BUTTON_VALUE, SECTIONS, STATEMENT_OF_CAPITAL_ERROR } from "../../utils/constants";
-import { STATEMENT_OF_CAPITAL_PATH, TASK_LIST_PATH, urlParams } from "../../types/page.urls";
+import {
+  TASK_LIST_PATH,
+  urlParams,
+  WRONG_STATEMENT_OF_CAPITAL_PATH
+} from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
-import { getStatementOfCapitalData } from "../../services/statement.of.capital.service";
+import { getStatementOfCapitalData, validateTotalNumberOfShares } from "../../services/statement.of.capital.service";
 import { Session } from "@companieshouse/node-session-handler";
 import {
   SectionStatus,
-  Shareholder,
   StatementOfCapital
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { formatTitleCase } from "../../utils/format";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
-import { getShareholders } from "../../services/shareholder.service";
 
 export const get = async(req: Request, res: Response, next: NextFunction) => {
   try {
@@ -57,13 +59,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId));
     } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO || !sharesValidation || !totalAmountUnpaidValidation) {
       await sendUpdate(req, SECTIONS.SOC, SectionStatus.NOT_CONFIRMED);
-      return res.render(Templates.WRONG_STATEMENT_OF_CAPITAL, {
-        templateName: Templates.WRONG_STATEMENT_OF_CAPITAL,
-        backLinkUrl: urlUtils
-          .getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, companyNumber, transactionId, submissionId),
-        sharesValidation,
-        totalAmountUnpaidValidation
-      });
+      return res.redirect(urlUtils.getUrlToPath(WRONG_STATEMENT_OF_CAPITAL_PATH, req));
     }
 
     return res.render(Templates.STATEMENT_OF_CAPITAL, {
@@ -77,13 +73,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   } catch (e) {
     return next(e);
   }
-};
-
-const validateTotalNumberOfShares = async (session: Session, transactionId: string, submissionId: string, totalNumberOfShares: number): Promise<boolean> => {
-  const shareholders: Shareholder[] = await getShareholders(session, transactionId, submissionId);
-  let shareholderTotalNumberOfShares: number = 0;
-  shareholders.forEach(shareholder => shareholderTotalNumberOfShares = +shareholder.shares + shareholderTotalNumberOfShares);
-  return totalNumberOfShares === shareholderTotalNumberOfShares;
 };
 
 const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];
