@@ -1,6 +1,6 @@
 import { Templates } from "../../types/template.paths";
 import { NextFunction, Request, Response } from "express";
-import { TASK_LIST_PATH, SHAREHOLDERS_PATH } from "../../types/page.urls";
+import { TASK_LIST_PATH, WRONG_SHAREHOLDERS_PATH } from "../../types/page.urls";
 import { urlUtils } from "../../utils/url";
 import { RADIO_BUTTON_VALUE, SECTIONS, SHAREHOLDERS_ERROR } from "../../utils/constants";
 import { Session } from "@companieshouse/node-session-handler";
@@ -38,10 +38,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     if (shareholdersButtonValue === RADIO_BUTTON_VALUE.NO) {
       await sendUpdate(req, SECTIONS.SHAREHOLDER, SectionStatus.NOT_CONFIRMED);
-      return res.render(Templates.WRONG_SHAREHOLDERS, {
-        backLinkUrl: urlUtils.getUrlToPath(SHAREHOLDERS_PATH, req),
-        templateName: Templates.WRONG_SHAREHOLDERS,
-      });
+      return res.redirect(urlUtils.getUrlToPath(WRONG_SHAREHOLDERS_PATH, req));
     }
 
     const session: Session = req.session as Session;
