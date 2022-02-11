@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { urlUtils } from "../../utils/url";
-import { TASK_LIST_PATH, REGISTERED_OFFICE_ADDRESS_PATH, CHANGE_ROA_PATH } from "../../types/page.urls";
+import { TASK_LIST_PATH, WRONG_RO_PATH } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../../services/company.profile.service";
@@ -38,11 +38,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     if (roaButtonValue === RADIO_BUTTON_VALUE.NO) {
       await sendUpdate(req, SECTIONS.ROA, SectionStatus.NOT_CONFIRMED);
-      return res.render(Templates.WRONG_RO, {
-        backLinkUrl: urlUtils.getUrlToPath(REGISTERED_OFFICE_ADDRESS_PATH, req),
-        taskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        changeRoaUrl: urlUtils.getUrlToPath(CHANGE_ROA_PATH, req)
-      });
+      return res.redirect(urlUtils.getUrlToPath(WRONG_RO_PATH, req));
     }
 
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
