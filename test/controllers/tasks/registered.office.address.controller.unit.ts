@@ -6,7 +6,7 @@ import request from "supertest";
 import mocks from "../../mocks/all.middleware.mock";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
 import app from "../../../src/app";
-import { REGISTERED_OFFICE_ADDRESS_PATH, TASK_LIST_PATH, urlParams } from "../../../src/types/page.urls";
+import { REGISTERED_OFFICE_ADDRESS_PATH, TASK_LIST_PATH, urlParams, WRONG_RO_PATH } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
 import { getCompanyProfile } from "../../../src/services/company.profile.service";
 import { validCompanyProfile } from "../../mocks/company.profile.mock";
@@ -21,10 +21,10 @@ const mockSendUpdate = sendUpdate as jest.Mock;
 
 const PAGE_HEADING = "Review the registered office address";
 const COMPANY_NUMBER = "12345678";
-const STOP_PAGE_HEADING = "You need to update the company details";
 
 const REGISTERED_OFFICE_ADDRESS_URL = REGISTERED_OFFICE_ADDRESS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+const WRONG_RO_URL = WRONG_RO_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
 describe("Registered Office Address controller tests", () => {
 
@@ -72,10 +72,8 @@ describe("Registered Office Address controller tests", () => {
 
     expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ROA);
     expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
-    expect(response.status).toEqual(200);
-    expect(response.text).toContain(STOP_PAGE_HEADING);
-    expect(response.text).toContain("Incorrect registered office address - File a confirmation statement");
-    expect(response.text).not.toContain(REGISTERED_OFFICE_ADDRESS_ERROR);
+    expect(response.status).toEqual(302);
+    expect(response.header.location).toEqual(WRONG_RO_URL);
   });
 
   it("Should redirect to task list when recently filed radio button is selected", async () => {
