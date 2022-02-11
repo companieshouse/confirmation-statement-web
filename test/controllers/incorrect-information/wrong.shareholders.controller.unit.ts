@@ -10,7 +10,7 @@ const TRANSACTION_ID = "12345-12345";
 const SUBMISSION_ID = "86dfssfds";
 const populatedWrongShareholdersPath = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(WRONG_SHAREHOLDERS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 
-describe("Wrong shareholder stop controller tests", () => {
+describe("Wrong shareholders stop controller tests", () => {
 
   beforeEach(() => {
     mocks.mockAuthenticationMiddleware.mockClear();
@@ -20,7 +20,7 @@ describe("Wrong shareholder stop controller tests", () => {
 
   describe("test for the get function", () => {
 
-    it("Should render the wrong shareholder stop page", async () => {
+    it("Should render the wrong shareholders stop page", async () => {
       const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(SHAREHOLDERS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
       const response = await request(app).get(populatedWrongShareholdersPath);
 

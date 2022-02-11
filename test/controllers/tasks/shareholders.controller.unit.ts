@@ -3,7 +3,7 @@ jest.mock("../../../src/services/shareholder.service");
 jest.mock("../../../src/utils/update.confirmation.statement.submission");
 
 import mocks from "../../mocks/all.middleware.mock";
-import { SHAREHOLDERS_PATH, TASK_LIST_PATH, urlParams } from "../../../src/types/page.urls";
+import { SHAREHOLDERS_PATH, TASK_LIST_PATH, urlParams, WRONG_SHAREHOLDERS_PATH } from "../../../src/types/page.urls";
 import request from "supertest";
 import app from "../../../src/app";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
@@ -21,9 +21,9 @@ const mockSendUpdate = sendUpdate as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
 const PAGE_HEADING = "Review the shareholders";
-const STOP_PAGE_MESSAGE = "Currently, changes to shareholder details can only be made by filing a confirmation statement";
 const SHAREHOLDERS_URL = SHAREHOLDERS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+const WRONG_SHAREHOLDERS_URL = WRONG_SHAREHOLDERS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
 describe("Shareholders controller tests", () => {
 
@@ -72,9 +72,8 @@ describe("Shareholders controller tests", () => {
 
     expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.SHAREHOLDER);
     expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
-    expect(response.status).toEqual(200);
-    expect(response.text).toContain("Incorrect Shareholder Details");
-    expect(response.text).toContain(STOP_PAGE_MESSAGE);
+    expect(response.status).toEqual(302);
+    expect(response.header.location).toEqual(WRONG_SHAREHOLDERS_URL);
   });
 
   it("Should return an error page if error is thrown in post function", async () => {
