@@ -28,6 +28,7 @@ import * as wrongStatementOfCapitalRoute from "../controllers/incorrect-informat
 import * as wrongShareholdersRoute from "../controllers/incorrect-information/wrong.shareholders.controller";
 import * as wrongRegisteredOfficeAddressRoute from "../controllers/incorrect-information/wrong.registered.office.address.controller";
 import * as wrongRegisterLocationsRoute from "../controllers/incorrect-information/wrong.registers.controller";
+import * as wrongDetailsRoute from "../controllers/incorrect-information/wrong.details.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 
@@ -116,3 +117,5 @@ router.get(urls.WRONG_SHAREHOLDERS, wrongShareholdersRoute.get);
 router.get(urls.WRONG_RO, wrongRegisteredOfficeAddressRoute.get);
 
 router.get(urls.WRONG_REGISTER_LOCATIONS, wrongRegisterLocationsRoute.get);
+
+router.get(urls.WRONG_DETAILS, wrongDetailsRoute.get);

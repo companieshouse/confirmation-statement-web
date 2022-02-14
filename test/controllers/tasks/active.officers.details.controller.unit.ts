@@ -7,7 +7,12 @@ jest.mock("../../../src/utils/api.enumerations");
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
-import { ACTIVE_OFFICERS_DETAILS_PATH, TASK_LIST_PATH, urlParams } from "../../../src/types/page.urls";
+import {
+  ACTIVE_OFFICERS_DETAILS_PATH,
+  TASK_LIST_PATH,
+  urlParams,
+  WRONG_DETAILS_PATH
+} from "../../../src/types/page.urls";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
 import { getActiveOfficersDetailsData } from "../../../src/services/active.officers.details.service";
 import {
@@ -31,8 +36,7 @@ const ACTIVE_OFFICER_DETAILS_URL = ACTIVE_OFFICERS_DETAILS_PATH.replace(`:${urlP
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 const PAGE_HEADING = "Check the officers' details";
-const WRONG_OFFICER_PAGE_HEADING = "Incorrect Officer Details";
-
+const WRONG_DETAILS_URL = WRONG_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
 describe("Active officers details controller tests", () => {
 
@@ -151,8 +155,8 @@ describe("Active officers details controller tests", () => {
 
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ACTIVE_OFFICER);
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
-      expect(response.status).toEqual(200);
-      expect(response.text).toContain(WRONG_OFFICER_PAGE_HEADING);
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(WRONG_DETAILS_URL);
     });
 
     it("Should redirect to task list when recently filed radio button is selected", async () => {
