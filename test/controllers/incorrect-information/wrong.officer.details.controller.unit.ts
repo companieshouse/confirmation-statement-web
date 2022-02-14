@@ -8,6 +8,7 @@ import {
 import { urlUtils } from "../../../src/utils/url";
 
 const WRONG_OFFICER_PAGE_HEADING = "Incorrect Officer Details";
+const STOP_PAGE_HEADING = "Update the officer details";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "12345-12345";
 const SUBMISSION_ID = "86dfssfds";
@@ -29,7 +30,7 @@ describe("Wrong details stop controller tests", () => {
       const response = await request(app).get(populatedWrongShareholdersPath);
 
       expect(response.text).toContain(WRONG_OFFICER_PAGE_HEADING);
-      expect(response.text).toContain("You can update these details online using the relevant form on our");
+      expect(response.text).toContain(STOP_PAGE_HEADING);
       expect(response.text).toContain(backLinkUrl);
     });
   });

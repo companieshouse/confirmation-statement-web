@@ -6,7 +6,13 @@ jest.mock("../../../src/utils/api.enumerations");
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
-import { ACTIVE_PSC_DETAILS_PATH, PSC_STATEMENT_PATH, URL_QUERY_PARAM, urlParams } from "../../../src/types/page.urls";
+import {
+  ACTIVE_PSC_DETAILS_PATH,
+  PSC_STATEMENT_PATH,
+  URL_QUERY_PARAM,
+  urlParams,
+  WRONG_PSC_DETAILS_PATH
+} from "../../../src/types/page.urls";
 import { getPscs } from "../../../src/services/psc.service";
 import { mockMultiPscList, mockPscList } from "../../mocks/active.psc.details.controller.mock";
 import { urlUtils } from "../../../src/utils/url";
@@ -23,9 +29,8 @@ const COMPANY_NUMBER = "12345678";
 const ACTIVE_PSC_DETAILS_URL = ACTIVE_PSC_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const PSC_STATEMENT_URL = PSC_STATEMENT_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const PAGE_HEADING = "Review the people with significant control";
-const STOP_PAGE_HEADING = "Update the people with significant control (PSC) details";
-const STOP_PAGE_TITLE = "Incorrect PSC Details";
 const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
+const WRONG_PSC_DETAILS_URL = WRONG_PSC_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
 const mockGetPscs = getPscs as jest.Mock;
 const mockSendUpdate = sendUpdate as jest.Mock;
@@ -158,10 +163,8 @@ describe("Active psc details controller tests", () => {
 
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
-      expect(response.status).toEqual(200);
-      expect(response.text).toContain(STOP_PAGE_HEADING);
-      expect(response.text).toContain(STOP_PAGE_TITLE);
-
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(WRONG_PSC_DETAILS_URL);
     });
 
     it("Should redisplay psc details page with error when radio button is not selected", async () => {
