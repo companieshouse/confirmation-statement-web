@@ -15,7 +15,7 @@ const SUBMISSION_ID = "86dfssfds";
 const populatedWrongShareholdersPath = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(WRONG_DETAILS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 
 
-describe("Wrong details stop controller tests", () => {
+describe("Wrong officer details stop controller tests", () => {
 
   beforeEach(() => {
     mocks.mockAuthenticationMiddleware.mockClear();
@@ -25,7 +25,7 @@ describe("Wrong details stop controller tests", () => {
 
   describe("test for the get function", () => {
 
-    it("Should render the wrong details stop page", async () => {
+    it("Should render the stop page for the wrong officer details", async () => {
       const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(ACTIVE_OFFICERS_DETAILS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
       const response = await request(app).get(populatedWrongShareholdersPath);
 

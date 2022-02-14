@@ -25,7 +25,7 @@ describe("Wrong psc details stop controller tests", () => {
 
   describe("test for the get function", () => {
 
-    it("Should render the wrong psc details stop page", async () => {
+    it("Should render the stop page for the wrong psc details", async () => {
       const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(ACTIVE_PSC_DETAILS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
       const response = await request(app).get(populatedWrongShareholdersPath);
 
