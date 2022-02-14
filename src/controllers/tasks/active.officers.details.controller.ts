@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ACTIVE_OFFICERS_DETAILS_PATH, TASK_LIST_PATH } from "../../types/page.urls";
+import { TASK_LIST_PATH, WRONG_DETAILS_PATH } from "../../types/page.urls";
 import { urlUtils } from "../../utils/url";
 import { Templates } from "../../types/template.paths";
 import { Session } from "@companieshouse/node-session-handler";
@@ -9,9 +9,7 @@ import {
   OFFICER_DETAILS_ERROR,
   OFFICER_ROLE,
   RADIO_BUTTON_VALUE,
-  SECTIONS,
-  WRONG_DETAILS_UPDATE_OFFICER,
-  WRONG_DETAILS_UPDATE_OFFICERS
+  SECTIONS
 } from "../../utils/constants";
 import {
   equalsIgnoreCase,
@@ -52,13 +50,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     } else if (officersDetailsBtnValue === RADIO_BUTTON_VALUE.NO) {
       await sendUpdate(req, SECTIONS.ACTIVE_OFFICER, SectionStatus.NOT_CONFIRMED);
-      return res.render(Templates.WRONG_DETAILS, {
-        templateName: Templates.WRONG_DETAILS,
-        backLinkUrl: urlUtils.getUrlToPath(ACTIVE_OFFICERS_DETAILS_PATH, req),
-        returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        stepOneHeading: WRONG_DETAILS_UPDATE_OFFICER,
-        pageHeading: WRONG_DETAILS_UPDATE_OFFICERS,
-      });
+      return res.redirect(urlUtils.getUrlToPath(WRONG_DETAILS_PATH, req));
     } else {
       const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
       const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);

@@ -7,7 +7,7 @@ jest.mock("../../../src/utils/update.confirmation.statement.submission");
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
-import { ACTIVE_OFFICERS_PATH, TASK_LIST_PATH, urlParams } from "../../../src/types/page.urls";
+import { ACTIVE_OFFICERS_PATH, TASK_LIST_PATH, urlParams, WRONG_DETAILS_PATH } from "../../../src/types/page.urls";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
 import { DIRECTOR_DETAILS_ERROR, SECTIONS } from "../../../src/utils/constants";
 import { urlUtils } from "../../../src/utils/url";
@@ -32,10 +32,10 @@ const mockSendUpdate = sendUpdate as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
 const PAGE_HEADING = "Check the director's details";
-const WRONG_OFFICER_PAGE_HEADING = "Incorrect Officer Details";
 const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 const ACTIVE_OFFICER_DETAILS_URL = ACTIVE_OFFICERS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+const WRONG_DETAILS_URL = WRONG_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
 describe("Active directors controller tests", () => {
 
@@ -145,8 +145,9 @@ describe("Active directors controller tests", () => {
 
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ACTIVE_OFFICER);
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
-      expect(response.status).toEqual(200);
-      expect(response.text).toContain(WRONG_OFFICER_PAGE_HEADING);
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(WRONG_DETAILS_URL);
+
     });
 
     it("Should redirect to task list when recently filed radio button is selected", async () => {
