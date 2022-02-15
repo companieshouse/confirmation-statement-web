@@ -7,7 +7,7 @@ jest.mock("../../../src/utils/update.confirmation.statement.submission");
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
-import { ACTIVE_OFFICERS_PATH, TASK_LIST_PATH, urlParams, WRONG_DETAILS_PATH } from "../../../src/types/page.urls";
+import { ACTIVE_OFFICERS_PATH, TASK_LIST_PATH, urlParams, WRONG_OFFICER_DETAILS_PATH } from "../../../src/types/page.urls";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
 import { DIRECTOR_DETAILS_ERROR, SECTIONS } from "../../../src/utils/constants";
 import { urlUtils } from "../../../src/utils/url";
@@ -35,7 +35,7 @@ const PAGE_HEADING = "Check the director's details";
 const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 const ACTIVE_OFFICER_DETAILS_URL = ACTIVE_OFFICERS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
-const WRONG_DETAILS_URL = WRONG_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+const WRONG_DETAILS_URL = WRONG_OFFICER_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
 describe("Active directors controller tests", () => {
 

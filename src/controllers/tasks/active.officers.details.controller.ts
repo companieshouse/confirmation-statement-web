@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { TASK_LIST_PATH, WRONG_DETAILS_PATH } from "../../types/page.urls";
+import { TASK_LIST_PATH, WRONG_OFFICER_DETAILS_PATH } from "../../types/page.urls";
 import { urlUtils } from "../../utils/url";
 import { Templates } from "../../types/template.paths";
 import { Session } from "@companieshouse/node-session-handler";
@@ -50,7 +50,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     } else if (officersDetailsBtnValue === RADIO_BUTTON_VALUE.NO) {
       await sendUpdate(req, SECTIONS.ACTIVE_OFFICER, SectionStatus.NOT_CONFIRMED);
-      return res.redirect(urlUtils.getUrlToPath(WRONG_DETAILS_PATH, req));
+      return res.redirect(urlUtils.getUrlToPath(WRONG_OFFICER_DETAILS_PATH, req));
     } else {
       const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
       const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);

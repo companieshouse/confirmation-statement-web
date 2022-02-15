@@ -11,7 +11,7 @@ import {
   ACTIVE_OFFICERS_DETAILS_PATH,
   TASK_LIST_PATH,
   urlParams,
-  WRONG_DETAILS_PATH
+  WRONG_OFFICER_DETAILS_PATH
 } from "../../../src/types/page.urls";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
 import { getActiveOfficersDetailsData } from "../../../src/services/active.officers.details.service";
@@ -36,7 +36,7 @@ const ACTIVE_OFFICER_DETAILS_URL = ACTIVE_OFFICERS_DETAILS_PATH.replace(`:${urlP
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 const PAGE_HEADING = "Check the officers' details";
-const WRONG_DETAILS_URL = WRONG_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+const WRONG_DETAILS_URL = WRONG_OFFICER_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
 describe("Active officers details controller tests", () => {
 

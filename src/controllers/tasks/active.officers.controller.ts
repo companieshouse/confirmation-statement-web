@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { Templates } from "../../types/template.paths";
-import { TASK_LIST_PATH, WRONG_DETAILS_PATH } from "../../types/page.urls";
+import { TASK_LIST_PATH, WRONG_OFFICER_DETAILS_PATH } from "../../types/page.urls";
 import { urlUtils } from "../../utils/url";
 import {
   DIRECTOR_DETAILS_ERROR,
@@ -50,7 +50,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     } else if (activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.NO) {
       await sendUpdate(req, SECTIONS.ACTIVE_OFFICER, SectionStatus.NOT_CONFIRMED);
-      return res.redirect(urlUtils.getUrlToPath(WRONG_DETAILS_PATH, req));
+      return res.redirect(urlUtils.getUrlToPath(WRONG_OFFICER_DETAILS_PATH, req));
     } else {
       const officerDetails: ActiveOfficerDetails = await getActiveOfficerDetailsData(session, transactionId, submissionId);
       const activeOfficerDetails = formatOfficerDetails(officerDetails);

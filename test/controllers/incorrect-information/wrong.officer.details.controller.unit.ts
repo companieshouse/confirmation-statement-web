@@ -3,7 +3,7 @@ import request from "supertest";
 import app from "../../../src/app";
 import {
   ACTIVE_OFFICERS_DETAILS_PATH,
-  WRONG_DETAILS_PATH
+  WRONG_OFFICER_DETAILS_PATH
 } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
 
@@ -12,7 +12,7 @@ const STOP_PAGE_HEADING = "Update the officer details";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "12345-12345";
 const SUBMISSION_ID = "86dfssfds";
-const populatedWrongShareholdersPath = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(WRONG_DETAILS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
+const populatedWrongShareholdersPath = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(WRONG_OFFICER_DETAILS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 
 
 describe("Wrong officer details stop controller tests", () => {
