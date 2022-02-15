@@ -30,6 +30,7 @@ import * as wrongRegisteredOfficeAddressRoute from "../controllers/incorrect-inf
 import * as wrongRegisterLocationsRoute from "../controllers/incorrect-information/wrong.registers.controller";
 import * as wrongOfficerDetailsRoute from "../controllers/incorrect-information/wrong.officer.details.controller";
 import * as wrongPscDetailsRoute from "../controllers/incorrect-information/wrong.psc.details.controller";
+import * as wrongPscStatementRoute from "../controllers/incorrect-information/wrong.psc.statement.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 
@@ -122,3 +123,5 @@ router.get(urls.WRONG_REGISTER_LOCATIONS, wrongRegisterLocationsRoute.get);
 router.get(urls.WRONG_OFFICER_DETAILS, wrongOfficerDetailsRoute.get);
 
 router.get(urls.WRONG_PSC_DETAILS, wrongPscDetailsRoute.get);
+
+router.get(urls.WRONG_PSC_STATEMENT, wrongPscStatementRoute.get);

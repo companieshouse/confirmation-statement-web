@@ -7,7 +7,12 @@ import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
 import { urlUtils } from "../../../src/utils/url";
-import { PSC_STATEMENT_PATH, TASK_LIST_PATH, URL_QUERY_PARAM } from "../../../src/types/page.urls";
+import {
+  PSC_STATEMENT_PATH,
+  TASK_LIST_PATH,
+  URL_QUERY_PARAM,
+  WRONG_PSC_STATEMENT_PATH
+} from "../../../src/types/page.urls";
 import {
   PSC_STATEMENT_CONTROL_ERROR,
   RADIO_BUTTON_VALUE,
@@ -24,7 +29,6 @@ import { isActiveFeature } from "../../../src/utils/feature.flag";
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Is the PSC statement correct?";
-const STOP_PAGE_HEADING = "Update the people with significant control (PSC) details";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66544";
 const SUBMISSION_ID = "6464647";
@@ -36,6 +40,11 @@ const PSC_STATEMENT_URL =
                                                                      SUBMISSION_ID);
 const TASK_LIST_URL =
         urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH,
+                                                                     COMPANY_NUMBER,
+                                                                     TRANSACTION_ID,
+                                                                     SUBMISSION_ID);
+const WRONG_PSC_STATEMENT_URL =
+        urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(WRONG_PSC_STATEMENT_PATH,
                                                                      COMPANY_NUMBER,
                                                                      TRANSACTION_ID,
                                                                      SUBMISSION_ID);
@@ -186,10 +195,10 @@ describe("PSC Statement controller tests", () => {
         .post(PSC_STATEMENT_URL)
         .send({ pscStatementValue: RADIO_BUTTON_VALUE.NO });
 
-      expect(response.status).toEqual(200);
-      expect(response.text).toContain(STOP_PAGE_HEADING);
+      expect(response.status).toEqual(302);
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
+      expect(response.header.location).toEqual(WRONG_PSC_STATEMENT_URL);
     });
 
     it("Should redirect to task list when yes radio button is selected", async () => {
