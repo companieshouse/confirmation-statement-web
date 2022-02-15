@@ -12,7 +12,7 @@ const STOP_PAGE_HEADING = "Update the officer details";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "12345-12345";
 const SUBMISSION_ID = "86dfssfds";
-const populatedWrongShareholdersPath = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(WRONG_OFFICER_DETAILS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
+const populatedWrongOfficerDetailsPath = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(WRONG_OFFICER_DETAILS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 
 
 describe("Wrong officer details stop controller tests", () => {
@@ -27,7 +27,7 @@ describe("Wrong officer details stop controller tests", () => {
 
     it("Should render the stop page for the wrong officer details", async () => {
       const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(ACTIVE_OFFICERS_DETAILS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
-      const response = await request(app).get(populatedWrongShareholdersPath);
+      const response = await request(app).get(populatedWrongOfficerDetailsPath);
 
       expect(response.text).toContain(WRONG_OFFICER_PAGE_HEADING);
       expect(response.text).toContain(STOP_PAGE_HEADING);
