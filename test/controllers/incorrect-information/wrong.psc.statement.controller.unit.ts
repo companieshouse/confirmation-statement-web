@@ -2,7 +2,7 @@ import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
 import {
-  ACTIVE_PSC_DETAILS_PATH,
+  PSC_STATEMENT_PATH,
   WRONG_PSC_STATEMENT_PATH
 } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
@@ -26,7 +26,7 @@ describe("Wrong psc statement stop controller tests", () => {
   describe("test for the get function", () => {
 
     it("Should render the stop page for the wrong psc statement", async () => {
-      const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(ACTIVE_PSC_DETAILS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
+      const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(PSC_STATEMENT_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
       const response = await request(app).get(populatedWrongPscStatementPath);
 
       expect(response.text).toContain(WRONG_PSC_PAGE_HEADING);
