@@ -13,6 +13,6 @@ export const get = (req: Request, res: Response) => {
     backLinkUrl: urlUtils.getUrlToPath(PSC_STATEMENT_PATH, req),
     returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
     stepOneHeading: WRONG_DETAILS_UPDATE_PSC,
-    pageHeading: WRONG_DETAILS_INCORRECT_PSC
+    pageHeading: WRONG_DETAILS_INCORRECT_PSC,
   });
 };
