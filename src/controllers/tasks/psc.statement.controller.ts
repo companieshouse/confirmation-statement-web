@@ -4,15 +4,13 @@ import {
   PSC_STATEMENT_NAME_PLACEHOLDER,
   PSC_STATEMENT_NOT_FOUND,
   RADIO_BUTTON_VALUE,
-  SECTIONS,
-  WRONG_DETAILS_INCORRECT_PSC,
-  WRONG_DETAILS_UPDATE_PSC } from "../../utils/constants";
+  SECTIONS } from "../../utils/constants";
 import {
   ACTIVE_PSC_DETAILS_PATH,
   PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH,
-  PSC_STATEMENT_PATH,
   TASK_LIST_PATH,
-  URL_QUERY_PARAM
+  URL_QUERY_PARAM,
+  WRONG_PSC_STATEMENT_PATH
 } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
@@ -46,13 +44,7 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
 
     if (pscButtonValue === RADIO_BUTTON_VALUE.NO) {
       await sendUpdate(req, SECTIONS.PSC, SectionStatus.NOT_CONFIRMED);
-      return res.render(Templates.WRONG_DETAILS, {
-        templateName: Templates.WRONG_DETAILS,
-        backLinkUrl: urlUtils.getUrlToPath(PSC_STATEMENT_PATH, req),
-        returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        stepOneHeading: WRONG_DETAILS_UPDATE_PSC,
-        pageHeading: WRONG_DETAILS_INCORRECT_PSC,
-      });
+      return res.redirect(urlUtils.getUrlToPath(WRONG_PSC_STATEMENT_PATH, req));
     }
 
     if (pscButtonValue === RADIO_BUTTON_VALUE.YES || pscButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
