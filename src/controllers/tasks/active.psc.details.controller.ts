@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import {
-  ACTIVE_PSC_DETAILS_PATH,
   PSC_STATEMENT_PATH,
   TASK_LIST_PATH,
-  URL_QUERY_PARAM
+  URL_QUERY_PARAM,
+  WRONG_PSC_DETAILS_PATH
 } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
@@ -17,7 +17,7 @@ import {
   appointmentTypes,
   PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
   RADIO_BUTTON_VALUE,
-  SECTIONS, WRONG_DETAILS_INCORRECT_PSC, WRONG_DETAILS_UPDATE_PSC
+  SECTIONS
 } from "../../utils/constants";
 import {
   equalsIgnoreCase,
@@ -61,13 +61,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(getPscStatementUrl(req, true));
     } else if (activePscsButtonValue === RADIO_BUTTON_VALUE.NO) {
       await sendUpdate(req, SECTIONS.PSC, SectionStatus.NOT_CONFIRMED);
-      return res.render(Templates.WRONG_DETAILS, {
-        templateName: Templates.WRONG_DETAILS,
-        backLinkUrl: urlUtils.getUrlToPath(ACTIVE_PSC_DETAILS_PATH, req),
-        returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        stepOneHeading: WRONG_DETAILS_UPDATE_PSC,
-        pageHeading: WRONG_DETAILS_INCORRECT_PSC,
-      });
+      return res.redirect(urlUtils.getUrlToPath(WRONG_PSC_DETAILS_PATH, req));
     } else {
       const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
       const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
