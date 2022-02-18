@@ -14,6 +14,7 @@ import {
 import { formatAddressForDisplay, formatOfficerDetails, formatTitleCase } from "../../utils/format";
 import { getActiveOfficerDetailsData } from "../../services/active.director.details.service";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
+import { isRadioButtonValid } from "../../validators/radio.button.validator";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -45,6 +46,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const session: Session = req.session as Session;
     const activeOfficerDetailsBtnValue = req.body.activeOfficers;
+
+    if (!isRadioButtonValid(activeOfficerDetailsBtnValue)) {
+      return next(new Error("No valid radio button id in request"));
+    }
     if (activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.YES || activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
       await sendUpdate(req, SECTIONS.ACTIVE_OFFICER, SectionStatus.CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));

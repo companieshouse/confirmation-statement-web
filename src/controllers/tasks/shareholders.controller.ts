@@ -8,6 +8,7 @@ import { SectionStatus, Shareholder } from "@companieshouse/api-sdk-node/dist/se
 import { getShareholders } from "../../services/shareholder.service";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { formatTitleCase } from "../../utils/format";
+import { isRadioButtonValid } from "../../validators/radio.button.validator";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -30,6 +31,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const shareholdersButtonValue = req.body.shareholders;
+
+    if (!isRadioButtonValid(shareholdersButtonValue)) {
+      return next(new Error("No valid radio button id in request"));
+    }
 
     if (shareholdersButtonValue === RADIO_BUTTON_VALUE.YES) {
       await sendUpdate(req, SECTIONS.SHAREHOLDER, SectionStatus.CONFIRMED);

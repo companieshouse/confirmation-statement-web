@@ -11,6 +11,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { getRegisterLocationData } from "../../services/register.location.service";
 import { RegisterLocation, SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { formatAddress, formatAddressForDisplay } from "../../utils/format";
+import { isRadioButtonValid } from "../../validators/radio.button.validator";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -35,6 +36,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const session: Session = req.session as Session;
     const registerLocationsButton = req.body.registers;
+
+    if (!isRadioButtonValid(registerLocationsButton)) {
+      return next(new Error("No valid radio button id in request"));
+    }
 
     if (registerLocationsButton === RADIO_BUTTON_VALUE.YES || registerLocationsButton === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
       await sendUpdate(req, SECTIONS.REGISTER_LOCATIONS, SectionStatus.CONFIRMED);

@@ -24,6 +24,7 @@ const mockSendUpdate = sendUpdate as jest.Mock;
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const SIC_CODE_URL = SIC_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const WRONG_SIC_URL = WRONG_SIC_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 
 jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/company.profile.service");
@@ -76,11 +77,20 @@ describe("Confirm sic code controller tests", () => {
     expect(response.header.location).toEqual(TASK_LIST_URL);
   });
 
-  it("Should reload sic code page with an error message", async () => {
+  it("Should reload sic code page with an error message when radio button is not selected", async () => {
     const response = await request(app).post(SIC_CODE_URL).send();
     expect(response.status).toEqual(200);
     expect(response.text).toContain(SIC_CODE_ERROR);
     expect(response.text).toContain(SIC_CODE_ERROR_HEADING);
+  });
+
+  it("Should return error page when radio button id is not valid", async () => {
+    const response = await request(app)
+      .post(SIC_CODE_URL)
+      .send({ sicCodeStatus: "malicious code block" });
+
+    expect(response.status).toEqual(500);
+    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
   });
 
   it("Should return an error page if error is thrown on submission", async () => {
@@ -89,7 +99,7 @@ describe("Confirm sic code controller tests", () => {
     spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
     const response = await request(app).post(SIC_CODE_URL).send();
     expect(response.status).toEqual(500);
-    expect(response.text).toContain("Sorry, the service is unavailable");
+    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
   });
 
   it("Should return an error page if error is thrown when Company Profile is missing confirmation statement", async () => {
@@ -97,7 +107,7 @@ describe("Confirm sic code controller tests", () => {
     spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
     const response = await request(app).get(SIC_CODE_URL);
     expect(response.status).toEqual(500);
-    expect(response.text).toContain("Sorry, the service is unavailable");
+    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
     // restore original function so it is no longer mocked
     spyGetUrlToPath.mockRestore();

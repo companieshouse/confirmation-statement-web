@@ -20,6 +20,7 @@ const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockSendUpdate = sendUpdate as jest.Mock;
 
 const PAGE_HEADING = "Review the registered office address";
+const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 const COMPANY_NUMBER = "12345678";
 
 const REGISTERED_OFFICE_ADDRESS_URL = REGISTERED_OFFICE_ADDRESS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
@@ -52,7 +53,7 @@ describe("Registered Office Address controller tests", () => {
     spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
     const response = await request(app).get(REGISTERED_OFFICE_ADDRESS_URL);
 
-    expect(response.text).toContain("Sorry, the service is unavailable");
+    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
     // restore original function so it is no longer mocked
     spyGetUrlToPath.mockRestore();
@@ -97,12 +98,21 @@ describe("Registered Office Address controller tests", () => {
     expect(response.text).toContain("Check the registered office address");
   });
 
+  it("Should return error page when radio button id is not valid", async () => {
+    const response = await request(app)
+      .post(REGISTERED_OFFICE_ADDRESS_URL)
+      .send({ registeredOfficeAddress: "malicious code block" });
+
+    expect(response.status).toEqual(500);
+    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+  });
+
   it("Should return an error page if error is thrown in post function", async () => {
     const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
     spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
     const response = await request(app).post(REGISTERED_OFFICE_ADDRESS_URL);
 
-    expect(response.text).toContain("Sorry, the service is unavailable");
+    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
     // restore original function so it is no longer mocked
     spyGetUrlToPath.mockRestore();

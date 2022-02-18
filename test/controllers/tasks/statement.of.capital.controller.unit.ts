@@ -38,6 +38,7 @@ const mockValidateTotalNumberOfShares = validateTotalNumberOfShares as jest.Mock
 const mockSendUpdate = sendUpdate as jest.Mock;
 
 const PAGE_HEADING = "Review the statement of capital";
+const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 const SHARES_TOTALS_INVALID_WARNING = "The company's share capital does not match the number of shares held by its shareholders.";
 const UNPAID_AMOUNT_NULL_WARNING = "The total amount unpaid for all shares is missing on this company’s statement of capital.";
 const COMPANY_NUMBER = "12345678";
@@ -138,7 +139,7 @@ describe("Statement of Capital controller tests", () => {
       spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
 
-      expect(response.text).toContain("Sorry, the service is unavailable");
+      expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
       // restore original function so it is no longer mocked
       spyGetUrlWithCompanyNumber.mockRestore();
@@ -147,7 +148,7 @@ describe("Statement of Capital controller tests", () => {
     it("Should return an error page if error is thrown when service is called", async () => {
       mockGetStatementOfCapitalData.mockImplementationOnce(() => { throw new Error(); });
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
-      expect(response.text).toContain("Sorry, the service is unavailable");
+      expect(response.text).toContain(EXPECTED_ERROR_TEXT);
     });
 
     it("should navigate to the statement of capital page and display the total value as a product of 'Number of shares' and 'Value of shares'", async () => {
@@ -254,12 +255,21 @@ describe("Statement of Capital controller tests", () => {
       expect(response.text).toContain("Check the statement of capital");
     });
 
+    it("Should return error page when radio button id is not valid", async () => {
+      const response = await request(app)
+        .post(STATEMENT_OF_CAPITAL_URL)
+        .send({ statementOfCapital: "malicious code block" });
+
+      expect(response.status).toEqual(500);
+      expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+    });
+
     it("Should return an error page if error is thrown in post function", async () => {
       const spyGetUrlWithCompanyNumberTransactionIdAndSubmissionId = jest.spyOn(urlUtils, "getUrlWithCompanyNumberTransactionIdAndSubmissionId");
       spyGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mockImplementationOnce(() => { throw new Error(); });
       const response = await request(app).post(STATEMENT_OF_CAPITAL_URL);
 
-      expect(response.text).toContain("Sorry, the service is unavailable");
+      expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
       // restore original function so it is no longer mocked
       spyGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mockRestore();
