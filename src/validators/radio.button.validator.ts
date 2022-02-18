@@ -17,7 +17,7 @@ export const isRadioButtonValid = (radioId: string): boolean => {
     }
   }
 
-  const truncatedRadioIdValue = radioId.substr(0, 14);
+  const truncatedRadioIdValue = radioId.substring(0, 14);
 
   logger.error(`Radio id: ${truncatedRadioIdValue} doesn't match the valid radio ids`);
   return false;
