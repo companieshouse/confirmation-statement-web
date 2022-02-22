@@ -1,24 +1,25 @@
 import { logger } from "../utils/logger";
+import { RADIO_BUTTON_VALUE } from "../utils/constants";
 
-export const isRadioButtonValid = (radioId: string): boolean => {
+export const isRadioButtonValueValid = (radioValue: string): boolean => {
 
   logger.debug("Check radio button is valid");
 
-  if (!radioId) {
-    logger.debug("No radio button id supplied");
+  if (!radioValue) {
+    logger.debug("No radio button value supplied");
     return true;
   }
 
-  const validRadioIds: string[] = ["yes", "no", "recently_filed"];
+  const validRadioValues: string[] = [RADIO_BUTTON_VALUE.YES, RADIO_BUTTON_VALUE.NO, RADIO_BUTTON_VALUE.RECENTLY_FILED];
 
-  for (const value of validRadioIds) {
-    if (radioId === value) {
+  for (const value of validRadioValues) {
+    if (radioValue === value) {
       return true;
     }
   }
 
-  const truncatedRadioIdValue = radioId.substring(0, 14);
+  const truncatedRadioValue = radioValue.substring(0, 14);
 
-  logger.error(`Radio id: ${truncatedRadioIdValue} doesn't match the valid radio ids`);
+  logger.error(`Radio value: ${truncatedRadioValue} doesn't match the valid radio values`);
   return false;
 };

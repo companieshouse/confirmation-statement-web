@@ -15,7 +15,7 @@ import {
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { formatTitleCase } from "../../utils/format";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
-import { isRadioButtonValid } from "../../validators/radio.button.validator";
+import { isRadioButtonValueValid } from "../../validators/radio.button.validator";
 
 export const get = async(req: Request, res: Response, next: NextFunction) => {
   try {
@@ -47,7 +47,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const session: Session = req.session as Session ;
     const statementOfCapitalButtonValue = req.body.statementOfCapital;
 
-    if (!isRadioButtonValid(statementOfCapitalButtonValue)) {
+    if (!isRadioButtonValueValid(statementOfCapitalButtonValue)) {
       return next(new Error("No valid radio button id in request"));
     }
 

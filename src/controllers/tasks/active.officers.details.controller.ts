@@ -20,7 +20,7 @@ import {
 } from "../../utils/format";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { lookupIdentificationType } from "../../utils/api.enumerations";
-import { isRadioButtonValid } from "../../validators/radio.button.validator";
+import { isRadioButtonValueValid } from "../../validators/radio.button.validator";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -47,7 +47,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const officersDetailsBtnValue = req.body.activeOfficers;
 
-    if (!isRadioButtonValid(officersDetailsBtnValue)) {
+    if (!isRadioButtonValueValid(officersDetailsBtnValue)) {
       return next(new Error("No valid radio button id in request"));
     }
     if (officersDetailsBtnValue === RADIO_BUTTON_VALUE.YES || officersDetailsBtnValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {

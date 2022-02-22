@@ -22,7 +22,7 @@ import { sendUpdate } from "../../utils/update.confirmation.statement.submission
 import { formatPSCForDisplay, formatAddressForDisplay } from "../../utils/format";
 import { FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 } from "../../utils/properties";
 import { isActiveFeature } from "../../utils/feature.flag";
-import { isRadioButtonValid } from "../../validators/radio.button.validator";
+import { isRadioButtonValueValid } from "../../validators/radio.button.validator";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -48,7 +48,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const pscButtonValue = req.body.pscRadioValue;
 
-    if (!isRadioButtonValid(pscButtonValue)) {
+    if (!isRadioButtonValueValid(pscButtonValue)) {
       return next(new Error("No valid radio button id in request"));
     }
     if (!pscButtonValue) {

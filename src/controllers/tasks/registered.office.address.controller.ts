@@ -10,7 +10,7 @@ import {
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { formatAddressForDisplay, formatRegisteredOfficeAddress } from "../../utils/format";
-import { isRadioButtonValid } from "../../validators/radio.button.validator";
+import { isRadioButtonValueValid } from "../../validators/radio.button.validator";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -31,7 +31,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const roaButtonValue = req.body.registeredOfficeAddress;
-    if (!isRadioButtonValid(roaButtonValue)) {
+    if (!isRadioButtonValueValid(roaButtonValue)) {
       return next(new Error("No valid radio button id in request"));
     }
     if (roaButtonValue === RADIO_BUTTON_VALUE.YES || roaButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
