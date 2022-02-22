@@ -9,7 +9,7 @@ import {
 import { RADIO_BUTTON_VALUE, TRADING_STATUS_ERROR } from "../utils/constants";
 import { urlUtils } from "../utils/url";
 import { sendTradingStatusUpdate } from "../utils/update.confirmation.statement.submission";
-import { isRadioButtonValueValid } from "../validators/radio.button.validator";
+import { getRadioButtonInvalidValueErrorMessage, isRadioButtonValueValid } from "../validators/radio.button.validator";
 
 export const get = (req: Request, res: Response) => {
   const companyNumber: string = getCompanyNumber(req);
@@ -22,7 +22,7 @@ export const get = (req: Request, res: Response) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   const tradingStatusButtonValue = req.body.tradingStatus;
   if (!isRadioButtonValueValid(tradingStatusButtonValue)) {
-    return next(new Error("No valid radio button id in request"));
+    return next(new Error(getRadioButtonInvalidValueErrorMessage(tradingStatusButtonValue)));
   }
   const companyNumber = getCompanyNumber(req);
 

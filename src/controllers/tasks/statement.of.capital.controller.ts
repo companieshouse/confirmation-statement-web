@@ -15,7 +15,10 @@ import {
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { formatTitleCase } from "../../utils/format";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
-import { isRadioButtonValueValid } from "../../validators/radio.button.validator";
+import {
+  getRadioButtonInvalidValueErrorMessage,
+  isRadioButtonValueValid
+} from "../../validators/radio.button.validator";
 
 export const get = async(req: Request, res: Response, next: NextFunction) => {
   try {
@@ -48,7 +51,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const statementOfCapitalButtonValue = req.body.statementOfCapital;
 
     if (!isRadioButtonValueValid(statementOfCapitalButtonValue)) {
-      return next(new Error("No valid radio button value in request"));
+      return next(new Error(getRadioButtonInvalidValueErrorMessage(statementOfCapitalButtonValue)));
     }
 
     const companyNumber = getCompanyNumber(req);

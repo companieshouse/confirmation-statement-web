@@ -22,7 +22,10 @@ import { sendUpdate } from "../../utils/update.confirmation.statement.submission
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 } from "../../utils/properties";
 import { isActiveFeature } from "../../utils/feature.flag";
-import { isRadioButtonValueValid } from "../../validators/radio.button.validator";
+import {
+  getRadioButtonInvalidValueErrorMessage,
+  isRadioButtonValueValid
+} from "../../validators/radio.button.validator";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -44,7 +47,7 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
     const pscButtonValue = req.body.pscStatementValue;
 
     if (!isRadioButtonValueValid(pscButtonValue)) {
-      return next(new Error("No valid radio button value in request"));
+      return next(new Error(getRadioButtonInvalidValueErrorMessage(pscButtonValue)));
     }
 
     if (pscButtonValue === RADIO_BUTTON_VALUE.NO) {

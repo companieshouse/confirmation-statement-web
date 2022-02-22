@@ -1,9 +1,8 @@
 import { logger } from "../utils/logger";
-import { RADIO_BUTTON_VALUE } from "../utils/constants";
+import { RADIO_BUTTON_VALUE, RADIO_BUTTON_VALUE_LOG_LENGTH } from "../utils/constants";
 
 export const isRadioButtonValueValid = (radioValue: string): boolean => {
-
-  logger.debug("Check radio button is valid");
+  logger.debug("Checking radio button is valid");
 
   if (!radioValue) {
     logger.debug("No radio button value supplied");
@@ -18,8 +17,10 @@ export const isRadioButtonValueValid = (radioValue: string): boolean => {
     }
   }
 
-  const truncatedRadioValue = radioValue.substring(0, 14);
-
-  logger.error(`Radio value: ${truncatedRadioValue} doesn't match the valid radio values`);
   return false;
+};
+
+export const getRadioButtonInvalidValueErrorMessage = (radioValue: string): string => {
+  const truncatedRadioValue = radioValue.substring(0, RADIO_BUTTON_VALUE_LOG_LENGTH);
+  return `Radio value: ${truncatedRadioValue} doesn't match the valid radio values`;
 };

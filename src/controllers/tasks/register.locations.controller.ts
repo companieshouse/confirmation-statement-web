@@ -11,7 +11,10 @@ import { Session } from "@companieshouse/node-session-handler";
 import { getRegisterLocationData } from "../../services/register.location.service";
 import { RegisterLocation, SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { formatAddress, formatAddressForDisplay } from "../../utils/format";
-import { isRadioButtonValueValid } from "../../validators/radio.button.validator";
+import {
+  getRadioButtonInvalidValueErrorMessage,
+  isRadioButtonValueValid
+} from "../../validators/radio.button.validator";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -38,7 +41,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const registerLocationsButton = req.body.registers;
 
     if (!isRadioButtonValueValid(registerLocationsButton)) {
-      return next(new Error("No valid radio button value in request"));
+      return next(new Error(getRadioButtonInvalidValueErrorMessage(registerLocationsButton)));
     }
 
     if (registerLocationsButton === RADIO_BUTTON_VALUE.YES || registerLocationsButton === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
