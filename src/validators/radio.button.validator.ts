@@ -21,6 +21,6 @@ export const isRadioButtonValueValid = (radioValue: string): boolean => {
 };
 
 export const getRadioButtonInvalidValueErrorMessage = (radioValue: string): string => {
-  const truncatedRadioValue = radioValue.substring(0, RADIO_BUTTON_VALUE_LOG_LENGTH);
+  const truncatedRadioValue = radioValue?.substring(0, RADIO_BUTTON_VALUE_LOG_LENGTH);
   return `Radio value: ${truncatedRadioValue} doesn't match the valid radio values`;
 };
