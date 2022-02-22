@@ -33,7 +33,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const shareholdersButtonValue = req.body.shareholders;
 
     if (!isRadioButtonValueValid(shareholdersButtonValue)) {
-      return next(new Error("No valid radio button id in request"));
+      return next(new Error("No valid radio button value in request"));
     }
 
     if (shareholdersButtonValue === RADIO_BUTTON_VALUE.YES) {

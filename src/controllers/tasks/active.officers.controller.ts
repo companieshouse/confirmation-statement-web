@@ -48,7 +48,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const activeOfficerDetailsBtnValue = req.body.activeOfficers;
 
     if (!isRadioButtonValueValid(activeOfficerDetailsBtnValue)) {
-      return next(new Error("No valid radio button id in request"));
+      return next(new Error("No valid radio button value in request"));
     }
     if (activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.YES || activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
       await sendUpdate(req, SECTIONS.ACTIVE_OFFICER, SectionStatus.CONFIRMED);

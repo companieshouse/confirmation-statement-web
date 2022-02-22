@@ -44,7 +44,7 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
     const pscButtonValue = req.body.pscStatementValue;
 
     if (!isRadioButtonValueValid(pscButtonValue)) {
-      return next(new Error("No valid radio button id in request"));
+      return next(new Error("No valid radio button value in request"));
     }
 
     if (pscButtonValue === RADIO_BUTTON_VALUE.NO) {

@@ -26,7 +26,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   const sicButtonValue = req.body.sicCodeStatus;
 
   if (!isRadioButtonValueValid(sicButtonValue)) {
-    return next(new Error("No valid radio button id in request"));
+    return next(new Error("No valid radio button value in request"));
   }
 
   if (sicButtonValue === RADIO_BUTTON_VALUE.YES) {

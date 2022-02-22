@@ -38,7 +38,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const registerLocationsButton = req.body.registers;
 
     if (!isRadioButtonValueValid(registerLocationsButton)) {
-      return next(new Error("No valid radio button id in request"));
+      return next(new Error("No valid radio button value in request"));
     }
 
     if (registerLocationsButton === RADIO_BUTTON_VALUE.YES || registerLocationsButton === RADIO_BUTTON_VALUE.RECENTLY_FILED) {

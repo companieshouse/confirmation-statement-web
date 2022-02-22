@@ -32,7 +32,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const roaButtonValue = req.body.registeredOfficeAddress;
     if (!isRadioButtonValueValid(roaButtonValue)) {
-      return next(new Error("No valid radio button id in request"));
+      return next(new Error("No valid radio button value in request"));
     }
     if (roaButtonValue === RADIO_BUTTON_VALUE.YES || roaButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
       await sendUpdate(req, SECTIONS.ROA, SectionStatus.CONFIRMED);
