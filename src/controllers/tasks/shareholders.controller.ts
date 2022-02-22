@@ -8,6 +8,10 @@ import { SectionStatus, Shareholder } from "@companieshouse/api-sdk-node/dist/se
 import { getShareholders } from "../../services/shareholder.service";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { formatTitleCase } from "../../utils/format";
+import {
+  getRadioButtonInvalidValueErrorMessage,
+  isRadioButtonValueValid
+} from "../../validators/radio.button.validator";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -30,6 +34,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const shareholdersButtonValue = req.body.shareholders;
+
+    if (!isRadioButtonValueValid(shareholdersButtonValue)) {
+      return next(new Error(getRadioButtonInvalidValueErrorMessage(shareholdersButtonValue)));
+    }
 
     if (shareholdersButtonValue === RADIO_BUTTON_VALUE.YES) {
       await sendUpdate(req, SECTIONS.SHAREHOLDER, SectionStatus.CONFIRMED);

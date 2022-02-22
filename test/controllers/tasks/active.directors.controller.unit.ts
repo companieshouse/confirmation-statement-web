@@ -168,11 +168,21 @@ describe("Active directors controller tests", () => {
       expect(response.text).toContain(DIRECTOR_DETAILS_ERROR);
     });
 
+    it("Should return error page when radio button id is not valid", async () => {
+      const response = await request(app)
+        .post(ACTIVE_OFFICER_DETAILS_URL)
+        .send({ activeOfficers: "malicious code block" });
+
+      expect(response.status).toEqual(500);
+      expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+    });
+
     it("Should return an error page if error is thrown in post function", async () => {
       const spyGetUrl = jest.spyOn(urlUtils, "getUrlToPath");
       spyGetUrl.mockImplementationOnce(() => { throw new Error(); });
       const response = await request(app).post(ACTIVE_OFFICER_DETAILS_URL);
 
+      expect(response.status).toEqual(500);
       expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
       // restore original function so it is no longer mocked

@@ -175,6 +175,15 @@ describe("Active psc details controller tests", () => {
       expect(response.text).toContain(PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR);
     });
 
+    it("Should return error page when radio button id is not valid", async () => {
+      const response = await request(app)
+        .post(ACTIVE_PSC_DETAILS_URL)
+        .send({ psc: "malicious code block" });
+
+      expect(response.status).toEqual(500);
+      expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+    });
+
     it("Should return an error page if error is thrown in post function", async () => {
       const spyGetUrl = jest.spyOn(urlUtils, "getUrlToPath");
       spyGetUrl.mockImplementationOnce(() => { throw new Error(); });

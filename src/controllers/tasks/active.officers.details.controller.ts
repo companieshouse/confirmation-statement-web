@@ -20,6 +20,10 @@ import {
 } from "../../utils/format";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { lookupIdentificationType } from "../../utils/api.enumerations";
+import {
+  getRadioButtonInvalidValueErrorMessage,
+  isRadioButtonValueValid
+} from "../../validators/radio.button.validator";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -45,6 +49,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const officersDetailsBtnValue = req.body.activeOfficers;
+
+    if (!isRadioButtonValueValid(officersDetailsBtnValue)) {
+      return next(new Error(getRadioButtonInvalidValueErrorMessage(officersDetailsBtnValue)));
+    }
     if (officersDetailsBtnValue === RADIO_BUTTON_VALUE.YES || officersDetailsBtnValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
       await sendUpdate(req, SECTIONS.ACTIVE_OFFICER, SectionStatus.CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));

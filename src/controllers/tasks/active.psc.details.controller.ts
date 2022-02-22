@@ -29,6 +29,10 @@ import {
 import { toReadableFormat } from "../../utils/date";
 import { logger } from "../../utils/logger";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
+import {
+  getRadioButtonInvalidValueErrorMessage,
+  isRadioButtonValueValid
+} from "../../validators/radio.button.validator";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -56,6 +60,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const activePscsButtonValue = req.body.psc;
+
+    if (!isRadioButtonValueValid(activePscsButtonValue)) {
+      return next(new Error(getRadioButtonInvalidValueErrorMessage(activePscsButtonValue)));
+    }
     if (activePscsButtonValue === RADIO_BUTTON_VALUE.YES || activePscsButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
       await sendUpdate(req, SECTIONS.PSC, SectionStatus.CONFIRMED);
       return res.redirect(getPscStatementUrl(req, true));
