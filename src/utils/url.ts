@@ -1,5 +1,6 @@
 import { Request } from "express";
 import { urlParams, URL_QUERY_PARAM } from "../types/page.urls";
+import { URL_LOG_LENGTH } from "./constants";
 
 const getUrlWithCompanyNumber = (url: string, companyNumber: string): string =>
   url.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, companyNumber);
@@ -27,6 +28,15 @@ const getSubmissionIdFromRequestParams = (req: Request): string => req.params[ur
 const setQueryParam = (url: string, paramName: URL_QUERY_PARAM, value: string) =>
   url.replace(`{${paramName}}`, value);
 
+// This function will truncate the req.url which can be used before
+// using the logger.xxxRequest functions as they will log the full path which
+// might be very large if a malicious url was entered.
+const truncateRequestUrl = (req: Request) => {
+  if (req?.url?.length > URL_LOG_LENGTH) {
+    req.url = `${req.url.substring(0, URL_LOG_LENGTH)}...(truncated)`;
+  }
+};
+
 export const urlUtils = {
   getCompanyNumberFromRequestParams,
   getTransactionIdFromRequestParams,
@@ -34,5 +44,6 @@ export const urlUtils = {
   getUrlToPath,
   getUrlWithCompanyNumber,
   getUrlWithCompanyNumberTransactionIdAndSubmissionId,
-  setQueryParam
+  setQueryParam,
+  truncateRequestUrl
 };

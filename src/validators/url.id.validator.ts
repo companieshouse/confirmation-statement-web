@@ -3,7 +3,6 @@ import { logger } from "../utils/logger";
 const MAX_LENGTH = 50;
 
 export const isUrlIdValid = (urlId: string): boolean => {
-
   logger.debug("Check the URL id is valid");
 
   if (!urlId) {
@@ -13,7 +12,7 @@ export const isUrlIdValid = (urlId: string): boolean => {
 
   if (urlId.length > MAX_LENGTH) {
     const truncatedUrlId: string = urlId.substring(0, MAX_LENGTH);
-    logger.error(`URL id exceeds ${MAX_LENGTH} characters - ${truncatedUrlId}...`);
+    logger.info(`URL id exceeds ${MAX_LENGTH} characters - ${truncatedUrlId}...`);
     return false;
   }
 
