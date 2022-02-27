@@ -7,8 +7,6 @@ import errorHandler from "./controllers/error.controller";
 import { serviceAvailabilityMiddleware } from "./middleware/service.availability.middleware";
 import { authenticationMiddleware } from "./middleware/authentication.middleware";
 import { sessionMiddleware } from "./middleware/session.middleware";
-// import { urlIdMiddleware } from "./middleware/url.id.middleware";
-
 import cookieParser from "cookie-parser";
 import { logger } from "./utils/logger";
 import { companyAuthenticationMiddleware } from "./middleware/company.authentication.middleware";
