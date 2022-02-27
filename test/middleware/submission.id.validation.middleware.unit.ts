@@ -1,6 +1,8 @@
 jest.mock("../../src/validators/url.id.validator");
 jest.mock("../../src/middleware/transaction.id.validation.middleware");
 jest.mock("../../src/services/company.profile.service");
+jest.mock("../../src/utils/logger");
+
 
 import mocks from "../mocks/all.middleware.mock";
 import request from "supertest";
@@ -10,6 +12,7 @@ import { transactionIdValidationMiddleware } from "../../src/middleware/transact
 import { NextFunction } from "express";
 import { TRADING_STATUS_PATH } from "../../src/types/page.urls";
 import { urlUtils } from "../../src/utils/url";
+import { logger } from "../../src/utils/logger";
 
 
 const mockIsUrlIdValid = isUrlIdValid as jest.Mock;
@@ -17,6 +20,10 @@ const mockIsUrlIdValid = isUrlIdValid as jest.Mock;
 const mockTransactionIdValidationMiddleware = transactionIdValidationMiddleware as jest.Mock;
 mockTransactionIdValidationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
+const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
+
+const TRUNCATED_LENGTH = 50;
+const TRADING_STATUS_PAGE_HEADING = "Check the trading status";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "111905-476716-457831";
 const SUBMISSION_ID_VALID = "8686876876ds6fds6fsd87f686";
@@ -29,6 +36,7 @@ describe("Submission ID validation middleware tests", () => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mockIsUrlIdValid.mockClear();
     mockTransactionIdValidationMiddleware.mockClear();
+    mockLoggerInfoRequest.mockClear();
   });
 
   it("Should stop invalid submission id", async () => {
@@ -39,6 +47,7 @@ describe("Submission ID validation middleware tests", () => {
     const response = await request(app).get(urlWithInvalidSubId);
 
     expect(isUrlIdValid).toBeCalledWith(SUBMISSION_ID_INVALID);
+    expect(mockLoggerInfoRequest.mock.calls[0][1]).toContain(SUBMISSION_ID_INVALID.substring(0, TRUNCATED_LENGTH));
     expect(response.statusCode).toEqual(400);
     expect(response.text).toContain(ERROR_PAGE_TEXT);
   });
@@ -50,6 +59,7 @@ describe("Submission ID validation middleware tests", () => {
     const response = await request(app).get(urlWithValidSubId);
 
     expect(isUrlIdValid).toBeCalledWith(SUBMISSION_ID_VALID);
+    expect(response.text).toContain(TRADING_STATUS_PAGE_HEADING);
     expect(response.statusCode).toEqual(200);
   });
 });
