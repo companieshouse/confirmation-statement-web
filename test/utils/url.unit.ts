@@ -81,6 +81,18 @@ describe("url utils tests", () => {
       urlUtils.truncateRequestUrl(req);
       expect(req.url).toEqual("http://something/something/som...(truncated)");
     });
+
+    it("Should not truncate the request url", () => {
+      req.url = "http://something/something";
+      urlUtils.truncateRequestUrl(req);
+      expect(req.url).toEqual("http://something/something");
+    });
+
+    it("Should do nothing to url if undefined", () => {
+      req.url = undefined as unknown as string;
+      urlUtils.truncateRequestUrl(req);
+      expect(req.url).toBeUndefined();
+    });
   });
 
 });

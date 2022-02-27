@@ -32,7 +32,7 @@ const setQueryParam = (url: string, paramName: URL_QUERY_PARAM, value: string) =
 // using the logger.xxxRequest functions as they will log the full path which
 // might be very large if a malicious url was entered.
 const truncateRequestUrl = (req: Request) => {
-  if (req?.url?.length > URL_LOG_LENGTH) {
+  if (req.url?.length > URL_LOG_LENGTH) {
     req.url = `${req.url.substring(0, URL_LOG_LENGTH)}...(truncated)`;
   }
 };
