@@ -1,3 +1,9 @@
+jest.mock("../../src/utils/constants", () => {
+  return {
+    URL_LOG_LENGTH: 30
+  };
+});
+
 import { request } from "express";
 import { urlParams, URL_QUERY_PARAM } from "../../src/types/page.urls";
 import { urlUtils } from "../../src/utils/url";
@@ -66,6 +72,14 @@ describe("url utils tests", () => {
       const url = `something?${URL_QUERY_PARAM.IS_PSC}={${URL_QUERY_PARAM.IS_PSC}}`;
       const newUrl = urlUtils.setQueryParam(url, URL_QUERY_PARAM.IS_PSC, "test");
       expect(newUrl).toBe(`something?${URL_QUERY_PARAM.IS_PSC}=test`);
+    });
+  });
+
+  describe("truncateRequestUrl tests", () => {
+    it("Should truncate the request url", () => {
+      req.url = "http://something/something/something/12344/somethingelse";
+      urlUtils.truncateRequestUrl(req);
+      expect(req.url).toEqual("http://something/something/som...(truncated)");
     });
   });
 
