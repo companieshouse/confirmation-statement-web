@@ -1,6 +1,5 @@
+import { URL_PARAM_MAX_LENGTH } from "../utils/constants";
 import { logger } from "../utils/logger";
-
-const MAX_LENGTH = 50;
 
 export const isUrlIdValid = (urlId: string): boolean => {
   logger.debug("Check the URL id is valid");
@@ -10,9 +9,9 @@ export const isUrlIdValid = (urlId: string): boolean => {
     return false;
   }
 
-  if (urlId.length > MAX_LENGTH) {
-    const truncatedUrlId: string = urlId.substring(0, MAX_LENGTH);
-    logger.info(`URL id exceeds ${MAX_LENGTH} characters - ${truncatedUrlId}...`);
+  if (urlId.length > URL_PARAM_MAX_LENGTH) {
+    const truncatedUrlId: string = urlId.substring(0, URL_PARAM_MAX_LENGTH);
+    logger.info(`URL id exceeds ${URL_PARAM_MAX_LENGTH} characters - ${truncatedUrlId}...`);
     return false;
   }
 

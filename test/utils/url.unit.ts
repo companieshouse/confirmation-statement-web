@@ -1,6 +1,7 @@
 jest.mock("../../src/utils/constants", () => {
   return {
-    URL_LOG_LENGTH: 30
+    URL_LOG_LENGTH: 100,
+    URL_PARAM_MAX_LENGTH: 10
   };
 });
 
@@ -12,7 +13,7 @@ describe("url utils tests", () => {
   const COMPANY_NUMBER = "12345678";
   const TX_ID = "987654321";
   const SUB_ID = "1234-abcd";
-  const urlWithParams = `/something/:${urlParams.PARAM_COMPANY_NUMBER}/something/transaction/:${urlParams.PARAM_TRANSACTION_ID}/submission/:${urlParams.PARAM_SUBMISSION_ID}/andThenSome`;
+  const urlWithParams = `/company/:${urlParams.PARAM_COMPANY_NUMBER}/something/transaction/:${urlParams.PARAM_TRANSACTION_ID}/submission/:${urlParams.PARAM_SUBMISSION_ID}/andThenSome`;
   const req = request;
 
   beforeEach(() => {
@@ -36,7 +37,7 @@ describe("url utils tests", () => {
 
     it("Should populate the Url with the company number, transaction ID and submission ID from the request params", () => {
       const populatedUrl = urlUtils.getUrlToPath(urlWithParams, req);
-      expect(populatedUrl).toEqual(`/something/${COMPANY_NUMBER}/something/transaction/${TX_ID}/submission/${SUB_ID}/andThenSome`);
+      expect(populatedUrl).toEqual(`/company/${COMPANY_NUMBER}/something/transaction/${TX_ID}/submission/${SUB_ID}/andThenSome`);
     });
 
   });
@@ -45,7 +46,7 @@ describe("url utils tests", () => {
 
     it("Should the Url with the company number, transaction ID and submission ID", () => {
       const populatedUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(urlWithParams, COMPANY_NUMBER, TX_ID, SUB_ID);
-      expect(populatedUrl).toEqual(`/something/${COMPANY_NUMBER}/something/transaction/${TX_ID}/submission/${SUB_ID}/andThenSome`);
+      expect(populatedUrl).toEqual(`/company/${COMPANY_NUMBER}/something/transaction/${TX_ID}/submission/${SUB_ID}/andThenSome`);
     });
   });
 
@@ -75,23 +76,48 @@ describe("url utils tests", () => {
     });
   });
 
-  describe("truncateRequestUrl tests", () => {
-    it("Should truncate the request url", () => {
-      req.url = "http://something/something/something/12344/somethingelse";
-      urlUtils.truncateRequestUrl(req);
-      expect(req.url).toEqual("http://something/something/som...(truncated)");
+  describe("sanitiseReqlUrls tests", () => {
+    it("Should truncate the request urls", () => {
+      const tooLongUrl = "http://something/something/something/12344/somethingelse/andAnotherThing/12345/somethingElse/something/something";
+      req.url = tooLongUrl;
+      req.originalUrl = tooLongUrl;
+      urlUtils.sanitiseReqlUrls(req);
+      expect(req.url).toEqual("http://something/something/something/12344/somethingelse/andAnotherThing/12345/somethingElse/somethi...");
+      expect(req.originalUrl).toEqual("http://something/something/something/12344/somethingelse/andAnotherThing/12345/somethingElse/somethi...");
     });
 
-    it("Should not truncate the request url", () => {
-      req.url = "http://something/something";
-      urlUtils.truncateRequestUrl(req);
+    it("Should not truncate the request urls", () => {
+      const okUrl = "http://something/something";
+      req.url = okUrl;
+      req.originalUrl = okUrl;
+      urlUtils.sanitiseReqlUrls(req);
       expect(req.url).toEqual("http://something/something");
+      expect(req.originalUrl).toEqual("http://something/something");
     });
 
-    it("Should do nothing to url if undefined", () => {
+    it("Should do nothing to urls if undefined", () => {
       req.url = undefined as unknown as string;
-      urlUtils.truncateRequestUrl(req);
+      req.originalUrl = undefined as unknown as string;
+      urlUtils.sanitiseReqlUrls(req);
       expect(req.url).toBeUndefined();
+      expect(req.originalUrl).toBeUndefined();
+    });
+
+    it("Should truncate a url param if it is too long", () => {
+      const txnId = "328433824632874673246782";
+      const subId = "93984328472384389247432432";
+      const companyNumber = "58584883848489445";
+      req.params[urlParams.PARAM_TRANSACTION_ID] = txnId;
+      req.params[urlParams.PARAM_SUBMISSION_ID] = subId;
+      req.params[urlParams.PARAM_COMPANY_NUMBER] = companyNumber;
+      const populatedUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(urlWithParams, companyNumber, txnId, subId);
+      req.url = populatedUrl;
+      req.originalUrl = populatedUrl;
+
+      urlUtils.sanitiseReqlUrls(req);
+
+      expect(req.url).toEqual("/company/5858488384.../something/transaction/3284338246.../submission/9398432847.../andThenSome");
+      expect(req.originalUrl).toEqual("/company/5858488384.../something/transaction/3284338246.../submission/9398432847.../andThenSome");
     });
   });
 
