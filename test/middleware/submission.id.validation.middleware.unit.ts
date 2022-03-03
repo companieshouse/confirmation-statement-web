@@ -20,7 +20,7 @@ const mockIsUrlIdValid = isUrlIdValid as jest.Mock;
 const mockTransactionIdValidationMiddleware = transactionIdValidationMiddleware as jest.Mock;
 mockTransactionIdValidationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
+const mockLoggerErrorRequest = logger.errorRequest as jest.Mock;
 
 const TRUNCATED_LENGTH = 50;
 const TRADING_STATUS_PAGE_HEADING = "Check the trading status";
@@ -36,7 +36,7 @@ describe("Submission ID validation middleware tests", () => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mockIsUrlIdValid.mockClear();
     mockTransactionIdValidationMiddleware.mockClear();
-    mockLoggerInfoRequest.mockClear();
+    mockLoggerErrorRequest.mockClear();
   });
 
   it("Should stop invalid submission id", async () => {
@@ -49,7 +49,7 @@ describe("Submission ID validation middleware tests", () => {
 
     expect(spyTruncateRequestUrl).toBeCalledTimes(1);
     expect(isUrlIdValid).toBeCalledWith(SUBMISSION_ID_INVALID);
-    expect(mockLoggerInfoRequest.mock.calls[0][1]).toContain(SUBMISSION_ID_INVALID.substring(0, TRUNCATED_LENGTH));
+    expect(mockLoggerErrorRequest.mock.calls[0][1]).toContain(SUBMISSION_ID_INVALID.substring(0, TRUNCATED_LENGTH));
     expect(response.statusCode).toEqual(400);
     expect(response.text).toContain(ERROR_PAGE_TEXT);
 

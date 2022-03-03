@@ -13,7 +13,7 @@ export const transactionIdValidationMiddleware = (req: Request, res: Response, n
   logger.debug("Check transaction id");
   if (!isUrlIdValid(transactionId)) {
     urlUtils.sanitiseReqlUrls(req);
-    logger.infoRequest(req, `No Valid Transaction Id in URL: ${req.originalUrl}`);
+    logger.errorRequest(req, `No Valid Transaction Id in URL: ${req.originalUrl}`);
     return res.status(400).render(Templates.SERVICE_OFFLINE_MID_JOURNEY, { templateName: Templates.SERVICE_OFFLINE_MID_JOURNEY });
   }
 

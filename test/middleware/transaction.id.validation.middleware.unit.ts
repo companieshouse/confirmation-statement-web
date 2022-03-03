@@ -18,7 +18,7 @@ const mockIsUrlIdValid = isUrlIdValid as jest.Mock;
 const mockSubmissionIdValidationMiddleware = submissionIdValidationMiddleware as jest.Mock;
 mockSubmissionIdValidationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
+const mockLoggerErrorRequest = logger.errorRequest as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID_VALID = "111905-476716-457831";
@@ -34,7 +34,7 @@ describe("Transaction ID validation middleware tests", () => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mockIsUrlIdValid.mockClear();
     mockSubmissionIdValidationMiddleware.mockClear();
-    mockLoggerInfoRequest.mockClear();
+    mockLoggerErrorRequest.mockClear();
   });
 
   it("Should stop invalid transaction id", async () => {
@@ -47,7 +47,7 @@ describe("Transaction ID validation middleware tests", () => {
 
     expect(isUrlIdValid).toBeCalledWith(TRANSACTION_ID_INVALID);
     expect(spyTruncateRequestUrl).toBeCalledTimes(1);
-    expect(mockLoggerInfoRequest.mock.calls[0][1]).toContain(TRANSACTION_ID_INVALID.substring(0, TRUNCATED_LENGTH));
+    expect(mockLoggerErrorRequest.mock.calls[0][1]).toContain(TRANSACTION_ID_INVALID.substring(0, TRUNCATED_LENGTH));
     expect(response.statusCode).toEqual(400);
     expect(response.text).toContain(ERROR_PAGE_TEXT);
 

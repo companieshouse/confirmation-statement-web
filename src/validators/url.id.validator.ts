@@ -11,7 +11,7 @@ export const isUrlIdValid = (urlId: string): boolean => {
 
   if (urlId.length > URL_PARAM_MAX_LENGTH) {
     const truncatedUrlId: string = urlId.substring(0, URL_PARAM_MAX_LENGTH);
-    logger.info(`URL id exceeds ${URL_PARAM_MAX_LENGTH} characters - ${truncatedUrlId}...`);
+    logger.error(`URL id exceeds ${URL_PARAM_MAX_LENGTH} characters - ${truncatedUrlId}...`);
     return false;
   }
 

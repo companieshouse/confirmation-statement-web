@@ -75,6 +75,7 @@ const sanitiseReqlUrls = (req: Request) => {
   if (req.query) {
     for (const queryParamName of Object.keys(req.query)) {
       const queryParamValue: string = req.query[queryParamName] as string;
+      console.log("***** " + queryParamName + " " + queryParamValue);
       sanitiseParam(req, queryParamName, queryParamValue);
     }
   }

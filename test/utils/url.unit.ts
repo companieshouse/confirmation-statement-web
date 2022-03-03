@@ -103,7 +103,7 @@ describe("url utils tests", () => {
       expect(req.originalUrl).toBeUndefined();
     });
 
-    it("Should truncate a url param if it is too long", () => {
+    it("Should truncate url params if they are too long", () => {
       const txnId = "328433824632874673246782";
       const subId = "93984328472384389247432432";
       const companyNumber = "58584883848489445";
@@ -118,6 +118,32 @@ describe("url utils tests", () => {
 
       expect(req.url).toEqual("/company/5858488384.../something/transaction/3284338246.../submission/9398432847.../andThenSome");
       expect(req.originalUrl).toEqual("/company/5858488384.../something/transaction/3284338246.../submission/9398432847.../andThenSome");
+    });
+
+    it("Should truncate url query params if they are too long", () => {
+      // make a copy of the req.query so we can set it back at end of test
+      const originalReqQuery = req.query;
+      const param1Value = "3sdsdsdfsdfsdfsd4673246782";
+      const param2Value = "sdfsdfsdfds72384389247432432";
+      // need to set the req.query object values as well as in the url
+      // as the sanitiseReqlUrls function will examine the req.query object to determine
+      // what query params are present in the url
+      req.query = {
+        param1: param1Value,
+        param2: param2Value
+      };
+
+      const populatedUrl = `/something?param1=${param1Value}&param2=${param2Value}`;
+      req.url = populatedUrl;
+      req.originalUrl = populatedUrl;
+
+      urlUtils.sanitiseReqlUrls(req);
+
+      // restore the req.query as it was before this test
+      req.query = originalReqQuery;
+
+      expect(req.url).toEqual("/something?param1=3sdsdsdfsd...&param2=sdfsdfsdfd...");
+      expect(req.originalUrl).toEqual("/something?param1=3sdsdsdfsd...&param2=sdfsdfsdfd...");
     });
   });
 
