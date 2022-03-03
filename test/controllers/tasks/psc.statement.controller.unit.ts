@@ -29,6 +29,7 @@ import { isActiveFeature } from "../../../src/utils/feature.flag";
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Is the PSC statement correct?";
+const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66544";
 const SUBMISSION_ID = "6464647";
@@ -163,7 +164,7 @@ describe("PSC Statement controller tests", () => {
         .get(PSC_STATEMENT_URL);
 
       expect(response.status).toEqual(500);
-      expect(response.text).toContain("Sorry, the service is unavailable");
+      expect(response.text).toContain(EXPECTED_ERROR_TEXT);
     });
 
     it("Should return an error page if error is thrown", async () => {
@@ -173,7 +174,7 @@ describe("PSC Statement controller tests", () => {
         .get(PSC_STATEMENT_URL);
 
       expect(response.status).toEqual(500);
-      expect(response.text).toContain("Sorry, the service is unavailable");
+      expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
       // restore original function so it is no longer mocked
       spyGetUrlToPath.mockRestore();
@@ -223,13 +224,22 @@ describe("PSC Statement controller tests", () => {
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
     });
 
+    it("Should return error page when radio button id is not valid", async () => {
+      const response = await request(app)
+        .post(PSC_STATEMENT_URL)
+        .send({ pscStatementValue: "malicious code block" });
+
+      expect(response.status).toEqual(500);
+      expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+    });
+
     it("Should return an error page if error is thrown", async () => {
       const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
       spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
       const response = await request(app).post(PSC_STATEMENT_URL);
 
       expect(response.status).toEqual(500);
-      expect(response.text).toContain("Sorry, the service is unavailable");
+      expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
       // restore original function so it is no longer mocked
       spyGetUrlToPath.mockRestore();

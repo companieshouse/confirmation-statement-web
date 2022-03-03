@@ -8,6 +8,10 @@ import { getCompanyProfile } from "../../services/company.profile.service";
 import { RADIO_BUTTON_VALUE, SECTIONS, SIC_CODE_ERROR } from "../../utils/constants";
 import { SectionStatus, SicCode } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
+import {
+  getRadioButtonInvalidValueErrorMessage,
+  isRadioButtonValueValid
+} from "../../validators/radio.button.validator";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -23,6 +27,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   const sicButtonValue = req.body.sicCodeStatus;
+
+  if (!isRadioButtonValueValid(sicButtonValue)) {
+    return next(new Error(getRadioButtonInvalidValueErrorMessage(sicButtonValue)));
+  }
 
   if (sicButtonValue === RADIO_BUTTON_VALUE.YES) {
     await sendUpdate(req, SECTIONS.SIC, SectionStatus.CONFIRMED);

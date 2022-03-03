@@ -21,6 +21,7 @@ const mockSendUpdate = sendUpdate as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
 const PAGE_HEADING = "Review the shareholders";
+const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 const SHAREHOLDERS_URL = SHAREHOLDERS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const WRONG_SHAREHOLDERS_URL = WRONG_SHAREHOLDERS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
@@ -48,7 +49,7 @@ describe("Shareholders controller tests", () => {
     spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
     const response = await request(app).get(SHAREHOLDERS_URL);
 
-    expect(response.text).toContain("Sorry, the service is unavailable");
+    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
     // restore original function so it is no longer mocked
     spyGetUrlWithCompanyNumber.mockRestore();
@@ -76,18 +77,7 @@ describe("Shareholders controller tests", () => {
     expect(response.header.location).toEqual(WRONG_SHAREHOLDERS_URL);
   });
 
-  it("Should return an error page if error is thrown in post function", async () => {
-    const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlToPath");
-    spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
-    const response = await request(app).post(SHAREHOLDERS_URL);
-
-    expect(response.text).toContain("Sorry, the service is unavailable");
-
-    // restore original function so it is no longer mocked
-    spyGetUrlWithCompanyNumber.mockRestore();
-  });
-
-  it("Should throw an error on shareholders page when radio button is not selected", async () => {
+  it("Should display error message on shareholders page when radio button is not selected", async () => {
     mockGetShareholders.mockResolvedValueOnce(mockShareholder);
     const response = await request(app).post(SHAREHOLDERS_URL);
 
@@ -97,4 +87,23 @@ describe("Shareholders controller tests", () => {
     expect(response.text).toContain("Check the shareholder detail");
   });
 
+  it("Should return error page when radio button id is not valid", async () => {
+    const response = await request(app)
+      .post(SHAREHOLDERS_URL)
+      .send({ shareholders: "malicious code block" });
+
+    expect(response.status).toEqual(500);
+    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+  });
+
+  it("Should return an error page if error is thrown in post function", async () => {
+    const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlToPath");
+    spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
+    const response = await request(app).post(SHAREHOLDERS_URL);
+
+    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+
+    // restore original function so it is no longer mocked
+    spyGetUrlWithCompanyNumber.mockRestore();
+  });
 });

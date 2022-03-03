@@ -29,6 +29,7 @@ const SAIL_HEADING = "SAIL (Single Alternative Inspection Location)";
 const NO_RECORDS_SAIL = "There are currently no records held at the SAIL addres";
 const ALL_RECORDS_MESSAGE = "All company records are kept at the registered office address, or on the public record.";
 const OTHER_RECORDS_MESSAGE = "Any other company records are kept at the registered office address, or on the public record.";
+const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 
 const COMPANY_NUMBER = "12345678";
 const REGISTER_LOCATIONS_URL = REGISTER_LOCATIONS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
@@ -83,7 +84,7 @@ describe("Register locations controller tests", () => {
     spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
     const response = await request(app).get(REGISTER_LOCATIONS_URL);
 
-    expect(response.text).toContain("Sorry, the service is unavailable");
+    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
     // restore original function so it is no longer mocked
     spyGetUrlToPath.mockRestore();
@@ -120,24 +121,33 @@ describe("Register locations controller tests", () => {
     expect(response.header.location).toEqual(WRONG_REGISTER_LOCATIONS_URL);
   });
 
-  it("Should return an error page if error is thrown in post function", async () => {
-    const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlToPath");
-    spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
-    const response = await request(app).post(REGISTER_LOCATIONS_URL);
-
-    expect(response.text).toContain("Sorry, the service is unavailable");
-
-    // restore original function so it is no longer mocked
-    spyGetUrlWithCompanyNumber.mockRestore();
-  });
-
-  it("Should throw an error on register locations page when radio button is not selected", async () => {
+  it("Should display error message on register locations page when radio button is not selected", async () => {
     mockGetRegisterLocation.mockResolvedValueOnce(mockRegisterLocation);
     const response = await request(app).post(REGISTER_LOCATIONS_URL);
 
     expect(response.status).toEqual(200);
     expect(response.text).toContain(PAGE_HEADING);
     expect(response.text).toContain(REGISTER_LOCATIONS_ERROR);
+  });
+
+  it("Should return error page when radio button id is not valid", async () => {
+    const response = await request(app)
+      .post(REGISTER_LOCATIONS_URL)
+      .send({ registers: "malicious code block" });
+
+    expect(response.status).toEqual(500);
+    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+  });
+
+  it("Should return an error page if error is thrown in post function", async () => {
+    const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlToPath");
+    spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
+    const response = await request(app).post(REGISTER_LOCATIONS_URL);
+
+    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+
+    // restore original function so it is no longer mocked
+    spyGetUrlWithCompanyNumber.mockRestore();
   });
 
 });

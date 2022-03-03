@@ -438,13 +438,22 @@ describe("People with significant control controller tests", () => {
       expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("true"));
     });
 
+    it("Should return error page when radio button id is not valid", async () => {
+      const response = await request(app)
+        .post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL)
+        .send({ pscRadioValue: "malicious code block" });
+
+      expect(response.status).toEqual(500);
+      expect(response.text).toContain(ERROR_PAGE_TEXT);
+    });
+
     it("Should return an error page if error is thrown in post function", async () => {
       const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
       spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
       const response = await request(app).post(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
 
       expect(response.status).toEqual(500);
-      expect(response.text).toContain("Sorry, the service is unavailable");
+      expect(response.text).toContain(ERROR_PAGE_TEXT);
 
       // restore original function so it is no longer mocked
       spyGetUrlToPath.mockRestore();

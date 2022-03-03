@@ -15,6 +15,10 @@ import {
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { formatTitleCase } from "../../utils/format";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
+import {
+  getRadioButtonInvalidValueErrorMessage,
+  isRadioButtonValueValid
+} from "../../validators/radio.button.validator";
 
 export const get = async(req: Request, res: Response, next: NextFunction) => {
   try {
@@ -45,6 +49,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const session: Session = req.session as Session ;
     const statementOfCapitalButtonValue = req.body.statementOfCapital;
+
+    if (!isRadioButtonValueValid(statementOfCapitalButtonValue)) {
+      return next(new Error(getRadioButtonInvalidValueErrorMessage(statementOfCapitalButtonValue)));
+    }
+
     const companyNumber = getCompanyNumber(req);
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);

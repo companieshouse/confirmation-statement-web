@@ -15,6 +15,8 @@ const mockSendTradingStatusUpdate = sendTradingStatusUpdate as jest.Mock;
 
 const PAGE_HEADING = "Check the trading status";
 const COMPANY_NUMBER = "12345678";
+const SERVICE_UNAVAILABLE_TEXT = "Sorry, the service is unavailable";
+
 const TRADING_STATUS_URL = TRADING_STATUS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TRADING_STOP_URL = TRADING_STOP_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
@@ -59,5 +61,14 @@ describe("Trading status controller tests", () => {
     expect(response.text).toContain(PAGE_HEADING);
     expect(response.text).toContain(TRADING_STATUS_ERROR);
     expect(response.text).toContain("No company shares were traded on a market during this confirmation period.");
+  });
+
+  it("Should return error page when radio button id is not valid", async () => {
+    const response = await request(app)
+      .post(TRADING_STATUS_URL)
+      .send({ tradingStatus: "malicious code block" });
+
+    expect(response.status).toEqual(500);
+    expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
   });
 });
