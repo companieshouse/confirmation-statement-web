@@ -1,4 +1,4 @@
-import { URL_PARAM_MAX_LENGTH } from "../utils/constants";
+import { URL_PARAM_MAX_LENGTH } from "../utils/properties";
 import { logger } from "../utils/logger";
 
 export const isUrlIdValid = (urlId: string): boolean => {

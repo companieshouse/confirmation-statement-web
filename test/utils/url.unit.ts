@@ -1,6 +1,6 @@
-jest.mock("../../src/utils/constants", () => {
+jest.mock("../../src/utils/properties", () => {
   return {
-    URL_LOG_LENGTH: 100,
+    URL_LOG_MAX_LENGTH: 100,
     URL_PARAM_MAX_LENGTH: 10
   };
 });
