@@ -10,6 +10,7 @@ export const isPscQueryParameterValidationMiddleware = (req: Request, res: Respo
   const isPsc: string = req.query[URL_QUERY_PARAM.IS_PSC] as string;
 
   if (!isPsc) {
+    // No validation applies if the 'isPsc' query parameter isn't present in the request (URL)
     return next();
   }
 
