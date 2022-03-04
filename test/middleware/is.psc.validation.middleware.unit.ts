@@ -33,7 +33,7 @@ describe("is PSC validation middleware tests", () => {
     expect(next).toHaveBeenCalled();
   });
 
-  it("should call next() when no query parameters are not present", () => {
+  it("should call next() when no query parameters are present", () => {
     req.query = {};
 
     isPscQueryParameterValidationMiddleware(req, res, next);
