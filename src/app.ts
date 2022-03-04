@@ -7,11 +7,12 @@ import errorHandler from "./controllers/error.controller";
 import { serviceAvailabilityMiddleware } from "./middleware/service.availability.middleware";
 import { authenticationMiddleware } from "./middleware/authentication.middleware";
 import { sessionMiddleware } from "./middleware/session.middleware";
-
 import cookieParser from "cookie-parser";
 import { logger } from "./utils/logger";
 import { companyAuthenticationMiddleware } from "./middleware/company.authentication.middleware";
 import { isPscQueryParameterValidationMiddleware } from "./middleware/is.psc.validation.middleware";
+import { transactionIdValidationMiddleware } from "./middleware/transaction.id.validation.middleware";
+import { submissionIdValidationMiddleware } from "./middleware/submission.id.validation.middleware";
 
 const app = express();
 app.disable("x-powered-by");
@@ -46,7 +47,8 @@ const userAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
 app.use(userAuthRegex, authenticationMiddleware);
 app.use(`${urls.CONFIRMATION_STATEMENT}${urls.COMPANY_AUTH_PROTECTED_BASE}`, companyAuthenticationMiddleware);
 app.use(isPscQueryParameterValidationMiddleware);
-
+app.use(`*${urls.CONTAINS_TRANSACTION_ID}`, transactionIdValidationMiddleware);
+app.use(`*${urls.CONTAINS_SUBMISSION_ID}`, submissionIdValidationMiddleware);
 // apply our default router to /confirmation-statement
 app.use(urls.CONFIRMATION_STATEMENT, router);
 app.use(errorHandler);

@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import { isPscQueryParameterValidationMiddleware } from "../../src/middleware/is.psc.validation.middleware";
 import { Templates } from "../../src/types/template.paths";
 import { isPscFlagValid } from "../../src/validators/is.psc.validator";
+import { urlUtils } from "../../src/utils/url";
 
 const req: Request = {} as Request;
 const res: Response = {} as Response;
@@ -16,6 +17,8 @@ const next = jest.fn();
 const mockIsPscValidator = isPscFlagValid as jest.Mock;
 mockIsPscValidator.mockReturnValue(true);
 
+urlUtils.sanitiseReqlUrls = jest.fn();
+
 describe("is PSC validation middleware tests", () => {
 
   beforeEach(() => {
@@ -24,6 +27,14 @@ describe("is PSC validation middleware tests", () => {
 
   it("should call next() when isPsc query parameter not present", () => {
     req.query = { isPsc: undefined };
+
+    isPscQueryParameterValidationMiddleware(req, res, next);
+
+    expect(next).toHaveBeenCalled();
+  });
+
+  it("should call next() when no query parameters are not present", () => {
+    req.query = {};
 
     isPscQueryParameterValidationMiddleware(req, res, next);
 
