@@ -68,7 +68,6 @@ const sanitiseReqlUrls = (req: Request) => {
   // if they are present and they are longer than allowed length, truncate them.
   for (const urlParamName of Object.values(urlParams)) {
     const urlParamValue = req.params[urlParamName];
-    logger.debug(`sanitising url param ${urlParamName} value ${urlParamValue}`);
     sanitiseParam(req, urlParamName, urlParamValue);
   }
   // loop through the names of the query params in the url and get their values
@@ -76,7 +75,6 @@ const sanitiseReqlUrls = (req: Request) => {
   if (req.query) {
     for (const queryParamName of Object.keys(req.query)) {
       const queryParamValue: string = req.query[queryParamName] as string;
-      logger.debug(`sanitising url query param ${queryParamName} value ${queryParamValue}`);
       sanitiseParam(req, queryParamName, queryParamValue);
     }
   }
