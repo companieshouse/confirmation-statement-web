@@ -3,7 +3,12 @@ jest.mock("../../src/middleware/submission.id.validation.middleware");
 jest.mock("../../src/services/company.profile.service");
 jest.mock("../../src/utils/logger");
 
-import mocks from "../mocks/all.middleware.mock";
+import mockServiceAvailabilityMiddleware from "../mocks/service.availability.middleware.mock";
+import mockAuthenticationMiddleware from "../mocks/authentication.middleware.mock";
+import mockSessionMiddleware from "../mocks/session.middleware.mock";
+import mockCompanyAuthenticationMiddleware from "../mocks/company.authentication.middleware.mock";
+import mockIsPscQueryParameterValidationMiddleware from "../mocks/is.psc.validation.middleware.mock";
+import mockCompanyNumberQueryParameterValidationMiddleware from "../mocks/company.number.validation.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
 import { isUrlIdValid } from "../../src/validators/url.id.validator";
@@ -31,7 +36,12 @@ const TRADING_STATUS_PAGE_HEADING = "Check the trading status";
 describe("Transaction ID validation middleware tests", () => {
 
   beforeEach(() => {
-    mocks.mockAuthenticationMiddleware.mockClear();
+    mockServiceAvailabilityMiddleware.mockClear();
+    mockAuthenticationMiddleware.mockClear();
+    mockCompanyAuthenticationMiddleware.mockClear();
+    mockSessionMiddleware.mockClear();
+    mockIsPscQueryParameterValidationMiddleware.mockClear();
+    mockCompanyNumberQueryParameterValidationMiddleware.mockClear();
     mockIsUrlIdValid.mockClear();
     mockSubmissionIdValidationMiddleware.mockClear();
     mockLoggerErrorRequest.mockClear();

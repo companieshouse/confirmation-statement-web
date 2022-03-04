@@ -5,6 +5,10 @@ jest.mock("../../src/validators/company.number.validator");
 import mockSessionMiddleware from "../mocks/session.middleware.mock";
 import mockServiceAvailabilityMiddleware from "../mocks/service.availability.middleware.mock";
 import mockAuthenticationMiddleware from "../mocks/authentication.middleware.mock";
+import mockIsPscQueryParameterValidationMiddleware from "../mocks/is.psc.validation.middleware.mock";
+import mockCompanyNumberQueryParameterValidationMiddleware from "../mocks/company.number.validation.middleware.mock";
+import mockTransactionIdValidationMiddleware from "../mocks/transaction.id.validation.middleware.mock";
+import mockSubmissionIdValidationMiddleware from "../mocks/submission.id.validation.middleware.mock";
 import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
 import request from "supertest";
 import app from "../../src/app";
@@ -39,6 +43,10 @@ describe("company authentication middleware tests", () => {
     mockSessionMiddleware.mockClear();
     mockServiceAvailabilityMiddleware.mockClear();
     mockAuthenticationMiddleware.mockClear();
+    mockIsPscQueryParameterValidationMiddleware.mockClear();
+    mockCompanyNumberQueryParameterValidationMiddleware.mockClear();
+    mockTransactionIdValidationMiddleware.mockClear();
+    mockSubmissionIdValidationMiddleware.mockClear();
     mockLoggerErrorRequest.mockClear();
   });
 
