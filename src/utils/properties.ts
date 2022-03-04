@@ -40,3 +40,9 @@ export const FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 = getEnvironmen
 export const PIWIK_START_GOAL_ID = getEnvironmentVariable("PIWIK_START_GOAL_ID");
 
 export const PSC_STATEMENTS_API_PAGE_SIZE = getEnvironmentVariable("PSC_STATEMENTS_API_PAGE_SIZE", "100");
+
+export const URL_LOG_MAX_LENGTH: number = parseInt(getEnvironmentVariable("URL_LOG_MAX_LENGTH", "400"), 10);
+
+export const URL_PARAM_MAX_LENGTH: number = parseInt(getEnvironmentVariable("URL_PARAM_MAX_LENGTH", "50"), 10);
+
+export const RADIO_BUTTON_VALUE_LOG_LENGTH = parseInt(getEnvironmentVariable("RADIO_BUTTON_VALUE_LOG_LENGTH", "50"), 10);

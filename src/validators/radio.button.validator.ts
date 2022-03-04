@@ -1,5 +1,6 @@
 import { logger } from "../utils/logger";
-import { RADIO_BUTTON_VALUE, RADIO_BUTTON_VALUE_LOG_LENGTH } from "../utils/constants";
+import { RADIO_BUTTON_VALUE } from "../utils/constants";
+import { RADIO_BUTTON_VALUE_LOG_LENGTH } from "../utils/properties";
 
 export const isRadioButtonValueValid = (radioValue: string): boolean => {
   logger.debug("Checking radio button is valid");
