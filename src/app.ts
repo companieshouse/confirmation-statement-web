@@ -7,6 +7,7 @@ import errorHandler from "./controllers/error.controller";
 import { serviceAvailabilityMiddleware } from "./middleware/service.availability.middleware";
 import { authenticationMiddleware } from "./middleware/authentication.middleware";
 import { sessionMiddleware } from "./middleware/session.middleware";
+import { companyNumberQueryParameterValidationMiddleware } from "./middleware/company.number.validation.middleware";
 
 import cookieParser from "cookie-parser";
 import { logger } from "./utils/logger";
@@ -44,6 +45,7 @@ app.use(`${urls.CONFIRMATION_STATEMENT}*`, sessionMiddleware);
 const userAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
 app.use(userAuthRegex, authenticationMiddleware);
 app.use(`${urls.CONFIRMATION_STATEMENT}${urls.COMPANY_AUTH_PROTECTED_BASE}`, companyAuthenticationMiddleware);
+app.use(companyNumberQueryParameterValidationMiddleware);
 
 // apply our default router to /confirmation-statement
 app.use(urls.CONFIRMATION_STATEMENT, router);
