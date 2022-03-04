@@ -8,10 +8,11 @@ import { serviceAvailabilityMiddleware } from "./middleware/service.availability
 import { authenticationMiddleware } from "./middleware/authentication.middleware";
 import { sessionMiddleware } from "./middleware/session.middleware";
 import { companyNumberQueryParameterValidationMiddleware } from "./middleware/company.number.validation.middleware";
-
 import cookieParser from "cookie-parser";
 import { logger } from "./utils/logger";
 import { companyAuthenticationMiddleware } from "./middleware/company.authentication.middleware";
+import { transactionIdValidationMiddleware } from "./middleware/transaction.id.validation.middleware";
+import { submissionIdValidationMiddleware } from "./middleware/submission.id.validation.middleware";
 
 const app = express();
 app.disable("x-powered-by");
@@ -47,6 +48,8 @@ app.use(userAuthRegex, authenticationMiddleware);
 app.use(`${urls.CONFIRMATION_STATEMENT}${urls.COMPANY_AUTH_PROTECTED_BASE}`, companyAuthenticationMiddleware);
 app.use(companyNumberQueryParameterValidationMiddleware);
 
+app.use(`*${urls.CONTAINS_TRANSACTION_ID}`, transactionIdValidationMiddleware);
+app.use(`*${urls.CONTAINS_SUBMISSION_ID}`, submissionIdValidationMiddleware);
 // apply our default router to /confirmation-statement
 app.use(urls.CONFIRMATION_STATEMENT, router);
 app.use(errorHandler);
