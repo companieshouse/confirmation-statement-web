@@ -43,14 +43,19 @@ app.set("view engine", "html");
 // apply middleware
 app.use(cookieParser());
 app.use(serviceAvailabilityMiddleware);
-app.use(`${urls.CONFIRMATION_STATEMENT}*`, sessionMiddleware);
-const userAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
-app.use(userAuthRegex, authenticationMiddleware);
-app.use(`${urls.CONFIRMATION_STATEMENT}${urls.COMPANY_AUTH_PROTECTED_BASE}`, companyAuthenticationMiddleware);
+// validation middleware for url and query params - comapny number covered by companyAuthenticationMiddleware
+// These need to run before companyAuthenticationMiddleware as that can log out full url
+//  if auth value is invalid and url has invalid data in it
 app.use(companyNumberQueryParameterValidationMiddleware);
 app.use(isPscQueryParameterValidationMiddleware);
 app.use(`*${urls.CONTAINS_TRANSACTION_ID}`, transactionIdValidationMiddleware);
 app.use(`*${urls.CONTAINS_SUBMISSION_ID}`, submissionIdValidationMiddleware);
+
+app.use(`${urls.CONFIRMATION_STATEMENT}*`, sessionMiddleware);
+const userAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
+app.use(userAuthRegex, authenticationMiddleware);
+app.use(`${urls.CONFIRMATION_STATEMENT}${urls.COMPANY_AUTH_PROTECTED_BASE}`, companyAuthenticationMiddleware);
+
 // apply our default router to /confirmation-statement
 app.use(urls.CONFIRMATION_STATEMENT, router);
 app.use(errorHandler);
