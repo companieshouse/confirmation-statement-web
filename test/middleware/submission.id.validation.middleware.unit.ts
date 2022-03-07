@@ -3,8 +3,12 @@ jest.mock("../../src/middleware/transaction.id.validation.middleware");
 jest.mock("../../src/services/company.profile.service");
 jest.mock("../../src/utils/logger");
 
-
-import mocks from "../mocks/all.middleware.mock";
+import mockServiceAvailabilityMiddleware from "../mocks/service.availability.middleware.mock";
+import mockAuthenticationMiddleware from "../mocks//authentication.middleware.mock";
+import mockSessionMiddleware from "../mocks/session.middleware.mock";
+import mockCompanyAuthenticationMiddleware from "../mocks/company.authentication.middleware.mock";
+import mockIsPscQueryParameterValidationMiddleware from "../mocks/is.psc.validation.middleware.mock";
+import mockCompanyNumberQueryParameterValidationMiddleware from "../mocks/company.number.validation.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
 import { isUrlIdValid } from "../../src/validators/url.id.validator";
@@ -33,7 +37,12 @@ const SUBMISSION_ID_INVALID = "3223432kjh32kh42342344332443232b32j4jk32h43k2h4k2
 describe("Submission ID validation middleware tests", () => {
 
   beforeEach(() => {
-    mocks.mockAuthenticationMiddleware.mockClear();
+    mockServiceAvailabilityMiddleware.mockClear();
+    mockAuthenticationMiddleware.mockClear();
+    mockSessionMiddleware.mockClear();
+    mockCompanyAuthenticationMiddleware.mockClear();
+    mockIsPscQueryParameterValidationMiddleware.mockClear();
+    mockCompanyNumberQueryParameterValidationMiddleware.mockClear();
     mockIsUrlIdValid.mockClear();
     mockTransactionIdValidationMiddleware.mockClear();
     mockLoggerErrorRequest.mockClear();
