@@ -40,8 +40,17 @@ describe("Company number validator tests", () => {
       expect(isCompanyNumberValid("1234567")).toBeFalsy();
     });
 
-    it("Should return false for 3 letter 5 number string", () => {
-      expect(isCompanyNumberValid("ABC12345")).toBeFalsy();
+    it("Should return true for 3 letter 5 number string", () => {
+      expect(isCompanyNumberValid("ABC12345")).toBeTruthy();
+    });
+
+    it("Should return true for an industrial provident company", () => {
+      expect(isCompanyNumberValid("IP00366C")).toBeTruthy();
+    });
+
+    it("Should return false for string with non alphanumeric characters", () => {
+      expect(isCompanyNumberValid("1234567!")).toBeFalsy();
+      expect(isCompanyNumberValid("$1234567")).toBeFalsy();
     });
   });
 });
