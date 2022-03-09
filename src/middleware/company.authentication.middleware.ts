@@ -12,7 +12,7 @@ export const companyAuthenticationMiddleware = (req: Request, res: Response, nex
   const companyNumber: string = req.params[urlParams.PARAM_COMPANY_NUMBER];
 
   if (!isCompanyNumberValid(companyNumber)) {
-    urlUtils.sanitiseReqlUrls(req);
+    urlUtils.sanitiseReqUrls(req);
     logger.errorRequest(req, "No Valid Company Number in URL: " + req.originalUrl);
     return res.status(400).render(Templates.SERVICE_OFFLINE_MID_JOURNEY, { templateName: Templates.SERVICE_OFFLINE_MID_JOURNEY });
   }

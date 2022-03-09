@@ -21,7 +21,7 @@ describe("is PSC validation middleware tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    urlUtils.sanitiseReqlUrls = jest.fn();
+    urlUtils.sanitiseReqUrls = jest.fn();
   });
 
   it("should call next() when isPsc query parameter not present", () => {
@@ -30,7 +30,7 @@ describe("is PSC validation middleware tests", () => {
     isPscQueryParameterValidationMiddleware(req, res, next);
 
     expect(next).toHaveBeenCalled();
-    expect(urlUtils.sanitiseReqlUrls).not.toHaveBeenCalled();
+    expect(urlUtils.sanitiseReqUrls).not.toHaveBeenCalled();
   });
 
   it("should call next() when no query parameters are present", () => {
@@ -39,7 +39,7 @@ describe("is PSC validation middleware tests", () => {
     isPscQueryParameterValidationMiddleware(req, res, next);
 
     expect(next).toHaveBeenCalled();
-    expect(urlUtils.sanitiseReqlUrls).not.toHaveBeenCalled();
+    expect(urlUtils.sanitiseReqUrls).not.toHaveBeenCalled();
   });
 
   it("should call next() when isPsc query parameter validation passes", () => {
@@ -48,7 +48,7 @@ describe("is PSC validation middleware tests", () => {
     isPscQueryParameterValidationMiddleware(req, res, next);
 
     expect(next).toHaveBeenCalled();
-    expect(urlUtils.sanitiseReqlUrls).not.toHaveBeenCalled();
+    expect(urlUtils.sanitiseReqUrls).not.toHaveBeenCalled();
   });
 
   it("should show the error screen when isPsc query parameter validation fails", () => {
@@ -60,6 +60,6 @@ describe("is PSC validation middleware tests", () => {
 
     expect(mockStatus.mock.calls[0][0]).toEqual(400);
     expect(mockRender.mock.calls[0][0]).toEqual(Templates.SERVICE_OFFLINE_MID_JOURNEY);
-    expect(urlUtils.sanitiseReqlUrls).toHaveBeenCalled();
+    expect(urlUtils.sanitiseReqUrls).toHaveBeenCalled();
   });
 });

@@ -49,7 +49,7 @@ describe("Transaction ID validation middleware tests", () => {
 
   it("Should stop invalid transaction id", async () => {
     const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
-    const spyTruncateRequestUrl = jest.spyOn(urlUtils, "sanitiseReqlUrls");
+    const spyTruncateRequestUrl = jest.spyOn(urlUtils, "sanitiseReqUrls");
     mockIsUrlIdValid.mockReturnValueOnce(false);
 
     const urlWithInvalidTransactionId = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TRADING_STATUS_PATH, COMPANY_NUMBER, TRANSACTION_ID_INVALID, SUBMISSION_ID);

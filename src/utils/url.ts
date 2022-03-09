@@ -64,6 +64,8 @@ const sanitiseParam = (req: Request, paramName: string, paramValue: string) => {
 
 // Will encode any special characters found in the req.originalUrl and req.url
 const encodeUrls = (req: Request) => {
+  console.log("encoding url - " + req.url);
+  console.log("encoding original url - " + req.originalUrl);
   req.originalUrl = encodeURI(req.originalUrl);
   req.url = encodeURI(req.url);
 };
@@ -99,6 +101,6 @@ export const urlUtils = {
   getUrlToPath,
   getUrlWithCompanyNumber,
   getUrlWithCompanyNumberTransactionIdAndSubmissionId,
-  sanitiseReqlUrls: sanitiseReqUrls,
+  sanitiseReqUrls: sanitiseReqUrls,
   setQueryParam,
 };

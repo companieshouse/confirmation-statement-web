@@ -81,7 +81,7 @@ describe("url utils tests", () => {
       const tooLongUrl = "http://something/something/something/12344/somethingelse/andAnotherThing/12345/somethingElse/something/something";
       req.url = tooLongUrl;
       req.originalUrl = tooLongUrl;
-      urlUtils.sanitiseReqlUrls(req);
+      urlUtils.sanitiseReqUrls(req);
       expect(req.url).toEqual("http://something/something/something/12344/somethingelse/andAnotherThing/12345/somethingElse/somethi...");
       expect(req.originalUrl).toEqual("http://something/something/something/12344/somethingelse/andAnotherThing/12345/somethingElse/somethi...");
     });
@@ -90,7 +90,7 @@ describe("url utils tests", () => {
       const okUrl = "http://something/something";
       req.url = okUrl;
       req.originalUrl = okUrl;
-      urlUtils.sanitiseReqlUrls(req);
+      urlUtils.sanitiseReqUrls(req);
       expect(req.url).toEqual("http://something/something");
       expect(req.originalUrl).toEqual("http://something/something");
     });
@@ -98,7 +98,7 @@ describe("url utils tests", () => {
     it("Should do nothing to urls if undefined", () => {
       req.url = undefined as unknown as string;
       req.originalUrl = undefined as unknown as string;
-      urlUtils.sanitiseReqlUrls(req);
+      urlUtils.sanitiseReqUrls(req);
       expect(req.url).toEqual("undefined");
       expect(req.originalUrl).toEqual("undefined");
     });
@@ -114,7 +114,7 @@ describe("url utils tests", () => {
       req.url = populatedUrl;
       req.originalUrl = populatedUrl;
 
-      urlUtils.sanitiseReqlUrls(req);
+      urlUtils.sanitiseReqUrls(req);
 
       expect(req.url).toEqual("/company/5858488384.../something/transaction/3284338246.../submission/9398432847.../andThenSome");
       expect(req.originalUrl).toEqual("/company/5858488384.../something/transaction/3284338246.../submission/9398432847.../andThenSome");
@@ -137,7 +137,7 @@ describe("url utils tests", () => {
       req.url = populatedUrl;
       req.originalUrl = populatedUrl;
 
-      urlUtils.sanitiseReqlUrls(req);
+      urlUtils.sanitiseReqUrls(req);
 
       // restore the req.query as it was before this test
       req.query = originalReqQuery;
@@ -150,7 +150,7 @@ describe("url utils tests", () => {
       const urlWithSpecialCharacters = "http://something/something{}  |`]";
       req.url = urlWithSpecialCharacters;
       req.originalUrl = urlWithSpecialCharacters;
-      urlUtils.sanitiseReqlUrls(req);
+      urlUtils.sanitiseReqUrls(req);
       expect(req.url).toEqual("http://something/something%7B%7D%20%20%7C%60%5D");
       expect(req.originalUrl).toEqual("http://something/something%7B%7D%20%20%7C%60%5D");
     });
@@ -160,7 +160,7 @@ describe("url utils tests", () => {
       const urlWithSpecialCharacters = "http://something/something;,/?:@&=+$#";
       req.url = urlWithSpecialCharacters;
       req.originalUrl = urlWithSpecialCharacters;
-      urlUtils.sanitiseReqlUrls(req);
+      urlUtils.sanitiseReqUrls(req);
       expect(req.url).toEqual("http://something/something;,/?:@&=+$#");
       expect(req.originalUrl).toEqual("http://something/something;,/?:@&=+$#");
     });

@@ -51,7 +51,7 @@ describe("Submission ID validation middleware tests", () => {
   it("Should stop invalid submission id", async () => {
     const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
     mockIsUrlIdValid.mockReturnValueOnce(false);
-    const spyTruncateRequestUrl = jest.spyOn(urlUtils, "sanitiseReqlUrls");
+    const spyTruncateRequestUrl = jest.spyOn(urlUtils, "sanitiseReqUrls");
 
     const urlWithInvalidSubId = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TRADING_STATUS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID_INVALID);
     const response = await request(app).get(urlWithInvalidSubId);
