@@ -12,7 +12,7 @@ export const submissionIdValidationMiddleware = (req: Request, res: Response, ne
 
   logger.debug("Check submission id");
   if (!isUrlIdValid(submissionId)) {
-    urlUtils.sanitiseReqlUrls(req);
+    urlUtils.sanitiseReqUrls(req);
     logger.errorRequest(req, `No Valid Submission Id in URL: ${req.originalUrl}`);
     return res.status(400).render(Templates.SERVICE_OFFLINE_MID_JOURNEY, { templateName: Templates.SERVICE_OFFLINE_MID_JOURNEY });
   }

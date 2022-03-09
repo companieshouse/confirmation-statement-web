@@ -25,14 +25,16 @@ export const getConfirmationStatement = async (session: Session, transactionId: 
   const client = createPublicOAuthApiClient(session);
   const csService: ConfirmationStatementService = client.confirmationStatementService;
   const response = await csService.getConfirmationStatementSubmission(transactionId, confirmationStatementId);
+  const encodedConfirmationStatementId = encodeURIComponent(confirmationStatementId);
+  const encodedTransactionId = encodeURIComponent(transactionId);
 
   if (response.httpStatusCode !== 200) {
-    throw new Error(`Error getting confirmation statement from api with confirmationStatementId = ${confirmationStatementId}, transactionId = ${transactionId} - ${JSON.stringify(response)}`);
+    throw new Error(`Error getting confirmation statement from api with confirmationStatementId = ${encodedConfirmationStatementId}, transactionId = ${encodedTransactionId} - ${JSON.stringify(response)}`);
   }
 
   const csSubmissionResource = response as Resource<ConfirmationStatementSubmission>;
   if (!csSubmissionResource.resource) {
-    throw new Error(`Error No resource returned when getting confirmation statement from api with confirmationStatementId = ${confirmationStatementId}, transactionId = ${transactionId}`);
+    throw new Error(`Error No resource returned when getting confirmation statement from api with confirmationStatementId = ${encodedConfirmationStatementId}, transactionId = ${encodedTransactionId}`);
   }
 
   return csSubmissionResource.resource;
@@ -45,9 +47,12 @@ export const updateConfirmationStatement = async (session: Session,
   const client = createPublicOAuthApiClient(session);
   const csService: ConfirmationStatementService = client.confirmationStatementService;
   const response = await csService.postUpdateConfirmationStatement(transactionId, submitId, csSubmission);
+  const encodedSubmitId = encodeURIComponent(submitId);
+  const encodedTransactionId = encodeURIComponent(transactionId);
+
   if (response.httpStatusCode !== 200) {
     const castedResponse: ApiErrorResponse = response;
-    throw new Error(`Transaction Id ${transactionId}, Submit Id ${submitId}, Something went wrong updating confirmation statement ${JSON.stringify(castedResponse)}`);
+    throw new Error(`Transaction Id ${encodedTransactionId}, Submit Id ${encodedSubmitId}, Something went wrong updating confirmation statement ${JSON.stringify(castedResponse)}`);
   }
 };
 

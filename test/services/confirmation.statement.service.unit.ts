@@ -37,6 +37,10 @@ mockCreateApiClient.mockReturnValue({
 
 const TRANSACTION_ID = "12345";
 const SUBMISSION_ID = "14566";
+const TRANSACTION_ID_WITH_SPECIAL_CHARACTERS = "12{}345";
+const SUBMISSION_ID_WITH_SPECIAL_CHARACTERS = "14{}566";
+const ENCODED_TRANSACTION_ID_WITH_SPECIAL_CHARACTERS = "12%7B%7D345";
+const ENCODED_SUBMISSION_ID_WITH_SPECIAL_CHARACTERS = "14%7B%7D566";
 const COMPANY_NUMBER = "26331212";
 
 describe ("Confirmation statement api service unit tests", () => {
@@ -112,6 +116,22 @@ describe ("Confirmation statement api service unit tests", () => {
         });
     });
 
+    it ("should throw error with any special characters encoded when http status is not 200", async () => {
+      mockGetConfirmationStatementSubmission.mockResolvedValueOnce({
+        httpStatusCode: 500
+      });
+
+      await getConfirmationStatement(
+        getSessionRequest({ access_token: "token" }), TRANSACTION_ID_WITH_SPECIAL_CHARACTERS, SUBMISSION_ID_WITH_SPECIAL_CHARACTERS)
+        .then(() => {
+          fail("Expecting error to be thrown");
+        }).catch(e => {
+          expect(e.message).toContain("Error getting confirmation statement from api");
+          expect(e.message).toContain(ENCODED_SUBMISSION_ID_WITH_SPECIAL_CHARACTERS);
+          expect(e.message).toContain(ENCODED_TRANSACTION_ID_WITH_SPECIAL_CHARACTERS);
+        });
+    });
+
     it ("should throw error when response is not an error and has no resource", async () => {
       mockGetConfirmationStatementSubmission.mockResolvedValueOnce({
         httpStatusCode: 200
@@ -173,6 +193,25 @@ describe ("updateConfirmationStatement unit tests", () => {
       });
 
     expect(mockPostUpdateConfirmationStatement).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID, csSubmission);
+  });
+
+  it("should should throw error with any special characters encoded when other http code is returned", async () => {
+    mockPostUpdateConfirmationStatement.mockResolvedValueOnce({
+      httpStatusCode: 500
+    });
+    const csSubmission: ConfirmationStatementSubmission = mockConfirmationStatementSubmission;
+    await updateConfirmationStatement(
+      getSessionRequest({ access_token: "token" }), TRANSACTION_ID_WITH_SPECIAL_CHARACTERS, SUBMISSION_ID_WITH_SPECIAL_CHARACTERS, csSubmission)
+      .then(() => {
+        fail("Expecting error to be thrown");
+      }).catch(e => {
+        expect(e.message).toContain("Something went wrong updating confirmation statement");
+        expect(e.message).toContain("500");
+        expect(e.message).toContain(ENCODED_SUBMISSION_ID_WITH_SPECIAL_CHARACTERS);
+        expect(e.message).toContain(ENCODED_TRANSACTION_ID_WITH_SPECIAL_CHARACTERS);
+      });
+
+    expect(mockPostUpdateConfirmationStatement).toBeCalledWith(TRANSACTION_ID_WITH_SPECIAL_CHARACTERS, SUBMISSION_ID_WITH_SPECIAL_CHARACTERS, csSubmission);
   });
 });
 

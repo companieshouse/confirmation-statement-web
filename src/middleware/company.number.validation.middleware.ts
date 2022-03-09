@@ -14,7 +14,7 @@ export const companyNumberQueryParameterValidationMiddleware = (req: Request, re
   }
 
   if (!isCompanyNumberValid(companyNumber)) {
-    urlUtils.sanitiseReqlUrls(req);
+    urlUtils.sanitiseReqUrls(req);
     logger.infoRequest(req, "No Valid Company Number query parameter supplied: " + req.originalUrl);
     return res.status(400).render(Templates.SERVICE_OFFLINE_MID_JOURNEY, { templateName: Templates.SERVICE_OFFLINE_MID_JOURNEY });
   }

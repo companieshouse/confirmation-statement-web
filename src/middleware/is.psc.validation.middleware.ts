@@ -17,7 +17,7 @@ export const isPscQueryParameterValidationMiddleware = (req: Request, res: Respo
 
   logger.debug("Check isPsc");
   if (!isPscFlagValid(isPsc)) {
-    urlUtils.sanitiseReqlUrls(req);
+    urlUtils.sanitiseReqUrls(req);
     logger.errorRequest(req, "No valid isPsc query parameter supplied: " + req.originalUrl);
     return res.status(400).render(Templates.SERVICE_OFFLINE_MID_JOURNEY, { templateName: Templates.SERVICE_OFFLINE_MID_JOURNEY });
   }
