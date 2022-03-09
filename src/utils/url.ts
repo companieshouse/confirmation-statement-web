@@ -62,8 +62,14 @@ const sanitiseParam = (req: Request, paramName: string, paramValue: string) => {
   }
 };
 
+// Will encode any special characters found in the req.originalUrl and req.url
+const encodeUrls = (req: Request) => {
+  req.originalUrl = encodeURI(req.originalUrl);
+  req.url = encodeURI(req.url);
+};
+
 // Make the req.originalUrl and req.url safe for logging
-const sanitiseReqlUrls = (req: Request) => {
+const sanitiseReqUrls = (req: Request) => {
   // loop through the urlParams enum (contains known url param names) and see if they are present in the url.
   // if they are present and they are longer than allowed length, truncate them.
   for (const urlParamName of Object.values(urlParams)) {
@@ -82,6 +88,8 @@ const sanitiseReqlUrls = (req: Request) => {
   // url length for logging.
   // it could contain a large amount of data if maliciously entered so truncate to stop logs filling up
   truncateRequestUrls(req);
+
+  encodeUrls(req);
 };
 
 export const urlUtils = {
@@ -91,6 +99,6 @@ export const urlUtils = {
   getUrlToPath,
   getUrlWithCompanyNumber,
   getUrlWithCompanyNumberTransactionIdAndSubmissionId,
-  sanitiseReqlUrls,
+  sanitiseReqlUrls: sanitiseReqUrls,
   setQueryParam,
 };
