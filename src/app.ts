@@ -48,8 +48,8 @@ app.use(serviceAvailabilityMiddleware);
 //  if auth value is invalid and url has invalid data in it
 app.use(companyNumberQueryParameterValidationMiddleware);
 app.use(isPscQueryParameterValidationMiddleware);
-app.use(`*${urls.CONTAINS_TRANSACTION_ID}`, transactionIdValidationMiddleware);
-app.use(`*${urls.CONTAINS_SUBMISSION_ID}`, submissionIdValidationMiddleware);
+app.use(`*${urls.ACTIVE_SUBMISSION_BASE}`, transactionIdValidationMiddleware);
+app.use(`*${urls.ACTIVE_SUBMISSION_BASE}`, submissionIdValidationMiddleware);
 
 app.use(`${urls.CONFIRMATION_STATEMENT}*`, sessionMiddleware);
 const userAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
