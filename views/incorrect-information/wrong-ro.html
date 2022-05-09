@@ -8,86 +8,45 @@
 {% endblock %}
 
 {% block content %}
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
-    <form action="" method="post">
-      <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
 
-        <h1 class="govuk-heading-xl">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form action="" method="post">
+        <h1 class="govuk-heading-l">
           You need to update the company details
         </h1>
+        <p>You will need to
+          <a href="{{ changeRoaUrl }}" target="_blank" rel="noopener noreferrer" data-event-id="update-roa-link">update the registered office address (opens in a new tab)</a>
+          before you can file a confirmation statement.
+        </p>
+        
+        <p>Return to this window after you have made the update.</p>
 
-        <ol class="app-step-nav__steps">
-          <li class="app-step-nav__step js-step step-is-shown" id="update-ro">
-            <div class="app-step-nav__header" data-position="1">
-              <h2 class="app-step-nav__title">
-                <span class="app-step-nav__circle app-step-nav__circle--number">
-                  <span class="app-step-nav__circle-inner">
-                    <span class="app-step-nav__circle-background">
-                      <span class="govuk-visually-hidden">Step</span> 1
-                    </span>
-                  </span>
-                </span>
-                <span class="js-step-title-text">
-                  Update your registered office address
-                </span>
-              </h2>
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+              <h4 class="govuk-fieldset__heading">
+                Have you updated the registered office address?
+              </h4>
+            </legend>
+            <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="update-status-1" name="update-status" type="radio" value="yes">
+                <label class="govuk-label govuk-radios__label" for="update-status-1">
+                  Yes
+                </label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="update-status-2" name="update-status" type="radio" value="no">
+                <label class="govuk-label govuk-radios__label" for="update-status-2">
+                  No, I do not need to update the registered office address
+                </label>
+              </div>
             </div>
-            <div>
-              <ol class="app-step-nav__list" data-length="1">
-                <li class="app-step-nav__list-item js-list-item">
-                  <p>You will need to
-                    <a href="{{ changeRoaUrl }}" target="_blank" rel="noopener noreferrer" data-event-id="update-roa-link">update the registered office address (opens in a new tab)</a>
-                    before you can file a confirmation statement.</p>
-                </li>
-              </ol>
-            </div>
-          </li>
-
-          <li class="app-step-nav__step js-step" id="return-to-this=service">
-            <div class="app-step-nav__header js-toggle-panel" data-position="2">
-              <h2 class="app-step-nav__title">
-                <span class="app-step-nav__circle app-step-nav__circle--number">
-                  <span class="app-step-nav__circle-inner">
-                    <span class="app-step-nav__circle-background">
-                      <span class="govuk-visually-hidden">Step</span> 2
-                    </span>
-                  </span>
-                </span>
-                <span class="js-step-title-text">
-                  Return to this service
-                </span>
-              </h2>
-            </div>
-            <div>
-              <ol class="app-step-nav__list" data-length="1">
-                <li class="app-step-nav__list-item js-list-item">
-                  <p>Once you have updated the registered office address, you will need to close that tab to return to this screen.</p>
-                </li>
-              </ol>
-            </div>
-          </li>
-
-          <li class="app-step-nav__step js-step" id="complete-cs">
-            <div class="app-step-nav__header js-toggle-panel" data-position="3">
-              <h2 class="app-step-nav__title">
-                <span class="app-step-nav__circle app-step-nav__circle--number">
-                  <span class="app-step-nav__circle-inner">
-                    <span class="app-step-nav__circle-background">
-                      <span class="govuk-visually-hidden">Step</span> 3
-                    </span>
-                  </span>
-                </span>
-                <span class="js-step-title-text">
-                  Complete your confirmation statement
-                </span>
-              </h2>
-            </div>
-            <div>
-              <p>Return to the <a href="{{ backLinkUrl }}" data-event-id="return-to-roa-link">Registered office address</a> section and confirm that an update has been submitted.</p>
-            </div>
-          </li>
-        </ol>
+        
+          </fieldset>
+        </div>
 
         {{ govukButton({
           text: "Return to confirmation statement",
@@ -96,10 +55,12 @@
             "data-event-id": "return-to-confirmation-statement-button"
           }
         }) }}
-        <p><a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-wrongro/">What did you think of this service?</a>
+
+      <p><a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-wrongro/">What did you think of this service?</a>
           (takes 2 minutes)</p>
-        </main>
-      </form>
+
     </div>
   </div>
+</div>
+
 {% endblock %}
