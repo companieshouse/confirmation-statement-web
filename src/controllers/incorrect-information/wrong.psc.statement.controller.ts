@@ -4,7 +4,7 @@ import {
   TASK_LIST_PATH
 } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
-import { WRONG_DETAILS_INCORRECT_PSC, WRONG_DETAILS_UPDATE_PSC, DETAIL_TYPE_PSC } from "../../utils/constants";
+import { WRONG_DETAILS_INCORRECT_PSC, DETAIL_TYPE_PSC } from "../../utils/constants";
 import { urlUtils } from "../../utils/url";
 
 export const get = (req: Request, res: Response) => {
