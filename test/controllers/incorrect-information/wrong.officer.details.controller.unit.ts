@@ -8,7 +8,7 @@ import {
 import { urlUtils } from "../../../src/utils/url";
 
 const WRONG_OFFICER_PAGE_HEADING = "Incorrect Officer Details";
-const STOP_PAGE_HEADING = "Update the officer details";
+const RADIO_LEGEND = "Have you updated the officer details?";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "12345-12345";
 const SUBMISSION_ID = "86dfssfds";
@@ -30,7 +30,7 @@ describe("Wrong officer details stop controller tests", () => {
       const response = await request(app).get(populatedWrongOfficerDetailsPath);
 
       expect(response.text).toContain(WRONG_OFFICER_PAGE_HEADING);
-      expect(response.text).toContain(STOP_PAGE_HEADING);
+      expect(response.text).toContain(RADIO_LEGEND);
       expect(response.text).toContain(backLinkUrl);
     });
   });

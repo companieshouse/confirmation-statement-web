@@ -9,7 +9,6 @@ export const get = (req: Request, res: Response) => {
     templateName: Templates.WRONG_DETAILS,
     backLinkUrl: urlUtils.getUrlToPath(ACTIVE_OFFICERS_DETAILS_PATH, req),
     returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-    stepOneHeading: WRONG_DETAILS_UPDATE_OFFICER,
     detailType: DETAIL_TYPE_OFFICER,
     pageHeading: WRONG_DETAILS_UPDATE_OFFICERS,
   });

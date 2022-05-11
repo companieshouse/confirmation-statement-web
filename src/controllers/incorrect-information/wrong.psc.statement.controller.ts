@@ -12,7 +12,6 @@ export const get = (req: Request, res: Response) => {
     templateName: Templates.WRONG_DETAILS,
     backLinkUrl: urlUtils.getUrlToPath(PSC_STATEMENT_PATH, req),
     returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-    stepOneHeading: WRONG_DETAILS_UPDATE_PSC,
     detailType: DETAIL_TYPE_PSC,
     pageHeading: WRONG_DETAILS_INCORRECT_PSC,
   });
