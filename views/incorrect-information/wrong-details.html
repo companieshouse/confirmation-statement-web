@@ -22,8 +22,8 @@
         
         <p>Return to this window after you have made the update.</p>
 
-        {% set legendText = ["Have you updated the ", detailType, " details?"] | join %}
-        {% set itemText = ["No, I do not need to update the ", detailType, " details"] | join %}
+        {% set legendText = ["Have you updated the ", detailTypeLegend, " details?"] | join %}
+        {% set itemText = ["No, I do not need to update the ", detailTypeLegend, " details"] | join %}
         {{ govukRadios({
           idPrefix: "update-status",
           name: "update-status",

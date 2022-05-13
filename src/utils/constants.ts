@@ -19,7 +19,8 @@ export const WRONG_DETAILS_UPDATE_OFFICERS = "Update officers - File a confirmat
 export const PSC_STATEMENT_NAME_PLACEHOLDER = "{linked_psc_name}";
 export const LOCALE_EN = "en";
 export const DETAIL_TYPE_OFFICER = "officer";
-export const DETAIL_TYPE_PSC = "PSC";
+export const DETAIL_TYPE_PSC = "people with significant control (PSC)";
+export const DETAIL_TYPE_PSC_LEGEND = "PSC";
 
 export enum RADIO_BUTTON_VALUE {
   NO = "no",
