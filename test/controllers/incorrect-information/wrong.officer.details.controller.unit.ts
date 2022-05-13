@@ -7,7 +7,7 @@ import {
 } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
 
-const WRONG_OFFICER_PAGE_HEADING = "Incorrect Officer Details";
+const WRONG_OFFICER_PAGE_HEADING = "Update officers - File a confirmation statement";
 const RADIO_LEGEND = "Have you updated the officer details?";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "12345-12345";

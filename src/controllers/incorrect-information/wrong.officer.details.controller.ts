@@ -10,6 +10,7 @@ export const get = (req: Request, res: Response) => {
     backLinkUrl: urlUtils.getUrlToPath(ACTIVE_OFFICERS_DETAILS_PATH, req),
     returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
     detailType: DETAIL_TYPE_OFFICER,
+    detailTypeLegend: DETAIL_TYPE_OFFICER,
     pageHeading: WRONG_DETAILS_UPDATE_OFFICERS,
   });
 };

@@ -21,7 +21,7 @@ import { PersonOfSignificantControl, SectionStatus } from "@companieshouse/api-s
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Check the people with significant control (PSC)";
-const STOP_PAGE_TITLE = "Incorrect PSC Details";
+const STOP_PAGE_TITLE = "Incorrect people with significant control - File a confirmation statement";
 const RADIO_LEGEND = "Have you updated the PSC details?";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66544";

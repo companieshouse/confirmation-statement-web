@@ -11,56 +11,54 @@
 
 {% block content %}
   <div class="govuk-grid-row">
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        <form action="" method="post">
-          <h1 class="govuk-heading-l">
-            You need to update the company details
-          </h1>
-          <p>You will need to update the {{detailType}} details on our 
-            <a href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" data-event-id="webfiling-link" target="_blank" rel="noopener noreferrer">WebFiling service (opens in a new tab)</a>
-            before you can file a confirmation statement.</p>
-          
-          <p>Return to this window after you have made the update.</p>
+    <div class="govuk-grid-column-two-thirds">
+      <form action="" method="post">
+        <h1 class="govuk-heading-l">
+          You need to update the company details
+        </h1>
+        <p>You will need to update the {{detailType}} details on our 
+          <a href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" data-event-id="webfiling-link" target="_blank" rel="noopener noreferrer">WebFiling service (opens in a new tab)</a>
+          before you can file a confirmation statement.</p>
+        
+        <p>Return to this window after you have made the update.</p>
 
-          {% set legendText = ["Have you updated the ", detailType, " details?"] | join %}
-          {% set itemText = ["No, I do not need to update the ", detailType, " details"] | join %}
-          {{ govukRadios({
-            idPrefix: "update-status",
-            name: "update-status",
-            fieldset: {
-              legend: {
-                text: legendText,
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--m"
-              }
-            },
-            items: [
-              {
-                value: "yes",
-                text: "Yes"
-              },
-              {
-                value: "no",
-                text: itemText
-              }
-            ]
-          }) }}
-  
-          {{ govukButton({
-            text: "Return to confirmation statement",
-            href: returnToTaskListUrl,
-            attributes: {
-              "data-event-id": "return-to-task-list-button",
-              "id": "submit"
+        {% set legendText = ["Have you updated the ", detailTypeLegend, " details?"] | join %}
+        {% set itemText = ["No, I do not need to update the ", detailTypeLegend, " details"] | join %}
+        {{ govukRadios({
+          idPrefix: "update-status",
+          name: "update-status",
+          fieldset: {
+            legend: {
+              text: legendText,
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--m"
             }
-          }) }}
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes"
+            },
+            {
+              value: "no",
+              text: itemText
+            }
+          ]
+        }) }}
 
-      <p><a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-wrongactivepsc/">What did you think of this service?</a>
-        (takes 2 minutes)
-      </p>
+        {{ govukButton({
+          text: "Return to confirmation statement",
+          href: returnToTaskListUrl,
+          attributes: {
+            "data-event-id": "return-to-task-list-button",
+            "id": "submit"
+          }
+        }) }}
 
-      </div>
+    <p><a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-wrongactivepsc/">What did you think of this service?</a>
+      (takes 2 minutes)
+    </p>
+
     </div>
   </div>
 {% endblock %}

@@ -9,6 +9,7 @@ import {
 import { urlUtils } from "../../../src/utils/url";
 
 const STOP_PAGE_TEXT = "You will need to update the company details";
+const WRONG_REGISTER_PAGE_HEADING = "Incorrect register - File a confirmation statement";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "12345-12345";
 const SUBMISSION_ID = "86dfssfds";
@@ -30,7 +31,7 @@ describe("Wrong register locations stop controller tests", () => {
       const response = await request(app).get(populatedWrongRegisterLocationsAddressPath);
 
       expect(response.text).toContain(STOP_PAGE_TEXT);
-      expect(response.text).toContain("Incorrect Registers");
+      expect(response.text).toContain(WRONG_REGISTER_PAGE_HEADING);
       expect(response.text).toContain(backLinkUrl);
       expect(response.text).toContain(taskListUrl);
     });
