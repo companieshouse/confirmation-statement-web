@@ -5,14 +5,13 @@ import {
   TASK_LIST_PATH
 } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
-import { WRONG_DETAILS_INCORRECT_PSC, DETAIL_TYPE_PSC } from "../../utils/constants";
+import { WRONG_DETAILS_INCORRECT_PSC } from "../../utils/constants";
 
 export const get = (req: Request, res: Response) => {
-  return res.render(Templates.WRONG_DETAILS, {
-    templateName: Templates.WRONG_DETAILS,
+  return res.render(Templates.WRONG_PSC_DETAILS, {
+    templateName: Templates.WRONG_PSC_DETAILS,
     backLinkUrl: urlUtils.getUrlToPath(ACTIVE_PSC_DETAILS_PATH, req),
     returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-    detailType: DETAIL_TYPE_PSC,
     pageHeading: WRONG_DETAILS_INCORRECT_PSC,
   });
 };
