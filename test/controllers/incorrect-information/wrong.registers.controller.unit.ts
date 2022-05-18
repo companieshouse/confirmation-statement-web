@@ -8,7 +8,7 @@ import {
 } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
 
-const STOP_PAGE_TEXT = "You will need to update the company details";
+const STOP_PAGE_TEXT = "You need to update the company details";
 const WRONG_REGISTER_PAGE_HEADING = "Incorrect register - File a confirmation statement";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "12345-12345";
