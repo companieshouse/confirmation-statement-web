@@ -21,7 +21,7 @@
             titleText: "There is a problem",
             errorList: [
               {
-                text: "Select yes if the company PSC Statement is correct",
+                text: "Select yes if you have updated the PSC details",
                 href: "#psc-statement-value"
               }
             ]
@@ -29,11 +29,15 @@
           {% set pscStatementControlError = {
             text: pscStatementControlErrorMsg
            } %}
-        {% else %}
-          {% set pscStatementControlError = false %}
-        {% endif %}
+           <h1 class="govuk-heading-l">You need to update the company details</h1>
 
-        {% set pscStatementTypesHTML %}
+           <p>You will need to update the people with significant control (PSC) details on our <a target="_blank" href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" rel="noopener noreferrer" data-event-id="webfiling-link">WebFiling service (opens in a new tab)</a> before you can file a confirmation statement. </p>
+     
+           <p>Return to this window after you have made the update.</p>
+        {% else %}
+
+          {% set pscStatementControlError = false %}
+          {% set pscStatementTypesHTML %}
           <p>
             If a company has no PSCs, or is currently investigating who its PSCs are, it needs to file a statement to
             explain why
@@ -55,6 +59,7 @@
             }
           }) }}
         {% endset %}
+        {% endif %}
 
         {{ govukRadios({
           classes: "govuk-radios",
@@ -63,7 +68,7 @@
           errorMessage: pscStatementControlError,
           fieldset: {
             legend: {
-              html: "Is the PSC statement correct?",
+              html: "Have you updated the PSC details?",
               isPageHeading: true,
               classes: "govuk-fieldset__legend--l"
             }
@@ -82,25 +87,27 @@
             },
             {
               value: "no",
-              text: "No",
+              text: "No, but I do not need to update the PSC details",
               label: "psc-statement No",
               attributes: {
                 "data-event-id": "no-radio-button"
               }
-            },
-            {
-              value: "recently_filed",
-              text: "No, but an update has been submitted",
-              label: "psc-statement No, but an update has been submitted",
-              attributes: {
-                "data-event-id": "recently-filed-radio-button"
-              }
             }
           ]
         }) }}
-
-        {% include "includes/continue-button.html" %}
+        {{ govukButton({
+          text: "Return to confirmation statement",
+          href: returnToTaskListUrl,
+          attributes: {
+            "data-event-id": "return-to-task-list-button",
+            "id": "submit"
+          }
+        }) }}
       </form>
+      <p>
+        <a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-cannotfilecs/">What did you think of this service?</a>
+        (takes 2 minutes)
+      </p>
     </div>
   </div>
 {% endblock %}

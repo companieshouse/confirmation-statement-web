@@ -28,14 +28,60 @@
         text: officerErrorMsg
       }
       %}
+      <h1 class="govuk-heading-l">You need to update the company details</h1>
+
+      <p>You will need to update the officer details on our <a target="_blank" href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" rel="noopener noreferrer" data-event-id="webfiling-link">WebFiling service (opens in a new tab)</a> before you can file a confirmation statement. </p>
+
+      <p>Return to this window after you have made the update.</p>
+
+      <form action="" method="post">
+        {{ govukRadios({
+          classes: "govuk-radios",
+          idPrefix: "officers",
+          name: "activeOfficers",
+          errorMessage: activeOfficersError,
+          fieldset: {
+            legend: {
+              html: "Have you updated the officer details?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+          hint: {
+            html: officerHTML
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes",
+              attributes: {
+                "data-event-id": "yes-radio-button"
+              }
+            },
+            {
+              value: "yes",
+              text: "No, I do not need to update the officer details",
+              attributes: {
+                "data-event-id": "recently-filed-radio-button"
+              }
+            }
+          ]
+         }) }}
+        {{ govukButton({
+          text: "Return to confirmation statement",
+          href: returnToTaskListUrl,
+          attributes: {
+            "data-event-id": "return-to-task-list-button",
+            "id": "submit"
+          }
+        }) }}
+      </form>
     {% else %}
       {% set activeOfficersError = false %}
-    {% endif %}
-    <form action="" method="post">
       <h1 class="govuk-heading-l">Check the officers' details</h1>
 
       {% set naturalSecretaryHTML %}
-        {% include "includes/natural-secretaries.html" %}
+      {% include "includes/natural-secretaries.html" %}
       {% endset %}
 
       {% set corporateSecretaryHTML %}
@@ -68,48 +114,60 @@
         rows: officerRows
       }) }}
 
-      {{ govukRadios({
-        classes: "govuk-radios",
-        idPrefix: "officers",
-        name: "activeOfficers",
-        errorMessage: activeOfficersError,
-        fieldset: {
-          legend: {
-            html: "Are the officer details correct?",
-            isPageHeading: false,
-            classes: "govuk-fieldset__legend--l"
-          }
-        },
-        hint: {
-          html: officerHTML
-        },
-        items: [
-          {
-            value: "yes",
-            text: "Yes",
-            attributes: {
-              "data-event-id": "yes-radio-button"
+      <form action="" method="post">
+        {{ govukRadios({
+          classes: "govuk-radios",
+          idPrefix: "officers",
+          name: "activeOfficers",
+          errorMessage: activeOfficersError,
+          fieldset: {
+            legend: {
+              html: "Are the officer details correct?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--l"
             }
           },
-          {
-            value: "no",
-            text: "No",
-            attributes: {
-              "data-event-id": "no-radio-button"
-            }
+          hint: {
+            html: officerHTML
           },
-          {
-            value: "yes",
-            text: "No, but an update has been submitted",
-            attributes: {
-              "data-event-id": "recently-filed-radio-button"
+          items: [
+            {
+              value: "yes",
+              text: "Yes",
+              attributes: {
+                "data-event-id": "yes-radio-button"
+              }
+            },
+            {
+              value: "no",
+              text: "No",
+              attributes: {
+                "data-event-id": "no-radio-button"
+                }
+              },
+            {
+              value: "yes",
+              text: "No, but an update has been submitted",
+              attributes: {
+                "data-event-id": "recently-filed-radio-button"
+              }
             }
+          ]
+         }) }}
+        {{ govukButton({
+          text: "Return to confirmation statement",
+          href: returnToTaskListUrl,
+          attributes: {
+            "data-event-id": "return-to-task-list-button",
+            "id": "submit"
           }
-        ]
-       }) }}
-
-      {% include "includes/continue-button.html" %}
-    </form>
+        }) }}
+      </form>
+    {% endif %}
+    <p>
+      <a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-cannotfilecs/">What did you think of this service?</a>
+      (takes 2 minutes)
+    </p>
   </div>
 </div>
 {% endblock %}

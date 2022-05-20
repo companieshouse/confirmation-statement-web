@@ -26,13 +26,12 @@
           {% set registerLocationsErrorMsg = {
               text: registerLocationsErrorMsg
             } %}
-        {% else %}
-          {% set registerLocationsErrorMsg = false %}
-        {% endif %}
 
-      <h1 class="govuk-heading-l">Check where the company records are kept</h1>
+          <h1 class="govuk-heading-l">You need to update the company details</h1>
 
-        {% include "tasks/includes/register.html" %}
+          <p>You will need to update where the company records are kept on our <a target="_blank" href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" rel="noopener noreferrer" data-event-id="webfiling-link">WebFiling service (opens in a new tab)</a> before you can file a confirmation statement. </p>
+      
+          <p>Return to this window after you have made the update.</p>
 
           {{ govukRadios({
             classes: "govuk-radios",
@@ -41,7 +40,7 @@
             errorMessage: registerLocationsErrorMsg,
             fieldset: {
               legend: {
-                html: "Is this where the company records are kept?",
+                html: "Have you updated where the company records are kept?",
                 classes: "govuk-fieldset__legend--l"
               }
             },
@@ -57,25 +56,73 @@
                 }
               },
               {
-                value: "no",
-                text: "No",
+                value: "es",
+                text: "No, I do not need to update where the company records are kept",
                 attributes: {
                   "data-event-id": "no-radio-button"
-                }
-              },
-              {
-                value: "recently_filed",
-                text: "No, but an update has been submitted",
-                attributes: {
-                  "data-event-id": "recently-filed-radio-button"
                 }
               }
             ]
           }) }}
+        {% else %}
+          {% set registerLocationsErrorMsg = false %}
 
-          {% include "includes/continue-button.html" %}
+          <h1 class="govuk-heading-l">Check where the company records are kept</h1>
 
+          {% include "tasks/includes/register.html" %}
+  
+            {{ govukRadios({
+              classes: "govuk-radios",
+              idPrefix: "registers",
+              name: "registers",
+              errorMessage: registerLocationsErrorMsg,
+              fieldset: {
+                legend: {
+                  html: "Is this where the company records are kept?",
+                  classes: "govuk-fieldset__legend--l"
+                }
+              },
+              hint: {
+                html: registerHTML
+              },
+              items: [
+                {
+                  value: "yes",
+                  text: "Yes",
+                  attributes: {
+                    "data-event-id": "yes-radio-button"
+                  }
+                },
+                {
+                  value: "no",
+                  text: "No",
+                  attributes: {
+                    "data-event-id": "no-radio-button"
+                  }
+                },
+                {
+                  value: "recently_filed",
+                  text: "No, but an update has been submitted",
+                  attributes: {
+                    "data-event-id": "recently-filed-radio-button"
+                  }
+                }
+              ]
+            }) }}
+        {% endif %}
+        {{ govukButton({
+          text: "Return to confirmation statement",
+          href: returnToTaskListUrl,
+          attributes: {
+            "data-event-id": "return-to-task-list-button",
+            "id": "submit"
+          }
+        }) }}
         </form>
+        <p>
+          <a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-cannotfilecs/">What did you think of this service?</a>
+          (takes 2 minutes)
+        </p>
       </div>
     </div>
   {% endblock %}

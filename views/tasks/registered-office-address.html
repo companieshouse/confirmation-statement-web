@@ -26,57 +26,109 @@
             {% set roaErrorMsg = {
                 text: roaErrorMsg
               } %}
+
+              <h1 class="govuk-heading-l">You need to update the company details</h1>
+
+              <p>You will need to <a target="_blank" href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" rel="noopener noreferrer" data-event-id="webfiling-link">update the registered office address on our WebFiling service (opens in a new tab)</a> before you can file a confirmation statement. </p>
+        
+              <p>Return to this window after you have made the update.</p>
+
+              {{ govukRadios({
+                classes: "govuk-radios",
+                idPrefix: "registered-office-address",
+                name: "registeredOfficeAddress",
+                errorMessage: roaErrorMsg,
+                fieldset: {
+                  legend: {
+                    html: "Have you updated the registered office address?",
+                    isPageHeading: false,
+                    classes: "govuk-fieldset__legend--l"
+                  }
+                },
+                hint: {
+              html: roaHTML
+              },
+                items: [
+                  {
+                    value: "yes",
+                    text: "Yes",
+                    attributes: {
+                      "data-event-id": "yes-radio-button"
+                    }
+                  },
+                  {
+                    value: "yes",
+                    text: "No, but I do not need to update the registered office address",
+                    attributes: {
+                      "data-event-id": "no-radio-button"
+                    }
+                  }
+                ]
+              }) }}
+
             {% else %}
               {% set roaErrorMsg = false %}
+
+              <h1 class="govuk-heading-l">Check the registered office address</h1>
+
+              {% include "includes/roa.html" %}
+
+              {{ govukRadios({
+                classes: "govuk-radios",
+                idPrefix: "registered-office-address",
+                name: "registeredOfficeAddress",
+                errorMessage: roaErrorMsg,
+                fieldset: {
+                  legend: {
+                    html: "Is the registered office address correct?",
+                    isPageHeading: false,
+                    classes: "govuk-fieldset__legend--l"
+                  }
+                },
+                hint: {
+              html: roaHTML
+              },
+                items: [
+                  {
+                    value: "yes",
+                    text: "Yes",
+                    attributes: {
+                      "data-event-id": "yes-radio-button"
+                    }
+                  },
+                  {
+                    value: "no",
+                    text: "No",
+                    attributes: {
+                      "data-event-id": "no-radio-button"
+                    }
+                  },
+                  {
+                    value: "yes",
+                    text: "No, but an update has been submitted",
+                    attributes: {
+                      "data-event-id": "recently-filed-radio-button"
+                    }
+                  }
+                ]
+              }) }}
+
             {% endif %}
 
-      <h1 class="govuk-heading-l">Check the registered office address</h1>
-
-      {% include "includes/roa.html" %}
-
-      {{ govukRadios({
-        classes: "govuk-radios",
-        idPrefix: "registered-office-address",
-        name: "registeredOfficeAddress",
-        errorMessage: roaErrorMsg,
-        fieldset: {
-          legend: {
-            html: "Is the registered office address correct?",
-            isPageHeading: false,
-            classes: "govuk-fieldset__legend--l"
-          }
-        },
-        hint: {
-      html: roaHTML
-      },
-        items: [
-          {
-            value: "yes",
-            text: "Yes",
-            attributes: {
-              "data-event-id": "yes-radio-button"
-            }
-          },
-          {
-            value: "no",
-            text: "No",
-            attributes: {
-              "data-event-id": "no-radio-button"
-            }
-          },
-          {
-            value: "yes",
-            text: "No, but an update has been submitted",
-            attributes: {
-              "data-event-id": "recently-filed-radio-button"
-            }
-          }
-        ]
-      }) }}
-
-      {% include "includes/continue-button.html" %}
-
+            {{ govukButton({
+              text: "Return to confirmation statement",
+              href: returnToTaskListUrl,
+              attributes: {
+                "data-event-id": "return-to-task-list-button",
+                "id": "submit"
+              }
+            }) }}
     </form>
+    <p>
+      <a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-cannotfilecs/">What did you think of this service?</a>
+      (takes 2 minutes)
+    </p>
+
   </div>
 </div>
 {% endblock %}
