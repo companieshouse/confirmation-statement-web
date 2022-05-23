@@ -11,7 +11,6 @@ import { isRadioButtonValueValid, getRadioButtonInvalidValueErrorMessage } from 
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log("INSIDE GET TRY BLOCK");
     return res.render(Templates.WRONG_REGISTER_LOCATIONS, {
       backLinkUrl: urlUtils.getUrlToPath(REGISTER_LOCATIONS_PATH, req),
       taskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
@@ -43,7 +42,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     return res.render(Templates.WRONG_REGISTER_LOCATIONS, {
       backLinkUrl: urlUtils.getUrlToPath(REGISTER_LOCATIONS_PATH, req),
       taskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-      registerLocationsErrorMsg: WRONG_REGISTER_ERROR,
+      errorMsg: WRONG_REGISTER_ERROR,
       templateName: Templates.WRONG_REGISTER_LOCATIONS
     });
   } catch (e) {

@@ -22,6 +22,9 @@ export const DETAIL_TYPE_OFFICER = "officer";
 export const DETAIL_TYPE_PSC = "people with significant control (PSC)";
 export const DETAIL_TYPE_PSC_LEGEND = "PSC";
 export const WRONG_REGISTER_ERROR = "Select yes if you have updated where the company records are kept";
+export const WRONG_ROA_ERROR = "Select yes if you have updated the registered office address";
+export const WRONG_OFFICER_ERROR = "Select yes if you have updated the officer details";
+export const WRONG_PSC_ERROR = "Select yes if you have updated the PSC details";
 
 export enum RADIO_BUTTON_VALUE {
   NO = "no",

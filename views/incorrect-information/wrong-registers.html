@@ -3,28 +3,31 @@
 {% block pageTitle %}
   Incorrect register - File a confirmation statement
 {% endblock %}
+
 {% block backLink %}
     {% include "includes/back-link.html" %}
 {% endblock %}
+
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <form action="" method="post">
-        {% if registerLocationsErrorMsg %}
+        
+        {% if errorMsg %}
           {{ govukErrorSummary({
               titleText: "There is a problem",
               errorList: [
                 {
-                  text: registerLocationsErrorMsg,
+                  text: errorMsg,
                   href: "#radioButton"
                 }
               ]
             }) }}
-          {% set registerLocationsErrorMsg = {
-              text: registerLocationsErrorMsg
+          {% set errorMsg = {
+              text: errorMsg
             } %}
         {% else %}
-          {% set registerLocationsErrorMsg = false %}
+          {% set errorMsg = false %}
         {% endif %}
 
         <h1 class="govuk-heading-l">
@@ -39,7 +42,7 @@
         {{ govukRadios({
           idPrefix: "radioButton",
           name: "radioButton",
-          errorMessage: registerLocationsErrorMsg,
+          errorMessage: errorMsg,
           fieldset: {
             legend: {
               text: "Have you updated where the company records are kept?",
