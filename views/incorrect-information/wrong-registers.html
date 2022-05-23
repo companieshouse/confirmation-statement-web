@@ -1,5 +1,4 @@
 {% extends "layout.html" %}
-{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% block pageTitle %}
   Incorrect register - File a confirmation statement
@@ -11,6 +10,23 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <form action="" method="post">
+        {% if registerLocationsErrorMsg %}
+          {{ govukErrorSummary({
+              titleText: "There is a problem",
+              errorList: [
+                {
+                  text: registerLocationsErrorMsg,
+                  href: "#radioButton"
+                }
+              ]
+            }) }}
+          {% set registerLocationsErrorMsg = {
+              text: registerLocationsErrorMsg
+            } %}
+        {% else %}
+          {% set registerLocationsErrorMsg = false %}
+        {% endif %}
+
         <h1 class="govuk-heading-l">
           You need to update the company details
         </h1>
@@ -21,8 +37,9 @@
         <p>Return to this window after you have made the update.</p>
 
         {{ govukRadios({
-          idPrefix: "update-status",
-          name: "update-status",
+          idPrefix: "radioButton",
+          name: "radioButton",
+          errorMessage: registerLocationsErrorMsg,
           fieldset: {
             legend: {
               text: "Have you updated where the company records are kept?",
@@ -44,9 +61,9 @@
 
         {{ govukButton({
             text: "Return to confirmation statement",
-            href: taskListUrl,
             attributes: {
-              "data-event-id": "return-to-confirmation-statement-link"
+              "data-event-id": "return-to-confirmation-statement-link",
+              "id": "submit"
             }
         }) }}
         

@@ -119,6 +119,7 @@ router.get(urls.WRONG_SHAREHOLDERS, wrongShareholdersRoute.get);
 router.get(urls.WRONG_RO, wrongRegisteredOfficeAddressRoute.get);
 
 router.get(urls.WRONG_REGISTER_LOCATIONS, wrongRegisterLocationsRoute.get);
+router.post(urls.WRONG_REGISTER_LOCATIONS, wrongRegisterLocationsRoute.post);
 
 router.get(urls.WRONG_OFFICER_DETAILS, wrongOfficerDetailsRoute.get);
 
