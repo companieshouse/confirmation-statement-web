@@ -11,7 +11,6 @@ export const get = (req: Request, res: Response) => {
   return res.render(Templates.WRONG_DETAILS, {
     templateName: Templates.WRONG_DETAILS,
     backLinkUrl: urlUtils.getUrlToPath(ACTIVE_OFFICERS_DETAILS_PATH, req),
-    returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
     detailType: DETAIL_TYPE_OFFICER,
     detailTypeLegend: DETAIL_TYPE_OFFICER,
     pageHeading: WRONG_DETAILS_UPDATE_OFFICERS,
@@ -39,7 +38,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     return res.render(Templates.WRONG_DETAILS, {
       templateName: Templates.WRONG_DETAILS,
       backLinkUrl: urlUtils.getUrlToPath(ACTIVE_OFFICERS_DETAILS_PATH, req),
-      returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       errorMsg: WRONG_OFFICER_ERROR,
       detailType: DETAIL_TYPE_OFFICER,
       detailTypeLegend: DETAIL_TYPE_OFFICER,

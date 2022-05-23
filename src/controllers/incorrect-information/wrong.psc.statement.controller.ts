@@ -14,7 +14,6 @@ export const get = (req: Request, res: Response) => {
   return res.render(Templates.WRONG_DETAILS, {
     templateName: Templates.WRONG_DETAILS,
     backLinkUrl: urlUtils.getUrlToPath(PSC_STATEMENT_PATH, req),
-    returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
     detailType: DETAIL_TYPE_PSC,
     detailTypeLegend: DETAIL_TYPE_PSC_LEGEND,
     pageHeading: WRONG_DETAILS_INCORRECT_PSC,
@@ -42,7 +41,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     return res.render(Templates.WRONG_DETAILS, {
       templateName: Templates.WRONG_DETAILS,
       backLinkUrl: urlUtils.getUrlToPath(PSC_STATEMENT_PATH, req),
-      returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       errorMsg: WRONG_PSC_ERROR,
       detailType: DETAIL_TYPE_PSC,
       detailTypeLegend: DETAIL_TYPE_PSC_LEGEND,

@@ -28,14 +28,12 @@ describe("Wrong registered office address stop controller tests", () => {
 
     it("Should render the wrong registered office address stop page", async () => {
       const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTERED_OFFICE_ADDRESS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
-      const taskListUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
       const changeRoaUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(CHANGE_ROA_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
       const response = await request(app).get(populatedWrongRegisteredOfficeAddressPath);
 
       expect(response.text).toContain(STOP_PAGE_TEXT);
       expect(response.text).toContain("Incorrect registered office address - File a confirmation statement");
       expect(response.text).toContain(backLinkUrl);
-      expect(response.text).toContain(taskListUrl);
       expect(response.text).toContain(changeRoaUrl);
     });
   });

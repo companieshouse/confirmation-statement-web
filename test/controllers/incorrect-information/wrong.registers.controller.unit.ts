@@ -27,13 +27,11 @@ describe("Wrong register locations stop controller tests", () => {
 
     it("Should render the wrong register locations stop page", async () => {
       const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTER_LOCATIONS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
-      const taskListUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
       const response = await request(app).get(populatedWrongRegisterLocationsAddressPath);
 
       expect(response.text).toContain(STOP_PAGE_TEXT);
       expect(response.text).toContain(WRONG_REGISTER_PAGE_HEADING);
       expect(response.text).toContain(backLinkUrl);
-      expect(response.text).toContain(taskListUrl);
     });
   });
 });
