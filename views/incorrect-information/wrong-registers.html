@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% block pageTitle %}
-  Incorrect Registers
+  Incorrect register - File a confirmation statement
 {% endblock %}
 {% block backLink %}
     {% include "includes/back-link.html" %}
@@ -10,25 +11,36 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <form action="" method="post">
-        <h1 class="govuk-heading-xl">
-          You will need to update the company details
+        <h1 class="govuk-heading-l">
+          You need to update the company details
         </h1>
-        <p>You will need to update the location of the company records before you can file a confirmation statement. You can use
-          <a target="_blank" href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" rel="noopener noreferrer" data-event-id="webfiling-link">our WebFiling service (opens in a new tab)</a>
-          to file the following forms online:</p>
-        <ul class="govuk-list govuk-list--bullet">
-          <strong>
-            <li>Notification of single alternative inspection location (SAIL) - AD02
-            </li>
-            <li>Notification of location of company records to the single alternative inspection location (SAIL) – AD03
-            </li>
-            <li>Change of location of company records to the registered office (SAIL) – AD04
-            </li>
-          </strong>
-        </ul>
-        {{ govukInsetText({
-              text: "Updates can take some time to process, and will not be reflected immediately in the information displayed on this service. As long as the update has been submitted, you can still file the confirmation statement."
-            }) }}
+        <p>You will need to update where the company records are kept on our 
+          <a target="_blank" href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" rel="noopener noreferrer" data-event-id="webfiling-link">WebFiling service (opens in a new tab)</a>
+           before you can file a confirmation statement.</p>
+        
+        <p>Return to this window after you have made the update.</p>
+
+        {{ govukRadios({
+          idPrefix: "update-status",
+          name: "update-status",
+          fieldset: {
+            legend: {
+              text: "Have you updated where the company records are kept?",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes"
+            },
+            {
+              value: "no",
+              text: "No, I do not need to update where the company records are kept"
+            }
+          ]
+        }) }}
 
         {{ govukButton({
             text: "Return to confirmation statement",
@@ -37,10 +49,10 @@
               "data-event-id": "return-to-confirmation-statement-link"
             }
         }) }}
-        <p>
-
-      <a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-wrongreg/">What did you think of this service?</a>
-      (takes 2 minutes)</p>
+        
+      <p><a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-wrongreg/">What did you think of this service?</a>
+      (takes 2 minutes)
+      </p>
       </form>
     </div>
   </div>

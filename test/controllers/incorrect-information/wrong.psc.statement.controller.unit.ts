@@ -7,8 +7,8 @@ import {
 } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
 
-const WRONG_PSC_PAGE_HEADING = "Incorrect PSC Details";
-const STOP_PAGE_HEADING = "Update the people with significant control (PSC) details";
+const WRONG_PSC_PAGE_HEADING = "Incorrect people with significant control - File a confirmation statement";
+const RADIO_LEGEND = "Have you updated the PSC details?";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "12345-12345";
 const SUBMISSION_ID = "86dfssfds";
@@ -30,7 +30,7 @@ describe("Wrong psc statement stop controller tests", () => {
       const response = await request(app).get(populatedWrongPscStatementPath);
 
       expect(response.text).toContain(WRONG_PSC_PAGE_HEADING);
-      expect(response.text).toContain(STOP_PAGE_HEADING);
+      expect(response.text).toContain(RADIO_LEGEND);
       expect(response.text).toContain(backLinkUrl);
     });
   });

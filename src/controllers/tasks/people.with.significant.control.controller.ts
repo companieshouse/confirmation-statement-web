@@ -8,8 +8,9 @@ import {
   PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
   RADIO_BUTTON_VALUE,
   SECTIONS,
-  WRONG_DETAILS_INCORRECT_PSC,
-  WRONG_DETAILS_UPDATE_PSC } from "../../utils/constants";
+  WRONG_DETAILS_INCORRECT_PSC, 
+  DETAIL_TYPE_PSC_LEGEND, 
+  DETAIL_TYPE_PSC } from "../../utils/constants";
 import {
   PersonOfSignificantControl,
   SectionStatus
@@ -75,7 +76,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         templateName: Templates.WRONG_DETAILS,
         backLinkUrl: urlUtils.getUrlToPath(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, req),
         returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        stepOneHeading: WRONG_DETAILS_UPDATE_PSC,
+        detailType: DETAIL_TYPE_PSC,
+        detailTypeLegend: DETAIL_TYPE_PSC_LEGEND,
         pageHeading: WRONG_DETAILS_INCORRECT_PSC,
       });
     }
