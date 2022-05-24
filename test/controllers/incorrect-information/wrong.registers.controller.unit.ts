@@ -8,6 +8,7 @@ import {
 } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
 import { RADIO_BUTTON_VALUE } from "../../../src/utils/constants";
+import * as updateConfirmationStatement from "../../../src/utils/update.confirmation.statement.submission";
 
 const STOP_PAGE_TEXT = "You need to update the company details";
 const WRONG_REGISTER_PAGE_HEADING = "Incorrect register - File a confirmation statement";
@@ -52,22 +53,24 @@ describe("Wrong register locations stop controller tests", () => {
       expect(response.text).toContain(backLinkUrl);
     });
 
-    it("Should redirect to task list page when yes radio button is selected",async () => {
-      const response = await request(app)
-        .post(populatedWrongRegisterLocationsAddressPath)
-        .send({ radioButton: RADIO_BUTTON_VALUE.YES });
+    it("Should redirect to task list page when yes radio button is selected", async () => {
+      const mockSendUpdate = jest.spyOn(updateConfirmationStatement, "sendUpdate");
+      mockSendUpdate.mockReturnValue(undefined);
+      const response = await request(app).post(populatedWrongRegisterLocationsAddressPath).send({ radioButton: RADIO_BUTTON_VALUE.YES });
 
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
+      mockSendUpdate.mockRestore();
     });
 
-    it("Should redirect to task list page when no radio button is selected",async () => {
-      const response = await request(app)
-        .post(populatedWrongRegisterLocationsAddressPath)
-        .send({ radioButton: RADIO_BUTTON_VALUE.NO });
-
+    it("Should redirect to task list page when no radio button is selected", async () => {
+      const mockSendUpdate = jest.spyOn(updateConfirmationStatement, "sendUpdate");
+      mockSendUpdate.mockReturnValue(undefined);
+      const response = await request(app).post(populatedWrongRegisterLocationsAddressPath).send({ radioButton: RADIO_BUTTON_VALUE.NO });
+      
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
+      mockSendUpdate.mockRestore();
     });
 
     it("Should return error page when radio button id is not valid", async () => {
@@ -91,6 +94,5 @@ describe("Wrong register locations stop controller tests", () => {
       spyGetUrlToPath.mockRestore();
     });
 
-
-  });  
+  });
 });
