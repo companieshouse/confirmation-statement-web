@@ -10,15 +10,11 @@ import { sendUpdate } from "../../utils/update.confirmation.statement.submission
 import { isRadioButtonValueValid, getRadioButtonInvalidValueErrorMessage } from "../../validators/radio.button.validator";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    return res.render(Templates.WRONG_REGISTER_LOCATIONS, {
-      backLinkUrl: urlUtils.getUrlToPath(REGISTER_LOCATIONS_PATH, req),
-      taskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-      templateName: Templates.WRONG_REGISTER_LOCATIONS
-    });
-  } catch (error) {
-    return next(error);
-  }
+  return res.render(Templates.WRONG_REGISTER_LOCATIONS, {
+    backLinkUrl: urlUtils.getUrlToPath(REGISTER_LOCATIONS_PATH, req),
+    taskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+    templateName: Templates.WRONG_REGISTER_LOCATIONS
+  });
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
