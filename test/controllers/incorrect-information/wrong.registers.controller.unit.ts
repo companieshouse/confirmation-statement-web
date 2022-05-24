@@ -3,7 +3,7 @@ import request from "supertest";
 import app from "../../../src/app";
 import {
   REGISTER_LOCATIONS_PATH,
-  TASK_LIST,
+  TASK_LIST_PATH,
   WRONG_REGISTER_LOCATIONS_PATH
 } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
@@ -16,7 +16,7 @@ const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "12345-12345";
 const SUBMISSION_ID = "86dfssfds";
 const populatedWrongRegisterLocationsAddressPath = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(WRONG_REGISTER_LOCATIONS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
-const TASK_LIST_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
+const TASK_LIST_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
 
 describe("Wrong register locations stop controller tests", () => {
@@ -55,7 +55,7 @@ describe("Wrong register locations stop controller tests", () => {
     it("Should redirect to task list page when yes radio button is selected",async () => {
       const response = await request(app)
         .post(populatedWrongRegisterLocationsAddressPath)
-        .send({ radioButton : RADIO_BUTTON_VALUE.YES });
+        .send({ radioButton: RADIO_BUTTON_VALUE.YES });
 
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
@@ -64,7 +64,7 @@ describe("Wrong register locations stop controller tests", () => {
     it("Should redirect to task list page when no radio button is selected",async () => {
       const response = await request(app)
         .post(populatedWrongRegisterLocationsAddressPath)
-        .send({ radioButton : RADIO_BUTTON_VALUE.NO });
+        .send({ radioButton: RADIO_BUTTON_VALUE.NO });
 
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
@@ -73,7 +73,7 @@ describe("Wrong register locations stop controller tests", () => {
     it("Should return error page when radio button id is not valid", async () => {
       const response = await request(app)
         .post(populatedWrongRegisterLocationsAddressPath)
-        .send({ radioButton : "malicious code block" });
+        .send({ radioButton: "malicious code block" });
 
       expect(response.status).toEqual(500);
       expect(response.text).toContain(ERROR_PAGE_TEXT);
