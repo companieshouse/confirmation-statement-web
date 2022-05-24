@@ -54,7 +54,7 @@ describe("Wrong register locations stop controller tests", () => {
 
     it("Should redirect to task list page when yes radio button is selected",async () => {
       const response = await request(app)
-        .post(TASK_LIST_URL)
+        .post(populatedWrongRegisterLocationsAddressPath)
         .send({ radioButton : RADIO_BUTTON_VALUE.YES });
 
       expect(response.status).toEqual(302);
@@ -63,7 +63,7 @@ describe("Wrong register locations stop controller tests", () => {
 
     it("Should redirect to task list page when no radio button is selected",async () => {
       const response = await request(app)
-        .post(TASK_LIST_URL)
+        .post(populatedWrongRegisterLocationsAddressPath)
         .send({ radioButton : RADIO_BUTTON_VALUE.NO });
 
       expect(response.status).toEqual(302);
@@ -72,7 +72,7 @@ describe("Wrong register locations stop controller tests", () => {
 
     it("Should return error page when radio button id is not valid", async () => {
       const response = await request(app)
-        .post(TASK_LIST_URL)
+        .post(populatedWrongRegisterLocationsAddressPath)
         .send({ radioButton : "malicious code block" });
 
       expect(response.status).toEqual(500);
