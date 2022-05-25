@@ -117,11 +117,16 @@ router.get(urls.WRONG_STATEMENT_OF_CAPITAL, wrongStatementOfCapitalRoute.get);
 router.get(urls.WRONG_SHAREHOLDERS, wrongShareholdersRoute.get);
 
 router.get(urls.WRONG_RO, wrongRegisteredOfficeAddressRoute.get);
+router.post(urls.WRONG_RO, wrongRegisteredOfficeAddressRoute.post);
 
 router.get(urls.WRONG_REGISTER_LOCATIONS, wrongRegisterLocationsRoute.get);
+router.post(urls.WRONG_REGISTER_LOCATIONS, wrongRegisterLocationsRoute.post);
 
 router.get(urls.WRONG_OFFICER_DETAILS, wrongOfficerDetailsRoute.get);
+router.post(urls.WRONG_OFFICER_DETAILS, wrongOfficerDetailsRoute.post);
 
 router.get(urls.WRONG_PSC_DETAILS, wrongPscDetailsRoute.get);
+router.post(urls.WRONG_PSC_DETAILS, wrongPscDetailsRoute.post);
 
 router.get(urls.WRONG_PSC_STATEMENT, wrongPscStatementRoute.get);
+router.post(urls.WRONG_PSC_STATEMENT, wrongPscStatementRoute.post);
