@@ -10,7 +10,6 @@ import { SECTIONS, WRONG_ROA_ERROR } from "../../utils/constants";
 import { getCommon, postCommon } from "../../utils/wrong.information.stop.screen.common.web.calls";
 
 export const get = (req: Request, res: Response) => {
-  console.log("INSIDE GET");
   return { 
     renderedPage: getCommon(req, res, Templates.WRONG_RO, {
       backLinkUrl: urlUtils.getUrlToPath(REGISTERED_OFFICE_ADDRESS_PATH, req),
@@ -22,7 +21,6 @@ export const get = (req: Request, res: Response) => {
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
-  console.log("INSIDE POST");
   
   try {
     return {
