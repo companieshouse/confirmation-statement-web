@@ -13,22 +13,7 @@
   <div class="govuk-grid-column-two-thirds">
     <form action="" method="post">
       
-      {% if errorMsg %}
-        {{ govukErrorSummary({
-            titleText: "There is a problem",
-            errorList: [
-              {
-                text: errorMsg,
-                href: "#radioButton"
-              }
-            ]
-          }) }}
-        {% set errorMsg = {
-            text: errorMsg
-          } %}
-      {% else %}
-        {% set errorMsg = false %}
-      {% endif %}
+      {% include "includes/error-alert-message.html" %}
 
       <h1 class="govuk-heading-l">
         You need to update the company details
