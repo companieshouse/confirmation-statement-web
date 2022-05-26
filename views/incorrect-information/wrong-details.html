@@ -14,6 +14,13 @@
       <form action="" method="post">
       
         {% include "includes/error-alert-message.html" %}
+        {% if errorMsg %}
+          {% set errorMsg = {
+            text: errorMsg
+          } %}
+        {% else %}
+          {% set errorMsg = false %}
+        {% endif %}
 
         <h1 class="govuk-heading-l">
           You need to update the company details
