@@ -27,7 +27,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         detailType: DETAIL_TYPE_PSC,
         detailTypeLegend: DETAIL_TYPE_PSC_LEGEND,
         pageHeading: WRONG_DETAILS_INCORRECT_PSC,
-        errorMsg: WRONG_PSC_ERROR,
+        errorMsgText: WRONG_PSC_ERROR,
       }),
     };
   } catch (e) {

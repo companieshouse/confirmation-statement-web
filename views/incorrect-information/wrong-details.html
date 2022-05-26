@@ -14,12 +14,12 @@
       <form action="" method="post">
       
         {% include "includes/error-alert-message.html" %}
-        {% if errorMsg %}
-          {% set errorMsg = {
-            text: errorMsg
+        {% if errorMsgText %}
+          {% set detailsErrorMsg = {
+            text: errorMsgText
           } %}
         {% else %}
-          {% set errorMsg = false %}
+          {% set detailsErrorMsg = false %}
         {% endif %}
 
         <h1 class="govuk-heading-l">
@@ -36,7 +36,7 @@
         {{ govukRadios({
           idPrefix: "radioButton",
           name: "radioButton",
-          errorMessage: errorMsg,
+          errorMessage: detailsErrorMsg,
           fieldset: {
             legend: {
               text: legendText,

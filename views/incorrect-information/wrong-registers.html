@@ -14,12 +14,12 @@
       <form action="" method="post">
         
         {% include "includes/error-alert-message.html" %}
-        {% if errorMsg %}
-          {% set errorMsg = {
-            text: errorMsg
+        {% if errorMsgText %}
+          {% set registerErrorMsg = {
+            text: errorMsgText
           } %}
         {% else %}
-          {% set errorMsg = false %}
+          {% set registerErrorMsg = false %}
         {% endif %}
           
         <h1 class="govuk-heading-l">
@@ -34,7 +34,7 @@
         {{ govukRadios({
           idPrefix: "radioButton",
           name: "radioButton",
-          errorMessage: errorMsg,
+          errorMessage: registerErrorMsg,
           fieldset: {
             legend: {
               text: "Have you updated where the company records are kept?",

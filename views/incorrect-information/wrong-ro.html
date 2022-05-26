@@ -14,12 +14,12 @@
     <form action="" method="post">
       
       {% include "includes/error-alert-message.html" %}
-      {% if errorMsg %}
-          {% set errorMsg = {
-            text: errorMsg
+      {% if errorMsgText %}
+          {% set roErrorMsg = {
+            text: errorMsgText
           } %}
       {% else %}
-        {% set errorMsg = false %}
+        {% set roErrorMsg = false %}
       {% endif %}
 
       <h1 class="govuk-heading-l">
@@ -35,7 +35,7 @@
       {{ govukRadios({
         idPrefix: "radioButton",
         name: "radioButton",
-        errorMessage: errorMsg,
+        errorMessage: roErrorMsg,
         fieldset: {
           legend: {
             text: "Have you updated the registered office address?",
