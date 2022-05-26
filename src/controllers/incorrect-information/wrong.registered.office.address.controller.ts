@@ -15,7 +15,7 @@ export const get = (req: Request, res: Response) => {
       backLinkUrl: urlUtils.getUrlToPath(REGISTERED_OFFICE_ADDRESS_PATH, req),
       taskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       changeRoaUrl: urlUtils.getUrlToPath(CHANGE_ROA_PATH, req),
-      templateName: Templates.WRONG_REGISTER_LOCATIONS
+      templateName: Templates.WRONG_RO
     }),
   };
 };
