@@ -15,7 +15,7 @@ export const get = (req: Request, res: Response) => {
       backLinkUrl: urlUtils.getUrlToPath(REGISTERED_OFFICE_ADDRESS_PATH, req),
       taskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       changeRoaUrl: urlUtils.getUrlToPath(CHANGE_ROA_PATH, req),
-      templateName: Templates.WRONG_REGISTER_LOCATIONS
+      templateName: Templates.WRONG_RO
     }),
   };
 };
@@ -27,7 +27,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       renderedPage: postCommon(req, res, next, SECTIONS.ROA, Templates.WRONG_RO, {
         backLinkUrl: urlUtils.getUrlToPath(REGISTERED_OFFICE_ADDRESS_PATH, req),
         taskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        errorMsg: WRONG_ROA_ERROR,
+        errorMsgText: WRONG_ROA_ERROR,
         changeRoaUrl: urlUtils.getUrlToPath(CHANGE_ROA_PATH, req)
       }),
     };

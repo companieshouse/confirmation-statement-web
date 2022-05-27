@@ -23,7 +23,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       renderedPage: postCommon(req, res, next, SECTIONS.REGISTER_LOCATIONS, Templates.WRONG_REGISTER_LOCATIONS, {
         backLinkUrl: urlUtils.getUrlToPath(REGISTER_LOCATIONS_PATH, req),
         taskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        errorMsg: WRONG_REGISTER_ERROR,
+        errorMsgText: WRONG_REGISTER_ERROR,
         templateName: Templates.WRONG_REGISTER_LOCATIONS
       }),
     };

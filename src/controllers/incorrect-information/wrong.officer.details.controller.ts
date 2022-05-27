@@ -23,7 +23,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       renderedPage: postCommon(req, res, next, SECTIONS.ACTIVE_OFFICER, Templates.WRONG_DETAILS, {
         templateName: Templates.WRONG_DETAILS,
         backLinkUrl: urlUtils.getUrlToPath(ACTIVE_OFFICERS_DETAILS_PATH, req),
-        errorMsg: WRONG_OFFICER_ERROR,
+        errorMsgText: WRONG_OFFICER_ERROR,
         detailType: DETAIL_TYPE_OFFICER,
         detailTypeLegend: DETAIL_TYPE_OFFICER,
         pageHeading: WRONG_DETAILS_UPDATE_OFFICERS,

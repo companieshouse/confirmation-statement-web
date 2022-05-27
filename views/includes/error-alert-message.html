@@ -1,16 +1,11 @@
-{% if errorMsg %}
+{% if errorMsgText %}
     {{ govukErrorSummary({
         titleText: "There is a problem",
         errorList: [
         {
-            text: errorMsg,
+            text: errorMsgText,
             href: "#radioButton"
         }
         ]
     }) }}
-    {% set errorMsg = {
-        text: errorMsg
-    } %}
-{% else %}
-    {% set errorMsg = false %}
 {% endif %}
