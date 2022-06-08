@@ -1,3 +1,5 @@
+jest.mock("../../../src/utils/update.confirmation.statement.submission");
+
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
@@ -9,7 +11,9 @@ import {
 } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
 import * as updateConfirmationStatement from "../../../src/utils/update.confirmation.statement.submission";
-import { RADIO_BUTTON_VALUE } from "../../../src/utils/constants";
+import { RADIO_BUTTON_VALUE, SECTIONS } from "../../../src/utils/constants";
+import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
+import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 const STOP_PAGE_TEXT = "You need to update the company details";
 const COMPANY_NUMBER = "12345678";
@@ -21,12 +25,15 @@ const WRONG_ROA_ERROR = "Select yes if you have updated the registered office ad
 const WRONG_ROA_PAGE_HEADING = "Incorrect registered office address - File a confirmation statement";
 const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
 
+const mockSendUpdate = sendUpdate as jest.Mock;
+
 describe("Wrong registered office address stop controller tests", () => {
 
   beforeEach(() => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
+    mockSendUpdate.mockClear();
   });
 
   describe("test for the get function", () => {
@@ -59,23 +66,21 @@ describe("Wrong registered office address stop controller tests", () => {
     });
 
     it("Should redirect to task list page when yes radio button is selected", async () => {
-      const mockSendUpdate = jest.spyOn(updateConfirmationStatement, "sendUpdate");
-      mockSendUpdate.mockReturnValue(undefined);
       const response = await request(app).post(populatedWrongRegisteredOfficeAddressPath).send({ radioButton: RADIO_BUTTON_VALUE.YES });
 
+      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ROA);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
-      mockSendUpdate.mockRestore();
     });
 
     it("Should redirect to task list page when no radio button is selected", async () => {
-      const mockSendUpdate = jest.spyOn(updateConfirmationStatement, "sendUpdate");
-      mockSendUpdate.mockReturnValue(undefined);
       const response = await request(app).post(populatedWrongRegisteredOfficeAddressPath).send({ radioButton: RADIO_BUTTON_VALUE.NO });
       
+      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ROA);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
-      mockSendUpdate.mockRestore();
     });
 
     it("Should return error page when radio button id is not valid", async () => {
