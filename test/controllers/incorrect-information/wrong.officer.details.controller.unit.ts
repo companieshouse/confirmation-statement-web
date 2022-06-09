@@ -1,3 +1,5 @@
+jest.mock("../../../src/utils/update.confirmation.statement.submission");
+
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../../src/app";
@@ -7,8 +9,9 @@ import {
   WRONG_OFFICER_DETAILS_PATH
 } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
-import { RADIO_BUTTON_VALUE } from "../../../src/utils/constants";
-import * as updateConfirmationStatement from "../../../src/utils/update.confirmation.statement.submission";
+import { RADIO_BUTTON_VALUE, SECTIONS } from "../../../src/utils/constants";
+import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
+import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 const WRONG_OFFICER_PAGE_HEADING = "Update officers - File a confirmation statement";
 const RADIO_LEGEND = "Have you updated the officer details?";
@@ -21,6 +24,7 @@ const TASK_LIST_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmission
 const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
 const WRONG_OFFICER_ERROR = "Select yes if you have updated the officer details";
 
+const mockSendUpdate = sendUpdate as jest.Mock;
 
 describe("Wrong officer details stop controller tests", () => {
 
@@ -28,6 +32,7 @@ describe("Wrong officer details stop controller tests", () => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
+    mockSendUpdate.mockClear();
   });
 
   describe("test for the get function", () => {
@@ -58,23 +63,21 @@ describe("Wrong officer details stop controller tests", () => {
     });
 
     it("Should redirect to task list page when yes radio button is selected", async () => {
-      const mockSendUpdate = jest.spyOn(updateConfirmationStatement, "sendUpdate");
-      mockSendUpdate.mockReturnValue(undefined);
       const response = await request(app).post(populatedWrongOfficerDetailsPath).send({ radioButton: RADIO_BUTTON_VALUE.YES });
 
+      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ACTIVE_OFFICER);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
-      mockSendUpdate.mockRestore();
     });
 
     it("Should redirect to task list page when no radio button is selected", async () => {
-      const mockSendUpdate = jest.spyOn(updateConfirmationStatement, "sendUpdate");
-      mockSendUpdate.mockReturnValue(undefined);
       const response = await request(app).post(populatedWrongOfficerDetailsPath).send({ radioButton: RADIO_BUTTON_VALUE.NO });
       
+      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ACTIVE_OFFICER);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
-      mockSendUpdate.mockRestore();
     });
 
     it("Should return error page when radio button id is not valid", async () => {
