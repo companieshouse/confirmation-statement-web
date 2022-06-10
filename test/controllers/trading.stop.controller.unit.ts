@@ -19,7 +19,7 @@ describe("Trading stop controller tests", () => {
       const response = await request(app).get(TRADING_STOP_PATH);
 
       expect(response.text).toContain(TRADING_STOP_PAGE_TITLE);
-      expect(response.text).toContain("The company’s trading status can only be changed by filing a confirmation statement through our");
+      expect(response.text).toContain("You must update this information by filing a confirmation statement through");
     });
   });
 });

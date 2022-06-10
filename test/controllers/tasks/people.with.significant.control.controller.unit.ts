@@ -20,7 +20,7 @@ import { sendUpdate } from "../../../src/utils/update.confirmation.statement.sub
 import { PersonOfSignificantControl, SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 const PAGE_TITLE = "Review the people with significant control";
-const PAGE_HEADING = "Check the people with significant control (PSC)";
+const PAGE_HEADING = "Check the people with significant control (PSCs)";
 const STOP_PAGE_TITLE = "Incorrect people with significant control - File a confirmation statement";
 const RADIO_LEGEND = "Have you updated the PSC details?";
 const COMPANY_NUMBER = "12345678";
