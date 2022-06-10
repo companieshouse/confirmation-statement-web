@@ -35,7 +35,7 @@
 
         {% set pscStatementTypesHTML %}
           <p>
-            If a company has no PSCs, or is currently investigating who its PSCs are, it needs to file a statement to
+            If a company has no people with significant control (PSCs), or is currently investigating who its PSCs are, it needs to file a statement to
             explain why
             its full PSC information is not yet on the public register. For example, if there is a PSC that has not yet been
             identified, or if a PSC has been identified but their details have not yet been confirmed.
@@ -48,7 +48,7 @@
         {% set pscStatementHTML %}
           <p class="govuk-body">{{ pscStatement }}</p>
           {{ govukDetails({
-            summaryText: "What are PSC statements?",
+            summaryText: "What is a PSC statement?",
             html: pscStatementTypesHTML,
             attributes: {
               "data-event-id": "what-are-psc-statements-info"
