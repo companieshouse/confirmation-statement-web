@@ -12,17 +12,6 @@
 {% endblock %}
 
 {% block content %}
-  {% set pscDetails %}
-    <p>A person with significant control (PSC) is anyone who:
-      <ul>
-        <li>has more than 25% of the company's shares or voting rights</li>
-        <li>can appoint or remove a majority of the directors</li>
-        <li>can influence or control the company</li>
-      </ul>
-      For more information,
-      <a href="https://www.gov.uk/guidance/people-with-significant-control-pscs" data-event-id="psc-guidance-link">read the guidance on PSCs</a>.
-    </p>
-  {% endset %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
       {% if pscDetailsError %}
@@ -42,10 +31,7 @@
       <form action="" method="post">
         <h1 class="govuk-heading-l">Check the people with significant control (PSCs) details</h1>
 
-        {{ govukDetails({
-        summaryHtml: '<div data-event-id="more-about-people-with-significant-control-details-dropdown">More about people with significant control</div>',
-          html: pscDetails
-        }) }}
+        {% include "includes/psc-details.html" %}
 
         {% set individualPscHtml %}
           {% include "tasks/includes/individual-psc.html" %}
