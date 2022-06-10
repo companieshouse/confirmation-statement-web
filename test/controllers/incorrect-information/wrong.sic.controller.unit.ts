@@ -4,7 +4,7 @@ import app from "../../../src/app";
 import { SIC_PATH, WRONG_SIC_PATH } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
 
-const STOP_PAGE_TEXT = "Currently, changes to the company SIC codes can only be made by filing a confirmation statement";
+const STOP_PAGE_TEXT = "You must update this information by filing a confirmation statement through";
 const SIC_CODE = "123";
 const SIC_CODE_DESCRIPTIONS = "Test SIC code descriptions";
 const SIC_CODE_DETAILS = "<strong>" + SIC_CODE + "</strong> - " + SIC_CODE_DESCRIPTIONS;
