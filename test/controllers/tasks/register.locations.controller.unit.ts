@@ -106,7 +106,7 @@ describe("Register locations controller tests", () => {
       .post(REGISTER_LOCATIONS_URL)
       .send({ registers: RADIO_BUTTON_VALUE.RECENTLY_FILED });
     expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.REGISTER_LOCATIONS);
-    expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+    expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.RECENT_FILING);
     expect(response.status).toEqual(302);
     expect(response.header.location).toEqual(TASK_LIST_URL);
   });

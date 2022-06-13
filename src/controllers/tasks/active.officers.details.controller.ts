@@ -54,7 +54,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return next(new Error(getRadioButtonInvalidValueErrorMessage(officersDetailsBtnValue)));
     }
     if (officersDetailsBtnValue === RADIO_BUTTON_VALUE.YES || officersDetailsBtnValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-      await sendUpdate(req, SECTIONS.ACTIVE_OFFICER, SectionStatus.CONFIRMED);
+      if (officersDetailsBtnValue === RADIO_BUTTON_VALUE.YES) {
+        await sendUpdate(req, SECTIONS.ACTIVE_OFFICER, SectionStatus.CONFIRMED);
+      } else if (officersDetailsBtnValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
+        await sendUpdate(req, SECTIONS.ACTIVE_OFFICER, SectionStatus.RECENT_FILING);
+      }
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     } else if (officersDetailsBtnValue === RADIO_BUTTON_VALUE.NO) {
       await sendUpdate(req, SECTIONS.ACTIVE_OFFICER, SectionStatus.NOT_CONFIRMED);

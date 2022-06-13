@@ -63,7 +63,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     statementOfCapital.classOfShares = formatTitleCase(statementOfCapital.classOfShares);
 
     if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.YES || statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-      await sendUpdate(req, SECTIONS.SOC, SectionStatus.CONFIRMED, statementOfCapital);
+      if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.YES) {
+        await sendUpdate(req, SECTIONS.SOC, SectionStatus.CONFIRMED, statementOfCapital);
+      } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
+        await sendUpdate(req, SECTIONS.SOC, SectionStatus.RECENT_FILING, statementOfCapital);
+      }
       return res.redirect(urlUtils
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId));
     } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO || !sharesValidation || !totalAmountUnpaidValidation) {

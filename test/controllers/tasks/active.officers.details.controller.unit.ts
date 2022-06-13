@@ -167,7 +167,7 @@ describe("Active officers details controller tests", () => {
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ACTIVE_OFFICER);
-      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.RECENT_FILING);
     });
 
     it("Should redisplay active officers details page with error when radio button is not selected", async () => {
