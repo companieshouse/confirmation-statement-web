@@ -189,7 +189,7 @@ describe("Statement of Capital controller tests", () => {
 
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
-      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.RECENT_FILING);
     });
 
     it("Should navigate to the statement of capital stop page when the ONLY statement of capital validation has failed.", async () => {

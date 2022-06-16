@@ -45,7 +45,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (registerLocationsButton === RADIO_BUTTON_VALUE.YES || registerLocationsButton === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-      await sendUpdate(req, SECTIONS.REGISTER_LOCATIONS, SectionStatus.CONFIRMED);
+      if (registerLocationsButton === RADIO_BUTTON_VALUE.YES) {
+        await sendUpdate(req, SECTIONS.REGISTER_LOCATIONS, SectionStatus.CONFIRMED);
+      } else if (registerLocationsButton === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
+        await sendUpdate(req, SECTIONS.REGISTER_LOCATIONS, SectionStatus.RECENT_FILING);
+      }
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     }
 

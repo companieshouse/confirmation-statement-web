@@ -228,7 +228,7 @@ describe("PSC Statement controller tests", () => {
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
-      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.RECENT_FILING);
     });
 
     it("Should return error page when radio button id is not valid", async () => {

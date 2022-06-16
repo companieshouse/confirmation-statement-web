@@ -33,7 +33,12 @@
 
         <h1 class="govuk-heading-xl">Check the shareholder details</h1>
 
-        <h2 class="govuk-heading-m">1 Shareholder</h2>
+        {% if shareholders.length === 1 %}
+          <h2 class="govuk-heading-m">1 shareholder</h2>
+        {% else %}
+          <h2 class="govuk-heading-m">{{shareholders.length}}
+            shareholders</h2>
+        {% endif %}
 
         {% include "includes/shareholders.html" %}
 
