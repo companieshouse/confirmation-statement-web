@@ -46,16 +46,14 @@
         {% endset %}
 
         <h1 class="govuk-heading-l">Check the PSC statement</h1>
-        {# {% set pscStatementHTML %} #}
-          <p class="govuk-body">{{ pscStatement }}</p>
-          {{ govukDetails({
-            summaryText: "What is a PSC statement?",
-            html: pscStatementTypesHTML,
-            attributes: {
-              "data-event-id": "what-are-psc-statements-info"
-            }
-          }) }}
-        {# {% endset %} #}
+        <p class="govuk-body">{{ pscStatement }}</p>
+        {{ govukDetails({
+        summaryText: "What is a PSC statement?",
+        html: pscStatementTypesHTML,
+        attributes: {
+            "data-event-id": "what-are-psc-statements-info"
+        }
+        }) }}
 
         {{ govukRadios({
           classes: "govuk-radios",
