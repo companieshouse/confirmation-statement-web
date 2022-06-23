@@ -45,7 +45,8 @@
           </p>
         {% endset %}
 
-        {% set pscStatementHTML %}
+        <h1 class="govuk-heading-l">Check the PSC statement</h1>
+        {# {% set pscStatementHTML %} #}
           <p class="govuk-body">{{ pscStatement }}</p>
           {{ govukDetails({
             summaryText: "What is a PSC statement?",
@@ -54,7 +55,7 @@
               "data-event-id": "what-are-psc-statements-info"
             }
           }) }}
-        {% endset %}
+        {# {% endset %} #}
 
         {{ govukRadios({
           classes: "govuk-radios",
@@ -67,9 +68,6 @@
               isPageHeading: true,
               classes: "govuk-fieldset__legend--l"
             }
-          },
-          hint: {
-            html: pscStatementHTML
           },
           items: [
             {
