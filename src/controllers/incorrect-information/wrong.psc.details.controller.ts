@@ -25,11 +25,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return next(new Error(getRadioButtonInvalidValueErrorMessage(wrongPscDetailsRadioValue)));
     }
     if (wrongPscDetailsRadioValue === RADIO_BUTTON_VALUE.YES) {
-      await sendUpdate(req, SECTIONS.PSC, SectionStatus.RECENT_FILING);
+      await sendUpdate(req, SECTIONS.PSC, SectionStatus.NOT_CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     }
     if (wrongPscDetailsRadioValue === RADIO_BUTTON_VALUE.NO) {
-      await sendUpdate(req, SECTIONS.PSC, SectionStatus.CONFIRMED);
+      await sendUpdate(req, SECTIONS.PSC, SectionStatus.NOT_CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     }
     return res.render(Templates.WRONG_DETAILS, {
