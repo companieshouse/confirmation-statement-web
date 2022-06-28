@@ -43,17 +43,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (!isRadioButtonValueValid(registerLocationsButton)) {
       return next(new Error(getRadioButtonInvalidValueErrorMessage(registerLocationsButton)));
     }
-
-    if (registerLocationsButton === RADIO_BUTTON_VALUE.YES || registerLocationsButton === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-      if (registerLocationsButton === RADIO_BUTTON_VALUE.YES) {
-        await sendUpdate(req, SECTIONS.REGISTER_LOCATIONS, SectionStatus.CONFIRMED);
-      } else if (registerLocationsButton === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-        await sendUpdate(req, SECTIONS.REGISTER_LOCATIONS, SectionStatus.RECENT_FILING);
-      }
+    if (registerLocationsButton === RADIO_BUTTON_VALUE.YES) {
+      await sendUpdate(req, SECTIONS.REGISTER_LOCATIONS, SectionStatus.CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
-    }
-
-    if (registerLocationsButton === RADIO_BUTTON_VALUE.NO) {
+    } else if (registerLocationsButton === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
+      await sendUpdate(req, SECTIONS.REGISTER_LOCATIONS, SectionStatus.RECENT_FILING);
+      return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
+    } else if (registerLocationsButton === RADIO_BUTTON_VALUE.NO) {
       await sendUpdate(req, SECTIONS.REGISTER_LOCATIONS, SectionStatus.NOT_CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(WRONG_REGISTER_LOCATIONS_PATH, req));
     }
