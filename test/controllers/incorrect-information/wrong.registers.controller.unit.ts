@@ -63,7 +63,7 @@ describe("Wrong register locations stop controller tests", () => {
       const response = await request(app).post(populatedWrongRegisterLocationsAddressPath).send({ radioButton: RADIO_BUTTON_VALUE.YES });
 
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.REGISTER_LOCATIONS);
-      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.RECENT_FILING);
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
     });

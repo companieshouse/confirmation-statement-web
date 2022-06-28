@@ -19,7 +19,7 @@ export const postCommon = async (req: Request, res: Response, next: NextFunction
     }
 
     if (radioButton === RADIO_BUTTON_VALUE.YES) {
-      await sendUpdate(req, sectionName, SectionStatus.CONFIRMED);
+      await sendUpdate(req, sectionName, SectionStatus.RECENT_FILING);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     }
 
