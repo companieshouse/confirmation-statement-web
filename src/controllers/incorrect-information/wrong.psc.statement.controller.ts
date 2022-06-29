@@ -1,25 +1,24 @@
 import { NextFunction, Request, Response } from "express";
 import {
-  PSC_STATEMENT_PATH, URL_QUERY_PARAM} from "../../types/page.urls";
+  PSC_STATEMENT_PATH, TASK_LIST_PATH, URL_QUERY_PARAM} from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
-import { WRONG_DETAILS_INCORRECT_PSC, DETAIL_TYPE_PSC_LEGEND, DETAIL_TYPE_PSC, SECTIONS, WRONG_PSC_ERROR } from "../../utils/constants";
+import { WRONG_DETAILS_INCORRECT_PSC, DETAIL_TYPE_PSC_LEGEND, DETAIL_TYPE_PSC, SECTIONS, WRONG_PSC_ERROR, RADIO_BUTTON_VALUE } from "../../utils/constants";
 import { urlUtils } from "../../utils/url";
-import { getCommon, postCommon } from "../../utils/wrong.information.stop.screen.common.web.calls";
-import { PersonOfSignificantControl } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { PersonOfSignificantControl, SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { Session } from "@companieshouse/node-session-handler";
 import { getPscs } from "../../services/psc.service";
+import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
+import { isRadioButtonValueValid, getRadioButtonInvalidValueErrorMessage } from "../../validators/radio.button.validator";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    return { 
-      renderedPage: getCommon(req, res, Templates.WRONG_DETAILS, {
-        templateName: Templates.WRONG_DETAILS,
-        backLinkUrl: await getBackLinkUrl(req, res, next),
-        detailType: DETAIL_TYPE_PSC,
-        detailTypeLegend: DETAIL_TYPE_PSC_LEGEND,
-        pageHeading: WRONG_DETAILS_INCORRECT_PSC,
-      }),
-    };
+    return res.render(Templates.WRONG_DETAILS, {
+      templateName: Templates.WRONG_DETAILS,
+      backLinkUrl: await getBackLinkUrl(req, res, next),
+      detailType: DETAIL_TYPE_PSC,
+      detailTypeLegend: DETAIL_TYPE_PSC_LEGEND,
+      pageHeading: WRONG_DETAILS_INCORRECT_PSC,
+    });
   } catch (e) {
     return next(e);
   }
@@ -27,16 +26,26 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    return {
-      renderedPage: postCommon(req, res, next, SECTIONS.PSC, Templates.WRONG_DETAILS, {
-        templateName: Templates.WRONG_DETAILS,
-        backLinkUrl: await getBackLinkUrl(req, res, next),
-        detailType: DETAIL_TYPE_PSC,
-        detailTypeLegend: DETAIL_TYPE_PSC_LEGEND,
-        pageHeading: WRONG_DETAILS_INCORRECT_PSC,
-        errorMsgText: WRONG_PSC_ERROR,
-      }),
-    };
+    const wrongPscStatementRadioValue = req.body.radioButton;
+    if (!isRadioButtonValueValid(wrongPscStatementRadioValue)) {
+      return next(new Error(getRadioButtonInvalidValueErrorMessage(wrongPscStatementRadioValue)));
+    }
+    if (wrongPscStatementRadioValue === RADIO_BUTTON_VALUE.YES) {
+      await sendUpdate(req, SECTIONS.PSC, SectionStatus.RECENT_FILING);
+      return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
+    }
+    if (wrongPscStatementRadioValue === RADIO_BUTTON_VALUE.NO) {
+      await sendUpdate(req, SECTIONS.PSC, SectionStatus.CONFIRMED);
+      return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
+    }
+    return res.render(Templates.WRONG_DETAILS, {
+      templateName: Templates.WRONG_DETAILS,
+      backLinkUrl: await getBackLinkUrl(req, res, next),
+      detailType: DETAIL_TYPE_PSC,
+      detailTypeLegend: DETAIL_TYPE_PSC_LEGEND,
+      pageHeading: WRONG_DETAILS_INCORRECT_PSC,
+      errorMsgText: WRONG_PSC_ERROR,
+    });
   } catch (e) {
     return next(e);
   }

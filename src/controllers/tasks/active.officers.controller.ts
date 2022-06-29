@@ -53,12 +53,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (!isRadioButtonValueValid(activeOfficerDetailsBtnValue)) {
       return next(new Error(getRadioButtonInvalidValueErrorMessage(activeOfficerDetailsBtnValue)));
     }
-    if (activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.YES || activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-      if (activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.YES) {
-        await sendUpdate(req, SECTIONS.ACTIVE_OFFICER, SectionStatus.CONFIRMED);
-      } else if (activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-        await sendUpdate(req, SECTIONS.ACTIVE_OFFICER, SectionStatus.RECENT_FILING);
-      }
+    if (activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.YES) {
+      await sendUpdate(req, SECTIONS.ACTIVE_OFFICER, SectionStatus.CONFIRMED);
+      return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
+    } else if (activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
+      await sendUpdate(req, SECTIONS.ACTIVE_OFFICER, SectionStatus.RECENT_FILING);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     } else if (activeOfficerDetailsBtnValue === RADIO_BUTTON_VALUE.NO) {
       await sendUpdate(req, SECTIONS.ACTIVE_OFFICER, SectionStatus.NOT_CONFIRMED);

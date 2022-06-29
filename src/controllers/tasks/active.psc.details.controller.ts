@@ -64,12 +64,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (!isRadioButtonValueValid(activePscsButtonValue)) {
       return next(new Error(getRadioButtonInvalidValueErrorMessage(activePscsButtonValue)));
     }
-    if (activePscsButtonValue === RADIO_BUTTON_VALUE.YES || activePscsButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-      if (activePscsButtonValue === RADIO_BUTTON_VALUE.YES) {
-        await sendUpdate(req, SECTIONS.PSC, SectionStatus.CONFIRMED);
-      } else if (activePscsButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-        await sendUpdate(req, SECTIONS.PSC, SectionStatus.RECENT_FILING);
-      }
+    if (activePscsButtonValue === RADIO_BUTTON_VALUE.YES) {
+      await sendUpdate(req, SECTIONS.PSC, SectionStatus.CONFIRMED);
+      return res.redirect(getPscStatementUrl(req, true));
+    } else if (activePscsButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
+      await sendUpdate(req, SECTIONS.PSC, SectionStatus.RECENT_FILING);
       return res.redirect(getPscStatementUrl(req, true));
     } else if (activePscsButtonValue === RADIO_BUTTON_VALUE.NO) {
       await sendUpdate(req, SECTIONS.PSC, SectionStatus.NOT_CONFIRMED);

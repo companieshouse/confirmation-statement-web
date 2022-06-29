@@ -37,16 +37,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (!isRadioButtonValueValid(roaButtonValue)) {
       return next(new Error(getRadioButtonInvalidValueErrorMessage(roaButtonValue)));
     }
-    if (roaButtonValue === RADIO_BUTTON_VALUE.YES || roaButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-      if (roaButtonValue === RADIO_BUTTON_VALUE.YES) {
-        await sendUpdate(req, SECTIONS.ROA, SectionStatus.CONFIRMED);
-      } else if (roaButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-        await sendUpdate(req, SECTIONS.ROA, SectionStatus.RECENT_FILING);
-      }
+    if (roaButtonValue === RADIO_BUTTON_VALUE.YES) {
+      await sendUpdate(req, SECTIONS.ROA, SectionStatus.CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
-    }
-
-    if (roaButtonValue === RADIO_BUTTON_VALUE.NO) {
+    } else if (roaButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
+      await sendUpdate(req, SECTIONS.ROA, SectionStatus.RECENT_FILING);
+      return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
+    } else if (roaButtonValue === RADIO_BUTTON_VALUE.NO) {
       await sendUpdate(req, SECTIONS.ROA, SectionStatus.NOT_CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(WRONG_RO_PATH, req));
     }

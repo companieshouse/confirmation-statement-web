@@ -66,7 +66,7 @@ describe("Wrong psc details stop controller tests", () => {
       const response = await request(app).post(populatedWrongPscDetailsPath).send({ radioButton: RADIO_BUTTON_VALUE.YES });
 
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
-      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.RECENT_FILING);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
     });
@@ -75,7 +75,7 @@ describe("Wrong psc details stop controller tests", () => {
       const response = await request(app).post(populatedWrongPscDetailsPath).send({ radioButton: RADIO_BUTTON_VALUE.NO });
       
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
-      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(TASK_LIST_URL);
     });
