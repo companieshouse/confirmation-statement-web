@@ -12,7 +12,7 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     <form action="" method="post">
-      
+
       {% include "includes/error-alert-message.html" %}
       {% if errorMsgText %}
           {% set roErrorMsg = {
@@ -29,7 +29,7 @@
         <a href="{{ changeRoaUrl }}" target="_blank" rel="noopener noreferrer" data-event-id="update-roa-link">update the registered office address (opens in a new tab)</a>
         before you can file a confirmation statement.
       </p>
-      
+
       <p>Return to this window after you have made the update.</p>
 
       {{ govukRadios({
@@ -46,11 +46,17 @@
         items: [
           {
             value: "yes",
-            text: "Yes"
+            text: "Yes",
+            attributes: {
+              "data-event-id": "wrong-roa-yes-radio-button"
+            }
           },
           {
             value: "no",
-            text: "No, I do not need to update the registered office address"
+            text: "No, I do not need to update the registered office address",
+            attributes: {
+              "data-event-id": "wrong-roa-no-radio-button"
+            }
           }
         ]
       }) }}
