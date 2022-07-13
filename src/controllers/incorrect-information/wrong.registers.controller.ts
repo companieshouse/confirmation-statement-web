@@ -8,9 +8,12 @@ import { RADIO_BUTTON_VALUE, SECTIONS, WRONG_REGISTER_ERROR } from "../../utils/
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { isRadioButtonValueValid, getRadioButtonInvalidValueErrorMessage } from "../../validators/radio.button.validator";
+import { EWF_URL } from "../../utils/properties";
+
 
 export const get = (req: Request, res: Response) => {
   return res.render(Templates.WRONG_REGISTER_LOCATIONS, {
+    EWF_URL,
     backLinkUrl: urlUtils.getUrlToPath(REGISTER_LOCATIONS_PATH, req),
     taskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
     templateName: Templates.WRONG_REGISTER_LOCATIONS
@@ -32,6 +35,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     }
     return res.render(Templates.WRONG_REGISTER_LOCATIONS, {
+      EWF_URL,
       backLinkUrl: urlUtils.getUrlToPath(REGISTER_LOCATIONS_PATH, req),
       taskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       errorMsgText: WRONG_REGISTER_ERROR,

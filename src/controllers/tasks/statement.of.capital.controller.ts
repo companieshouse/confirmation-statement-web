@@ -19,6 +19,8 @@ import {
   getRadioButtonInvalidValueErrorMessage,
   isRadioButtonValueValid
 } from "../../validators/radio.button.validator";
+import { EWF_URL } from "../../utils/properties";
+
 
 export const get = async(req: Request, res: Response, next: NextFunction) => {
   try {
@@ -33,6 +35,7 @@ export const get = async(req: Request, res: Response, next: NextFunction) => {
     statementOfCapital.classOfShares = formatTitleCase(statementOfCapital.classOfShares);
 
     return res.render(Templates.STATEMENT_OF_CAPITAL, {
+      EWF_URL,
       templateName: Templates.STATEMENT_OF_CAPITAL,
       backLinkUrl: urlUtils
         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),

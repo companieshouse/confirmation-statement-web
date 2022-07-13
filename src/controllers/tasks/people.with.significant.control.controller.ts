@@ -21,7 +21,7 @@ import { createAndLogError, logger } from "../../utils/logger";
 import { toReadableFormat } from "../../utils/date";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { formatPSCForDisplay, formatAddressForDisplay } from "../../utils/format";
-import { FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 } from "../../utils/properties";
+import { FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021, EWF_URL } from "../../utils/properties";
 import { isActiveFeature } from "../../utils/feature.flag";
 import {
   getRadioButtonInvalidValueErrorMessage,
@@ -73,6 +73,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (pscButtonValue === RADIO_BUTTON_VALUE.NO) {
       await sendUpdate(req, SECTIONS.PSC, SectionStatus.NOT_CONFIRMED);
       return res.render(Templates.WRONG_DETAILS, {
+        EWF_URL,
         templateName: Templates.WRONG_DETAILS,
         backLinkUrl: urlUtils.getUrlToPath(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, req),
         returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
