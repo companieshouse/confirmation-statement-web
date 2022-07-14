@@ -12,12 +12,9 @@ import { isRadioButtonValueValid, getRadioButtonInvalidValueErrorMessage } from 
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    return res.render(Templates.WRONG_DETAILS, {
-      templateName: Templates.WRONG_DETAILS,
-      backLinkUrl: await getBackLinkUrl(req, res, next),
-      detailType: DETAIL_TYPE_PSC,
-      detailTypeLegend: DETAIL_TYPE_PSC_LEGEND,
-      pageHeading: WRONG_DETAILS_INCORRECT_PSC,
+    return res.render(Templates.WRONG_PSC_STATEMENT, {
+      templateName: Templates.WRONG_PSC_STATEMENT,
+      backLinkUrl: await getBackLinkUrl(req, res, next)
     });
   } catch (e) {
     return next(e);
@@ -38,13 +35,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       await sendUpdate(req, SECTIONS.PSC, SectionStatus.CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     }
-    return res.render(Templates.WRONG_DETAILS, {
-      templateName: Templates.WRONG_DETAILS,
+    return res.render(Templates.WRONG_PSC_STATEMENT, {
+      templateName: Templates.WRONG_PSC_STATEMENT,
       backLinkUrl: await getBackLinkUrl(req, res, next),
-      detailType: DETAIL_TYPE_PSC,
-      detailTypeLegend: DETAIL_TYPE_PSC_LEGEND,
-      pageHeading: WRONG_DETAILS_INCORRECT_PSC,
-      errorMsgText: WRONG_PSC_ERROR,
+      errorMsgText: WRONG_PSC_ERROR
     });
   } catch (e) {
     return next(e);

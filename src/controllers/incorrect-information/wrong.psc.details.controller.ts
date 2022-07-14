@@ -9,12 +9,9 @@ import { sendUpdate } from "../../utils/update.confirmation.statement.submission
 import { isRadioButtonValueValid, getRadioButtonInvalidValueErrorMessage } from "../../validators/radio.button.validator";
 
 export const get = (req: Request, res: Response) => {
-  return res.render(Templates.WRONG_DETAILS, {
-    templateName: Templates.WRONG_DETAILS,
-    backLinkUrl: urlUtils.getUrlToPath(ACTIVE_PSC_DETAILS_PATH, req),
-    detailType: DETAIL_TYPE_PSC,
-    detailTypeLegend: DETAIL_TYPE_PSC_LEGEND,
-    pageHeading: WRONG_DETAILS_INCORRECT_PSC,
+  return res.render(Templates.WRONG_PSC_DETAILS, {
+    templateName: Templates.WRONG_PSC_DETAILS,
+    backLinkUrl: urlUtils.getUrlToPath(ACTIVE_PSC_DETAILS_PATH, req)
   });
 };
 
@@ -32,13 +29,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       await sendUpdate(req, SECTIONS.PSC, SectionStatus.NOT_CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     }
-    return res.render(Templates.WRONG_DETAILS, {
-      templateName: Templates.WRONG_DETAILS,
+    return res.render(Templates.WRONG_PSC_DETAILS, {
+      templateName: Templates.WRONG_PSC_DETAILS,
         backLinkUrl: urlUtils.getUrlToPath(ACTIVE_PSC_DETAILS_PATH, req),
-        detailType: DETAIL_TYPE_PSC,
-        detailTypeLegend: DETAIL_TYPE_PSC_LEGEND,
-        pageHeading: WRONG_DETAILS_INCORRECT_PSC,
-        errorMsgText: WRONG_PSC_ERROR,
+        errorMsgText: WRONG_PSC_ERROR
     });
   } catch (e) {
     return next(e);

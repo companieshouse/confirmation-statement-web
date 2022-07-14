@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+    Incorrect people with significant control - File a confirmation statement
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form action="" method="post">
+      
+        {% include "includes/error-alert-message.html" %}
+        {% if errorMsgText %}
+          {% set detailsErrorMsg = {
+            text: errorMsgText
+          } %}
+        {% else %}
+          {% set detailsErrorMsg = false %}
+        {% endif %}
+
+        <h1 class="govuk-heading-l">
+          You need to update the company details
+        </h1>
+        <p>You will need to update the people with significant control (PSC) details on our 
+          <a href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" data-event-id="webfiling-link" target="_blank" rel="noopener noreferrer">WebFiling service (opens in a new tab)</a>
+          before you can file a confirmation statement.</p>
+        
+        <p>Return to this window after you have made the update.</p>
+
+        {{ govukRadios({
+          idPrefix: "radioButton",
+          name: "radioButton",
+          errorMessage: detailsErrorMsg,
+          fieldset: {
+            legend: {
+              text: "Have you updated the PSC details?",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes",
+              attributes: {
+                "data-event-id": "wrong-psc-statement-yes-radio-button"
+              }
+            },
+            {
+              value: "no",
+              text: "No, I do not need to update the PSC details",
+              attributes: {
+                "data-event-id": "wrong-psc-statement-no-radio-button"
+              }
+            }
+          ]
+        }) }}
+
+        {{ govukButton({
+          text: "Return to confirmation statement",
+          attributes: {
+            "data-event-id": "return-to-task-list-button",
+            "id": "submit"
+          }
+        }) }}
+
+    <p><a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-wrongactivepsc/">What did you think of this service?</a>
+      (takes 2 minutes)
+    </p>
+
+    </div>
+  </div>
+{% endblock %}
