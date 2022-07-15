@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { SHOW_SERVICE_OFFLINE_PAGE } from "../utils/properties";
+import { SHOW_SERVICE_OFFLINE_PAGE, EWF_URL } from "../utils/properties";
 import { Templates } from "../types/template.paths";
 import { isActiveFeature } from "../utils/feature.flag";
 import { CONFIRMATION_STATEMENT, ACCESSIBILITY_STATEMENT } from "../types/page.urls";
@@ -19,7 +19,7 @@ export const serviceAvailabilityMiddleware = (req: Request, res: Response, next:
   }
 
   if (isActiveFeature(SHOW_SERVICE_OFFLINE_PAGE)) {
-    return res.render(Templates.SERVICE_OFFLINE);
+    return res.render(Templates.SERVICE_OFFLINE, {EWF_URL});
   }
 
   // feature flag SHOW_SERVICE_OFFLINE_PAGE is false - carry on as normal
