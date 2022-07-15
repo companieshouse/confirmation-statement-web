@@ -79,6 +79,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     return res.render(Templates.STATEMENT_OF_CAPITAL, {
+      EWF_URL,
       templateName: Templates.STATEMENT_OF_CAPITAL,
       statementOfCapitalErrorMsg: STATEMENT_OF_CAPITAL_ERROR,
       backLinkUrl: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId),
