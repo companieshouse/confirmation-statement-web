@@ -39,7 +39,7 @@
               {% set warningHTML %}
                 <p><strong>You cannot continue to file a confirmation statement in this service.</strong></p>
                 <p><strong>The company's share capital does not match the number of shares held by its shareholders.</strong></p>
-                <p><strong>You must update this information by filing a confirmation statement through our <a href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" data-event-id="webfiling-service-link-from-statement-of-capital-page">WebFiling service</a>.</strong></p>
+                <p><strong>You must update this information by filing a confirmation statement through our <a href="{{EWF_URL}}" data-event-id="webfiling-service-link-from-statement-of-capital-page">WebFiling service</a>.</strong></p>
               {% endset %}
 
               {{ govukWarningText({
@@ -52,7 +52,7 @@
               {% set warningHTML %}
                 <p><strong>You cannot continue to file a confirmation statement in this service.</strong></p>
                 <p><strong>The total amount unpaid for all shares is missing on this company’s statement of capital.</strong></p>
-                <p><strong>You must update this information by filing a confirmation statement through our <a href="https://ewf.companieshouse.gov.uk//seclogin?tc=1" data-event-id="webfiling-service-link-from-statement-of-capital-page">WebFiling service</a>.</strong></p>
+                <p><strong>You must update this information by filing a confirmation statement through our <a href="{{EWF_URL}}" data-event-id="webfiling-service-link-from-statement-of-capital-page">WebFiling service</a>.</strong></p>
               {% endset %}
 
               {{ govukWarningText({

@@ -46,3 +46,5 @@ export const URL_LOG_MAX_LENGTH: number = parseInt(getEnvironmentVariable("URL_L
 export const URL_PARAM_MAX_LENGTH: number = parseInt(getEnvironmentVariable("URL_PARAM_MAX_LENGTH", "50"), 10);
 
 export const RADIO_BUTTON_VALUE_LOG_LENGTH = parseInt(getEnvironmentVariable("RADIO_BUTTON_VALUE_LOG_LENGTH", "50"), 10);
+
+export const EWF_URL = getEnvironmentVariable("EWF_URL");

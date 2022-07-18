@@ -6,11 +6,15 @@ import { WRONG_OFFICER_ERROR, SECTIONS, RADIO_BUTTON_VALUE } from "../../utils/c
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { getRadioButtonInvalidValueErrorMessage, isRadioButtonValueValid } from "../../validators/radio.button.validator";
+import { EWF_URL } from "../../utils/properties";
+
 
 export const get = (req: Request, res: Response) => {
   return res.render(Templates.WRONG_OFFICERS, { 
+    EWF_URL,
     templateName: Templates.WRONG_OFFICERS,
     backLinkUrl: urlUtils.getUrlToPath(ACTIVE_OFFICERS_DETAILS_PATH, req)
+
   });
 };
 
@@ -28,7 +32,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       await sendUpdate(req, SECTIONS.ACTIVE_OFFICER, SectionStatus.CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     }
+
     return res.render(Templates.WRONG_OFFICERS, {
+      EWF_URL,
       templateName: Templates.WRONG_OFFICERS,
       backLinkUrl: urlUtils.getUrlToPath(ACTIVE_OFFICERS_DETAILS_PATH, req),
       errorMsgText: WRONG_OFFICER_ERROR

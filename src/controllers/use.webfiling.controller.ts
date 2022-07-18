@@ -4,7 +4,7 @@ import { getCompanyProfile } from "../services/company.profile.service";
 import { Templates } from "../types/template.paths";
 import { URL_QUERY_PARAM, USE_WEBFILING_PATH } from "../types/page.urls";
 import { isCompanyNumberValid } from "../validators/company.number.validator";
-import { FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 } from "../utils/properties";
+import { FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021, EWF_URL } from "../utils/properties";
 
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -19,6 +19,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     return res.render(Templates.USE_WEBFILING, {
       company,
       FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021,
+      EWF_URL,
       templateName: Templates.USE_WEBFILING
     });
   } catch (e) {

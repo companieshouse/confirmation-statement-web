@@ -14,4 +14,5 @@ export default () => {
   process.env.URL_LOG_MAX_LENGTH = "400";
   process.env.URL_PARAM_MAX_LENGTH = "50";
   process.env.RADIO_BUTTON_VALUE_LOG_LENGTH = "50";
+  process.env.EWF_URL = "https://ewf.companieshouse.gov.uk/";
 };

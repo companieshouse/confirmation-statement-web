@@ -9,10 +9,13 @@ import { Session } from "@companieshouse/node-session-handler";
 import { getPscs } from "../../services/psc.service";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { isRadioButtonValueValid, getRadioButtonInvalidValueErrorMessage } from "../../validators/radio.button.validator";
+import { EWF_URL } from "../../utils/properties";
+
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     return res.render(Templates.WRONG_PSC_DETAILS, {
+      EWF_URL,
       templateName: Templates.WRONG_PSC_DETAILS,
       backLinkUrl: await getBackLinkUrl(req, res, next),
       dataEventIdText: WRONG_PSC_STATEMENT_TEXT
@@ -37,6 +40,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     }
     return res.render(Templates.WRONG_PSC_DETAILS, {
+      EWF_URL,
       templateName: Templates.WRONG_PSC_DETAILS,
       backLinkUrl: await getBackLinkUrl(req, res, next),
       errorMsgText: WRONG_PSC_ERROR,
