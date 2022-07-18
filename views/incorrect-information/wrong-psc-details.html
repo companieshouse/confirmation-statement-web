@@ -31,6 +31,8 @@
         
         <p>Return to this window after you have made the update.</p>
 
+        {% set dataEventIdYes = [dataEventIdText, "-yes-radio-button"] | join %}
+        {% set dataEventIdNo = [dataEventIdText, "-no-radio-button"] | join %}
         {{ govukRadios({
           idPrefix: "radioButton",
           name: "radioButton",
@@ -47,14 +49,14 @@
               value: "yes",
               text: "Yes",
               attributes: {
-                "data-event-id": "wrong-psc-details-yes-radio-button"
+                "data-event-id": dataEventIdYes
               }
             },
             {
               value: "no",
               text: "No, I do not need to update the PSC details",
               attributes: {
-                "data-event-id": "wrong-psc-details-no-radio-button"
+                "data-event-id": dataEventIdNo
               }
             }
           ]

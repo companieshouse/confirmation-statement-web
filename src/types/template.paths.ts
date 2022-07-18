@@ -24,7 +24,6 @@ export enum Templates {
   WRONG_DETAILS = "incorrect-information/wrong-details",
   WRONG_OFFICERS = "incorrect-information/wrong-officers",
   WRONG_PSC_DETAILS = "incorrect-information/wrong-psc-details",
-  WRONG_PSC_STATEMENT = "incorrect-information/wrong-psc-statement",
   WRONG_REGISTER_LOCATIONS = "incorrect-information/wrong-registers",
   WRONG_SHAREHOLDERS = "incorrect-information/wrong-shareholders",
   WRONG_SIC = "incorrect-information/wrong-sic",
