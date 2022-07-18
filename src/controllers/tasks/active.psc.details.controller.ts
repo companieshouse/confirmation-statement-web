@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import e, { NextFunction, Request, Response } from "express";
 import {
   PSC_STATEMENT_PATH,
   TASK_LIST_PATH,
@@ -64,28 +64,27 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (!isRadioButtonValueValid(activePscsButtonValue)) {
       return next(new Error(getRadioButtonInvalidValueErrorMessage(activePscsButtonValue)));
     }
-    if (activePscsButtonValue === RADIO_BUTTON_VALUE.YES) {
-      await sendUpdate(req, SECTIONS.PSC, SectionStatus.CONFIRMED);
-      return res.redirect(getPscStatementUrl(req, true));
-    } else if (activePscsButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-      await sendUpdate(req, SECTIONS.PSC, SectionStatus.RECENT_FILING);
-      return res.redirect(getPscStatementUrl(req, true));
+
+    // Don't commit anything yet as the user must progress to the next screen.
+    await sendUpdate(req, SECTIONS.PSC, SectionStatus.NOT_CONFIRMED);
+    
+    if (activePscsButtonValue === RADIO_BUTTON_VALUE.YES || activePscsButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
+        return res.redirect(getPscStatementUrl(req, true));
     } else if (activePscsButtonValue === RADIO_BUTTON_VALUE.NO) {
-      await sendUpdate(req, SECTIONS.PSC, SectionStatus.NOT_CONFIRMED);
-      return res.redirect(urlUtils.getUrlToPath(WRONG_PSC_DETAILS_PATH, req));
+        return res.redirect(urlUtils.getUrlToPath(WRONG_PSC_DETAILS_PATH, req));
     } else {
-      const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
-      const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
-      const pscs: PersonOfSignificantControl[] = await getPscs(req.session as Session, transactionId, submissionId);
-      const pscLists = buildPscLists(pscs);
-      return res.render(Templates.ACTIVE_PSC_DETAILS, {
-        templateName: Templates.ACTIVE_PSC_DETAILS,
-        backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        pscDetailsError: PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
-        individualPscList: pscLists.individualPscList,
-        relevantLegalEntityList: pscLists.relevantLegalEntityList,
-        otherRegistrablePersonList: pscLists.otherRegistrablePersonList
-      });
+        const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+        const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+        const pscs: PersonOfSignificantControl[] = await getPscs(req.session as Session, transactionId, submissionId);
+        const pscLists = buildPscLists(pscs);
+        return res.render(Templates.ACTIVE_PSC_DETAILS, {
+            templateName: Templates.ACTIVE_PSC_DETAILS,
+            backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+            pscDetailsError: PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
+            individualPscList: pscLists.individualPscList,
+            relevantLegalEntityList: pscLists.relevantLegalEntityList,
+            otherRegistrablePersonList: pscLists.otherRegistrablePersonList
+        });
     }
   } catch (e) {
     return next(e);
