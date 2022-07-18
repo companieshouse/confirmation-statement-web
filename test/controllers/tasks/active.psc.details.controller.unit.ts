@@ -139,7 +139,7 @@ describe("Active psc details controller tests", () => {
         .send({ psc: RADIO_BUTTON_VALUE.YES });
 
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
-      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("true"));
     });
@@ -150,7 +150,7 @@ describe("Active psc details controller tests", () => {
         .send({ psc: RADIO_BUTTON_VALUE.RECENTLY_FILED });
 
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
-      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.RECENT_FILING);
+      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(pscStatementPathWithIsPscParam("true"));
     });
