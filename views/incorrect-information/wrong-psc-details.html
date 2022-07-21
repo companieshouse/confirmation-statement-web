@@ -15,11 +15,11 @@
       
         {% include "includes/error-alert-message.html" %}
         {% if errorMsgText %}
-          {% set detailsErrorMsg = {
+          {% set pscErrorMsg = {
             text: errorMsgText
           } %}
         {% else %}
-          {% set detailsErrorMsg = false %}
+          {% set pscErrorMsg = false %}
         {% endif %}
 
         <h1 class="govuk-heading-l">
@@ -36,7 +36,7 @@
         {{ govukRadios({
           idPrefix: "radioButton",
           name: "radioButton",
-          errorMessage: detailsErrorMsg,
+          errorMessage: pscErrorMsg,
           fieldset: {
             legend: {
               text: "Have you updated the PSC details?",

@@ -15,11 +15,11 @@
       
         {% include "includes/error-alert-message.html" %}
         {% if errorMsgText %}
-          {% set detailsErrorMsg = {
+          {% set officersErrorMsg = {
             text: errorMsgText
           } %}
         {% else %}
-          {% set detailsErrorMsg = false %}
+          {% set officersErrorMsg = false %}
         {% endif %}
 
         <h1 class="govuk-heading-l">
@@ -34,7 +34,7 @@
         {{ govukRadios({
           idPrefix: "radioButton",
           name: "radioButton",
-          errorMessage: detailsErrorMsg,
+          errorMessage: officersErrorMsg,
           fieldset: {
             legend: {
               text: "Have you updated the officer details?",
