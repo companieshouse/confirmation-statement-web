@@ -21,7 +21,6 @@ export enum Templates {
   USE_WEBFILING = "use-webfiling",
   TRADING_STOP = "trading-stop",
   NO_FILING_REQUIRED = "no-filing-required",
-  WRONG_DETAILS = "incorrect-information/wrong-details",
   WRONG_OFFICERS = "incorrect-information/wrong-officers",
   WRONG_PSC_DETAILS = "incorrect-information/wrong-psc-details",
   WRONG_REGISTER_LOCATIONS = "incorrect-information/wrong-registers",
