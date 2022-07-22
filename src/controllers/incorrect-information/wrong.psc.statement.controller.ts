@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import {
   PSC_STATEMENT_PATH, TASK_LIST_PATH, URL_QUERY_PARAM} from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
-import { WRONG_DETAILS_INCORRECT_PSC, DETAIL_TYPE_PSC_LEGEND, DETAIL_TYPE_PSC, SECTIONS, WRONG_PSC_ERROR, RADIO_BUTTON_VALUE } from "../../utils/constants";
+import { SECTIONS, WRONG_PSC_ERROR, RADIO_BUTTON_VALUE, WRONG_PSC_STATEMENT_TEXT } from "../../utils/constants";
 import { urlUtils } from "../../utils/url";
 import { PersonOfSignificantControl, SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { Session } from "@companieshouse/node-session-handler";
@@ -14,13 +14,11 @@ import { EWF_URL } from "../../utils/properties";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    return res.render(Templates.WRONG_DETAILS, {
+    return res.render(Templates.WRONG_PSC_DETAILS, {
       EWF_URL,
-      templateName: Templates.WRONG_DETAILS,
+      templateName: Templates.WRONG_PSC_DETAILS,
       backLinkUrl: await getBackLinkUrl(req, res, next),
-      detailType: DETAIL_TYPE_PSC,
-      detailTypeLegend: DETAIL_TYPE_PSC_LEGEND,
-      pageHeading: WRONG_DETAILS_INCORRECT_PSC,
+      dataEventIdText: WRONG_PSC_STATEMENT_TEXT
     });
   } catch (e) {
     return next(e);
@@ -41,14 +39,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       await sendUpdate(req, SECTIONS.PSC, SectionStatus.CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     }
-    return res.render(Templates.WRONG_DETAILS, {
+    return res.render(Templates.WRONG_PSC_DETAILS, {
       EWF_URL,
-      templateName: Templates.WRONG_DETAILS,
+      templateName: Templates.WRONG_PSC_DETAILS,
       backLinkUrl: await getBackLinkUrl(req, res, next),
-      detailType: DETAIL_TYPE_PSC,
-      detailTypeLegend: DETAIL_TYPE_PSC_LEGEND,
-      pageHeading: WRONG_DETAILS_INCORRECT_PSC,
       errorMsgText: WRONG_PSC_ERROR,
+      dataEventIdText: WRONG_PSC_STATEMENT_TEXT
     });
   } catch (e) {
     return next(e);

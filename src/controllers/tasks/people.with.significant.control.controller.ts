@@ -72,14 +72,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     if (pscButtonValue === RADIO_BUTTON_VALUE.NO) {
       await sendUpdate(req, SECTIONS.PSC, SectionStatus.NOT_CONFIRMED);
-      return res.render(Templates.WRONG_DETAILS, {
+      return res.render(Templates.WRONG_PSC_DETAILS, {
         EWF_URL,
-        templateName: Templates.WRONG_DETAILS,
+        templateName: Templates.WRONG_PSC_DETAILS,
         backLinkUrl: urlUtils.getUrlToPath(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH, req),
-        returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-        detailType: DETAIL_TYPE_PSC,
-        detailTypeLegend: DETAIL_TYPE_PSC_LEGEND,
-        pageHeading: WRONG_DETAILS_INCORRECT_PSC,
+        returnToTaskListUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req)
       });
     }
 

@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  {{pageHeading}}
+    Incorrect people with significant control - File a confirmation statement
 {% endblock %}
 
 {% block backLink %}
@@ -15,31 +15,31 @@
       
         {% include "includes/error-alert-message.html" %}
         {% if errorMsgText %}
-          {% set detailsErrorMsg = {
+          {% set pscErrorMsg = {
             text: errorMsgText
           } %}
         {% else %}
-          {% set detailsErrorMsg = false %}
+          {% set pscErrorMsg = false %}
         {% endif %}
 
         <h1 class="govuk-heading-l">
           You need to update the company details
         </h1>
-        <p>You will need to update the {{detailType}} details on our 
+        <p>You will need to update the people with significant control (PSC) details on our 
           <a href="{{EWF_URL}}" data-event-id="webfiling-link" target="_blank" rel="noopener noreferrer">WebFiling service (opens in a new tab)</a>
           before you can file a confirmation statement.</p>
         
         <p>Return to this window after you have made the update.</p>
 
-        {% set legendText = ["Have you updated the ", detailTypeLegend, " details?"] | join %}
-        {% set itemText = ["No, I do not need to update the ", detailTypeLegend, " details"] | join %}
+        {% set dataEventIdYes = [dataEventIdText, "-yes-radio-button"] | join %}
+        {% set dataEventIdNo = [dataEventIdText, "-no-radio-button"] | join %}
         {{ govukRadios({
           idPrefix: "radioButton",
           name: "radioButton",
-          errorMessage: detailsErrorMsg,
+          errorMessage: pscErrorMsg,
           fieldset: {
             legend: {
-              text: legendText,
+              text: "Have you updated the PSC details?",
               isPageHeading: true,
               classes: "govuk-fieldset__legend--m"
             }
@@ -49,14 +49,14 @@
               value: "yes",
               text: "Yes",
               attributes: {
-                "data-event-id": "wrong-details-yes-radio-button"
+                "data-event-id": dataEventIdYes
               }
             },
             {
               value: "no",
-              text: itemText,
+              text: "No, I do not need to update the PSC details",
               attributes: {
-                "data-event-id": "wrong-details-no-radio-button"
+                "data-event-id": dataEventIdNo
               }
             }
           ]
