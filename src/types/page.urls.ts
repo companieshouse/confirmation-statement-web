@@ -1,3 +1,4 @@
+import { ACCOUNT_URL } from "../utils/properties";
 import { Templates } from "./template.paths";
 
 export enum urlParams {
@@ -23,6 +24,7 @@ export const CONTAINS_SUBMISSION_ID = `/submission/:${urlParams.PARAM_SUBMISSION
 // Use _PATH consts for redirects
 // Use const without _PATH to match the url in the routes.ts
 export const ACCESSIBILITY_STATEMENT = SEPARATOR + Templates.ACCESSIBILITY_STATEMENT;
+export const ACCOUNTS_SIGNOUT_PATH = `${ACCOUNT_URL}/signout`;
 export const CONFIRM_COMPANY = SEPARATOR + Templates.CONFIRM_COMPANY;
 export const CONFIRMATION_STATEMENT = "/confirmation-statement";
 export const COMPANY_NUMBER = "/company-number";
@@ -36,6 +38,7 @@ export const SHAREHOLDERS = ACTIVE_SUBMISSION_BASE + "shareholders";
 export const SHAREHOLDERS_PATH = CONFIRMATION_STATEMENT + SHAREHOLDERS;
 export const SIC = ACTIVE_SUBMISSION_BASE + "sic";
 export const SIC_PATH = CONFIRMATION_STATEMENT + SIC;
+export const SIGNOUT_PATH = "/signout";
 export const CREATE_TRANSACTION = COMPANY_AUTH_PROTECTED_BASE + "transaction";
 export const CREATE_TRANSACTION_PATH = CONFIRMATION_STATEMENT + CREATE_TRANSACTION;
 export const TRADING_STATUS = ACTIVE_SUBMISSION_BASE + "trading-status";

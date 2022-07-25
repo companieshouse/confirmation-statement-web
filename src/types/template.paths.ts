@@ -12,6 +12,7 @@ export enum Templates {
   SERVICE_OFFLINE_MID_JOURNEY = "service-offline-mid-journey",
   SHAREHOLDERS = "tasks/shareholders",
   SIC = "tasks/sic",
+  SIGNOUT = "signout",
   START = "start",
   STATEMENT_OF_CAPITAL = "tasks/statement-of-capital",
   TRADING_STATUS = "check-trading-status",

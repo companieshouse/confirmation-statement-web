@@ -9,6 +9,7 @@ import * as peopleWithSignificantControlRoute from "../controllers/tasks/people.
 import * as pscStatementRoute from "../controllers/tasks/psc.statement.controller";
 import * as shareholders from "../controllers/tasks/shareholders.controller";
 import * as sicRoute from "../controllers/tasks/confirm.sic.code.controller";
+import * as signoutRoute from "../controllers/signout.controller";
 import * as startRoute from "../controllers/start.controller";
 import * as statementOfCapitalRoute from "../controllers/tasks/statement.of.capital.controller";
 import * as tradingStatusRoute from "../controllers/trading.status.controller";
@@ -33,6 +34,7 @@ import * as wrongPscDetailsRoute from "../controllers/incorrect-information/wron
 import * as wrongPscStatementRoute from "../controllers/incorrect-information/wrong.psc.statement.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
+import { logger } from "../utils/logger"
 
 
 export const router: Router = Router();
@@ -65,6 +67,9 @@ router.get(urls.CREATE_TRANSACTION, createTransactionRoute.get);
 
 router.get(urls.SIC, sicRoute.get);
 router.post(urls.SIC, sicRoute.post);
+
+router.get(urls.SIGNOUT_PATH, signoutRoute.get);
+router.post(urls.SIGNOUT_PATH, signoutRoute.post);
 
 router.get(urls.TRADING_STATUS, tradingStatusRoute.get);
 router.post(urls.TRADING_STATUS, tradingStatusRoute.post);
