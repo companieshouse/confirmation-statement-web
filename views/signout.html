@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  Signout
+    {% if noInputSelectedError %}Error: {% endif %}
+    Are you sure you want to sign out? - File a confirmation statement - GOV.UK
 {% endblock %}
 
 {% block header %}
@@ -20,10 +21,20 @@
 {% endblock %}
 
 {% block content %}
-    {% if errorMsgText %}
+    {% if noInputSelectedError %}
         {% set detailsErrorMsg = {
-        text: errorMsgText
+            text: "Select yes if you want to sign out"
         } %}
+
+        {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: [
+                {
+                text: "Select yes if you want to sign out",
+                href: "#yes"
+                }
+            ]
+        }) }}
     {% else %}
         {% set detailsErrorMsg = false %}
     {% endif %}

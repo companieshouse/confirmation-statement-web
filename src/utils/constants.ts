@@ -25,7 +25,6 @@ export const WRONG_REGISTER_ERROR = "Select yes if you have updated where the co
 export const WRONG_ROA_ERROR = "Select yes if you have updated the registered office address";
 export const WRONG_OFFICER_ERROR = "Select yes if you have updated the officer details";
 export const WRONG_PSC_ERROR = "Select yes if you have updated the PSC details";
-export const SIGNOUT_NO_BUTTON_SELECTED_ERROR = "Select yes if you would like to log out";
 export const SIGNOUT_RETURN_URL_SESSION_KEY = 'signout-return-to-url';
 
 export enum RADIO_BUTTON_VALUE {

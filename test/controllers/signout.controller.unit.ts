@@ -4,7 +4,7 @@ import request from "supertest";
 import app from "../../src/app";
 import { ACCOUNTS_SIGNOUT_PATH, CONFIRMATION_STATEMENT, SIGNOUT_PATH } from "../../src/types/page.urls";
 import { session } from '../mocks/session.middleware.mock';
-import { SIGNOUT_NO_BUTTON_SELECTED_ERROR, SIGNOUT_RETURN_URL_SESSION_KEY } from '../../src/utils/constants';
+import { SIGNOUT_RETURN_URL_SESSION_KEY } from '../../src/utils/constants';
 
 const SIGNOUT_LOCATION = `${CONFIRMATION_STATEMENT}${SIGNOUT_PATH}`;
 
@@ -51,7 +51,7 @@ describe("Signout controller tests", () => {
           .post(SIGNOUT_LOCATION)
 
         expect(response.status).toBe(400)
-        expect(response.text).toContain(SIGNOUT_NO_BUTTON_SELECTED_ERROR)
+        expect(response.text).toContain('Select yes if you want to sign out')
     })
 
     it('should show the error page if there is no return page in session', async () => {

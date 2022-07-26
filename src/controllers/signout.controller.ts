@@ -1,6 +1,6 @@
 import { Handler, NextFunction, Request, response, Response } from "express";
 import { Templates } from "../types/template.paths";
-import { SIGNOUT_NO_BUTTON_SELECTED_ERROR, SIGNOUT_RETURN_URL_SESSION_KEY } from "../utils/constants";
+import { SIGNOUT_RETURN_URL_SESSION_KEY } from "../utils/constants";
 import { Session } from "@companieshouse/node-session-handler";
 import { ACCOUNTS_SIGNOUT_PATH } from "../types/page.urls";
 import { logger } from "../utils/logger";
@@ -26,8 +26,8 @@ export const post = handleError(async (req, res) => {
     }
 })
 
-// For some reason express types don't include an async handler, which plays havok with the static
-// analysers complaining that an 'await' call us unecessary when, infact, they are.
+// Async version of express handler so that static analysers don't complain that an await statement 
+// isn't needed when it is.
 type AsyncHandler = (req: Request, res: Response, next: NextFunction) => Promise<unknown>
 
 // Wraps a handler function to catch any exceptions and pass them to the next handler in the chain.
@@ -45,7 +45,7 @@ function showMustSelectButtonError(res: Response, returnPage: string) {
     res.status(400);
     return res.render(Templates.SIGNOUT, {
         backLinkUrl: returnPage,
-        errorMsgText: SIGNOUT_NO_BUTTON_SELECTED_ERROR
+        noInputSelectedError: true
     });
 }
 
