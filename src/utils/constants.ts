@@ -26,6 +26,9 @@ export const WRONG_ROA_ERROR = "Select yes if you have updated the registered of
 export const WRONG_OFFICER_ERROR = "Select yes if you have updated the officer details";
 export const WRONG_PSC_ERROR = "Select yes if you have updated the PSC details";
 export const SIGNOUT_RETURN_URL_SESSION_KEY = 'signout-return-to-url';
+export const WRONG_PSC_DETAILS_TEXT = "wrong-psc-details";
+export const WRONG_PSC_STATEMENT_TEXT = "wrong-psc-statement";
+
 
 export enum RADIO_BUTTON_VALUE {
   NO = "no",
