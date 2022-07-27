@@ -14,6 +14,7 @@ import { companyNumberQueryParameterValidationMiddleware } from "./middleware/co
 import { isPscQueryParameterValidationMiddleware } from "./middleware/is.psc.validation.middleware";
 import { transactionIdValidationMiddleware } from "./middleware/transaction.id.validation.middleware";
 import { submissionIdValidationMiddleware } from "./middleware/submission.id.validation.middleware";
+import { commonTemplateVariablesMiddleware } from "./middleware/common.variables.middleware";
 
 const app = express();
 app.disable("x-powered-by");
@@ -56,6 +57,7 @@ const userAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
 app.use(userAuthRegex, authenticationMiddleware);
 app.use(`${urls.CONFIRMATION_STATEMENT}${urls.COMPANY_AUTH_PROTECTED_BASE}`, companyAuthenticationMiddleware);
 
+app.use(commonTemplateVariablesMiddleware)
 // apply our default router to /confirmation-statement
 app.use(urls.CONFIRMATION_STATEMENT, router);
 app.use(errorHandler);
