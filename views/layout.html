@@ -58,15 +58,7 @@
   }) }}
 
   {% block signoutBar %}
-    {% if userEmail %}
-        {% set email = userEmail | default("Not signed in") %}
-        <ul class="js-signout" id="navigation">
-            <li class="content-email" id="signed-in-user">{{email}}</li>
-            <li class="content">
-            <a href="/confirmation-statement/signout" id="user-signout">Sign out</a>
-            </li>
-        </ul>
-    {% endif %}
+    {% include "includes/signout-bar.html" %}
   {% endblock %}
 
   {% block backLink %}
