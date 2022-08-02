@@ -1,0 +1,10 @@
+{% if userEmail %}
+    {% set signoutURL = signoutURL | default("/confirmation-statement/signout") %}
+    {% set email = userEmail | default("Not signed in") %}
+    <ul class="js-signout" id="navigation">
+        <li class="content-email" id="signed-in-user">{{email}}</li>
+        <li class="content">
+        <a href="{{signoutURL}}" id="user-signout">Sign out</a>
+        </li>
+    </ul>
+{% endif %}
