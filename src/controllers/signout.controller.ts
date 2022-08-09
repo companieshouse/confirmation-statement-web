@@ -9,7 +9,8 @@ export const get: Handler = async (req, res) => {
     const returnPage = saveReturnPageInSession(req)
 
     res.render(Templates.SIGNOUT, {
-        backLinkUrl: returnPage
+        backLinkUrl: returnPage,
+        templateName: Templates.SIGNOUT
     });
 }
 
@@ -45,7 +46,8 @@ function showMustSelectButtonError(res: Response, returnPage: string) {
     res.status(400);
     return res.render(Templates.SIGNOUT, {
         backLinkUrl: returnPage,
-        noInputSelectedError: true
+        noInputSelectedError: true,
+        templateName: Templates.SIGNOUT
     });
 }
 
