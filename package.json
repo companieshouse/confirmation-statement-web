@@ -36,7 +36,7 @@
     "luxon": "^2.1.1",
     "nunjucks": "^3.2.3",
     "uuid": "^8.3.2",
-    "yargs": "^15.4.1"
+    "yargs": "^17.6.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.1",
