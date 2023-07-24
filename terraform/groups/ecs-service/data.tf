@@ -9,18 +9,18 @@ data "terraform_remote_state" "networks" {
   }
 }
 
-data "aws_ecs_cluster" "ecs-cluster" {
+data "aws_ecs_cluster" "ecs_cluster" {
   cluster_name = "${local.name_prefix}-cluster"
 }
-data "aws_iam_role" "ecs-cluster-iam-role" {
+data "aws_iam_role" "ecs_cluster_iam_role" {
   name = "${local.name_prefix}-ecs-task-execution-role"
 }
 
-data "aws_lb" "filing-maintain-lb" {
-  name = "filing-maintain-${var.environment}-lb"
+data "aws_lb" "filing_maintain_lb" {
+  name = "${var.environment}-chs-chgovuk"
 }
-data "aws_lb_listener" "filing-maintain-lb-listener" {
-  load_balancer_arn = data.aws_lb.filing-maintain-lb.arn
+data "aws_lb_listener" "filing_maintain_lb_listener" {
+  load_balancer_arn = data.aws_lb.filing_maintain_lb.arn
   port = 443
 }
 
