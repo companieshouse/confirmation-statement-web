@@ -4,6 +4,5 @@
 
 PORT=3000
 
-source "server/config/.env"
 export NODE_PORT=${PORT}
-node server.js
+node /app/bin/www.js -- $PORT
