@@ -10,8 +10,8 @@ locals {
   #healthcheck_path          = "/" #healthcheck path for confirmation statement web
   #healthcheck_matcher       = "302" # no explicit healthcheck in this service yet, change this when added!
 
-  secrets                   = jsondecode(data.vault_generic_secret.secrets.data_json)
-  vpc_name                  = local.secrets["vpc_name"]
+  service_secrets           = jsondecode(data.vault_generic_secret.service_secrets.data_json)
+  vpc_name                  = local.service_secrets["vpc_name"]
 
   # create a map of secret name => secret arn to pass into ecs service module
   # using the trimprefix function to remove the prefixed path from the secret name
