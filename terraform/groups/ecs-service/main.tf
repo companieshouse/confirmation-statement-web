@@ -13,7 +13,7 @@ module "ecs-service" {
   # Environmental configuration
   environment             = var.environment
   aws_region              = var.aws_region
-  vpc_id                  = data.terraform_remote_state.networks.outputs.vpc_id
+  vpc_id                  = data.aws_vpc.vpc.id
   ecs_cluster_id          = data.aws_ecs_cluster.ecs_cluster.id
   task_execution_role_arn = data.aws_iam_role.ecs_cluster_iam_role.arn
 
