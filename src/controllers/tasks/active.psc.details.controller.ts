@@ -67,24 +67,24 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     // Don't commit anything yet as the user must progress to the next screen.
     await sendUpdate(req, SECTIONS.PSC, SectionStatus.NOT_CONFIRMED);
-    
+
     if (activePscsButtonValue === RADIO_BUTTON_VALUE.YES || activePscsButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-        return res.redirect(getPscStatementUrl(req, true));
+      return res.redirect(getPscStatementUrl(req, true));
     } else if (activePscsButtonValue === RADIO_BUTTON_VALUE.NO) {
-        return res.redirect(urlUtils.getUrlToPath(WRONG_PSC_DETAILS_PATH, req));
+      return res.redirect(urlUtils.getUrlToPath(WRONG_PSC_DETAILS_PATH, req));
     } else {
-        const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
-        const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
-        const pscs: PersonOfSignificantControl[] = await getPscs(req.session as Session, transactionId, submissionId);
-        const pscLists = buildPscLists(pscs);
-        return res.render(Templates.ACTIVE_PSC_DETAILS, {
-            templateName: Templates.ACTIVE_PSC_DETAILS,
-            backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-            pscDetailsError: PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
-            individualPscList: pscLists.individualPscList,
-            relevantLegalEntityList: pscLists.relevantLegalEntityList,
-            otherRegistrablePersonList: pscLists.otherRegistrablePersonList
-        });
+      const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+      const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+      const pscs: PersonOfSignificantControl[] = await getPscs(req.session as Session, transactionId, submissionId);
+      const pscLists = buildPscLists(pscs);
+      return res.render(Templates.ACTIVE_PSC_DETAILS, {
+        templateName: Templates.ACTIVE_PSC_DETAILS,
+        backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+        pscDetailsError: PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
+        individualPscList: pscLists.individualPscList,
+        relevantLegalEntityList: pscLists.relevantLegalEntityList,
+        otherRegistrablePersonList: pscLists.otherRegistrablePersonList
+      });
     }
   } catch (e) {
     return next(e);

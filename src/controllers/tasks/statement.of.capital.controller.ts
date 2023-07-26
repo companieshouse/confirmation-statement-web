@@ -72,7 +72,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
       await sendUpdate(req, SECTIONS.SOC, SectionStatus.RECENT_FILING, statementOfCapital);
       return res.redirect(urlUtils
-      .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId));
+        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId));
     } else if (statementOfCapitalButtonValue === RADIO_BUTTON_VALUE.NO || !sharesValidation || !totalAmountUnpaidValidation) {
       await sendUpdate(req, SECTIONS.SOC, SectionStatus.NOT_CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(WRONG_STATEMENT_OF_CAPITAL_PATH, req));

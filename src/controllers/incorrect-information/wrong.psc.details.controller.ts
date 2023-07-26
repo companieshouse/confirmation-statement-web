@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { urlUtils } from "../../utils/url";
 import {
-  ACTIVE_PSC_DETAILS_PATH, TASK_LIST_PATH} from "../../types/page.urls";
+  ACTIVE_PSC_DETAILS_PATH, TASK_LIST_PATH } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { SECTIONS, WRONG_PSC_ERROR, RADIO_BUTTON_VALUE, WRONG_PSC_DETAILS_TEXT } from "../../utils/constants";
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";

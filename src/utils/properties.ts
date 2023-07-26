@@ -15,7 +15,7 @@ const getEnvironmentVariable = (key: string, defaultValue?: any): string => {
   return value || defaultValue as string;
 };
 
-export const ACCOUNT_URL = getEnvironmentVariable("ACCOUNT_URL")
+export const ACCOUNT_URL = getEnvironmentVariable("ACCOUNT_URL");
 
 export const COOKIE_NAME = getEnvironmentVariable("COOKIE_NAME");
 

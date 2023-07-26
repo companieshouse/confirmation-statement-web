@@ -10,7 +10,7 @@ import { EWF_URL } from "../../utils/properties";
 
 
 export const get = (req: Request, res: Response) => {
-  return res.render(Templates.WRONG_OFFICERS, { 
+  return res.render(Templates.WRONG_OFFICERS, {
     EWF_URL,
     templateName: Templates.WRONG_OFFICERS,
     backLinkUrl: urlUtils.getUrlToPath(ACTIVE_OFFICERS_DETAILS_PATH, req)

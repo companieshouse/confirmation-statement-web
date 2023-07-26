@@ -73,7 +73,7 @@ describe("Wrong psc details stop controller tests", () => {
 
     it("Should redirect to task list page when no radio button is selected", async () => {
       const response = await request(app).post(populatedWrongPscDetailsPath).send({ radioButton: RADIO_BUTTON_VALUE.NO });
-      
+
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.PSC);
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
       expect(response.status).toEqual(302);
