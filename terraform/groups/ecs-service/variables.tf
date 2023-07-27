@@ -131,3 +131,37 @@ variable "account_test_url" {
 variable "account_future_url" {
   type        = string
 }
+
+variable "radio_button_value_log_length" {
+  type        = string
+}
+variable "show_service_offline_page" {
+  type        = string
+}
+variable "url_log_max_length" {
+  type        = string
+}
+variable "url_param_max_length" {
+  type        = string
+}
+variable "feature_flag_private_sdk_12052021" {
+  type        = string
+}
+variable "feature_flag_active_officers_01072021" {
+  type        = string
+}
+variable "feature_flag_five_or_less_officers_journey_21102021" {
+  type        = string
+}
+variable "psc_statements_api_page_size" {
+  type        = string
+}
+variable "ewf_url" {
+  type        = string
+}
+variable "api_url" {
+  type        = string
+}
+variable "piwik_start_goal_id" {
+  type        = string
+}

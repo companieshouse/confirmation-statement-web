@@ -25,6 +25,8 @@ locals {
     # { "name": "CHS_DEVELOPER_CLIENT_SECRET", "valueFrom": "${local.secrets_arn_map.web-oauth2-client-secret}" },
     # { "name": "COOKIE_SECRET", "valueFrom": "${local.secrets_arn_map.web-oauth2-cookie-secret}" },
     # { "name": "DEVELOPER_OAUTH2_REQUEST_KEY", "valueFrom": "${local.secrets_arn_map.web-oauth2-request-key}" }
+    # { "name": "CHS_API_KEY", "valueFrom": "${local.secrets_arn_map.chs-api-key}" },
+    # { "name": "INTERNAL_API_URL", "valueFrom": "${local.secrets_arn_map.internal-api-url}" }
   ]
 
   task_environment = [
@@ -32,7 +34,7 @@ locals {
     { "name": "LOGLEVEL", "value": "${var.log_level}" },
     { "name": "CDN_HOST", "value": "//${var.cdn_host}" },
     { "name": "CHS_URL", "value": "${var.chs_url}" },
-    { "name": "ACCOUNT_LOCAL_URL", "value": "${var.account_local_url}" },
+    { "name": "ACCOUNT_URL", "value": "${var.account_url}" },
     { "name": "PIWIK_URL", "value": "${var.piwik_url}" },
     { "name": "PIWIK_SITE_ID", "value": "${var.piwik_site_id}" },
     { "name": "REDIRECT_URI", "value": "${var.redirect_uri}" },
@@ -44,6 +46,17 @@ locals {
     { "name": "DEFAULT_SESSION_EXPIRATION", "value": "${var.default_session_expiration}" },
     { "name": "OAUTH2_REDIRECT_URI", "value": "${var.oauth2_redirect_uri}" },
     { "name": "OAUTH2_AUTH_URI", "value": "${var.oauth2_auth_uri}" },
-    { "name": "APPLICATIONS_API_URL", "value": "${var.account_local_url}" }
+    { "name": "APPLICATIONS_API_URL", "value": "${var.account_local_url}" },
+    { "name": "PIWIK_START_GOAL_ID", "value": "${var.piwik_start_goal_id}" },
+    { "name": "RADIO_BUTTON_VALUE_LOG_LENGTH", "value": "${var.radio_button_value_log_length}" },
+    { "name": "SHOW_SERVICE_OFFLINE_PAGE", "value": "${var.show_service_offline_page}" },
+    { "name": "URL_LOG_MAX_LENGTH", "value": "${var.url_log_max_length}" },
+    { "name": "URL_PARAM_MAX_LENGTH", "value": "${var.url_param_max_length}" },
+    { "name": "FEATURE_FLAG_PRIVATE_SDK_12052021", "value": "${var.feature_flag_private_sdk_12052021}" },
+    { "name": "FEATURE_FLAG_ACTIVE_OFFICERS_01072021", "value": "${var.feature_flag_active_officers_01072021}" },
+    { "name": "FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021", "value": "${var.feature_flag_five_or_less_officers_journey_21102021}" },
+    { "name": "PSC_STATEMENTS_API_PAGE_SIZE", "value": "${var.psc_statements_api_page_size}" },
+    { "name": "EWF_URL", "value": "${var.ewf_url}" },
+    { "name": "API_URL", "value": "${var.api_url}" }
   ]
 }
