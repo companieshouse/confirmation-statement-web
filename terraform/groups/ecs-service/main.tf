@@ -3,6 +3,8 @@ provider "aws" {
   version = "~> 4.54.0"
 }
 
+provider "vault" {}
+
 terraform {
   backend "s3" {}
 }
