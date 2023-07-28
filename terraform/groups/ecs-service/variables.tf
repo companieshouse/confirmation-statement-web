@@ -113,9 +113,6 @@ variable "default_session_expiration" {
   type        = string
   default     = "3600"
 }
-variable "account_future_url" {
-  type        = string
-}
 
 variable "radio_button_value_log_length" {
   type        = string
