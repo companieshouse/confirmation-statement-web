@@ -77,9 +77,6 @@ variable "confirmation_statement_web_version" {
   description = "The version of the confirmation statement web container to run."
 }
 
-variable "cdn_host" {
-  type        = string
-}
 variable "chs_url" {
   type        = string
 }
@@ -101,9 +98,6 @@ variable "cache_pool_size" {
   type        = string
   default     = "8"
 }
-variable "cache_server" {
-  type        = string
-}
 variable "cookie_domain" {
   type        = string
 }
@@ -118,15 +112,6 @@ variable "cookie_secure_only" {
 variable "default_session_expiration" {
   type        = string
   default     = "3600"
-}
-variable "oauth2_redirect_uri" {
-  type        = string
-}
-variable "oauth2_auth_uri" {
-  type        = string
-}
-variable "account_test_url" {
-  type        = string
 }
 variable "account_future_url" {
   type        = string

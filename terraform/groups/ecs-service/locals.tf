@@ -12,6 +12,14 @@ locals {
 
   service_secrets           = jsondecode(data.vault_generic_secret.service_secrets.data_json)
   vpc_name                  = local.service_secrets["vpc_name"]
+  chs_api_key               = local.service_secrets["chs_api_key"]
+  internal_api_url          = local.service_secrets["internal_api_url"]
+  cdn_host                  = local.service_secrets["cdn_host"]
+  oauth2_auth_uri           = local.service_secrets["oauth2_auth_uri"]
+  oauth2_redirect_uri       = local.service_secrets["oauth2_redirect_uri"]
+  account_test_url          = local.service_secrets["account_test_url"]
+  account_url               = local.service_secrets["account_url"]
+  cache_server              = local.service_secrets["cache_server"]
 
   # create a map of secret name => secret arn to pass into ecs service module
   # using the trimprefix function to remove the prefixed path from the secret name
@@ -21,31 +29,32 @@ locals {
   }
 
   task_secrets = [
-    # { "name": "CHS_DEVELOPER_CLIENT_ID", "valueFrom": "${local.secrets_arn_map.web-oauth2-client-id}" },
-    # { "name": "CHS_DEVELOPER_CLIENT_SECRET", "valueFrom": "${local.secrets_arn_map.web-oauth2-client-secret}" },
-    # { "name": "COOKIE_SECRET", "valueFrom": "${local.secrets_arn_map.web-oauth2-cookie-secret}" },
-    # { "name": "DEVELOPER_OAUTH2_REQUEST_KEY", "valueFrom": "${local.secrets_arn_map.web-oauth2-request-key}" }
-    # { "name": "CHS_API_KEY", "valueFrom": "${local.secrets_arn_map.chs-api-key}" },
-    # { "name": "INTERNAL_API_URL", "valueFrom": "${local.secrets_arn_map.internal-api-url}" }
+    { "name": "CHS_DEVELOPER_CLIENT_ID", "valueFrom": "${local.secrets_arn_map.web-oauth2-client-id}" },
+    { "name": "CHS_DEVELOPER_CLIENT_SECRET", "valueFrom": "${local.secrets_arn_map.web-oauth2-client-secret}" },
+    { "name": "COOKIE_SECRET", "valueFrom": "${local.secrets_arn_map.web-oauth2-cookie-secret}" },
+    { "name": "DEVELOPER_OAUTH2_REQUEST_KEY", "valueFrom": "${local.secrets_arn_map.web-oauth2-request-key}" },
+    { "name": "CHS_API_KEY", "valueFrom": "${local.chs_api_key}" },
+    { "name": "CDN_HOST", "valueFrom": "//${local.cdn_host}" },
+    { "name": "CACHE_SERVER", "valueFrom": "${local.cache_server}" },
+    { "name": "OAUTH2_REDIRECT_URI", "valueFrom": "${local.oauth2_redirect_uri}" },
+    { "name": "OAUTH2_AUTH_URI", "valueFrom": "${local.oauth2_auth_uri}" },
+    { "name": "ACCOUNT_URL", "valueFrom": "${local.account_url}" },
+    { "name": "ACCOUNT_TEST_URL", "valueFrom": "${local.account_test_url}" },
+    { "name": "INTERNAL_API_URL", "valueFrom": "${local.internal_api_url}" }
   ]
 
   task_environment = [
     { "name": "NODE_PORT", "value": "${local.container_port}" },
     { "name": "LOGLEVEL", "value": "${var.log_level}" },
-    { "name": "CDN_HOST", "value": "//${var.cdn_host}" },
     { "name": "CHS_URL", "value": "${var.chs_url}" },
-    { "name": "ACCOUNT_URL", "value": "${var.account_url}" },
     { "name": "PIWIK_URL", "value": "${var.piwik_url}" },
     { "name": "PIWIK_SITE_ID", "value": "${var.piwik_site_id}" },
     { "name": "REDIRECT_URI", "value": "${var.redirect_uri}" },
     { "name": "CACHE_POOL_SIZE", "value": "${var.cache_pool_size}" },
-    { "name": "CACHE_SERVER", "value": "${var.cache_server}" },
     { "name": "COOKIE_DOMAIN", "value": "${var.cookie_domain}" },
     { "name": "COOKIE_NAME", "value": "${var.cookie_name}" },
     { "name": "COOKIE_SECURE_ONLY", "value": "${var.cookie_secure_only}" },
     { "name": "DEFAULT_SESSION_EXPIRATION", "value": "${var.default_session_expiration}" },
-    { "name": "OAUTH2_REDIRECT_URI", "value": "${var.oauth2_redirect_uri}" },
-    { "name": "OAUTH2_AUTH_URI", "value": "${var.oauth2_auth_uri}" },
     { "name": "APPLICATIONS_API_URL", "value": "${var.account_local_url}" },
     { "name": "PIWIK_START_GOAL_ID", "value": "${var.piwik_start_goal_id}" },
     { "name": "RADIO_BUTTON_VALUE_LOG_LENGTH", "value": "${var.radio_button_value_log_length}" },
