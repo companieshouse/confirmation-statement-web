@@ -1,6 +1,18 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = = "~> 4.54.0"
+    },
+    vault = {
+      source  = "hashicorp/aws"
+      version = = "~> 3.18.0"
+    }
+  }
+}
+
 provider "aws" {
   region  = var.aws_region
-  version = "~> 4.54.0"
 }
 
 provider "vault" {}
