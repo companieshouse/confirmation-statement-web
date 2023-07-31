@@ -15,8 +15,6 @@ provider "aws" {
   region  = var.aws_region
 }
 
-provider "vault" {}
-
 terraform {
   backend "s3" {}
 }
