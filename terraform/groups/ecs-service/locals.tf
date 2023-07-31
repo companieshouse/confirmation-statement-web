@@ -28,18 +28,23 @@ locals {
       trimprefix(sec.name, "/${local.name_prefix}/") => sec.arn
   }
 
+  service_secrets_arn_map = {
+    for sec in module.secrets.secrets:
+      trimprefix(sec.name, "/${local.service_name}-${var.environment}/") => sec.arn
+  }
+
   task_secrets = [
     { "name": "CHS_DEVELOPER_CLIENT_ID", "valueFrom": "${local.secrets_arn_map.web-oauth2-client-id}" },
     { "name": "CHS_DEVELOPER_CLIENT_SECRET", "valueFrom": "${local.secrets_arn_map.web-oauth2-client-secret}" },
     { "name": "COOKIE_SECRET", "valueFrom": "${local.secrets_arn_map.web-oauth2-cookie-secret}" },
     { "name": "DEVELOPER_OAUTH2_REQUEST_KEY", "valueFrom": "${local.secrets_arn_map.web-oauth2-request-key}" },
-    { "name": "CHS_API_KEY", "valueFrom": "${local.chs_api_key}" },
-    { "name": "CDN_HOST", "valueFrom": "//${local.cdn_host}" },
-    { "name": "OAUTH2_REDIRECT_URI", "valueFrom": "${local.oauth2_redirect_uri}" },
-    { "name": "OAUTH2_AUTH_URI", "valueFrom": "${local.oauth2_auth_uri}" },
-    { "name": "ACCOUNT_URL", "valueFrom": "${local.account_url}" },
-    { "name": "ACCOUNT_TEST_URL", "valueFrom": "${local.account_test_url}" },
-    { "name": "INTERNAL_API_URL", "valueFrom": "${local.internal_api_url}" }
+    { "name": "CHS_API_KEY", "valueFrom": "${local.service_secrets_arn_map.chs_api_key}" },
+    { "name": "CACHE_SERVER", "valueFrom": "${local.service_secrets_arn_map.cache_server}" },
+    { "name": "OAUTH2_REDIRECT_URI", "valueFrom": "${local.service_secrets_arn_map.oauth2_redirect_uri}" },
+    { "name": "OAUTH2_AUTH_URI", "valueFrom": "${local.service_secrets_arn_map.oauth2_auth_uri}" },
+    { "name": "ACCOUNT_URL", "valueFrom": "${local.service_secrets_arn_map.account_url}" },
+    { "name": "ACCOUNT_TEST_URL", "valueFrom": "${local.service_secrets_arn_map.account_test_url}" },
+    { "name": "INTERNAL_API_URL", "valueFrom": "${local.service_secrets_arn_map.internal_api_url}" }
   ]
 
   task_environment = [
@@ -49,8 +54,8 @@ locals {
     { "name": "PIWIK_URL", "value": "${var.piwik_url}" },
     { "name": "PIWIK_SITE_ID", "value": "${var.piwik_site_id}" },
     { "name": "REDIRECT_URI", "value": "${var.redirect_uri}" },
+    { "name": "CDN_HOST", "value": "//${var.cdn_host}" },
     { "name": "CACHE_POOL_SIZE", "value": "${var.cache_pool_size}" },
-    { "name": "CACHE_SERVER", "value": "${var.cache_server}" },
     { "name": "COOKIE_DOMAIN", "value": "${var.cookie_domain}" },
     { "name": "COOKIE_NAME", "value": "${var.cookie_name}" },
     { "name": "COOKIE_SECURE_ONLY", "value": "${var.cookie_secure_only}" },

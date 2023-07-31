@@ -80,6 +80,9 @@ variable "confirmation_statement_web_version" {
 variable "chs_url" {
   type        = string
 }
+variable "cdn_host" {
+  type        = string
+}
 variable "account_local_url" {
   type        = string
 }

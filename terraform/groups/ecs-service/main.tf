@@ -19,6 +19,16 @@ terraform {
   backend "s3" {}
 }
 
+module "secrets" {
+  source = "./module-secrets"
+
+  stack_name  = local.stack_name
+  name_prefix = "${local.service_name}-${var.environment}"
+  environment = var.environment
+  kms_key_id  = data.aws_kms_key.kms_key.id
+  secrets     = data.vault_generic_secret.service_secrets.data
+}
+
 module "ecs-service" {
   source = "git::git@github.com:companieshouse/terraform-library-ecs-service.git?ref=1.0.2"
 
@@ -56,4 +66,6 @@ module "ecs-service" {
   # Service environment variable and secret configs
   task_environment = local.task_environment
   task_secrets     = local.task_secrets
+
+  depends_on=[module.secrets]
 }
