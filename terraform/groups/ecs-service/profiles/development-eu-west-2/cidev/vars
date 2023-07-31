@@ -7,7 +7,6 @@ aws_profile = "development-eu-west-2"
 
 # service configs
 # Commented params moved to vault service secrets
-# cdn_host
 # cache_server 
 # oauth2_redirect_uri 
 # oauth2_auth_uri 
