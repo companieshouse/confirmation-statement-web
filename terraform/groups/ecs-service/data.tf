@@ -44,13 +44,3 @@ data "aws_ssm_parameter" "secret" {
   for_each = toset(data.aws_ssm_parameters_by_path.secrets.names)
   name = each.key
 }
-
-data "aws_ssm_parameters_by_path" "service_secrets" {
-  path = "/${local.service_name}-${var.environment}"
-}
-
-# create a list of secrets names to retrieve them in a nicer format and lookup each secret by name
-data "aws_ssm_parameter" "service_secret" {
-  for_each = toset(module.secrets.secrets_name)
-  name = each.key
-}
