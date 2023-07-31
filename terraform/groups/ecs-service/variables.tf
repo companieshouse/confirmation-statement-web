@@ -103,9 +103,7 @@ variable "cache_pool_size" {
   type        = string
   default     = "8"
 }
-variable "cache_server" {
-  type        = string
-}
+
 variable "cookie_domain" {
   type        = string
 }
