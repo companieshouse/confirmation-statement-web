@@ -6,9 +6,9 @@ locals {
   container_port            = "3000" # default node port required here until prod docker container is built allowing port change via env var
   docker_repo               = "confirmation-statement-web"
   lb_listener_rule_priority = 10
-  lb_listener_paths         = ["/*"]
-  #healthcheck_path          = "/" #healthcheck path for confirmation statement web
-  #healthcheck_matcher       = "302" # no explicit healthcheck in this service yet, change this when added!
+  lb_listener_paths         = ["/confirmation-statement*"]
+  healthcheck_path          = "/confirmation-statement" #healthcheck path for confirmation statement web
+  healthcheck_matcher       = "200-302" # no explicit healthcheck in this service yet, change this when added!
 
   service_secrets           = jsondecode(data.vault_generic_secret.service_secrets.data_json)
   vpc_name                  = local.service_secrets["vpc_name"]
