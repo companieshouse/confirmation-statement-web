@@ -6,7 +6,7 @@ import { commonTemplateVariablesMiddleware } from '../../src/middleware/common.v
 
 
 describe('common variable middleware tests', () => {
-  it('should populate the users email from the session', async () => {
+  it('should populate the users email from the session', async () => { // eslint-disable-line
     const email = 'jblogs@example.com';
     const req: Request = { originalUrl: '', session: sessionWithEmail(email) } as Request;
     const res: Response = { locals: {} } as Response;

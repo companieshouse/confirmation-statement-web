@@ -1,11 +1,11 @@
-import { Handler, NextFunction, Request, response, Response } from "express";
+import { Handler, NextFunction, Request, Response } from "express";
 import { Templates } from "../types/template.paths";
 import { SIGNOUT_RETURN_URL_SESSION_KEY } from "../utils/constants";
 import { Session } from "@companieshouse/node-session-handler";
 import { ACCOUNTS_SIGNOUT_PATH } from "../types/page.urls";
 import { logger } from "../utils/logger";
 
-export const get: Handler = async (req, res) => {
+export const get: Handler = (req, res) => {
   const returnPage = saveReturnPageInSession(req);
 
   res.render(Templates.SIGNOUT, {
@@ -14,7 +14,7 @@ export const get: Handler = async (req, res) => {
   });
 };
 
-export const post = handleError(async (req, res) => {
+export const post = handleError(async (req, res) => { // eslint-disable-line
   const returnPage = getReturnPageFromSession(req.session as Session);
 
   switch (req.body.signout) {
@@ -52,7 +52,7 @@ function showMustSelectButtonError(res: Response, returnPage: string) {
 }
 
 function saveReturnPageInSession(req: Request): string {
-  const returnPageUrl = req.headers.referer!;
+  const returnPageUrl = req.headers.referer!; // eslint-disable-line
   req.session?.setExtraData(SIGNOUT_RETURN_URL_SESSION_KEY, returnPageUrl);
   return returnPageUrl;
 }

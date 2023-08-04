@@ -51,7 +51,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getBackLinkUrl = async (req: Request, res: Response, next: NextFunction) => {
+const getBackLinkUrl = async (req: Request, res: Response, next: NextFunction) => { // eslint-disable-line
   let path = urlUtils.getUrlToPath(PSC_STATEMENT_PATH, req);
   const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
   const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);

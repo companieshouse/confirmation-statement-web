@@ -10,7 +10,7 @@ import {
   WRONG_RO_PATH
 } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
-import * as updateConfirmationStatement from "../../../src/utils/update.confirmation.statement.submission";
+// import * as updateConfirmationStatement from "../../../src/utils/update.confirmation.statement.submission";
 import { RADIO_BUTTON_VALUE, SECTIONS } from "../../../src/utils/constants";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
