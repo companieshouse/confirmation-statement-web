@@ -20,13 +20,12 @@ terraform {
 }
 
 module "secrets" {
-  source = "./module-secrets"
+  source = "git@github.com:companieshouse/terraform-modules//aws/ecs/secrets?ref=1.0.191"
 
-  stack_name  = local.stack_name
   name_prefix = "${local.service_name}-${var.environment}"
   environment = var.environment
   kms_key_id  = data.aws_kms_key.kms_key.id
-  secrets     = data.vault_generic_secret.service_secrets.data
+  secrets     = local.parameter_store_secrets
 }
 
 module "ecs-service" {
