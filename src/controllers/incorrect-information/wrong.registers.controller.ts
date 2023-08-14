@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { urlUtils } from "../../utils/url";
 import {
   REGISTER_LOCATIONS_PATH,
-  TASK_LIST_PATH} from "../../types/page.urls";
+  TASK_LIST_PATH } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { RADIO_BUTTON_VALUE, SECTIONS, WRONG_REGISTER_ERROR } from "../../utils/constants";
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";

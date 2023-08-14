@@ -19,7 +19,7 @@ export const serviceAvailabilityMiddleware = (req: Request, res: Response, next:
   }
 
   if (isActiveFeature(SHOW_SERVICE_OFFLINE_PAGE)) {
-    return res.render(Templates.SERVICE_OFFLINE, {EWF_URL});
+    return res.render(Templates.SERVICE_OFFLINE, { EWF_URL });
   }
 
   // feature flag SHOW_SERVICE_OFFLINE_PAGE is false - carry on as normal

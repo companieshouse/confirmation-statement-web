@@ -10,7 +10,7 @@ import {
   WRONG_RO_PATH
 } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
-import * as updateConfirmationStatement from "../../../src/utils/update.confirmation.statement.submission";
+// import * as updateConfirmationStatement from "../../../src/utils/update.confirmation.statement.submission";
 import { RADIO_BUTTON_VALUE, SECTIONS } from "../../../src/utils/constants";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
@@ -76,7 +76,7 @@ describe("Wrong registered office address stop controller tests", () => {
 
     it("Should redirect to task list page when no radio button is selected", async () => {
       const response = await request(app).post(populatedWrongRegisteredOfficeAddressPath).send({ radioButton: RADIO_BUTTON_VALUE.NO });
-      
+
       expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ROA);
       expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
       expect(response.status).toEqual(302);

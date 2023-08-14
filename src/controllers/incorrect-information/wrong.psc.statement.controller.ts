@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import {
-  PSC_STATEMENT_PATH, TASK_LIST_PATH, URL_QUERY_PARAM} from "../../types/page.urls";
+  PSC_STATEMENT_PATH, TASK_LIST_PATH, URL_QUERY_PARAM } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { SECTIONS, WRONG_PSC_ERROR, RADIO_BUTTON_VALUE, WRONG_PSC_STATEMENT_TEXT } from "../../utils/constants";
 import { urlUtils } from "../../utils/url";
@@ -51,7 +51,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getBackLinkUrl = async (req: Request, res: Response, next: NextFunction) => {
+const getBackLinkUrl = async (req: Request, res: Response, next: NextFunction) => { // eslint-disable-line
   let path = urlUtils.getUrlToPath(PSC_STATEMENT_PATH, req);
   const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
   const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);

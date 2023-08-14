@@ -24,9 +24,13 @@ lint:
 sonar:
 	npm run sonarqube
 
-.PHONY: test
-test:
+.PHONY: test-unit
+test-unit:
 	npm run coverage
+
+.PHONY: security-check
+security-check:
+	npm audit
 
 .PHONY: package
 package: build
@@ -48,7 +52,7 @@ endif
 	rm -rf $(tmpdir)
 
 .PHONY: dist
-dist: lint test clean package
+dist: lint test-unit clean package
 
 .PHONY: update_submodules
 update_submodules:

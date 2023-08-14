@@ -7,10 +7,8 @@ import {
   appointmentTypes,
   PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR,
   RADIO_BUTTON_VALUE,
-  SECTIONS,
-  WRONG_DETAILS_INCORRECT_PSC, 
-  DETAIL_TYPE_PSC_LEGEND, 
-  DETAIL_TYPE_PSC } from "../../utils/constants";
+  SECTIONS
+} from "../../utils/constants";
 import {
   PersonOfSignificantControl,
   SectionStatus
