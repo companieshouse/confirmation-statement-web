@@ -57,7 +57,7 @@ const userAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
 app.use(userAuthRegex, authenticationMiddleware);
 app.use(`${urls.CONFIRMATION_STATEMENT}${urls.COMPANY_AUTH_PROTECTED_BASE}`, companyAuthenticationMiddleware);
 
-app.use(commonTemplateVariablesMiddleware)
+app.use(commonTemplateVariablesMiddleware);
 // apply our default router to /confirmation-statement
 app.use(urls.CONFIRMATION_STATEMENT, router);
 app.use(errorHandler);
