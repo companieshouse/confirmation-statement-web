@@ -13,7 +13,7 @@ kms_alias = "alias/development-eu-west-2/environment-services-kms"
 # oauth2_auth_uri 
 # account_test_url 
 # account_url 
-log_level = "trace"
+log_level = "debug"
 cdn_host = "d3uvya5a8a1ncx.cloudfront.net"
 chs_url = "https://cidev.aws.chdev.org"
 account_local_url = "https://account.cidev.aws.chdev.org"
