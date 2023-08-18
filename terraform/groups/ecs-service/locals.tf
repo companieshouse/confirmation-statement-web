@@ -19,7 +19,6 @@ locals {
     "cdn_host"                  = local.service_secrets["cdn_host"]
     "oauth2_auth_uri"           = local.service_secrets["oauth2_auth_uri"]
     "oauth2_redirect_uri"       = local.service_secrets["oauth2_redirect_uri"]
-    "account_test_url"          = local.service_secrets["account_test_url"]
     "account_url"               = local.service_secrets["account_url"]
     "cache_server"              = local.service_secrets["cache_server"]
   }
@@ -30,7 +29,6 @@ locals {
   cdn_host                  = local.service_secrets["cdn_host"]
   oauth2_auth_uri           = local.service_secrets["oauth2_auth_uri"]
   oauth2_redirect_uri       = local.service_secrets["oauth2_redirect_uri"]
-  account_test_url          = local.service_secrets["account_test_url"]
   account_url               = local.service_secrets["account_url"]
   cache_server              = local.service_secrets["cache_server"]
 
@@ -56,7 +54,6 @@ locals {
     { "name": "OAUTH2_REDIRECT_URI", "valueFrom": "${local.service_secrets_arn_map.oauth2_redirect_uri}" },
     { "name": "OAUTH2_AUTH_URI", "valueFrom": "${local.service_secrets_arn_map.oauth2_auth_uri}" },
     { "name": "ACCOUNT_URL", "valueFrom": "${local.service_secrets_arn_map.account_url}" },
-    { "name": "ACCOUNT_TEST_URL", "valueFrom": "${local.service_secrets_arn_map.account_test_url}" },
     { "name": "INTERNAL_API_URL", "valueFrom": "${local.service_secrets_arn_map.internal_api_url}" }
   ]
 
