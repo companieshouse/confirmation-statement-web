@@ -54,6 +54,7 @@ module "ecs-service" {
   # Service configuration
   service_name = local.service_name
   name_prefix  = local.name_prefix
+  use_fargate  = var.use_fargate
 
   # Service Healthcheck configuration
 
