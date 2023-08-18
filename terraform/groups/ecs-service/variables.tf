@@ -50,24 +50,24 @@ variable "docker_registry" {
 # Service performance and scaling configs
 # ------------------------------------------------------------------------------
 variable "desired_task_count" {
-  type = number
+  type        = number
   description = "The desired ECS task count for this service"
-  default = 1 # defaulted low for dev environments, override for production
+  default     = 1 # defaulted low for dev environments, override for production
 }
 variable "required_cpus" {
-  type = number
+  type        = number
   description = "The required cpu resource for this service. 1024 here is 1 vCPU"
-  default = 128 # defaulted low for dev environments, override for production
+  default     = 128 # defaulted low for dev environments, override for production
 }
 variable "required_memory" {
-  type = number
+  type        = number
   description = "The required memory for this service"
-  default = 256 # defaulted low for node service in dev environments, override for production
+  default     = 256 # defaulted low for node service in dev environments, override for production
 }
 variable "use_fargate" {
-  type = bool
+  type        = bool
   description = "If true, sets the required capabilities for all containers in the task definition to use FARGATE, false uses EC2"
-  default = false
+  default     = false
 }
 # ------------------------------------------------------------------------------
 # Service environment variable configs
