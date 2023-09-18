@@ -9,6 +9,10 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const session = req.session as Session;
     const userEmail = session.data.signin_info?.user_profile?.email;
+    let test;
+    for (let index = 0; index < 10; index++) {
+      test = index;
+    }
     return res.render(Templates.CONFIRMATION, {
       signoutURL: ACCOUNTS_SIGNOUT_PATH,
       referenceNumber: transactionId,
