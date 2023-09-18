@@ -12,6 +12,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     let test;
     for (let index = 0; index < 10; index++) {
       test = index;
+      
     }
     return res.render(Templates.CONFIRMATION, {
       signoutURL: ACCOUNTS_SIGNOUT_PATH,
