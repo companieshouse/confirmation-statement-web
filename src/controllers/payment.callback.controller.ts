@@ -14,6 +14,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     logger.debug(`Returned state: ${returnedState}, saved state: ${savedState}`);
 
+    logger.debug(`Returned state: ${returnedState}, saved state: ${savedState}`);
+
+
     if (!savedState || savedState !== returnedState) {
       return next(createAndLogError("Returned state does not match saved state, rejecting redirect"));
     }
