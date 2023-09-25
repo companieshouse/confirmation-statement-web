@@ -42,6 +42,9 @@ const URL = TASK_LIST_PATH
   .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
   .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
 
+const clone = (objectToClone: any): any => {
+  return JSON.parse(JSON.stringify(objectToClone));
+};
 
 describe("Task list controller tests", () => {
 
@@ -60,6 +63,7 @@ describe("Task list controller tests", () => {
       expect(response.text).toContain("Check and confirm that the company information we have on record is correct");
       expect(response.text).toContain("Submit");
       expect(response.text).toContain("Cannot start yet");
+      expect(response.text).not.toContain("Registered email address");
     });
 
     it("Should show recordDate as next due date when filing after nextMadeUpToDate", async () => {
@@ -70,6 +74,7 @@ describe("Task list controller tests", () => {
         mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
         const response = await request(app).get(URL);
         expect(response.text).toContain(expectedDate);
+        expect(response.text).not.toContain("Registered email address");
       }
     });
 
@@ -77,12 +82,14 @@ describe("Task list controller tests", () => {
       if (validCompanyProfile.confirmationStatement === undefined) {
         fail();
       } else {
-        validCompanyProfile.confirmationStatement.nextMadeUpTo = DateTime.now().toString();
-        const expectedDate = toReadableFormat(validCompanyProfile.confirmationStatement.nextMadeUpTo);
-        mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+        const companyProfile = clone(validCompanyProfile);
+        companyProfile.confirmationStatement.nextMadeUpTo = DateTime.now().toString();
+        const expectedDate = toReadableFormat(companyProfile.confirmationStatement.nextMadeUpTo);
+        mockGetCompanyProfile.mockResolvedValueOnce(companyProfile);
         const response = await request(app).get(URL);
 
         expect(response.text).toContain(expectedDate);
+        expect(response.text).not.toContain("Registered email address");
       }
     });
 
@@ -90,22 +97,26 @@ describe("Task list controller tests", () => {
       if (validCompanyProfile.confirmationStatement === undefined) {
         fail();
       } else {
-        validCompanyProfile.confirmationStatement.nextMadeUpTo = DateTime.fromISO('2999-06-04T00:00:00.000Z').toString();
+        const companyProfile = clone(validCompanyProfile);
+        companyProfile.confirmationStatement.nextMadeUpTo = DateTime.fromISO('2999-06-04T00:00:00.000Z').toString();
         const expectedDate = toReadableFormat(DateTime.now().toString());
-        mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+        mockGetCompanyProfile.mockResolvedValueOnce(companyProfile);
 
         const response = await request(app).get(URL);
 
         expect(response.text).toContain(expectedDate);
+        expect(response.text).not.toContain("Registered email address");
       }
     });
 
-    it("Should throw an error when confirmationStatent is missing", async () => {
-      validCompanyProfile.confirmationStatement = undefined;
-      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    it("Should throw an error when confirmationStatement is missing", async () => {
+      const companyProfile = clone(validCompanyProfile);
+      companyProfile.confirmationStatement = undefined;
+      mockGetCompanyProfile.mockResolvedValueOnce(companyProfile);
       const response = await request(app).get(URL);
 
       expect(response.text).toContain(ERROR_TEXT);
+      expect(response.text).not.toContain("Registered email address");
     });
 
     it("Should return an error page if error is thrown when Company Profile is missing confirmation statement", async () => {
@@ -115,6 +126,46 @@ describe("Task list controller tests", () => {
 
       expect(response.status).toBe(500);
       expect(response.text).toContain(ERROR_TEXT);
+      expect(response.text).not.toContain("Registered email address");
+    });
+
+    it("Should enable Registered email address option when confirmation statement date is the same as ECCT start date", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      process.env.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-03-15";
+      const response = await request(app).get(URL);
+
+      expect(response.text).toContain("Registered email address");
+    });
+
+    it("Should enable Registered email address option when confirmation statement date is after ECCT start date", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      process.env.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-03-14";
+      const response = await request(app).get(URL);
+
+      expect(response.text).toContain("Registered email address");
+    });
+
+    it("Should disable Registered email address option when confirmation statement date is before ECCT start date", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      process.env.FEATURE_FLAG_ECCT_START_DATE_14082023 = '2020-03-16';
+      const response = await request(app).get(URL);
+
+      expect(response.text).not.toContain("Registered email address");
+    });
+
+    it("Should disable Registered email address option when ECCT Feature flag environment variable is invalid format", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      process.env.FEATURE_FLAG_ECCT_START_DATE_14082023 = '2020-03-99';
+      const response = await request(app).get(URL);
+
+      expect(response.text).not.toContain("Registered email address");
+    });
+
+    it("Should disable Registered email address option when ECCT Feature flag environment variable not supplied", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      const response = await request(app).get(URL);
+
+      expect(response.text).not.toContain("Registered email address");
     });
   });
 
