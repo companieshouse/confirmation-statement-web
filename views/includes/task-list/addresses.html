@@ -10,11 +10,11 @@
                 </a>
             </span>
             {% if taskList.tasks.registeredEmailAddress.state === "CHECKED" %}
-                {{ showChecked | safe | replace("statusIdPlaceholder", "roaStatus")}}
+                {{ showChecked | safe | replace("statusIdPlaceholder", "emailStatus")}}
             {% elseif taskList.tasks.registeredEmailAddress.state === "IN_PROGRESS" %}
-                {{ showInProgress | safe | replace("statusIdPlaceholder", "roaStatus")}}
+                {{ showInProgress | safe | replace("statusIdPlaceholder", "emailStatus")}}
             {% else %}
-                {{ showNotChecked | safe | replace("statusIdPlaceholder", "roaStatus")}}
+                {{ showNotChecked | safe | replace("statusIdPlaceholder", "emailStatus")}}
             {% endif %}
         </li>
     {% endif %}
