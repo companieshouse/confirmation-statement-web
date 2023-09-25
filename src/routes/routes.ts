@@ -95,8 +95,6 @@ router.get(urls.REGISTERED_EMAIL_ADDRESS, registeredEmailAddressRoute.get);
 router.get(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.get);
 router.post(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.post);
 
-router.get(urls.REGISTERED_EMAIL_ADDRESS, registeredEmailAddressRoute.get);
-
 router.get(urls.SHAREHOLDERS, shareholders.get);
 router.post(urls.SHAREHOLDERS, shareholders.post);
 
