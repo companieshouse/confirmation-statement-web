@@ -24,6 +24,9 @@ lint:
 sonar:
 	npm run sonarqube
 
+.PHONY: test
+	test: test-unit
+
 .PHONY: test-unit
 test-unit:
 	npm run coverage
