@@ -90,6 +90,8 @@ router.post(urls.ACTIVE_PSC_DETAILS, activePscDetails.post);
 router.get(urls.PSC_STATEMENT, pscStatementRoute.get);
 router.post(urls.PSC_STATEMENT, pscStatementRoute.post);
 
+router.get(urls.REGISTERED_EMAIL_ADDRESS, registeredEmailAddressRoute.get);
+
 router.get(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.get);
 router.post(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.post);
 
