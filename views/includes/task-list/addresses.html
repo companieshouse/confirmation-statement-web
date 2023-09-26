@@ -2,22 +2,6 @@
     Addresses
 </h2>
 <ul class="app-task-list__items">
-    {% if registeredEmailAddressOptionEnabled %}
-        <li class="app-task-list__item">
-            <span class="app-task-list__task-name">
-                <a href="{{taskList.tasks.registeredEmailAddress.url}}" data-event-id="registered-office-address-company-information-section">
-                    Registered email address
-                </a>
-            </span>
-            {% if taskList.tasks.registeredEmailAddress.state === "CHECKED" %}
-                {{ showChecked | safe | replace("statusIdPlaceholder", "emailStatus")}}
-            {% elseif taskList.tasks.registeredEmailAddress.state === "IN_PROGRESS" %}
-                {{ showInProgress | safe | replace("statusIdPlaceholder", "emailStatus")}}
-            {% else %}
-                {{ showNotChecked | safe | replace("statusIdPlaceholder", "emailStatus")}}
-            {% endif %}
-        </li>
-    {% endif %}
     <li class="app-task-list__item">
         <span class="app-task-list__task-name">
             <a href="{{taskList.tasks.registeredOfficeAddress.url}}" data-event-id="registered-office-address-company-information-section">

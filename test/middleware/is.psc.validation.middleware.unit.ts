@@ -6,8 +6,7 @@ import { Templates } from "../../src/types/template.paths";
 import { isPscFlagValid } from "../../src/validators/is.psc.validator";
 import { urlUtils } from "../../src/utils/url";
 
-const URL = "/confirmation-statement/something";
-const req: Request = { originalUrl: URL, headers: {} } as Request;
+const req: Request = {} as Request;
 const res: Response = {} as Response;
 const mockStatus = jest.fn() as jest.Mock;
 const mockRender = jest.fn() as jest.Mock;
