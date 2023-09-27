@@ -11,6 +11,7 @@ import { urlUtils } from "../utils/url";
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
 import { Session } from "@companieshouse/node-session-handler";
 import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { FEATURE_FLAG_ECCT_START_DATE_14082023 } from "../utils/properties";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -69,10 +70,7 @@ const calculateFilingDate = (recordDate: string, companyProfile: CompanyProfile)
 };
 
 const enableRegisteredEmailAdressOption = (company: CompanyProfile): boolean => {
-  const ecctStartDateAsString: string = process.env.FEATURE_FLAG_ECCT_START_DATE_14082023 as string;
-  if (!ecctStartDateAsString) {
-    return false;
-  }
+  const ecctStartDateAsString: string = FEATURE_FLAG_ECCT_START_DATE_14082023 as string;
 
   if (!isValidDate(ecctStartDateAsString)) {
     logger.info(`Environment Variable "FEATURE_FLAG_ECCT_START_DATE_14082023" must be in yyyy-mm-dd format`);
