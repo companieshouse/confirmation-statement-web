@@ -20,6 +20,11 @@ import { mockConfirmationStatementSubmission } from "../mocks/confirmation.state
 import { mockTaskList } from "../mocks/task.list.mock";
 import { urlUtils } from "../../src/utils/url";
 
+const PropertiesMock = jest.requireMock('../../src/utils/properties');
+jest.mock('../../src/utils/properties', () => ({
+  ...jest.requireActual('../../src/utils/properties'),
+}));
+
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 
@@ -131,7 +136,7 @@ describe("Task list controller tests", () => {
 
     it("Should enable Registered email address option when confirmation statement date is the same as ECCT start date", async () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-      process.env.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-03-15";
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-03-15";
       const response = await request(app).get(URL);
 
       expect(response.text).toContain("Registered email address");
@@ -139,7 +144,7 @@ describe("Task list controller tests", () => {
 
     it("Should enable Registered email address option when confirmation statement date is after ECCT start date", async () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-      process.env.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-03-14";
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-03-14";
       const response = await request(app).get(URL);
 
       expect(response.text).toContain("Registered email address");
@@ -147,7 +152,7 @@ describe("Task list controller tests", () => {
 
     it("Should disable Registered email address option when confirmation statement date is before ECCT start date", async () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-      process.env.FEATURE_FLAG_ECCT_START_DATE_14082023 = '2020-03-16';
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = '2020-03-16';
       const response = await request(app).get(URL);
 
       expect(response.text).not.toContain("Registered email address");
@@ -155,7 +160,7 @@ describe("Task list controller tests", () => {
 
     it("Should disable Registered email address option when ECCT Feature flag environment variable is invalid format", async () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-      process.env.FEATURE_FLAG_ECCT_START_DATE_14082023 = '2020-03-99';
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = '2020-03-99';
       const response = await request(app).get(URL);
 
       expect(response.text).not.toContain("Registered email address");
