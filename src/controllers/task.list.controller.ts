@@ -6,7 +6,7 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { getCompanyProfile } from "../services/company.profile.service";
 import { REVIEW_PATH, TRADING_STATUS_PATH } from "../types/page.urls";
 import { isInFuture, toReadableFormat } from "../utils/date";
-import { createAndLogError } from "../utils/logger";
+import { createAndLogError, logger } from "../utils/logger";
 import { urlUtils } from "../utils/url";
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
 import { Session } from "@companieshouse/node-session-handler";
@@ -28,11 +28,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const taskList: TaskList = initTaskList(company.companyNumber, transactionId, submissionId, confirmationStatement);
     taskList.recordDate = calculateFilingDate(taskList.recordDate, company);
 
+    const registeredEmailAddressOptionEnabled: boolean = enableRegisteredEmailAdressOption(company);
+
     return res.render(Templates.TASK_LIST, {
       backLinkUrl,
       company,
       taskList,
       reviewUrl,
+      registeredEmailAddressOptionEnabled,
       templateName: Templates.TASK_LIST
     });
   } catch (e) {
@@ -63,4 +66,25 @@ const calculateFilingDate = (recordDate: string, companyProfile: CompanyProfile)
     }
   }
   throw createAndLogError(`Company Profile is missing confirmationStatement info for company number: ${companyProfile.companyNumber}`);
+};
+
+const enableRegisteredEmailAdressOption = (company: CompanyProfile): boolean => {
+  const ecctStartDateAsString: string = process.env.FEATURE_FLAG_ECCT_START_DATE_14082023 as string;
+  if (!ecctStartDateAsString) {
+    return false;
+  }
+
+  if (!isValidDate(ecctStartDateAsString)) {
+    logger.info(`Environment Variable "FEATURE_FLAG_ECCT_START_DATE_14082023" must be in yyyy-mm-dd format`);
+    return false;
+  }
+
+  const ecctStartDate: Date = new Date(ecctStartDateAsString);
+  const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
+
+  return statementDate >= ecctStartDate;
+};
+
+const isValidDate = (dateAsString: string): boolean => {
+  return  !isNaN(Date.parse(dateAsString));
 };

@@ -14,7 +14,7 @@ import {
   SHAREHOLDERS_PATH,
   SIC_PATH,
   STATEMENT_OF_CAPITAL_PATH,
-  ACTIVE_PSC_DETAILS_PATH
+  ACTIVE_PSC_DETAILS_PATH, REGISTERED_EMAIL_ADDRESS_PATH
 } from "../../src/types/page.urls";
 import { TaskList, TaskState } from "../../src/types/task.list";
 import { toReadableFormat } from "../../src/utils/date";
@@ -71,21 +71,25 @@ describe("Task List Service tests", () => {
       expect(taskList.tasks.registerLocations.url).toBe(TASK_URL);
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[2][0]).toBe(REGISTER_LOCATIONS_PATH);
 
+      expect(taskList.tasks.registeredEmailAddress.state).toBe(TASK_STATE);
+      expect(taskList.tasks.registeredEmailAddress.url).toBe(TASK_URL);
+      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[3][0]).toBe(REGISTERED_EMAIL_ADDRESS_PATH);
+
       expect(taskList.tasks.registeredOfficeAddress.state).toBe(TASK_STATE);
       expect(taskList.tasks.registeredOfficeAddress.url).toBe(TASK_URL);
-      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[3][0]).toBe(REGISTERED_OFFICE_ADDRESS_PATH);
+      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[4][0]).toBe(REGISTERED_OFFICE_ADDRESS_PATH);
 
       expect(taskList.tasks.shareholders.state).toBe(TaskState.CHECKED);
       expect(taskList.tasks.shareholders.url).toBe(TASK_URL);
-      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[4][0]).toBe(SHAREHOLDERS_PATH);
+      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[5][0]).toBe(SHAREHOLDERS_PATH);
 
       expect(taskList.tasks.sicCodes.state).toBe(TaskState.CHECKED);
       expect(taskList.tasks.sicCodes.url).toBe(TASK_URL);
-      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[5][0]).toBe(SIC_PATH);
+      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[6][0]).toBe(SIC_PATH);
 
       expect(taskList.tasks.statementOfCapital.state).toBe(TASK_STATE);
       expect(taskList.tasks.statementOfCapital.url).toBe(TASK_URL);
-      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[6][0]).toBe(STATEMENT_OF_CAPITAL_PATH);
+      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[7][0]).toBe(STATEMENT_OF_CAPITAL_PATH);
 
       expect(taskList.recordDate).toBe(RECORD_DATE);
       expect(taskList.tasksCompletedCount).toBe(TASK_COMPLETED_COUNT);
@@ -110,7 +114,7 @@ describe("Task List Service tests", () => {
     });
 
     it("Should populate set all tasks completed to TRUE.", () => {
-      const ALL_TASK_COMPLETED_COUNT = 7;
+      const ALL_TASK_COMPLETED_COUNT = 8;
       mockGetTaskCompletedCount.mockReturnValueOnce(ALL_TASK_COMPLETED_COUNT);
       const taskList: TaskList = initTaskList(COMPANY_NUMBER, TRANSACTION_ID, CS_SUBMISSION_ID, mockConfirmationStatementSubmission);
 
