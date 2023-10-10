@@ -20,7 +20,8 @@ describe('Email validation', () => {
     [".MYEMAIL@.DOMAIN.COM", false],
     ["MYEMAIL@DOMAIN.CO..UK", false],
     ["me@?i.ai", false],
-    ["me@i.i", false]
+    ["me@i.i", false],
+    ["me@-i.i", false]
   ])('For email %p, validation should return %p', (email: string, result: boolean) => {
     expect(isEmailAddressValid(email)).toEqual(result);
   });
