@@ -22,6 +22,10 @@ export const mockTaskList: TaskList = {
       state: TaskState.IN_PROGRESS,
       url: "/shr",
     },
+    registeredEmailAddress: {
+      state: TaskState.NOT_CHECKED,
+      url: "/regemail"
+    },
     registeredOfficeAddress: {
       state: TaskState.NOT_CHECKED,
       url: "/regaddr"
