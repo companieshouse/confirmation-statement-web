@@ -70,7 +70,7 @@ const calculateFilingDate = (recordDate: string, companyProfile: CompanyProfile)
 };
 
 const enableRegisteredEmailAdressOption = (company: CompanyProfile): boolean => {
-  const ecctStartDateAsString: string = FEATURE_FLAG_ECCT_START_DATE_14082023 as string;
+  const ecctStartDateAsString: string = FEATURE_FLAG_ECCT_START_DATE_14082023;
 
   if (!isValidDate(ecctStartDateAsString)) {
     logger.info(`Environment Variable "FEATURE_FLAG_ECCT_START_DATE_14082023" must be in yyyy-mm-dd format`);
