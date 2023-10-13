@@ -25,7 +25,7 @@ sonar:
 	npm run sonarqube
 
 .PHONY: test
-	test: test-unit
+test: test-unit
 
 .PHONY: test-unit
 test-unit:
