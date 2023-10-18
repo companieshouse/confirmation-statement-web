@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Confirm the email address
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <form action="" method="post">
+
+      <h1 class="govuk-heading-l">Check the email address</h1>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Email address</dt>
+        <dd class="govuk-summary-list__value">
+          {{ emailAddress }}
+        </dd>
+        <dd class="govuk-summary-list__value govuk-!-padding-left-6"><a href="{{backLinkUrl}}">Change</a></dd>
+      </div>
+      <br>
+      {% include "includes/continue-button.html" %}
+    </form>
+  </div>
+</div>
+{% endblock %}
