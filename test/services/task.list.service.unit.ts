@@ -14,7 +14,7 @@ import {
   SHAREHOLDERS_PATH,
   SIC_PATH,
   STATEMENT_OF_CAPITAL_PATH,
-  ACTIVE_PSC_DETAILS_PATH, REGISTERED_EMAIL_ADDRESS_PATH
+  ACTIVE_PSC_DETAILS_PATH, PROVIDE_EMAIL_ADDRESS_PATH
 } from "../../src/types/page.urls";
 import { TaskList, TaskState } from "../../src/types/task.list";
 import { toReadableFormat } from "../../src/utils/date";
@@ -73,7 +73,7 @@ describe("Task List Service tests", () => {
 
       expect(taskList.tasks.registeredEmailAddress.state).toBe(TASK_STATE);
       expect(taskList.tasks.registeredEmailAddress.url).toBe(TASK_URL);
-      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[3][0]).toBe(REGISTERED_EMAIL_ADDRESS_PATH);
+      expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[3][0]).toBe(PROVIDE_EMAIL_ADDRESS_PATH);
 
       expect(taskList.tasks.registeredOfficeAddress.state).toBe(TASK_STATE);
       expect(taskList.tasks.registeredOfficeAddress.url).toBe(TASK_URL);

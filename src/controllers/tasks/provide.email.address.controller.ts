@@ -8,8 +8,8 @@ import { EMAIL_ADDRESS_INVALID, NO_EMAIL_ADDRESS_SUPPLIED } from "../../utils/co
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     const backLinkUrl = urlUtils.getUrlToPath(TASK_LIST_PATH, req);
-    return res.render(Templates.REGISTERED_EMAIL_ADDRESS, {
-      templateName: Templates.REGISTERED_EMAIL_ADDRESS,
+    return res.render(Templates.PROVIDE_EMAIL_ADDRESS, {
+      templateName: Templates.PROVIDE_EMAIL_ADDRESS,
       backLinkUrl,
     });
   } catch (error) {
@@ -28,8 +28,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     }
     if (errorFound) {
       const backLinkUrl = urlUtils.getUrlToPath(TASK_LIST_PATH, req);
-      return res.render(Templates.REGISTERED_EMAIL_ADDRESS, {
-        templateName: Templates.REGISTERED_EMAIL_ADDRESS,
+      return res.render(Templates.PROVIDE_EMAIL_ADDRESS, {
+        templateName: Templates.PROVIDE_EMAIL_ADDRESS,
         emailErrorMsg: errorFound,
         backLinkUrl,
       });

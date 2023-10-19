@@ -13,7 +13,7 @@ import {
   ACTIVE_OFFICERS_DETAILS_PATH,
   ACTIVE_OFFICERS_PATH,
   ACTIVE_PSC_DETAILS_PATH,
-  REGISTERED_EMAIL_ADDRESS_PATH
+  PROVIDE_EMAIL_ADDRESS_PATH
 } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { toTaskState } from "../utils/task/task.state.mapper";
@@ -41,7 +41,7 @@ export const initTaskList = (companyNumber: string,
     },
     registeredEmailAddress: {
       state: toTaskState(csSubmission.data?.registeredOfficeAddressData?.sectionStatus),
-      url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTERED_EMAIL_ADDRESS_PATH, companyNumber, transactionId, submissionId)
+      url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(PROVIDE_EMAIL_ADDRESS_PATH, companyNumber, transactionId, submissionId)
     },
     registeredOfficeAddress: {
       state: toTaskState(csSubmission.data?.registeredOfficeAddressData?.sectionStatus),
