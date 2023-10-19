@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { urlUtils } from "../../utils/url";
-import { TASK_LIST_PATH, CHECK_EMAIL_PATH } from "../../types/page.urls";
+import { TASK_LIST_PATH, CONFIRM_EMAIL_PATH } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { isEmailAddressValid } from "../../validators/email.validator";
 import { EMAIL_ADDRESS_INVALID, NO_EMAIL_ADDRESS_SUPPLIED } from "../../utils/constants";
@@ -34,7 +34,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
         backLinkUrl,
       });
     }
-    return res.redirect(urlUtils.getUrlToPath(CHECK_EMAIL_PATH, req));
+    return res.redirect(urlUtils.getUrlToPath(CONFIRM_EMAIL_PATH, req));
   } catch (error) {
     return next(error);
   }

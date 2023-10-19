@@ -4,7 +4,7 @@ import request from "supertest";
 import mocks from "../../mocks/all.middleware.mock";
 import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
 import app from "../../../src/app";
-import { PROVIDE_EMAIL_ADDRESS_PATH, CHECK_EMAIL_PATH, urlParams } from "../../../src/types/page.urls";
+import { PROVIDE_EMAIL_ADDRESS_PATH, CONFIRM_EMAIL_PATH, urlParams } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
 import { EMAIL_ADDRESS_INVALID, NO_EMAIL_ADDRESS_SUPPLIED } from "../../../src/utils/constants";
 
@@ -43,11 +43,11 @@ describe("Provide Email Address controller tests", () => {
     spyGetUrlToPath.mockRestore();
   });
 
-  it("Should proceed to check email page when valid email address entered", async () => {
+  it("Should proceed to confirm email page when valid email address entered", async () => {
     const response = await request(app).post(PROVIDE_EMAIL_ADDRESS_URL).send({ registeredEmailAddress: "name@example.com" });
 
     expect(response.status).toEqual(302);
-    expect(response.header.location).toEqual(CHECK_EMAIL_PATH);
+    expect(response.header.location).toEqual(CONFIRM_EMAIL_PATH);
   });
 
   it("Should redisplay with appropriate error message when blank email submitted", async () => {
