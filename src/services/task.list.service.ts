@@ -13,7 +13,8 @@ import {
   ACTIVE_OFFICERS_DETAILS_PATH,
   ACTIVE_OFFICERS_PATH,
   ACTIVE_PSC_DETAILS_PATH,
-  PROVIDE_EMAIL_ADDRESS_PATH
+  PROVIDE_EMAIL_ADDRESS_PATH,
+  CHECK_EMAIL_ADDRESS_PATH
 } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { toTaskState } from "../utils/task/task.state.mapper";
@@ -24,7 +25,8 @@ import { isActiveFeature } from "../utils/feature.flag";
 export const initTaskList = (companyNumber: string,
                              transactionId: string,
                              submissionId: string,
-                             csSubmission: ConfirmationStatementSubmission): TaskList => {
+                             csSubmission: ConfirmationStatementSubmission,
+                             companyHasExistingRea: boolean): TaskList => {
 
   const allTasks = {
     officers: {
@@ -41,7 +43,7 @@ export const initTaskList = (companyNumber: string,
     },
     registeredEmailAddress: {
       state: toTaskState(csSubmission.data?.registeredOfficeAddressData?.sectionStatus),
-      url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(PROVIDE_EMAIL_ADDRESS_PATH, companyNumber, transactionId, submissionId)
+      url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(getRegisteredEmailAddressSectionUrl(companyHasExistingRea), companyNumber, transactionId, submissionId)
     },
     registeredOfficeAddress: {
       state: toTaskState(csSubmission.data?.registeredOfficeAddressData?.sectionStatus),
@@ -85,5 +87,13 @@ const getPscSectionUrl = (): string => {
     return ACTIVE_PSC_DETAILS_PATH;
   } else {
     return PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH;
+  }
+};
+
+const getRegisteredEmailAddressSectionUrl = (reaExists: boolean): string => {
+  if (reaExists) {
+    return CHECK_EMAIL_ADDRESS_PATH;
+  } else {
+    return PROVIDE_EMAIL_ADDRESS_PATH;
   }
 };
