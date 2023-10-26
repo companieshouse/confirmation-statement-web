@@ -5,6 +5,8 @@ import { AccessTokenKeys } from "@companieshouse/node-session-handler/lib/sessio
 import { API_URL, CHS_API_KEY } from "../utils/properties";
 import { createAndLogError } from "../utils/logger";
 import { createApiClient } from "@companieshouse/api-sdk-node";
+import { createPrivateApiClient } from "private-api-sdk-node";
+import PrivateApiClient from "private-api-sdk-node/dist/client";
 import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 
 export const createPublicOAuthApiClient = (session: Session): ApiClient => {
@@ -25,4 +27,8 @@ export const createPaymentApiClient = (session: Session, paymentUrl: string): Ap
     return createApiClient(undefined, oAuth, paymentUrl);
   }
   throw createAndLogError("Error getting session keys for creating public api client");
+};
+
+export const createPrivateApiKeyClient = (): PrivateApiClient => {
+  return createPrivateApiClient(CHS_API_KEY, undefined, API_URL, undefined);
 };
