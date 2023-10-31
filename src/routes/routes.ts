@@ -16,7 +16,7 @@ import * as tradingStatusRoute from "../controllers/trading.status.controller";
 import * as taskListRoute from "../controllers/task.list.controller";
 import * as registeredOfficeAddressRoute from "../controllers/tasks/registered.office.address.controller";
 import * as registeredEmailAddressRoute from "../controllers/tasks/registered.email.address.controller";
-import * as checkEmailAddressRoute from "../controllers/tasks/check.email.address.controller";
+import * as confirmEmailAddressRoute from "../controllers/tasks/confirm.email.address.controller";
 import * as registeredLocationsRoute from "../controllers/tasks/register.locations.controller";
 import * as reviewRoute from "../controllers/review.controller";
 import * as confirmationRoute from "../controllers/confirmation.controller";
@@ -94,8 +94,8 @@ router.post(urls.PSC_STATEMENT, pscStatementRoute.post);
 router.get(urls.REGISTERED_EMAIL_ADDRESS, registeredEmailAddressRoute.get);
 router.post(urls.REGISTERED_EMAIL_ADDRESS, registeredEmailAddressRoute.post);
 
-router.get(urls.CHECK_EMAIL_ADDRESS, checkEmailAddressRoute.get);
-router.post(urls.CHECK_EMAIL_ADDRESS, checkEmailAddressRoute.post);
+router.get(urls.CONFIRM_EMAIL_ADDRESS, confirmEmailAddressRoute.get);
+router.post(urls.CONFIRM_EMAIL_ADDRESS, confirmEmailAddressRoute.post);
 
 router.get(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.get);
 router.post(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.post);

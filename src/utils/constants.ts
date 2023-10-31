@@ -56,6 +56,7 @@ export const appointmentTypeNames = {
 export enum SECTIONS {
   ACTIVE_OFFICER = "activeOfficerDetailsData",
   PSC = "personsSignificantControlData",
+  REA = "registeredEmailAddressData",
   ROA = "registeredOfficeAddressData",
   REGISTER_LOCATIONS = "registerLocationsData",
   SIC = "sicCodeData",
