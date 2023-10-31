@@ -3,6 +3,7 @@ jest.mock("../../src/services/company.profile.service");
 jest.mock("../../src/middleware/company.authentication.middleware");
 jest.mock("../../src/utils/logger");
 jest.mock("../../src/services/confirmation.statement.service");
+jest.mock("../../src/services/registered.email.address.service");
 
 import mocks from "../mocks/all.middleware.mock";
 import { REVIEW_PATH, TASK_LIST_PATH, urlParams } from "../../src/types/page.urls";
@@ -19,6 +20,7 @@ import { getConfirmationStatement } from "../../src/services/confirmation.statem
 import { mockConfirmationStatementSubmission } from "../mocks/confirmation.statement.submission.mock";
 import { mockTaskList } from "../mocks/task.list.mock";
 import { urlUtils } from "../../src/utils/url";
+import { doesCompanyHaveEmailAddress } from "../../src/services/registered.email.address.service";
 
 const PropertiesMock = jest.requireMock('../../src/utils/properties');
 jest.mock('../../src/utils/properties', () => ({
@@ -37,6 +39,9 @@ mockGetConfirmationStatement.mockResolvedValue(mockConfirmationStatementSubmissi
 
 const mockInitTaskList = initTaskList as jest.Mock;
 mockInitTaskList.mockReturnValue(mockTaskList);
+
+const mockDoesCompanyHaveEmailAddress = doesCompanyHaveEmailAddress as jest.Mock;
+mockDoesCompanyHaveEmailAddress.mockReturnValue(true);
 
 const ERROR_TEXT = "Sorry, the service is unavailable";
 const COMPANY_NUMBER = "12345678";
@@ -64,7 +69,7 @@ describe("Task list controller tests", () => {
 
       const response = await request(app).get(URL);
 
-      expect(mockInitTaskList).toBeCalledWith(validCompanyProfile.companyNumber, TRANSACTION_ID, SUBMISSION_ID, mockConfirmationStatementSubmission);
+      expect(mockInitTaskList).toBeCalledWith(validCompanyProfile.companyNumber, TRANSACTION_ID, SUBMISSION_ID, mockConfirmationStatementSubmission, true);
       expect(response.text).toContain("Check and confirm that the company information we have on record is correct");
       expect(response.text).toContain("Submit");
       expect(response.text).toContain("Cannot start yet");

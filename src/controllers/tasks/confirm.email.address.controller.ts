@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Templates } from "../../types/template.paths";
 import { urlUtils } from "../../utils/url";
-import { REGISTERED_EMAIL_ADDRESS_PATH, TASK_LIST_PATH } from "../../types/page.urls";
+import { PROVIDE_EMAIL_ADDRESS_PATH, TASK_LIST_PATH } from "../../types/page.urls";
 import { Session } from "@companieshouse/node-session-handler";
 import { SECTIONS } from "../../utils/constants";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
@@ -10,7 +10,7 @@ import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confir
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     const session = req.session as Session;
-    const backLinkUrl = urlUtils.getUrlToPath(REGISTERED_EMAIL_ADDRESS_PATH, req);
+    const backLinkUrl = urlUtils.getUrlToPath(PROVIDE_EMAIL_ADDRESS_PATH, req);
     const emailAddress = session.getExtraData("entered-email-address");
     return res.render(Templates.CONFIRM_EMAIL_ADDRESS, {
       templateName: Templates.CONFIRM_EMAIL_ADDRESS,

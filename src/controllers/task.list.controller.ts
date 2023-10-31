@@ -4,6 +4,7 @@ import { TaskList } from "../types/task.list";
 import { initTaskList } from "../services/task.list.service";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../services/company.profile.service";
+import { doesCompanyHaveEmailAddress } from "../services/registered.email.address.service";
 import { REVIEW_PATH, TRADING_STATUS_PATH } from "../types/page.urls";
 import { isInFuture, toReadableFormat } from "../utils/date";
 import { createAndLogError, logger } from "../utils/logger";
@@ -23,10 +24,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const backLinkUrl = urlUtils
       .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TRADING_STATUS_PATH, companyNumber, transactionId, submissionId);
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
-
+    const companyHasExistingRea: boolean = await doesCompanyHaveEmailAddress(companyNumber);
     const confirmationStatement: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
 
-    const taskList: TaskList = initTaskList(company.companyNumber, transactionId, submissionId, confirmationStatement);
+    const taskList: TaskList = initTaskList(company.companyNumber, transactionId, submissionId, confirmationStatement, companyHasExistingRea);
     taskList.recordDate = calculateFilingDate(taskList.recordDate, company);
 
     const registeredEmailAddressOptionEnabled: boolean = enableRegisteredEmailAdressOption(company);
