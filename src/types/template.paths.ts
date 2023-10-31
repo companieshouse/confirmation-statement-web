@@ -29,7 +29,8 @@ export enum Templates {
   WRONG_SIC = "incorrect-information/wrong-sic",
   WRONG_STATEMENT_OF_CAPITAL = "incorrect-information/wrong-statement-of-capital",
   WRONG_RO = "incorrect-information/wrong-registered-office-address",
-  REGISTERED_EMAIL_ADDRESS = "tasks/registered-email-address",
+  PROVIDE_EMAIL_ADDRESS = "tasks/provide-email-address",
+  CHECK_EMAIL_ADDRESS = "tasks/check-email-address",
   REGISTERED_OFFICE_ADDRESS = "tasks/registered-office-address",
   REGISTER_LOCATIONS = "tasks/register-locations",
   REVIEW = "review"
