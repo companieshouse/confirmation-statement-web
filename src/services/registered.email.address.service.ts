@@ -18,11 +18,11 @@ export const getRegisteredEmailAddress = async (companyNumber: string): Promise<
     if (status === 404 && errorResponse.errors && errorResponse.errors[0].error === "Registered Email Address not found" ) {
       return ""; // using empty string to indicate not found - unambiguous as this is not an allowed value in CHIPS
     }
-    throw createAndLogError(`Error retrieving registered email address from confirmation-statment api for company number ${companyNumber}: ${JSON.stringify(response)}`);
+    throw createAndLogError(`Error retrieving registered email address from confirmation-statement api for company number ${companyNumber}: ${JSON.stringify(response)}`);
   }
   const successfulResponse = response as Resource<RegisteredEmailAddressResponse>;
   if (!successfulResponse.resource) {
-    throw createAndLogError(`No resource in response for registered email address from confirmation-statment api for company number ${companyNumber}: : ${JSON.stringify(successfulResponse)}`);
+    throw createAndLogError(`No resource in response for registered email address from confirmation-statement api for company number ${companyNumber}: : ${JSON.stringify(successfulResponse)}`);
   }
   return successfulResponse.resource.registered_email_address;
 };
