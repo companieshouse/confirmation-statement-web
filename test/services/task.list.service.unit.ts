@@ -140,13 +140,13 @@ describe("Task List Service tests", () => {
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[1][0]).toBe(ACTIVE_PSC_DETAILS_PATH);
     });
 
-    it("Should use provide-email-address for Registered email address option when company does not have an existing email address", async () => {
-      const taskList: TaskList = initTaskList(COMPANY_NUMBER, TRANSACTION_ID, CS_SUBMISSION_ID, mockConfirmationStatementSubmission, false);
+    it("Should use provide-email-address for Registered email address option when company does not have an existing email address", () => {
+      initTaskList(COMPANY_NUMBER, TRANSACTION_ID, CS_SUBMISSION_ID, mockConfirmationStatementSubmission, false);
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[3][0]).toBe(PROVIDE_EMAIL_ADDRESS_PATH);
     });
 
-    it("Should use check-email-address for Registered email address option when company has an existing email address", async () => {
-      const taskList: TaskList = initTaskList(COMPANY_NUMBER, TRANSACTION_ID, CS_SUBMISSION_ID, mockConfirmationStatementSubmission, true);
+    it("Should use check-email-address for Registered email address option when company has an existing email address", () => {
+      initTaskList(COMPANY_NUMBER, TRANSACTION_ID, CS_SUBMISSION_ID, mockConfirmationStatementSubmission, true);
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[3][0]).toBe(CHECK_EMAIL_ADDRESS_PATH);
     });
   });

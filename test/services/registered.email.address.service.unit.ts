@@ -15,8 +15,8 @@ const mockCreatePrivateApiClient = createPrivateApiKeyClient as jest.Mock;
 const mockGetRegisteredEmailAddress = jest.fn();
 const mockCreateAndLogError = createAndLogError as jest.Mock;
 
-const validEmailResponse: Resource<RegisteredEmailAddressResponse> = {httpStatusCode: 200, resource: { registered_email_address: "test@email.org" } };
-const emailNotFoundResponse: ApiErrorResponse = {httpStatusCode: 404, errors: [{ error: "Registered Email Address not found" }] };
+const validEmailResponse: Resource<RegisteredEmailAddressResponse> = { httpStatusCode: 200, resource: { registered_email_address: "test@email.org" } };
+const emailNotFoundResponse: ApiErrorResponse = { httpStatusCode: 404, errors: [{ error: "Registered Email Address not found" }] };
 
 mockCreatePrivateApiClient.mockReturnValue({
   confirmationStatementService: {
@@ -25,10 +25,6 @@ mockCreatePrivateApiClient.mockReturnValue({
 });
 
 mockCreateAndLogError.mockReturnValue(new Error());
-
-const clone = (objectToClone: any): any => {
-  return JSON.parse(JSON.stringify(objectToClone));
-};
 
 describe("Registered email service test", () => {
   const COMPANY_NUMBER = "1234567";
