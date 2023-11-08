@@ -4,11 +4,11 @@ kms_alias = "alias/development-eu-west-2/environment-services-kms"
 
 # service configs
 # Commented params moved to vault service secrets
-# cache_server 
-# oauth2_redirect_uri 
-# oauth2_auth_uri 
-# account_test_url 
-# account_url 
+# cache_server
+# oauth2_redirect_uri
+# oauth2_auth_uri
+# account_test_url
+# account_url
 log_level = "debug"
 cdn_host = "d3uvya5a8a1ncx.cloudfront.net"
 chs_url = "https://cidev.aws.chdev.org"
@@ -22,3 +22,4 @@ feature_flag_active_officers_01072021 = "true"
 feature_flag_five_or_less_officers_journey_21102021 = "true"
 ewf_url = "https://ewf.companieshouse.gov.uk/"
 api_url = "https://api.cidev.aws.chdev.org"
+feature_flag_ecct_start_date_14082023 = "2023-09-01"
