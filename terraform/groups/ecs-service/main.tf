@@ -69,3 +69,13 @@ module "ecs-service" {
 
   depends_on=[module.secrets]
 }
+
+resource "aws_lb_listener" "reports_server_listener_8080" {
+  load_balancer_arn = data.aws_lb_listener.filing_maintain_lb_listener.arn
+  port              = "8080"
+  protocol          = "HTTP"
+  default_action {
+    type             = "forward"
+    target_group_arn = data.aws_lb_listener.filing_maintain_lb_listener.arn
+  }
+}
