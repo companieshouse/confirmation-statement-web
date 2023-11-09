@@ -81,6 +81,7 @@ locals {
     { "name": "FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021", "value": "${var.feature_flag_five_or_less_officers_journey_21102021}" },
     { "name": "PSC_STATEMENTS_API_PAGE_SIZE", "value": "${var.psc_statements_api_page_size}" },
     { "name": "EWF_URL", "value": "${var.ewf_url}" },
-    { "name": "API_URL", "value": "${var.api_url}" }
+    { "name": "API_URL", "value": "${var.api_url}" },
+    { "name": "FEATURE_FLAG_ECCT_START_DATE_14082023", "value": "${var.feature_flag_ecct_start_date_14082023}"}
   ]
 }

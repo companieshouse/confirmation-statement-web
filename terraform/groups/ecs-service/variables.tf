@@ -143,3 +143,6 @@ variable "api_url" {
 variable "piwik_start_goal_id" {
   type        = string
 }
+variable "feature_flag_ecct_start_date_14082023" {
+  type        = string
+}
