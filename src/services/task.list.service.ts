@@ -42,7 +42,7 @@ export const initTaskList = (companyNumber: string,
       url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTER_LOCATIONS_PATH, companyNumber, transactionId, submissionId)
     },
     registeredEmailAddress: {
-      state: toTaskState(csSubmission.data?.registeredOfficeAddressData?.sectionStatus),
+      state: toTaskState(csSubmission.data?.registeredEmailAddressData?.sectionStatus),
       url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(getRegisteredEmailAddressSectionUrl(companyHasExistingRea), companyNumber, transactionId, submissionId)
     },
     registeredOfficeAddress: {
