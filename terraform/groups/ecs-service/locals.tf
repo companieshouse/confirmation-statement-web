@@ -15,6 +15,7 @@ locals {
   parameter_store_secrets    = {
     "vpc_name"                  = local.service_secrets["vpc_name"]
     "chs_api_key"               = local.service_secrets["chs_api_key"]
+    "chs_internal_api_key"      = local.service_secrets["chs_internal_api_key"]
     "internal_api_url"          = local.service_secrets["internal_api_url"]
     "cdn_host"                  = local.service_secrets["cdn_host"]
     "oauth2_auth_uri"           = local.service_secrets["oauth2_auth_uri"]
@@ -25,6 +26,7 @@ locals {
 
   vpc_name                  = local.service_secrets["vpc_name"]
   chs_api_key               = local.service_secrets["chs_api_key"]
+  chs_internal_api_key      = local.service_secrets["chs_internal_api_key"]
   internal_api_url          = local.service_secrets["internal_api_url"]
   cdn_host                  = local.service_secrets["cdn_host"]
   oauth2_auth_uri           = local.service_secrets["oauth2_auth_uri"]
@@ -50,6 +52,7 @@ locals {
     { "name": "COOKIE_SECRET", "valueFrom": "${local.secrets_arn_map.web-oauth2-cookie-secret}" },
     { "name": "DEVELOPER_OAUTH2_REQUEST_KEY", "valueFrom": "${local.secrets_arn_map.web-oauth2-request-key}" },
     { "name": "CHS_API_KEY", "valueFrom": "${local.service_secrets_arn_map.chs_api_key}" },
+    { "name": "CHS_INTERNAL_API_KEY", "valueFrom": "${local.service_secrets_arn_map.chs_internal_api_key}" },
     { "name": "CACHE_SERVER", "valueFrom": "${local.service_secrets_arn_map.cache_server}" },
     { "name": "OAUTH2_REDIRECT_URI", "valueFrom": "${local.service_secrets_arn_map.oauth2_redirect_uri}" },
     { "name": "OAUTH2_AUTH_URI", "valueFrom": "${local.service_secrets_arn_map.oauth2_auth_uri}" },
