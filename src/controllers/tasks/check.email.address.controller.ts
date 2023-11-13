@@ -34,20 +34,16 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const emailButtonValue = req.body.checkEmailAddress;
-    console.log("Email button value: "+emailButtonValue);
     if (!isRadioButtonValueValid(emailButtonValue)) {
       return next(new Error(getRadioButtonInvalidValueErrorMessage(emailButtonValue)));
     }
     if (emailButtonValue === RADIO_BUTTON_VALUE.YES) {
-      console.log("YES: "+urlUtils.getUrlToPath(TASK_LIST_PATH, req));
       await sendUpdate(req, SECTIONS.EMAIL, SectionStatus.CONFIRMED);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     } else if (emailButtonValue === RADIO_BUTTON_VALUE.RECENTLY_FILED) {
-      console.log("RECENTLY FILED: "+urlUtils.getUrlToPath(TASK_LIST_PATH, req));
       await sendUpdate(req, SECTIONS.EMAIL, SectionStatus.RECENT_FILING);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     } else if (emailButtonValue === RADIO_BUTTON_VALUE.NO) {
-      console.log("NO: "+urlUtils.getUrlToPath(CHANGE_EMAIL_PATH, req));
       await sendUpdate(req, SECTIONS.EMAIL, SectionStatus.NOT_CONFIRMED);
       const companyProfile = await getCompanyProfile(companyNumber);
       // set session data expected by rea service
