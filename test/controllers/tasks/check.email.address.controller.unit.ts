@@ -1,4 +1,6 @@
 jest.mock("../../../src/middleware/company.authentication.middleware");
+jest.mock("../../../src/services/company.profile.service");
+jest.mock("../../../src/services/registered.email.address.service");
 jest.mock("../../../src/utils/update.confirmation.statement.submission");
 
 import request from "supertest";
@@ -8,8 +10,8 @@ import { companyAuthenticationMiddleware } from "../../../src/middleware/company
 import app from "../../../src/app";
 import { CHECK_EMAIL_ADDRESS_PATH, TASK_LIST_PATH, CHANGE_EMAIL_PATH, urlParams } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
-import * as reaService from "../../../src/services/registered.email.address.service";
-import * as companyProfileService from "../../../src/services/company.profile.service";
+import { getCompanyProfile } from "../../../src/services/company.profile.service";
+import { getRegisteredEmailAddress } from "../../../src/services/registered.email.address.service";
 import { CHECK_EMAIL_ADDRESS_ERROR, SECTIONS } from "../../../src/utils/constants";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
@@ -17,6 +19,8 @@ import { session } from "../../mocks/session.middleware.mock";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
+const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
+const mockGetRegisteredEmailAddress = getRegisteredEmailAddress as jest.Mock;
 const mockSendUpdate = sendUpdate as jest.Mock;
 
 const PAGE_HEADING = "Check registered email address";
@@ -34,11 +38,13 @@ describe("Check registered email address controller tests", () => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
+    mockGetCompanyProfile.mockClear();
+    mockGetRegisteredEmailAddress.mockClear();
     mockSendUpdate.mockClear();
   });
 
   it("Should navigate to the Check registered email address page", async () => {
-    jest.spyOn(reaService, "getRegisteredEmailAddress").mockReturnValueOnce(Promise.resolve(EXPECTED_EMAIL));
+    mockGetRegisteredEmailAddress.mockResolvedValueOnce(EXPECTED_EMAIL);
 
     const response = await request(app).get(CHECK_EMAIL_ADDRESS_URL);
     expect(response.text).toContain(PAGE_HEADING);
@@ -67,8 +73,8 @@ describe("Check registered email address controller tests", () => {
   });
 
   it("Should route to rea service if email is incorrect", async () => {
-    jest.spyOn(companyProfileService, "getCompanyProfile").mockReturnValueOnce(Promise.resolve(validCompanyProfile));
-    jest.spyOn(reaService, "getRegisteredEmailAddress").mockReturnValueOnce(Promise.resolve(EXPECTED_EMAIL));
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    mockGetRegisteredEmailAddress.mockResolvedValueOnce(EXPECTED_EMAIL);
 
     const response = await request(app).post(CHECK_EMAIL_ADDRESS_URL).send({ checkEmailAddress: "no" });
 
@@ -92,7 +98,7 @@ describe("Check registered email address controller tests", () => {
   });
 
   it("Should redisplay check email page with error when radio button is not selected", async () => {
-    jest.spyOn(reaService, "getRegisteredEmailAddress").mockReturnValueOnce(Promise.resolve(EXPECTED_EMAIL));
+    mockGetRegisteredEmailAddress.mockResolvedValueOnce(EXPECTED_EMAIL);
     const response = await request(app).post(CHECK_EMAIL_ADDRESS_URL);
 
     expect(response.status).toEqual(200);
