@@ -36,8 +36,6 @@ import * as wrongPscDetailsRoute from "../controllers/incorrect-information/wron
 import * as wrongPscStatementRoute from "../controllers/incorrect-information/wrong.psc.statement.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
-// import { logger } from "../utils/logger";
-
 
 export const router: Router = Router();
 

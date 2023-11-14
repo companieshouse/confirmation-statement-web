@@ -32,15 +32,10 @@ const COMPANY_NUMBER = "12345678";
 const CHECK_EMAIL_ADDRESS_URL = CHECK_EMAIL_ADDRESS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
-describe("Check registered email address controller tests", () => {
+describe("Check registered email address controller GET tests", () => {
 
   beforeEach(() => {
-    mocks.mockAuthenticationMiddleware.mockClear();
-    mocks.mockServiceAvailabilityMiddleware.mockClear();
-    mocks.mockSessionMiddleware.mockClear();
-    mockGetCompanyProfile.mockClear();
-    mockGetRegisteredEmailAddress.mockClear();
-    mockSendUpdate.mockClear();
+    clearMocks();
   });
 
   it("Should navigate to the Check registered email address page", async () => {
@@ -61,6 +56,13 @@ describe("Check registered email address controller tests", () => {
 
     // restore original function so it is no longer mocked
     spyGetUrlToPath.mockRestore();
+  });
+});
+
+describe("Check registered email address controller POST tests", () => {
+
+  beforeEach(() => {
+    clearMocks();
   });
 
   it("Should return to task list page when rea is confirmed", async () => {
@@ -126,3 +128,12 @@ describe("Check registered email address controller tests", () => {
   });
 
 });
+
+function clearMocks() {
+  mocks.mockAuthenticationMiddleware.mockClear();
+  mocks.mockServiceAvailabilityMiddleware.mockClear();
+  mocks.mockSessionMiddleware.mockClear();
+  mockGetCompanyProfile.mockClear();
+  mockGetRegisteredEmailAddress.mockClear();
+  mockSendUpdate.mockClear();
+}
