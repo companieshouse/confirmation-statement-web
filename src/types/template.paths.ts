@@ -33,5 +33,6 @@ export enum Templates {
   CHECK_EMAIL_ADDRESS = "tasks/check-email-address",
   REGISTERED_OFFICE_ADDRESS = "tasks/registered-office-address",
   REGISTER_LOCATIONS = "tasks/register-locations",
-  REVIEW = "review"
+  REVIEW = "review",
+  RETURN_FROM_REA = "return-from-rea"
 }

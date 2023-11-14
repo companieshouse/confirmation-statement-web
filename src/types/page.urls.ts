@@ -28,6 +28,7 @@ export const ACCOUNTS_SIGNOUT_PATH = `${ACCOUNT_URL}/signout`;
 export const CONFIRM_COMPANY = SEPARATOR + Templates.CONFIRM_COMPANY;
 export const CONFIRMATION_STATEMENT = "/confirmation-statement";
 export const COMPANY_NUMBER = "/company-number";
+export const RETURN_FROM_REA = CONFIRMATION_STATEMENT + "/return-from-rea";
 export const COMPANY_LOOKUP = "/company-lookup/search?forward=/confirmation-statement/confirm-company?companyNumber={companyNumber}";
 export const CONFIRM_COMPANY_PATH = CONFIRMATION_STATEMENT + CONFIRM_COMPANY;
 export const PEOPLE_WITH_SIGNIFICANT_CONTROL = ACTIVE_SUBMISSION_BASE + Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL;
