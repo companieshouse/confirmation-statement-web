@@ -15,6 +15,7 @@ locals {
   parameter_store_secrets    = {
     "vpc_name"                  = local.service_secrets["vpc_name"]
     "chs_api_key"               = local.service_secrets["chs_api_key"]
+    "chs_internal_api_key"      = local.service_secrets["chs_internal_api_key"]
     "internal_api_url"          = local.service_secrets["internal_api_url"]
     "cdn_host"                  = local.service_secrets["cdn_host"]
     "oauth2_auth_uri"           = local.service_secrets["oauth2_auth_uri"]
@@ -25,6 +26,7 @@ locals {
 
   vpc_name                  = local.service_secrets["vpc_name"]
   chs_api_key               = local.service_secrets["chs_api_key"]
+  chs_internal_api_key      = local.service_secrets["chs_internal_api_key"]
   internal_api_url          = local.service_secrets["internal_api_url"]
   cdn_host                  = local.service_secrets["cdn_host"]
   oauth2_auth_uri           = local.service_secrets["oauth2_auth_uri"]
@@ -50,6 +52,7 @@ locals {
     { "name": "COOKIE_SECRET", "valueFrom": "${local.secrets_arn_map.web-oauth2-cookie-secret}" },
     { "name": "DEVELOPER_OAUTH2_REQUEST_KEY", "valueFrom": "${local.secrets_arn_map.web-oauth2-request-key}" },
     { "name": "CHS_API_KEY", "valueFrom": "${local.service_secrets_arn_map.chs_api_key}" },
+    { "name": "CHS_INTERNAL_API_KEY", "valueFrom": "${local.service_secrets_arn_map.chs_internal_api_key}" },
     { "name": "CACHE_SERVER", "valueFrom": "${local.service_secrets_arn_map.cache_server}" },
     { "name": "OAUTH2_REDIRECT_URI", "valueFrom": "${local.service_secrets_arn_map.oauth2_redirect_uri}" },
     { "name": "OAUTH2_AUTH_URI", "valueFrom": "${local.service_secrets_arn_map.oauth2_auth_uri}" },
@@ -81,6 +84,7 @@ locals {
     { "name": "FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021", "value": "${var.feature_flag_five_or_less_officers_journey_21102021}" },
     { "name": "PSC_STATEMENTS_API_PAGE_SIZE", "value": "${var.psc_statements_api_page_size}" },
     { "name": "EWF_URL", "value": "${var.ewf_url}" },
-    { "name": "API_URL", "value": "${var.api_url}" }
+    { "name": "API_URL", "value": "${var.api_url}" },
+    { "name": "FEATURE_FLAG_ECCT_START_DATE_14082023", "value": "${var.feature_flag_ecct_start_date_14082023}"}
   ]
 }

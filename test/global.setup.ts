@@ -6,6 +6,7 @@ export default () => {
   process.env.CACHE_SERVER = "cache_server";
   process.env.SHOW_SERVICE_OFFLINE_PAGE = "false";
   process.env.CHS_API_KEY = "12345";
+  process.env.CHS_INTERNAL_API_KEY = "54321";
   process.env.API_URL = "http://localhost:8080";
   process.env.INTERNAL_API_URL = "http://localhost:9333";
   process.env.FEATURE_FLAG_PRIVATE_SDK_12052021 = "true";
