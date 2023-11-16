@@ -28,7 +28,6 @@ export const ACCOUNTS_SIGNOUT_PATH = `${ACCOUNT_URL}/signout`;
 export const CONFIRM_COMPANY = SEPARATOR + Templates.CONFIRM_COMPANY;
 export const CONFIRMATION_STATEMENT = "/confirmation-statement";
 export const COMPANY_NUMBER = "/company-number";
-export const RETURN_FROM_REA = "/return-from-rea";
 export const COMPANY_LOOKUP = "/company-lookup/search?forward=/confirmation-statement/confirm-company?companyNumber={companyNumber}";
 export const CONFIRM_COMPANY_PATH = CONFIRMATION_STATEMENT + CONFIRM_COMPANY;
 export const PEOPLE_WITH_SIGNIFICANT_CONTROL = ACTIVE_SUBMISSION_BASE + Templates.PEOPLE_WITH_SIGNIFICANT_CONTROL;
@@ -59,6 +58,8 @@ export const PROVIDE_EMAIL_ADDRESS_PATH = CONFIRMATION_STATEMENT + PROVIDE_EMAIL
 export const CHECK_EMAIL_ADDRESS = ACTIVE_SUBMISSION_BASE + "check-email-address";
 export const CHECK_EMAIL_ADDRESS_PATH = CONFIRMATION_STATEMENT + CHECK_EMAIL_ADDRESS;
 export const CONFIRM_EMAIL_PATH = CONFIRMATION_STATEMENT + "/confirm-email-screen-coming-in-ecct-719"; // TODO change or remove this when ECCT-719 implemented
+export const RETURN_FROM_REA = ACTIVE_SUBMISSION_BASE + "return-from-rea";
+export const RETURN_FROM_REA_PATH = CONFIRMATION_STATEMENT + RETURN_FROM_REA;
 export const REGISTER_LOCATIONS = ACTIVE_SUBMISSION_BASE + "register-locations";
 export const REGISTER_LOCATIONS_PATH = CONFIRMATION_STATEMENT + REGISTER_LOCATIONS;
 export const CHANGE_ROA_PATH = COMPANY_AUTH_PROTECTED_BASE + "change-registered-office-address";
