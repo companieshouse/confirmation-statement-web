@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { urlUtils } from "../../utils/url";
 import { getRegisteredEmailAddress } from "../../services/registered.email.address.service";
-import { CHANGE_EMAIL_PATH, TASK_LIST_PATH } from "../../types/page.urls";
+import { CHANGE_EMAIL_PATH, RETURN_FROM_REA_PATH, TASK_LIST_PATH } from "../../types/page.urls";
 import { Templates } from "../../types/template.paths";
 import { sendUpdate } from "../../utils/update.confirmation.statement.submission";
 import { RADIO_BUTTON_VALUE, CHECK_EMAIL_ADDRESS_ERROR, SECTIONS } from "../../utils/constants";
@@ -51,6 +51,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       req.session?.setExtraData("companyProfile", companyProfile);
       req.session?.setExtraData("registeredEmailAddress", await getRegisteredEmailAddress(companyNumber));
       req.session?.setExtraData("returnToConfirmationStatement", true); // flag to indicate journey started here
+      const RETURN_FROM_REA_URL = urlUtils.getUrlToPath(RETURN_FROM_REA_PATH, req);
+      req.session?.setExtraData("confirmationStatementReturnUrl", RETURN_FROM_REA_URL);
       // go to change email page within rea service
       return res.redirect(urlUtils.getUrlToPath(CHANGE_EMAIL_PATH, req));
     }

@@ -1,4 +1,3 @@
-jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/company.profile.service");
 jest.mock("../../../src/services/registered.email.address.service");
 jest.mock("../../../src/utils/update.confirmation.statement.submission");
@@ -6,9 +5,8 @@ jest.mock("../../../src/utils/update.confirmation.statement.submission");
 import request from "supertest";
 import mocks from "../../mocks/all.middleware.mock";
 import { validCompanyProfile } from "../../mocks/company.profile.mock";
-import { companyAuthenticationMiddleware } from "../../../src/middleware/company.authentication.middleware";
 import app from "../../../src/app";
-import { CHECK_EMAIL_ADDRESS_PATH, TASK_LIST_PATH, CHANGE_EMAIL_PATH, urlParams } from "../../../src/types/page.urls";
+import { CHECK_EMAIL_ADDRESS_PATH, TASK_LIST_PATH, CHANGE_EMAIL_PATH, RETURN_FROM_REA_PATH } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
 import { getCompanyProfile } from "../../../src/services/company.profile.service";
 import { getRegisteredEmailAddress } from "../../../src/services/registered.email.address.service";
@@ -17,8 +15,6 @@ import { sendUpdate } from "../../../src/utils/update.confirmation.statement.sub
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { session } from "../../mocks/session.middleware.mock";
 
-const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
-mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockGetRegisteredEmailAddress = getRegisteredEmailAddress as jest.Mock;
 const mockSendUpdate = sendUpdate as jest.Mock;
@@ -28,9 +24,12 @@ const PAGE_CONTENT_SAMPLE = "Is the registered email address correct?";
 const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 const EXPECTED_EMAIL = "test@email.com";
 const COMPANY_NUMBER = "12345678";
+const TRANSACTION_ID = "66454";
+const SUBMISSION_ID = "435435";
 
-const CHECK_EMAIL_ADDRESS_URL = CHECK_EMAIL_ADDRESS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
-const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+const CHECK_EMAIL_ADDRESS_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(CHECK_EMAIL_ADDRESS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
+const RETURN_FROM_REA_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(RETURN_FROM_REA_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
+const TASK_LIST_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 
 describe("Check registered email address controller GET tests", () => {
 
@@ -86,6 +85,7 @@ describe("Check registered email address controller POST tests", () => {
     expect(session.getExtraData("companyProfile")).toEqual(validCompanyProfile);
     expect(session.getExtraData("registeredEmailAddress")).toEqual(EXPECTED_EMAIL);
     expect(session.getExtraData("returnToConfirmationStatement")).toEqual(true);
+    expect(session.getExtraData("confirmationStatementReturnUrl")).toEqual(RETURN_FROM_REA_URL);
     expect(response.status).toEqual(302);
     expect(response.header.location).toEqual(CHANGE_EMAIL_PATH);
   });
