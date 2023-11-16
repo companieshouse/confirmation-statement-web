@@ -34,5 +34,4 @@ export enum Templates {
   REGISTERED_OFFICE_ADDRESS = "tasks/registered-office-address",
   REGISTER_LOCATIONS = "tasks/register-locations",
   REVIEW = "review",
-  RETURN_FROM_REA = "return-from-rea"
 }

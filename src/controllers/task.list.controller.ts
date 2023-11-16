@@ -27,11 +27,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const companyHasExistingRea: boolean = await doesCompanyHaveEmailAddress(companyNumber);
     const confirmationStatement: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
 
-    // todo ade - surely set from elsewhere?
-    session.setExtraData("companyNumber", company.companyNumber);
-    session.setExtraData("registeredEmailAddress", "test@test.com");
-    session.setExtraData("companyProfile", company);
-
     const taskList: TaskList = initTaskList(company.companyNumber, transactionId, submissionId, confirmationStatement, companyHasExistingRea);
     taskList.recordDate = calculateFilingDate(taskList.recordDate, company);
 

@@ -14,24 +14,18 @@ import {
   getRadioButtonInvalidValueErrorMessage,
   isRadioButtonValueValid
 } from "../../validators/radio.button.validator";
-import { Session } from "@companieshouse/node-session-handler";
 
-// eslint-disable-next-line require-await
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
-    // const companyProfile: CompanyProfile = await getCompanyProfile(companyNumber);
-    // const backLinkUrl = urlUtils.getUrlToPath(TASK_LIST_PATH, req);
-    // const registeredOfficeAddress = formatAddressForDisplay(formatRegisteredOfficeAddress(companyProfile.registeredOfficeAddress));
-    const session: Session = req.session as Session;
-    session.setExtraData("returnToConfirmationStatement", "true");
-
-    res.redirect("/registered-email-address/email/change-email-address");
-    // return res.render(Templates.REGISTERED_OFFICE_ADDRESS, {
-    //   templateName: Templates.REGISTERED_OFFICE_ADDRESS,
-    //   backLinkUrl,
-    //   registeredOfficeAddress
-    // });
+    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+    const companyProfile: CompanyProfile = await getCompanyProfile(companyNumber);
+    const backLinkUrl = urlUtils.getUrlToPath(TASK_LIST_PATH, req);
+    const registeredOfficeAddress = formatAddressForDisplay(formatRegisteredOfficeAddress(companyProfile.registeredOfficeAddress));
+    return res.render(Templates.REGISTERED_OFFICE_ADDRESS, {
+      templateName: Templates.REGISTERED_OFFICE_ADDRESS,
+      backLinkUrl,
+      registeredOfficeAddress
+    });
   } catch (error) {
     return next(error);
   }
