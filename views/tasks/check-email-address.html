@@ -13,21 +13,21 @@
   <div class="govuk-grid-column-two-thirds">
     <form action="" method="post">
 
-      {% if emailErrorMsg %}
+      {% if checkEmailErrorMsg %}
             {{ govukErrorSummary({
                 titleText: "There is a problem",
                 errorList: [
                   {
-                    text: emailErrorMsg,
+                    text: checkEmailErrorMsg,
                     href: "#check-email-address"
                   }
                 ]
               }) }}
-            {% set emailErrorMsg = {
-                text: emailErrorMsg
+            {% set checkEmailErrorMsg = {
+                text: checkEmailErrorMsg
               } %}
             {% else %}
-              {% set emailErrorMsg = false %}
+              {% set checkEmailErrorMsg = false %}
             {% endif %}
 
       <h1 class="govuk-heading-l">Check registered email address</h1>
