@@ -22,7 +22,7 @@ const RETURN_FROM_REA_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubm
 const CHECK_EMAIL_ADDRESS_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(CHECK_EMAIL_ADDRESS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 const TASK_LIST_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 
-describe("Return from controller GET tests", () => {
+describe("Return from REA controller GET tests", () => {
 
   beforeEach(() => {
     mocks.mockSessionMiddleware.mockClear();
@@ -32,7 +32,7 @@ describe("Return from controller GET tests", () => {
   it("Should navigate to the Check registered email address page if email has not been submitted", async () => {
     mocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
       req.session = session;
-      req.session.data.extra_data["registeredEmailAddressSubmitted"] = "false";
+      req.session.data.extra_data["registeredEmailAddressSubmitted"] = false;
       req.session.data.extra_data["companyNumber"] = COMPANY_NUMBER;
       next();
     });
@@ -46,7 +46,7 @@ describe("Return from controller GET tests", () => {
   it("Should navigate to the Task list page and update section status if email has been submitted", async () => {
     mocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
       req.session = session;
-      req.session.data.extra_data["registeredEmailAddressSubmitted"] = "true";
+      req.session.data.extra_data["registeredEmailAddressSubmitted"] = true;
       req.session.data.extra_data["companyNumber"] = COMPANY_NUMBER;
       next();
     });

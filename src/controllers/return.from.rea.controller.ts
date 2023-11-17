@@ -9,8 +9,8 @@ import { sendUpdate } from "../utils/update.confirmation.statement.submission";
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const session: Session = req.session as Session;
-    const registeredEmailAddressSubmitted: string = session.getExtraData("registeredEmailAddressSubmitted") as string;
-    if (registeredEmailAddressSubmitted === "true") {
+    const registeredEmailAddressSubmitted: boolean = session.getExtraData("registeredEmailAddressSubmitted") as boolean;
+    if (registeredEmailAddressSubmitted === true) {
       await sendUpdate(req, SECTIONS.ROA, SectionStatus.RECENT_FILING); // TODO: EMAIL once updated!!
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     }
