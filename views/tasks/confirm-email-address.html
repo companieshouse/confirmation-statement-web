@@ -9,23 +9,19 @@
 {% endblock %}
 
 {% block content %}
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
+
+
+<div class="govuk-grid-column">
     <form action="" method="post">
-
       <h1 class="govuk-heading-l">Check the email address</h1>
-
-      <div class="govuk-summary-list__row">
-        <dl><dt class="govuk-summary-list__key govuk-!-padding-top-0 govuk-!-padding-bottom-0">Email address</dt></dl>
-        <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
-          {{ emailAddress }}
-        </dd>
-        <dd class="govuk-summary-list__value govuk-!-padding-left-3 govuk-!-padding-top-0 govuk-!-padding-bottom-0"><a href="{{backLinkUrl}}">Change</a></dd>
-      </div>
+        <dl>
+          <dt class="govuk-summary-list__key">Email address</dt>
+          <dd class="govuk-summary-list__value">{{ emailAddress }}</dd>
+          <dd class="govuk-summary-list__value govuk-!-padding-left-3"><a href="{{backLinkUrl}}">Change</a></dd>
+        </dl>
       <br>
       <br>
       {% include "includes/continue-button.html" %}
     </form>
-  </div>
 </div>
 {% endblock %}
