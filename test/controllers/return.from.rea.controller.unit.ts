@@ -53,7 +53,7 @@ describe("Return from REA controller GET tests", () => {
 
     const response = await request(app).get(RETURN_FROM_REA_URL);
 
-    expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ROA); // TODO: EMAIL once updated!!
+    expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.EMAIL);
     expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.RECENT_FILING);
     expect(response.status).toBe(302);
     expect(response.header.location).toBe(TASK_LIST_URL);

@@ -11,7 +11,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const session: Session = req.session as Session;
     const registeredEmailAddressSubmitted: boolean = session.getExtraData("registeredEmailAddressSubmitted") as boolean;
     if (registeredEmailAddressSubmitted === true) {
-      await sendUpdate(req, SECTIONS.ROA, SectionStatus.RECENT_FILING); // TODO: EMAIL once updated!!
+      await sendUpdate(req, SECTIONS.EMAIL, SectionStatus.RECENT_FILING);
       return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
     }
     return res.redirect(urlUtils.getUrlToPath(CHECK_EMAIL_ADDRESS_PATH, req));
