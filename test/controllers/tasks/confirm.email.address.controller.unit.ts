@@ -27,7 +27,6 @@ describe("Confirm Email Address controller tests", () => {
     mocks.mockAuthenticationMiddleware.mockClear();
     mocks.mockServiceAvailabilityMiddleware.mockClear();
     mocks.mockSessionMiddleware.mockClear();
-    
   });
 
   it("Should navigate to the Confirm Email Address page", async () => {
@@ -37,7 +36,6 @@ describe("Confirm Email Address controller tests", () => {
     expect(response.text).toContain("Email address");
   });
 
-  
   it("Should return to task list page when email address is confirmed", async () => {
     const response = await request(app).post(CONFIRM_EMAIL_ADDRESS_URL);
     expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.REA);
