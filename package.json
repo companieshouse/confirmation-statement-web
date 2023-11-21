@@ -37,7 +37,7 @@
     "nunjucks": "^3.2.3",
     "private-api-sdk-node": "github:companieshouse/private-api-sdk-node#0.1.93",
     "uuid": "^8.3.2",
-    "yargs": "^15.4.1"
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.1",
