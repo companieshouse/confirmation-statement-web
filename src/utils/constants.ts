@@ -7,6 +7,7 @@ export const PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR = "Select yes if the PSC deta
 export const PSC_STATEMENT_CONTROL_ERROR = "Select yes if the company PSC Statement is correct";
 export const REGISTER_LOCATIONS_ERROR = "Please select yes if the Company records location is correct";
 export const REGISTERED_OFFICE_ADDRESS_ERROR = "Select yes if the Registered Office Address is correct";
+export const CHECK_EMAIL_ADDRESS_ERROR = "Select yes if the registered email address is correct";
 export const DIRECTOR_DETAILS_ERROR = "Select yes if director details are correct";
 export const OFFICER_DETAILS_ERROR = "Select yes if officer details are correct";
 export const SHAREHOLDERS_ERROR = "Select yes if the active shareholders are correct";
@@ -55,6 +56,7 @@ export const appointmentTypeNames = {
 
 export enum SECTIONS {
   ACTIVE_OFFICER = "activeOfficerDetailsData",
+  EMAIL = "registeredEmailAddressData",
   PSC = "personsSignificantControlData",
   REA = "registeredEmailAddressData",
   ROA = "registeredOfficeAddressData",

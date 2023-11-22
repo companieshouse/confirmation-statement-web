@@ -37,8 +37,6 @@ import * as wrongPscDetailsRoute from "../controllers/incorrect-information/wron
 import * as wrongPscStatementRoute from "../controllers/incorrect-information/wrong.psc.statement.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
-// import { logger } from "../utils/logger";
-
 
 export const router: Router = Router();
 
@@ -96,6 +94,7 @@ router.get(urls.PROVIDE_EMAIL_ADDRESS, provideEmailAddressRoute.get);
 router.post(urls.PROVIDE_EMAIL_ADDRESS, provideEmailAddressRoute.post);
 
 router.get(urls.CHECK_EMAIL_ADDRESS, checkEmailAddressRoute.get);
+router.post(urls.CHECK_EMAIL_ADDRESS, checkEmailAddressRoute.post);
 
 router.get(urls.CONFIRM_EMAIL_ADDRESS, confirmEmailAddressRoute.get);
 router.post(urls.CONFIRM_EMAIL_ADDRESS, confirmEmailAddressRoute.post);
