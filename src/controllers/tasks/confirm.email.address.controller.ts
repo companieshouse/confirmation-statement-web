@@ -23,7 +23,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await sendUpdate(req, SECTIONS.REA, SectionStatus.INITIAL_FILING);
+    await sendUpdate(req, SECTIONS.EMAIL, SectionStatus.INITIAL_FILING);
     return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
   } catch (error) {
     return next(error);

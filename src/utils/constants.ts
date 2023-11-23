@@ -58,7 +58,6 @@ export enum SECTIONS {
   ACTIVE_OFFICER = "activeOfficerDetailsData",
   EMAIL = "registeredEmailAddressData",
   PSC = "personsSignificantControlData",
-  REA = "registeredEmailAddressData",
   ROA = "registeredOfficeAddressData",
   REGISTER_LOCATIONS = "registerLocationsData",
   SIC = "sicCodeData",
