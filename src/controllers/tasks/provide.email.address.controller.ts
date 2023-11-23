@@ -34,6 +34,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
         backLinkUrl,
       });
     }
+    req.session?.setExtraData("entered-email-address", reaValue);
     return res.redirect(urlUtils.getUrlToPath(CONFIRM_EMAIL_PATH, req));
   } catch (error) {
     return next(error);

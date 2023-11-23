@@ -31,6 +31,7 @@ export enum Templates {
   WRONG_RO = "incorrect-information/wrong-registered-office-address",
   PROVIDE_EMAIL_ADDRESS = "tasks/provide-email-address",
   CHECK_EMAIL_ADDRESS = "tasks/check-email-address",
+  CONFIRM_EMAIL_ADDRESS = "tasks/confirm-email-address",
   REGISTERED_OFFICE_ADDRESS = "tasks/registered-office-address",
   REGISTER_LOCATIONS = "tasks/register-locations",
   REVIEW = "review"

@@ -16,6 +16,7 @@ const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 const COMPANY_NUMBER = "12345678";
 
 const PROVIDE_EMAIL_ADDRESS_URL = PROVIDE_EMAIL_ADDRESS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+const CONFIRM_EMAIL_ADDRESS_URL = CONFIRM_EMAIL_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
 describe("Provide Email Address controller tests", () => {
 
@@ -47,7 +48,7 @@ describe("Provide Email Address controller tests", () => {
     const response = await request(app).post(PROVIDE_EMAIL_ADDRESS_URL).send({ registeredEmailAddress: "name@example.com" });
 
     expect(response.status).toEqual(302);
-    expect(response.header.location).toEqual(CONFIRM_EMAIL_PATH);
+    expect(response.header.location).toEqual(CONFIRM_EMAIL_ADDRESS_URL);
   });
 
   it("Should redisplay with appropriate error message when blank email submitted", async () => {
