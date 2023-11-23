@@ -14,6 +14,7 @@ import * as startRoute from "../controllers/start.controller";
 import * as statementOfCapitalRoute from "../controllers/tasks/statement.of.capital.controller";
 import * as tradingStatusRoute from "../controllers/trading.status.controller";
 import * as taskListRoute from "../controllers/task.list.controller";
+import * as returnFromReaRoute from "../controllers/return.from.rea.controller";
 import * as registeredOfficeAddressRoute from "../controllers/tasks/registered.office.address.controller";
 import * as provideEmailAddressRoute from "../controllers/tasks/provide.email.address.controller";
 import * as checkEmailAddressRoute from "../controllers/tasks/check.email.address.controller";
@@ -77,6 +78,8 @@ router.post(urls.TRADING_STATUS, tradingStatusRoute.post);
 
 router.get(urls.TASK_LIST, taskListRoute.get);
 router.post(urls.TASK_LIST, taskListRoute.post);
+
+router.get(urls.RETURN_FROM_REA, returnFromReaRoute.get);
 
 router.get(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.get);
 router.post(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.post);
