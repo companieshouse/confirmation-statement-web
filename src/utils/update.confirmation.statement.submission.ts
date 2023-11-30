@@ -16,8 +16,8 @@ export const sendUpdate = async (req: Request, sectionName: SECTIONS, status: Se
   const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
   const session = req.session as Session;
   const currentCsSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
-  const additionalData = generateAdditionalData(sectionName, status, extraData);
-  const csSubmission = updateCsSubmission(currentCsSubmission, sectionName, additionalData);
+  const sectionData = generateSectionData(sectionName, status, extraData);
+  const csSubmission = updateCsSubmission(currentCsSubmission, sectionName, sectionData);
   await updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
 };
 
@@ -38,7 +38,7 @@ const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission
   return currentCsSubmission;
 };
 
-const generateAdditionalData = (section: SECTIONS, status: SectionStatus, extraData?: any): any => {
+const generateSectionData = (section: SECTIONS, status: SectionStatus, extraData?: any): any => {
   switch (section) {
       case SECTIONS.SOC: {
         const newSocData: StatementOfCapitalData = {
