@@ -2,6 +2,7 @@ import { Request } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 import {
   ConfirmationStatementSubmission,
+  RegisteredEmailAddressData,
   SectionStatus,
   StatementOfCapitalData,
   TradingStatusData
@@ -15,8 +16,8 @@ export const sendUpdate = async (req: Request, sectionName: SECTIONS, status: Se
   const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
   const session = req.session as Session;
   const currentCsSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
-  const sectionData = generateSectionData(sectionName, status, extraData);
-  const csSubmission = updateCsSubmission(currentCsSubmission, sectionName, sectionData);
+  const additionalData = generateAdditionalData(sectionName, status, extraData);
+  const csSubmission = updateCsSubmission(currentCsSubmission, sectionName, additionalData);
   await updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
 };
 
@@ -37,7 +38,7 @@ const updateCsSubmission = (currentCsSubmission: ConfirmationStatementSubmission
   return currentCsSubmission;
 };
 
-const generateSectionData = (section: SECTIONS, status: SectionStatus, extraData?: any): any => {
+const generateAdditionalData = (section: SECTIONS, status: SectionStatus, extraData?: any): any => {
   switch (section) {
       case SECTIONS.SOC: {
         const newSocData: StatementOfCapitalData = {
@@ -48,6 +49,17 @@ const generateSectionData = (section: SECTIONS, status: SectionStatus, extraData
         }
         return newSocData;
       }
+
+      case SECTIONS.EMAIL: {
+         const newEmailData: RegisteredEmailAddressData = {
+           sectionStatus: status
+         };
+         if (extraData) {
+           newEmailData.registeredEmailAddress = extraData;
+         }
+         return newEmailData;
+       }
+
       default: {
         return {
           sectionStatus: status,
