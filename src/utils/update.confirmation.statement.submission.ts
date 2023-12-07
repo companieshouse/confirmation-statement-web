@@ -2,6 +2,7 @@ import { Request } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 import {
   ConfirmationStatementSubmission,
+  RegisteredEmailAddressData,
   SectionStatus,
   StatementOfCapitalData,
   TradingStatusData
@@ -48,6 +49,17 @@ const generateSectionData = (section: SECTIONS, status: SectionStatus, extraData
         }
         return newSocData;
       }
+
+      case SECTIONS.EMAIL: {
+         const newEmailData: RegisteredEmailAddressData = {
+           sectionStatus: status
+         };
+         if (extraData) {
+           newEmailData.registeredEmailAddress = extraData;
+         }
+         return newEmailData;
+       }
+
       default: {
         return {
           sectionStatus: status,
