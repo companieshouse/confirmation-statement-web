@@ -1,3 +1,7 @@
+import { FEATURE_FLAG_ECCT_START_DATE_14082023 } from "./properties";
+import { isValidDate } from "./date";
+import { logger } from "./logger";
+
 /**
  * Feature flags will be determined by environment variables and all environment variables in nodejs are
  * either string or undefined. This function will ensure that 'false', '0', 'off' etc remain falsy
@@ -12,4 +16,17 @@ export const isActiveFeature = (flag: string | undefined): boolean => {
           featureFlag === "off" ||
           featureFlag === "");
 
+};
+
+export const ecctDayOneFeaturesEnabled = (dateToCompare: Date): boolean => {
+  const ecctStartDateAsString: string = FEATURE_FLAG_ECCT_START_DATE_14082023;
+
+  if (!isValidDate(ecctStartDateAsString)) {
+    logger.info(`Environment Variable "FEATURE_FLAG_ECCT_START_DATE_14082023" must be in yyyy-mm-dd format`);
+    return false;
+  }
+
+  const ecctStartDate: Date = new Date(ecctStartDateAsString);
+
+  return dateToCompare >= ecctStartDate;
 };

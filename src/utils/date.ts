@@ -34,3 +34,7 @@ export const toReadableFormatMonthYear = (monthNum: number, year: number): strin
 
   return `${convertedMonth} ${year}`;
 };
+
+export const isValidDate = (dateAsString: string): boolean => {
+  return  !isNaN(Date.parse(dateAsString));
+};

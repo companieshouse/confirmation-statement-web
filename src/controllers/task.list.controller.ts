@@ -12,7 +12,7 @@ import { urlUtils } from "../utils/url";
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
 import { Session } from "@companieshouse/node-session-handler";
 import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
-import { FEATURE_FLAG_ECCT_START_DATE_14082023 } from "../utils/properties";
+import { ecctDayOneFeaturesEnabled } from "../utils/feature.flag";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -30,7 +30,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const taskList: TaskList = initTaskList(company.companyNumber, transactionId, submissionId, confirmationStatement, companyHasExistingRea);
     taskList.recordDate = calculateFilingDate(taskList.recordDate, company);
 
-    const registeredEmailAddressOptionEnabled: boolean = enableRegisteredEmailAdressOption(company);
+    const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
+    const registeredEmailAddressOptionEnabled: boolean = ecctDayOneFeaturesEnabled(statementDate);
 
     return res.render(Templates.TASK_LIST, {
       backLinkUrl,
@@ -68,22 +69,4 @@ const calculateFilingDate = (recordDate: string, companyProfile: CompanyProfile)
     }
   }
   throw createAndLogError(`Company Profile is missing confirmationStatement info for company number: ${companyProfile.companyNumber}`);
-};
-
-const enableRegisteredEmailAdressOption = (company: CompanyProfile): boolean => {
-  const ecctStartDateAsString: string = FEATURE_FLAG_ECCT_START_DATE_14082023;
-
-  if (!isValidDate(ecctStartDateAsString)) {
-    logger.info(`Environment Variable "FEATURE_FLAG_ECCT_START_DATE_14082023" must be in yyyy-mm-dd format`);
-    return false;
-  }
-
-  const ecctStartDate: Date = new Date(ecctStartDateAsString);
-  const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
-
-  return statementDate >= ecctStartDate;
-};
-
-const isValidDate = (dateAsString: string): boolean => {
-  return  !isNaN(Date.parse(dateAsString));
 };

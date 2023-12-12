@@ -1,6 +1,6 @@
 jest.mock("../../src/utils/logger");
 
-import { isInFuture, toReadableFormat, toReadableFormatMonthYear } from "../../src/utils/date";
+import { isInFuture, isValidDate, toReadableFormat, toReadableFormatMonthYear } from "../../src/utils/date";
 import { createAndLogError } from "../../src/utils/logger";
 import { Settings as luxonSettings } from "luxon";
 
@@ -111,4 +111,23 @@ describe("Date tests", () => {
       }
     });
   });
+
+  describe("valid date tests", () => {
+
+    it("Should return true for a valid date string", () => {
+      const validity = isValidDate("2023-12-12");
+      expect(validity).toEqual(true);
+    })
+
+    it("Should return false for an ivalid date string", () => {
+      const validity = isValidDate("12-2023-12");
+      expect(validity).toEqual(false);
+    })
+
+    it("Should return false for unsupplied date string", () => {
+      const validity = isValidDate("");
+      expect(validity).toEqual(false);
+    })
+
+  })
 });
