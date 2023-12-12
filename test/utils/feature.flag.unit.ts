@@ -70,21 +70,21 @@ describe("feature flag tests", function() {
 
   describe("ECCT Day One enablement tests", function() {
 
-    it("should return false if supply date is before ECCT start date", () => {
+    it("should return false if supplied date is before ECCT start date", () => {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2022-04-01";
       const supplyDate = new Date("2022-02-20");
       const ecctEnabled = ecctDayOneFeaturesEnabled(supplyDate);
       expect(ecctEnabled).toEqual(false);
     })
 
-    it("should return true if supply date is the same as ECCT start date", function() {
+    it("should return true if supplied date is the same as ECCT start date", function() {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2022-04-01";
       const supplyDate = new Date("2022-04-01");
       const ecctEnabled = ecctDayOneFeaturesEnabled(supplyDate);
       expect(ecctEnabled).toEqual(true);
     })
 
-    it("should return true if supply date is past ECCT start date", function() {
+    it("should return true if supplied date is past ECCT start date", function() {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2022-04-01";
       const supplyDate = new Date("2023-10-27");
       const ecctEnabled = ecctDayOneFeaturesEnabled(supplyDate);
