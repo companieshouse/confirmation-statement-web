@@ -26,6 +26,7 @@ export const initTaskList = (companyNumber: string,
                              transactionId: string,
                              submissionId: string,
                              csSubmission: ConfirmationStatementSubmission,
+                             registeredEmailAddressOptionEnabled: boolean,
                              companyHasExistingRea: boolean): TaskList => {
 
   const allTasks = {
@@ -62,13 +63,15 @@ export const initTaskList = (companyNumber: string,
       url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, companyNumber, transactionId, submissionId)
     }
   };
-  const completedtasks = getTaskCompletedCount(csSubmission);
-  const isTasksCompleted = Object.keys(allTasks).length === completedtasks;
+  const completedTasks = getTaskCompletedCount(csSubmission);
+  const expectedTasks =  registeredEmailAddressOptionEnabled ? Object.keys(allTasks).length : Object.keys(allTasks).length - 1;
+  const isTasksCompleted = expectedTasks === completedTasks;
 
   return {
     tasks: allTasks,
     recordDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
-    tasksCompletedCount: completedtasks,
+    tasksExpectedCount: expectedTasks,
+    tasksCompletedCount: completedTasks,
     allTasksCompleted: isTasksCompleted,
     csDue: false
   };
