@@ -64,7 +64,7 @@ export const initTaskList = (companyNumber: string,
     }
   };
   const completedTasks = getTaskCompletedCount(csSubmission);
-  const expectedTasks =  Object.keys(allTasks).filter(key => allTasks[key] != null).length;
+  const expectedTasks =  Object.keys(allTasks).filter(key => allTasks[key] !== null).length;
   const isTasksCompleted = expectedTasks === completedTasks;
 
   return {
