@@ -42,10 +42,10 @@ export const initTaskList = (companyNumber: string,
       state: toTaskState(csSubmission.data?.registerLocationsData?.sectionStatus),
       url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTER_LOCATIONS_PATH, companyNumber, transactionId, submissionId)
     },
-    registeredEmailAddress: {
+    registeredEmailAddress: registeredEmailAddressOptionEnabled ? {
       state: toTaskState(csSubmission.data?.registeredEmailAddressData?.sectionStatus),
       url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(getRegisteredEmailAddressSectionUrl(companyHasExistingRea), companyNumber, transactionId, submissionId)
-    },
+    } : undefined,
     registeredOfficeAddress: {
       state: toTaskState(csSubmission.data?.registeredOfficeAddressData?.sectionStatus),
       url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTERED_OFFICE_ADDRESS_PATH, companyNumber, transactionId, submissionId)
@@ -64,7 +64,7 @@ export const initTaskList = (companyNumber: string,
     }
   };
   const completedTasks = getTaskCompletedCount(csSubmission);
-  const expectedTasks =  registeredEmailAddressOptionEnabled ? Object.keys(allTasks).length : Object.keys(allTasks).length - 1;
+  const expectedTasks =  Object.keys(allTasks).filter(key => allTasks[key] != null).length;
   const isTasksCompleted = expectedTasks === completedTasks;
 
   return {

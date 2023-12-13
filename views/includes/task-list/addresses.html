@@ -2,7 +2,7 @@
     Addresses
 </h2>
 <ul class="app-task-list__items">
-    {% if registeredEmailAddressOptionEnabled %}
+    {% if taskList.tasks.registeredEmailAddress %}
         <li class="app-task-list__item">
             <span class="app-task-list__task-name">
                 <a href="{{taskList.tasks.registeredEmailAddress.url}}" data-event-id="registered-email-address-company-information-section">

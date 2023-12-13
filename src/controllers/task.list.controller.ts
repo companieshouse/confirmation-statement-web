@@ -37,7 +37,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       company,
       taskList,
       reviewUrl,
-      registeredEmailAddressOptionEnabled,
       templateName: Templates.TASK_LIST
     });
   } catch (e) {

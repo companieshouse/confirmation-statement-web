@@ -32,7 +32,7 @@ export interface TaskList {
       state: TaskState;
       url: string;
     };
-    registeredEmailAddress: {
+    registeredEmailAddress?: {
       state: TaskState;
       url: string;
     };

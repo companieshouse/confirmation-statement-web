@@ -73,8 +73,8 @@ describe("Task List Service tests", () => {
       expect(taskList.tasks.registerLocations.url).toBe(TASK_URL);
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[2][0]).toBe(REGISTER_LOCATIONS_PATH);
 
-      expect(taskList.tasks.registeredEmailAddress.state).toBe(TASK_STATE);
-      expect(taskList.tasks.registeredEmailAddress.url).toBe(TASK_URL);
+      expect(taskList.tasks.registeredEmailAddress!.state).toBe(TASK_STATE);
+      expect(taskList.tasks.registeredEmailAddress!.url).toBe(TASK_URL);
       expect(mockGetUrlWithCompanyNumberTransactionIdAndSubmissionId.mock.calls[3][0]).toBe(CHECK_EMAIL_ADDRESS_PATH);
 
       expect(taskList.tasks.registeredOfficeAddress.state).toBe(TASK_STATE);
@@ -152,11 +152,15 @@ describe("Task List Service tests", () => {
 
     it("Should have an expected task count of 7 when rea feature is not active", () => {
       const taskList: TaskList = initTaskList(COMPANY_NUMBER, TRANSACTION_ID, CS_SUBMISSION_ID, mockConfirmationStatementSubmission, false, true);
+      expect(taskList.tasks.registeredEmailAddress).toBeUndefined();
+      expect(taskList.tasks.registeredEmailAddress).toBeUndefined();
       expect(taskList.tasksExpectedCount).toBe(7);
     });
 
     it("Should have an expected task count of 8 when rea feature is active", () => {
       const taskList: TaskList = initTaskList(COMPANY_NUMBER, TRANSACTION_ID, CS_SUBMISSION_ID, mockConfirmationStatementSubmission, true, true);
+      expect(taskList.tasks.registeredEmailAddress!.state).toBe(TASK_STATE);
+      expect(taskList.tasks.registeredEmailAddress!.url).toBe(TASK_URL);
       expect(taskList.tasksExpectedCount).toBe(8);
     });
   });
