@@ -12,7 +12,7 @@ import { urlUtils } from "../utils/url";
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
 import { Session } from "@companieshouse/node-session-handler";
 import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
-import { ecctDayOneFeaturesEnabled } from "../utils/feature.flag";
+import { ecctDayOneEnabled } from "../utils/feature.flag";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -31,7 +31,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     taskList.recordDate = calculateFilingDate(taskList.recordDate, company);
 
     const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
-    const registeredEmailAddressOptionEnabled: boolean = ecctDayOneFeaturesEnabled(statementDate);
+    const registeredEmailAddressOptionEnabled: boolean = ecctDayOneEnabled(statementDate);
 
     return res.render(Templates.TASK_LIST, {
       backLinkUrl,

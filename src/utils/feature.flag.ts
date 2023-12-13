@@ -18,7 +18,7 @@ export const isActiveFeature = (flag: string | undefined): boolean => {
 
 };
 
-export const ecctDayOneFeaturesEnabled = (dateToCompare: Date): boolean => {
+export const ecctDayOneEnabled = (dateToCompare: Date): boolean => {
   const ecctStartDateAsString: string = FEATURE_FLAG_ECCT_START_DATE_14082023;
 
   if (!isValidDate(ecctStartDateAsString)) {
