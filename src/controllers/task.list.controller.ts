@@ -27,18 +27,16 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const companyHasExistingRea: boolean = await doesCompanyHaveEmailAddress(companyNumber);
     const confirmationStatement: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
 
-    const taskList: TaskList = initTaskList(company.companyNumber, transactionId, submissionId, confirmationStatement, companyHasExistingRea);
-    taskList.recordDate = calculateFilingDate(taskList.recordDate, company);
-
     const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
     const registeredEmailAddressOptionEnabled: boolean = ecctDayOneEnabled(statementDate);
+    const taskList: TaskList = initTaskList(company.companyNumber, transactionId, submissionId, confirmationStatement, registeredEmailAddressOptionEnabled, companyHasExistingRea);
+    taskList.recordDate = calculateFilingDate(taskList.recordDate, company);
 
     return res.render(Templates.TASK_LIST, {
       backLinkUrl,
       company,
       taskList,
       reviewUrl,
-      registeredEmailAddressOptionEnabled,
       templateName: Templates.TASK_LIST
     });
   } catch (e) {

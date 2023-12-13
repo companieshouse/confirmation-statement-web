@@ -26,6 +26,7 @@ export const initTaskList = (companyNumber: string,
                              transactionId: string,
                              submissionId: string,
                              csSubmission: ConfirmationStatementSubmission,
+                             registeredEmailAddressOptionEnabled: boolean,
                              companyHasExistingRea: boolean): TaskList => {
 
   const allTasks = {
@@ -41,10 +42,10 @@ export const initTaskList = (companyNumber: string,
       state: toTaskState(csSubmission.data?.registerLocationsData?.sectionStatus),
       url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTER_LOCATIONS_PATH, companyNumber, transactionId, submissionId)
     },
-    registeredEmailAddress: {
+    registeredEmailAddress: registeredEmailAddressOptionEnabled ? {
       state: toTaskState(csSubmission.data?.registeredEmailAddressData?.sectionStatus),
       url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(getRegisteredEmailAddressSectionUrl(companyHasExistingRea), companyNumber, transactionId, submissionId)
-    },
+    } : undefined,
     registeredOfficeAddress: {
       state: toTaskState(csSubmission.data?.registeredOfficeAddressData?.sectionStatus),
       url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTERED_OFFICE_ADDRESS_PATH, companyNumber, transactionId, submissionId)
@@ -62,13 +63,15 @@ export const initTaskList = (companyNumber: string,
       url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, companyNumber, transactionId, submissionId)
     }
   };
-  const completedtasks = getTaskCompletedCount(csSubmission);
-  const isTasksCompleted = Object.keys(allTasks).length === completedtasks;
+  const completedTasks = getTaskCompletedCount(csSubmission);
+  const expectedTasks =  Object.keys(allTasks).filter(key => allTasks[key] !== undefined).length;
+  const isTasksCompleted = expectedTasks === completedTasks;
 
   return {
     tasks: allTasks,
     recordDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
-    tasksCompletedCount: completedtasks,
+    tasksExpectedCount: expectedTasks,
+    tasksCompletedCount: completedTasks,
     allTasksCompleted: isTasksCompleted,
     csDue: false
   };

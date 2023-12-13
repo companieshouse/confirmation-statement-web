@@ -32,7 +32,7 @@ export interface TaskList {
       state: TaskState;
       url: string;
     };
-    registeredEmailAddress: {
+    registeredEmailAddress?: {
       state: TaskState;
       url: string;
     };
@@ -46,6 +46,7 @@ export interface TaskList {
     };
   },
   recordDate: string;
+  tasksExpectedCount: number;
   tasksCompletedCount: number;
   allTasksCompleted: boolean;
   csDue: boolean;
