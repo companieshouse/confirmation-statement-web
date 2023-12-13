@@ -7,7 +7,7 @@ import { getCompanyProfile } from "../services/company.profile.service";
 import { doesCompanyHaveEmailAddress } from "../services/registered.email.address.service";
 import { REVIEW_PATH, TRADING_STATUS_PATH } from "../types/page.urls";
 import { isInFuture, toReadableFormat } from "../utils/date";
-import { createAndLogError, logger } from "../utils/logger";
+import { createAndLogError } from "../utils/logger";
 import { urlUtils } from "../utils/url";
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
 import { Session } from "@companieshouse/node-session-handler";

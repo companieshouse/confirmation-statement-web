@@ -8,7 +8,7 @@ jest.mock('../../src/utils/properties', () => ({
 }));
 
 describe("feature flag tests", function() {
-  
+
   describe("active feature tests", function() {
 
     it("should return false if variable is 'false'", function() {
@@ -75,28 +75,28 @@ describe("feature flag tests", function() {
       const supplyDate = new Date("2022-02-20");
       const ecctEnabled = ecctDayOneEnabled(supplyDate);
       expect(ecctEnabled).toEqual(false);
-    })
+    });
 
     it("should return true if supplied date is the same as ECCT start date", function() {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2022-04-01";
       const supplyDate = new Date("2022-04-01");
       const ecctEnabled = ecctDayOneEnabled(supplyDate);
       expect(ecctEnabled).toEqual(true);
-    })
+    });
 
     it("should return true if supplied date is past ECCT start date", function() {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2022-04-01";
       const supplyDate = new Date("2023-10-27");
       const ecctEnabled = ecctDayOneEnabled(supplyDate);
-      expect(ecctEnabled).toEqual(true)
-    })
+      expect(ecctEnabled).toEqual(true);
+    });
 
     it("should return an error if ECCT start date is invalid", function() {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2022-99-99";
       const supplyDate = new Date("2023-10-27");
       const ecctEnabled = ecctDayOneEnabled(supplyDate);
       expect(ecctEnabled).toEqual(false);
-    })
-  })
+    });
+  });
 
 });

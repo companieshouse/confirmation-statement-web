@@ -15,7 +15,7 @@ import { links } from "../utils/constants";
 import { toReadableFormat } from "../utils/date";
 import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
-import { ecctDayOneEnabled } from "../utils/feature.flag"
+import { ecctDayOneEnabled } from "../utils/feature.flag";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
