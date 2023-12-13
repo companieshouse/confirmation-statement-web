@@ -25,7 +25,7 @@ const mockSendUpdate = sendUpdate as jest.Mock;
 describe("Confirm Email Address controller tests", () => {
 
   describe("When entered email has been provided", () => {
-    
+
     beforeEach(() => {
       mocks.mockAuthenticationMiddleware.mockClear();
       mocks.mockServiceAvailabilityMiddleware.mockClear();
@@ -57,10 +57,10 @@ describe("Confirm Email Address controller tests", () => {
       const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
       spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
       const response = await request(app).get(CONFIRM_EMAIL_ADDRESS_URL);
-  
+
       expect(response.text).toContain(EXPECTED_ERROR_TEXT);
-  
+
       spyGetUrlToPath.mockRestore();
-    });  
+    });
   });
 });

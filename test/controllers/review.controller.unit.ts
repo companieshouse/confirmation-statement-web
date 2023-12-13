@@ -171,7 +171,7 @@ describe("review controller tests", () => {
       mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-06-28";
       const response = await request(app)
-      .get(URL);
+        .get(URL);
       expect(response.status).toBe(200);
       expect(response.text).toContain(CONFIRMATION_STATEMENT_TEXT);
     });
@@ -181,7 +181,7 @@ describe("review controller tests", () => {
       mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
       const response = await request(app)
-      .get(URL);
+        .get(URL);
       expect(response.status).toBe(200);
       expect(response.text).toContain(CONFIRMATION_STATEMENT_ECCT_TEXT);
       expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_TEXT);
