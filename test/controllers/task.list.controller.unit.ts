@@ -18,7 +18,7 @@ import { DateTime } from "luxon";
 import { createAndLogError } from "../../src/utils/logger";
 import { getConfirmationStatement } from "../../src/services/confirmation.statement.service";
 import { mockConfirmationStatementSubmission } from "../mocks/confirmation.statement.submission.mock";
-import { mockTaskList } from "../mocks/task.list.mock";
+import { mockTaskListWithEmail, mockTaskListNoEmail } from "../mocks/task.list.mock";
 import { urlUtils } from "../../src/utils/url";
 import { doesCompanyHaveEmailAddress } from "../../src/services/registered.email.address.service";
 
@@ -38,7 +38,7 @@ const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 mockGetConfirmationStatement.mockResolvedValue(mockConfirmationStatementSubmission);
 
 const mockInitTaskList = initTaskList as jest.Mock;
-mockInitTaskList.mockReturnValue(mockTaskList);
+mockInitTaskList.mockReturnValue(mockTaskListNoEmail);
 
 const mockDoesCompanyHaveEmailAddress = doesCompanyHaveEmailAddress as jest.Mock;
 mockDoesCompanyHaveEmailAddress.mockReturnValue(true);
@@ -69,7 +69,7 @@ describe("Task list controller tests", () => {
 
       const response = await request(app).get(URL);
 
-      expect(mockInitTaskList).toBeCalledWith(validCompanyProfile.companyNumber, TRANSACTION_ID, SUBMISSION_ID, mockConfirmationStatementSubmission, true);
+      expect(mockInitTaskList).toBeCalledWith(validCompanyProfile.companyNumber, TRANSACTION_ID, SUBMISSION_ID, mockConfirmationStatementSubmission, false, true);
       expect(response.text).toContain("Check and confirm that the company information we have on record is correct");
       expect(response.text).toContain("Submit");
       expect(response.text).toContain("Cannot start yet");
@@ -126,7 +126,6 @@ describe("Task list controller tests", () => {
       const response = await request(app).get(URL);
 
       expect(response.text).toContain(ERROR_TEXT);
-      expect(response.text).not.toContain("Registered email address");
     });
 
     it("Should return an error page if error is thrown when Company Profile is missing confirmation statement", async () => {
@@ -141,40 +140,49 @@ describe("Task list controller tests", () => {
 
     it("Should enable Registered email address option when confirmation statement date is the same as ECCT start date", async () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockInitTaskList.mockReturnValueOnce(mockTaskListWithEmail);
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-03-15";
       const response = await request(app).get(URL);
 
+      expect(mockInitTaskList).toBeCalledWith(validCompanyProfile.companyNumber, TRANSACTION_ID, SUBMISSION_ID, mockConfirmationStatementSubmission, true, true);
       expect(response.text).toContain("Registered email address");
     });
 
     it("Should enable Registered email address option when confirmation statement date is after ECCT start date", async () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockInitTaskList.mockReturnValueOnce(mockTaskListWithEmail);
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-03-14";
       const response = await request(app).get(URL);
 
+      expect(mockInitTaskList).toBeCalledWith(validCompanyProfile.companyNumber, TRANSACTION_ID, SUBMISSION_ID, mockConfirmationStatementSubmission, true, true);
       expect(response.text).toContain("Registered email address");
     });
 
     it("Should disable Registered email address option when confirmation statement date is before ECCT start date", async () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockInitTaskList.mockReturnValueOnce(mockTaskListNoEmail);
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = '2020-03-16';
       const response = await request(app).get(URL);
 
+      expect(mockInitTaskList).toBeCalledWith(validCompanyProfile.companyNumber, TRANSACTION_ID, SUBMISSION_ID, mockConfirmationStatementSubmission, false, true);
       expect(response.text).not.toContain("Registered email address");
     });
 
     it("Should disable Registered email address option when ECCT Feature flag environment variable is invalid format", async () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockInitTaskList.mockReturnValueOnce(mockTaskListNoEmail);
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = '2020-03-99';
       const response = await request(app).get(URL);
-
+      expect(mockInitTaskList).toBeCalledWith(validCompanyProfile.companyNumber, TRANSACTION_ID, SUBMISSION_ID, mockConfirmationStatementSubmission, false, true);
       expect(response.text).not.toContain("Registered email address");
     });
 
     it("Should disable Registered email address option when ECCT Feature flag environment variable not supplied", async () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockInitTaskList.mockReturnValueOnce(mockTaskListNoEmail);
       const response = await request(app).get(URL);
 
+      expect(mockInitTaskList).toBeCalledWith(validCompanyProfile.companyNumber, TRANSACTION_ID, SUBMISSION_ID, mockConfirmationStatementSubmission, false, true);
       expect(response.text).not.toContain("Registered email address");
     });
   });
