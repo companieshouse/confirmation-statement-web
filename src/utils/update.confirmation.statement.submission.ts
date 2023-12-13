@@ -51,14 +51,14 @@ const generateSectionData = (section: SECTIONS, status: SectionStatus, extraData
       }
 
       case SECTIONS.EMAIL: {
-         const newEmailData: RegisteredEmailAddressData = {
-           sectionStatus: status
-         };
-         if (extraData) {
-           newEmailData.registeredEmailAddress = extraData;
-         }
-         return newEmailData;
-       }
+        const newEmailData: RegisteredEmailAddressData = {
+          sectionStatus: status
+        };
+        if (extraData) {
+          newEmailData.registeredEmailAddress = extraData;
+        }
+        return newEmailData;
+      }
 
       default: {
         return {
