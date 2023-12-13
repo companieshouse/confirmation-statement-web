@@ -21,6 +21,10 @@ import { dummyPayment, PAYMENT_JOURNEY_URL } from "../mocks/payment.mock";
 import { mockConfirmationStatementSubmission } from "../mocks/confirmation.statement.submission.mock";
 import { getConfirmationStatement } from "../../src/services/confirmation.statement.service";
 
+const PropertiesMock = jest.requireMock('../../src/utils/properties');
+jest.mock('../../src/utils/properties', () => ({
+  ...jest.requireActual('../../src/utils/properties'),
+}));
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockGetTransaction = getTransaction as jest.Mock;
 const mockCloseTransaction = closeTransaction as jest.Mock;
@@ -40,6 +44,9 @@ const PAYMENT_URL = "/payment/1234";
 const PAGE_HEADING = "Submit the confirmation statement";
 const ERROR_PAGE_HEADING = "Service offline - File a confirmation statement";
 const COSTS_TEXT = "You will need to pay a fee";
+const CONFIRMATION_STATEMENT_TEXT = "By continuing, you confirm that all information required to be delivered by the company pursuant to";
+const CONFIRMATION_STATEMENT_ECCT_TEXT = "I confirm that all information required to be delivered by the company pursuant to";
+const LAWFUL_ACTIVITY_STATEMENT_TEXT = "I confirm that the intended future activities of the company are lawful";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
 const SUBMISSION_ID = "435435";
@@ -157,6 +164,27 @@ describe("review controller tests", () => {
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).not.toContain(COSTS_TEXT);
       expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    });
+
+    it("Should show review page with standard confirmation statement text when cs date (2020-03-15) before ECCT Day One start date", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-06-28";
+      const response = await request(app)
+        .get(URL);
+      expect(response.status).toBe(200);
+      expect(response.text).toContain(CONFIRMATION_STATEMENT_TEXT);
+    });
+
+    it("Should show review page with revised confirmation and lawful activity statement texts when cs date (2020-03-15) on or after ECCT Day One start date", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
+      const response = await request(app)
+        .get(URL);
+      expect(response.status).toBe(200);
+      expect(response.text).toContain(CONFIRMATION_STATEMENT_ECCT_TEXT);
+      expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_TEXT);
     });
   });
 

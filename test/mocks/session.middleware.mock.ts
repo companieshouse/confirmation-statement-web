@@ -14,6 +14,7 @@ export const session = new Session();
 mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
   req.session = session;
   req.session.data.extra_data["payment-nonce"] = "123456";
+  req.session.data.extra_data["entered-email-address"] = "info@mock-test.com";
   next();
 });
 
