@@ -1,7 +1,13 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-    Submit the confirmation statement
+  {% if confirmationStatementErrorMsg %}
+    Error:
+  {% endif %}
+  {% if lawfulActivityStatementErrorMsg %}
+    Error:
+  {% endif %}
+  Submit the confirmation statement
 {% endblock %}
 
 {% block backLink %}
@@ -19,9 +25,40 @@
       Confirmation statement date: {{nextMadeUpToDate}}</h2>
     <form action="" method="post">
       {% if ecctEnabled %}
+        {% if statementErrors %}
+          {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: [
+            {
+              text: statementErrors[0],
+              href: "#confirmation-statement"
+            },
+            {
+              text: statementErrors[1],
+              href: "#lawful-activity-statement"
+            }
+          ]
+          }) }}
+        {% endif %}
+        {% if statementErrors[0] %}
+          {% set confirmationStatementError = {
+            text: statementErrors[0]
+          } %}
+        {% else %}
+          {% set confirmationStatementError = false %}
+        {% endif %}
+        {% if statementErrors[1] %}
+          {% set lawfulActivityStatementError = {
+            text: statementErrors[1]
+          } %}
+        {% else %}
+          {% set lawfulActivityStatementError = false %}
+        {% endif %}
         <p>
           {{ govukCheckboxes({
-            name: "confirmation-statement",
+            name: "confirmationStatement",
+            idPrefix: "confirmation-statement",
+            errorMessage: confirmationStatementError,
             fieldset: {
               legend: {
                 isPageHeading: false,
@@ -30,17 +67,34 @@
             },
             items: [
               {
-                value: "confirmationStatement",
                 html: "I confirm that all information required to be delivered by the company pursuant to " +
                 "<a href=" + "https://www.legislation.gov.uk/ukpga/2006/46/section/853A data-event-id=section-831A(1)-information-link>section 853A(1)(a) of the Companies Act 2006</a>" +
                 " in relation to the confirmation period ending " +
                 "<strong>" + nextMadeUpToDate + "</strong>" + " either has been delivered or is being delivered with this statement.",
-                id: "confirmationStatement"
-              },
+                id: "confirmationStatement",
+                name: "confirmationStatement",
+                value: "true"
+              }
+            ]
+          }) }}
+        </p>
+        <p>
+          {{ govukCheckboxes({
+            name: "lawfulActivityStatement",
+            idPrefix: "lawful-activity-statement",
+            errorMessage: lawfulActivityStatementError,
+            fieldset: {
+              legend: {
+                isPageHeading: false,
+                classes: "govuk-fieldset-legend--l"
+              }
+            },
+            items: [
               {
-                value: "lawfulActivityStatement",
                 html: "I confirm that the intended future activities of the company are lawful.",
-                id: "lawfulActivityStatement"
+                id: "lawfulActivityStatement",
+                name: "lawfulActivityStatement",
+                value: "true"
               }
             ]
           }) }}
