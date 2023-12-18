@@ -1,6 +1,6 @@
 import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import {
-  TaskList
+  TaskList, TaskState
 } from "../types/task.list";
 import { toReadableFormat } from "../utils/date";
 import {
@@ -18,7 +18,6 @@ import {
 } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { toTaskState } from "../utils/task/task.state.mapper";
-import { getTaskCompletedCount } from "../utils/task/task.counter";
 import { FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 } from "../utils/properties";
 import { isActiveFeature } from "../utils/feature.flag";
 
@@ -63,8 +62,8 @@ export const initTaskList = (companyNumber: string,
       url: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, companyNumber, transactionId, submissionId)
     }
   };
-  const completedTasks = getTaskCompletedCount(csSubmission);
-  const expectedTasks =  Object.keys(allTasks).filter(key => allTasks[key] !== undefined).length;
+  const completedTasks = Object.keys(allTasks).filter(key => allTasks[key] && allTasks[key].state === TaskState.CHECKED).length;
+  const expectedTasks = Object.keys(allTasks).filter(key => allTasks[key] !== undefined).length;
   const isTasksCompleted = expectedTasks === completedTasks;
 
   return {

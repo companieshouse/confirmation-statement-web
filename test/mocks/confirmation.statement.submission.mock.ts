@@ -28,3 +28,80 @@ export const mockConfirmationStatementSubmission: ConfirmationStatementSubmissio
     self: "/somewhere/"
   }
 };
+
+export const mockConfirmationStatementSubmissionAllConfirmed: ConfirmationStatementSubmission = {
+  id: "dgshjgdsj",
+  data: {
+    confirmationStatementMadeUpToDate: "2020-03-11",
+    activeOfficerDetailsData: {
+      sectionStatus: SectionStatus.CONFIRMED,
+    },
+    personsSignificantControlData: {
+      sectionStatus: SectionStatus.CONFIRMED,
+    },
+    registeredOfficeAddressData: {
+      sectionStatus: SectionStatus.CONFIRMED,
+    },
+    registeredEmailAddressData: {
+      sectionStatus: SectionStatus.CONFIRMED,
+    },
+    registerLocationsData: {
+      sectionStatus: SectionStatus.CONFIRMED,
+    },
+    shareholderData: {
+      sectionStatus: SectionStatus.CONFIRMED,
+    },
+    sicCodeData: {
+      sectionStatus: SectionStatus.CONFIRMED,
+    },
+    statementOfCapitalData: {
+      sectionStatus: SectionStatus.CONFIRMED,
+      statementOfCapital: mockStatementOfCapital
+    },
+    tradingStatusData: {
+      tradingStatusAnswer: true,
+    },
+  },
+  links: {
+    self: "/somewhere/"
+  }
+};
+
+export const mockConfirmationStatementSubmissionMixedStatuses: ConfirmationStatementSubmission = {
+  id: "dgshjgdsj",
+  data: {
+    confirmationStatementMadeUpToDate: "2020-03-11",
+    activeOfficerDetailsData: {
+      sectionStatus: SectionStatus.NOT_CONFIRMED,
+    },
+    personsSignificantControlData: {
+      sectionStatus: SectionStatus.NOT_CONFIRMED,
+    },
+    registeredOfficeAddressData: {
+      sectionStatus: SectionStatus.RECENT_FILING,
+    },
+    registeredEmailAddressData: {
+      sectionStatus: SectionStatus.INITIAL_FILING,
+      registeredEmailAddress: "mock@mock.email"
+    },
+    registerLocationsData: {
+      sectionStatus: SectionStatus.CONFIRMED,
+    },
+    shareholderData: {
+      sectionStatus: SectionStatus.CONFIRMED,
+    },
+    sicCodeData: {
+      sectionStatus: SectionStatus.CONFIRMED,
+    },
+    statementOfCapitalData: {
+      sectionStatus: SectionStatus.CONFIRMED,
+      statementOfCapital: mockStatementOfCapital
+    },
+    tradingStatusData: {
+      tradingStatusAnswer: true,
+    },
+  },
+  links: {
+    self: "/somewhere/"
+  }
+};

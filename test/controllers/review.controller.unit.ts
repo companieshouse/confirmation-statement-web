@@ -19,7 +19,8 @@ import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource
 import { createAndLogError } from "../../src/utils/logger";
 import { dummyPayment, PAYMENT_JOURNEY_URL } from "../mocks/payment.mock";
 import { mockConfirmationStatementSubmission } from "../mocks/confirmation.statement.submission.mock";
-import { getConfirmationStatement } from "../../src/services/confirmation.statement.service";
+import { getConfirmationStatement, updateConfirmationStatement } from "../../src/services/confirmation.statement.service";
+import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 const PropertiesMock = jest.requireMock('../../src/utils/properties');
 jest.mock('../../src/utils/properties', () => ({
@@ -33,6 +34,8 @@ const mockCreateAndLogError = createAndLogError as jest.Mock;
 
 const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 mockGetConfirmationStatement.mockResolvedValue(mockConfirmationStatementSubmission);
+
+const mockUpdateConfirmationStatement = updateConfirmationStatement as jest.Mock;
 
 const dummyError = {
   message: "oops"
@@ -208,6 +211,21 @@ describe("review controller tests", () => {
 
       expect(response.status).toBe(302);
       expect(response.header.location).toEqual(CONFIRMATION_URL);
+    });
+
+    it("Should update the lawful purpose statement", async () => {
+      await request(app).post(URL);
+      const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
+      expect(csSubmission.data.acceptLawfulPurposeStatement).toBe(true);
+    });
+
+    it("Should show error page if lawful purpose statement update fails", async () => {
+      mockUpdateConfirmationStatement.mockRejectedValueOnce("Error");
+      const response = await request(app)
+        .post(URL);
+
+      expect(response.status).toBe(500);
+      expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
     });
 
     it("Should show error page if payment response has no resource", async () => {

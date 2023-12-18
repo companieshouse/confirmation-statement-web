@@ -15,6 +15,7 @@ import { links } from "../utils/constants";
 import { toReadableFormat } from "../utils/date";
 import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
+import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
 import { ecctDayOneEnabled } from "../utils/feature.flag";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -53,6 +54,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+
+    await sendLawfulPurposeStatementUpdate(req, true);
+
     const paymentUrl: string | undefined = await closeTransaction(session, companyNumber, submissionId, transactionId);
 
     if (!paymentUrl) {
