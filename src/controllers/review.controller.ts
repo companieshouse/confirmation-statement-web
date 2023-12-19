@@ -15,6 +15,7 @@ import { links, CONFIRMATION_STATEMENT_ERROR, LAWFUL_ACTIVITY_STATEMENT_ERROR } 
 import { toReadableFormat } from "../utils/date";
 import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
+import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
 import { ecctDayOneEnabled } from "../utils/feature.flag";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -61,6 +62,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const transaction: Transaction = await getTransaction(session, transactionId);
 
     const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
+
+    await sendLawfulPurposeStatementUpdate(req, true);
 
     const paymentUrl: string | undefined = await closeTransaction(session, companyNumber, submissionId, transactionId);
 

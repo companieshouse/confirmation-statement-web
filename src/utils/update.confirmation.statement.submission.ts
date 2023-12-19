@@ -8,7 +8,7 @@ import {
   TradingStatusData
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement, updateConfirmationStatement } from "../services/confirmation.statement.service";
-import { SECTIONS } from "./constants";
+import { SECTIONS, ACCEPT_LAWFUL_PURPOSE_STATEMENT } from "./constants";
 import { urlUtils } from "./url";
 
 export const sendUpdate = async (req: Request, sectionName: SECTIONS, status: SectionStatus, extraData?: any ) => {
@@ -30,6 +30,15 @@ export const sendTradingStatusUpdate = async (req: Request, tradingStatus: boole
   };
   const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
   csSubmission.data.tradingStatusData = tradingStatusData;
+  await updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
+};
+
+export const sendLawfulPurposeStatementUpdate = async (req: Request, acceptLawfulPurposeStatment: boolean ) => {
+  const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+  const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+  const session = req.session as Session;
+  const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
+  csSubmission.data[ACCEPT_LAWFUL_PURPOSE_STATEMENT] = acceptLawfulPurposeStatment;
   await updateConfirmationStatement(session, transactionId, submissionId, csSubmission);
 };
 
