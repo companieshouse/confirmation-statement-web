@@ -10,7 +10,7 @@ import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transact
 import { startPaymentsSession } from "../services/payment.service";
 import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
-import { createAndLogError, logger } from "../utils/logger";
+import { createAndLogError } from "../utils/logger";
 import { links, CONFIRMATION_STATEMENT_ERROR, LAWFUL_ACTIVITY_STATEMENT_ERROR } from "../utils/constants";
 import { toReadableFormat } from "../utils/date";
 import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
@@ -54,48 +54,47 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
-    const backLinkUrl = urlUtils
-      .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId);
 
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
-
     const transaction: Transaction = await getTransaction(session, transactionId);
-
     const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
-
-    await sendLawfulPurposeStatementUpdate(req, true);
-
     const paymentUrl: string | undefined = await closeTransaction(session, companyNumber, submissionId, transactionId);
 
     const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
     const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
 
+    if (ecctEnabled) {
 
-    const confirmationCheckboxValue = req.body.confirmationStatement;
-    logger.debug(`Checking statement checkbox value: ${confirmationCheckboxValue}`);
-    const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
-    logger.debug(`Checking lawful activity checkbox value: ${lawfulActivityCheckboxValue}`);
+      const confirmationCheckboxValue = req.body.confirmationStatement;
+      const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
 
-    const confirmationValid = isStatementCheckboxTicked("Confirmation", confirmationCheckboxValue);
-    const lawfulActivityValid = isStatementCheckboxTicked("Lawful Activity", lawfulActivityCheckboxValue);
+      const confirmationValid = isStatementCheckboxTicked(confirmationCheckboxValue);
+      const lawfulActivityValid = isStatementCheckboxTicked(lawfulActivityCheckboxValue);
 
-    const statementErrors: string[] = new Array(2);
-    if (!confirmationValid) {
-      statementErrors[0] = CONFIRMATION_STATEMENT_ERROR;
-    }
-    if (!lawfulActivityValid) {
-      statementErrors[1] = LAWFUL_ACTIVITY_STATEMENT_ERROR;
-    }
+      let confirmationStatementError: string = "";
+      if (!confirmationValid) {
+        confirmationStatementError = CONFIRMATION_STATEMENT_ERROR;
+      }
 
-    if (!confirmationValid || !lawfulActivityValid) {
-      return res.render(Templates.REVIEW, {
-        backLinkUrl,
-        company,
-        nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
-        isPaymentDue: isPaymentDue(transaction, submissionId),
-        ecctEnabled,
-        statementErrors
-      });
+      let lawfulActivityStatementError: string = "";
+      if (!lawfulActivityValid) {
+        lawfulActivityStatementError = LAWFUL_ACTIVITY_STATEMENT_ERROR;
+      }
+
+      if (!confirmationValid || !lawfulActivityValid) {
+        return res.render(Templates.REVIEW, {
+          backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+          company,
+          nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
+          isPaymentDue: isPaymentDue(transaction, submissionId),
+          ecctEnabled,
+          confirmationStatementError,
+          lawfulActivityStatementError
+        });
+      }
+
+      await sendLawfulPurposeStatementUpdate(req, true);
+
     }
 
     if (!paymentUrl) {
@@ -132,8 +131,7 @@ const isPaymentDue = (transaction: Transaction, submissionId: string): boolean =
   return transaction.resources[resourceKeyName].links?.[links.COSTS];
 };
 
-const isStatementCheckboxTicked = (checkboxName: string, checkboxValue: string): boolean => {
-  logger.debug(`Checking ${checkboxName} statement checkbox is ticked`);
+const isStatementCheckboxTicked = (checkboxValue: string): boolean => {
 
   if (checkboxValue === "true") {
     return true;
