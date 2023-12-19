@@ -224,7 +224,7 @@ describe("review controller tests", () => {
     it("Should update the lawful purpose statement", async () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
-      await request(app).post(URL);
+      await request(app).post(URL).send({ confirmationStatement: "true", lawfulActivityStatement: "true" });
       const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
       expect(csSubmission.data.acceptLawfulPurposeStatement).toBe(true);
     });
@@ -234,7 +234,7 @@ describe("review controller tests", () => {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
       mockUpdateConfirmationStatement.mockRejectedValueOnce("Error");
       const response = await request(app)
-        .post(URL);
+        .post(URL).send({ confirmationStatement: "true", lawfulActivityStatement: "true" });
 
       expect(response.status).toBe(500);
       expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
@@ -274,17 +274,18 @@ describe("review controller tests", () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
       mockCloseTransaction.mockResolvedValueOnce(PAYMENT_URL);
-      const response = (await request(app).post(URL).send({ confirmationStatement: "true" }).send({ lawfulActivityStatement: "true" }));
+      mockStartPaymentsSession.mockResolvedValueOnce(dummyPaymentResponse);
+      const response = await request(app).post(URL).send({ confirmationStatement: "true", lawfulActivityStatement: "true" });
       expect(response.status).toEqual(302);
       expect(response.header.location).toBe(PAYMENT_JOURNEY_URL);
     });
 
     it("Should reload the review page with error messages when both confirmation & lawful activity statement checkboxes not ticked", async () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
-      mockCloseTransaction.mockRejectedValueOnce(URL);
       const response = await request(app).post(URL).send();
-      expect(response.status).toEqual(500);
+      expect(response.status).toEqual(200);
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
       expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
@@ -292,18 +293,20 @@ describe("review controller tests", () => {
 
     it("Should reload the review page with an error message when confirmation statement checkbox not ticked", async () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
       const response = await request(app).post(URL).send({ lawfulActivityStatement: "true" });
-      expect(response.status).toEqual(500);
+      expect(response.status).toEqual(200);
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
     });
 
     it("Should reload the review page with an error message when lawful activity statement checkbox not ticked", async () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
       const response = await request(app).post(URL).send({ confirmationStatement: "true" });
-      expect(response.status).toEqual(500);
+      expect(response.status).toEqual(200);
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
     });

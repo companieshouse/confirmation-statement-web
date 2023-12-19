@@ -58,7 +58,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
     const transaction: Transaction = await getTransaction(session, transactionId);
     const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
-    const paymentUrl: string | undefined = await closeTransaction(session, companyNumber, submissionId, transactionId);
 
     const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
     const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
@@ -96,6 +95,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       await sendLawfulPurposeStatementUpdate(req, true);
 
     }
+
+    const paymentUrl: string | undefined = await closeTransaction(session, companyNumber, submissionId, transactionId);
 
     if (!paymentUrl) {
       return res.redirect(urlUtils
