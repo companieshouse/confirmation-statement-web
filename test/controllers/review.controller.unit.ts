@@ -299,6 +299,7 @@ describe("review controller tests", () => {
       expect(response.status).toEqual(200);
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).not.toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
     });
 
     it("Should reload the review page with an error message when lawful activity statement checkbox not ticked", async () => {
@@ -309,6 +310,7 @@ describe("review controller tests", () => {
       expect(response.status).toEqual(200);
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).not.toContain(CONFIRMATION_STATEMENT_ERROR);
     });
 
   });
