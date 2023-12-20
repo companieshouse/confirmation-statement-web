@@ -31,6 +31,8 @@ export const WRONG_PSC_DETAILS_TEXT = "wrong-psc-details";
 export const WRONG_PSC_STATEMENT_TEXT = "wrong-psc-statement";
 export const EMAIL_ADDRESS_INVALID: string =  "Enter an email address in the correct format, like name@example.com";
 export const NO_EMAIL_ADDRESS_SUPPLIED: string =  "Enter the registered email address";
+export const CONFIRMATION_STATEMENT_ERROR: string = "You need to accept the confirmation statement";
+export const LAWFUL_ACTIVITY_STATEMENT_ERROR: string = "You need to accept the statement on the intended future activities of the company";
 export const ACCEPT_LAWFUL_PURPOSE_STATEMENT = "acceptLawfulPurposeStatement";
 
 export enum RADIO_BUTTON_VALUE {

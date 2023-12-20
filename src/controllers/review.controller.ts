@@ -11,7 +11,7 @@ import { startPaymentsSession } from "../services/payment.service";
 import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { createAndLogError } from "../utils/logger";
-import { links } from "../utils/constants";
+import { links, CONFIRMATION_STATEMENT_ERROR, LAWFUL_ACTIVITY_STATEMENT_ERROR } from "../utils/constants";
 import { toReadableFormat } from "../utils/date";
 import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
@@ -55,7 +55,46 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
 
-    await sendLawfulPurposeStatementUpdate(req, true);
+    const company: CompanyProfile = await getCompanyProfile(companyNumber);
+    const transaction: Transaction = await getTransaction(session, transactionId);
+    const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
+
+    const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
+    const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
+
+    if (ecctEnabled) {
+
+      const confirmationCheckboxValue = req.body.confirmationStatement;
+      const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
+
+      const confirmationValid = isStatementCheckboxTicked(confirmationCheckboxValue);
+      const lawfulActivityValid = isStatementCheckboxTicked(lawfulActivityCheckboxValue);
+
+      let confirmationStatementError: string = "";
+      if (!confirmationValid) {
+        confirmationStatementError = CONFIRMATION_STATEMENT_ERROR;
+      }
+
+      let lawfulActivityStatementError: string = "";
+      if (!lawfulActivityValid) {
+        lawfulActivityStatementError = LAWFUL_ACTIVITY_STATEMENT_ERROR;
+      }
+
+      if (!confirmationValid || !lawfulActivityValid) {
+        return res.render(Templates.REVIEW, {
+          backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+          company,
+          nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
+          isPaymentDue: isPaymentDue(transaction, submissionId),
+          ecctEnabled,
+          confirmationStatementError,
+          lawfulActivityStatementError
+        });
+      }
+
+      await sendLawfulPurposeStatementUpdate(req, true);
+
+    }
 
     const paymentUrl: string | undefined = await closeTransaction(session, companyNumber, submissionId, transactionId);
 
@@ -91,4 +130,13 @@ const isPaymentDue = (transaction: Transaction, submissionId: string): boolean =
     return false;
   }
   return transaction.resources[resourceKeyName].links?.[links.COSTS];
+};
+
+const isStatementCheckboxTicked = (checkboxValue: string): boolean => {
+
+  if (checkboxValue === "true") {
+    return true;
+  }
+
+  return false;
 };
