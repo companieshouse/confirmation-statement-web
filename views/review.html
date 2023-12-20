@@ -1,10 +1,7 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  {% if confirmationStatementErrorMsg %}
-    Error:
-  {% endif %}
-  {% if lawfulActivityStatementErrorMsg %}
+  {% if confirmationStatementError or lawfulActivityStatementError %}
     Error:
   {% endif %}
   Submit the confirmation statement
