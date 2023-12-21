@@ -24,6 +24,7 @@ const TRANSACTION_ID = "12345-12345";
 const SUBMISSION_ID = "86dfssfds";
 const populatedWrongStatementOfCapitalPath = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(WRONG_STATEMENT_OF_CAPITAL_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
+const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
 
 describe("Wrong statement of capital stop controller tests", () => {
 
@@ -71,5 +72,12 @@ describe("Wrong statement of capital stop controller tests", () => {
       expect(response.text).toContain("The total amount unpaid for all shares is missing on this company’s statement of capital.");
       expect(response.text).toContain(backLinkUrl);
     });
+
+    it("Should throw an error if statement of capital lookup throws an error", async () => {
+      mockGetStatementOfCapitalData.mockRejectedValueOnce(new Error());
+      const response = await request(app).get(populatedWrongStatementOfCapitalPath);
+      expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+    });
+
   });
 });

@@ -20,27 +20,31 @@ export const get = (req: Request, res: Response) => {
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
-  const tradingStatusButtonValue = req.body.tradingStatus;
-  if (!isRadioButtonValueValid(tradingStatusButtonValue)) {
-    return next(new Error(getRadioButtonInvalidValueErrorMessage(tradingStatusButtonValue)));
-  }
-  const companyNumber = getCompanyNumber(req);
+  try {
+    const tradingStatusButtonValue = req.body.tradingStatus;
+    if (!isRadioButtonValueValid(tradingStatusButtonValue)) {
+      return next(new Error(getRadioButtonInvalidValueErrorMessage(tradingStatusButtonValue)));
+    }
+    const companyNumber = getCompanyNumber(req);
 
-  if (tradingStatusButtonValue === RADIO_BUTTON_VALUE.YES) {
-    await sendTradingStatusUpdate(req, true);
-    return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
-  }
+    if (tradingStatusButtonValue === RADIO_BUTTON_VALUE.YES) {
+      await sendTradingStatusUpdate(req, true);
+      return res.redirect(urlUtils.getUrlToPath(TASK_LIST_PATH, req));
+    }
 
-  if (tradingStatusButtonValue === RADIO_BUTTON_VALUE.NO) {
-    await sendTradingStatusUpdate(req, false);
-    return res.redirect(urlUtils.getUrlToPath(TRADING_STOP_PATH, req));
-  }
+    if (tradingStatusButtonValue === RADIO_BUTTON_VALUE.NO) {
+      await sendTradingStatusUpdate(req, false);
+      return res.redirect(urlUtils.getUrlToPath(TRADING_STOP_PATH, req));
+    }
 
-  return res.render(Templates.TRADING_STATUS, {
-    tradingStatusErrorMsg: TRADING_STATUS_ERROR,
-    backLinkUrl: getConfirmCompanyUrl(companyNumber),
-    templateName: Templates.TRADING_STATUS
-  });
+    return res.render(Templates.TRADING_STATUS, {
+      tradingStatusErrorMsg: TRADING_STATUS_ERROR,
+      backLinkUrl: getConfirmCompanyUrl(companyNumber),
+      templateName: Templates.TRADING_STATUS
+    });
+  } catch (e) {
+    return next(e);
+  }
 };
 
 const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];

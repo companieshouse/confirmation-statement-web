@@ -192,6 +192,14 @@ describe("review controller tests", () => {
       expect(response.text).toContain(CONFIRMATION_STATEMENT_ECCT_TEXT);
       expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_TEXT);
     });
+
+    it("Should redirect to an error page when error is returned", async () => {
+      mockGetConfirmationStatement.mockRejectedValueOnce(new Error());
+      const response = await request(app)
+        .get(URL);
+      expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
+    });
+
   });
 
   describe("post tests", () => {

@@ -71,4 +71,12 @@ describe("Trading status controller tests", () => {
     expect(response.status).toEqual(500);
     expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
   });
+
+  it("Should redirect to an error page when error is returned in POST", async () => {
+    mockSendTradingStatusUpdate.mockRejectedValueOnce(new Error());
+    const response = await request(app)
+      .post(TRADING_STATUS_URL)
+      .send({ tradingStatus: "yes" });
+    expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
+  });
 });
