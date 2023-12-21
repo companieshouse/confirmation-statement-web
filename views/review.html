@@ -75,7 +75,10 @@
                 "<strong>" + nextMadeUpToDate + "</strong>" + " either has been delivered or is being delivered with this statement.",
                 id: "confirmation-statement",
                 name: "confirmationStatement",
-                value: "true"
+                value: "true",
+                attributes: {
+                  "data-event-id": "confirmation-statement-checkbox-clicked"
+                }
               }
             ]
           }) }}
@@ -96,7 +99,10 @@
                 html: "I confirm that the intended future activities of the company are lawful.",
                 id: "lawful-activity-statement",
                 name: "lawfulActivityStatement",
-                value: "true"
+                value: "true",
+                attributes: {
+                  "data-event-id": "lawful-activity-statement-checkbox-clicked"
+                }
               }
             ]
           }) }}
