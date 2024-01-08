@@ -29,7 +29,7 @@ const SAIL_HEADING = "Single alternative inspection location (SAIL)";
 const NO_RECORDS_SAIL = "There are currently no records held at the SAIL addres";
 const ALL_RECORDS_MESSAGE = "All company records are kept at the registered office address, or on the public record.";
 const OTHER_RECORDS_MESSAGE = "Any other company records are kept at the registered office address, or on the public record.";
-const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
+const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 
 const COMPANY_NUMBER = "12345678";
 const REGISTER_LOCATIONS_URL = REGISTER_LOCATIONS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);

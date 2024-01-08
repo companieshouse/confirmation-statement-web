@@ -42,7 +42,7 @@ const dummyError = {
 } as Error;
 mockCreateAndLogError.mockReturnValue(dummyError);
 
-const SERVICE_UNAVAILABLE_TEXT = "Sorry, the service is unavailable";
+const SERVICE_UNAVAILABLE_TEXT = "Sorry, there is a problem with the service";
 const PAYMENT_URL = "/payment/1234";
 const PAGE_HEADING = "Submit the confirmation statement";
 const ERROR_PAGE_HEADING = "Service offline - File a confirmation statement";

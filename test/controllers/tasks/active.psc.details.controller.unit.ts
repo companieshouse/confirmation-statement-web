@@ -29,7 +29,7 @@ const COMPANY_NUMBER = "12345678";
 const ACTIVE_PSC_DETAILS_URL = ACTIVE_PSC_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const PSC_STATEMENT_URL = PSC_STATEMENT_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const PAGE_HEADING = "Review the people with significant control";
-const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
+const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 const WRONG_PSC_DETAILS_URL = WRONG_PSC_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
 const mockGetPscs = getPscs as jest.Mock;

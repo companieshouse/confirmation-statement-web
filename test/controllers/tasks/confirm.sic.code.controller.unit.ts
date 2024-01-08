@@ -24,7 +24,7 @@ const mockSendUpdate = sendUpdate as jest.Mock;
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const SIC_CODE_URL = SIC_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const WRONG_SIC_URL = WRONG_SIC_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
-const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
+const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 
 jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/company.profile.service");

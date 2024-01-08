@@ -50,7 +50,7 @@ describe("Transaction ID validation middleware tests", () => {
   });
 
   it("Should stop invalid transaction id", async () => {
-    const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
+    const ERROR_PAGE_TEXT = "Sorry, there is a problem with the service";
     const spyTruncateRequestUrl = jest.spyOn(urlUtils, "sanitiseReqUrls");
     mockIsUrlIdValid.mockReturnValueOnce(false);
 
@@ -78,7 +78,7 @@ describe("Transaction ID validation middleware tests", () => {
   });
 
   it("Should truncate all invalid ids", async () => {
-    const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
+    const ERROR_PAGE_TEXT = "Sorry, there is a problem with the service";
     const spyTruncateRequestUrl = jest.spyOn(urlUtils, "sanitiseReqUrls");
     mockIsUrlIdValid.mockReturnValueOnce(false);
 

@@ -43,7 +43,7 @@ mockInitTaskList.mockReturnValue(mockTaskListNoEmail);
 const mockDoesCompanyHaveEmailAddress = doesCompanyHaveEmailAddress as jest.Mock;
 mockDoesCompanyHaveEmailAddress.mockReturnValue(true);
 
-const ERROR_TEXT = "Sorry, the service is unavailable";
+const ERROR_TEXT = "Sorry, there is a problem with the service";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
 const SUBMISSION_ID = "435435";

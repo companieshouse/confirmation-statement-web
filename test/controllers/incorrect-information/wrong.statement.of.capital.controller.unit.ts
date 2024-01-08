@@ -24,7 +24,7 @@ const TRANSACTION_ID = "12345-12345";
 const SUBMISSION_ID = "86dfssfds";
 const populatedWrongStatementOfCapitalPath = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(WRONG_STATEMENT_OF_CAPITAL_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(STATEMENT_OF_CAPITAL_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
-const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
+const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 
 describe("Wrong statement of capital stop controller tests", () => {
 

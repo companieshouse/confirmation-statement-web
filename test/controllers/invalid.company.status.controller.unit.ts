@@ -15,7 +15,7 @@ const mockIsCompanyNumberValid = isCompanyNumberValid as jest.Mock;
 mockIsCompanyNumberValid.mockReturnValue(true);
 
 const STOP_PAGE_TITLE_COMPANY_STATUS = "You cannot use this service - Company Status";
-const SERVICE_UNAVAILABLE_TEXT = "Sorry, the service is unavailable";
+const SERVICE_UNAVAILABLE_TEXT = "Sorry, there is a problem with the service";
 
 describe("Invalid company status controller tests", () => {
 

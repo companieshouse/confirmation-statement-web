@@ -15,7 +15,7 @@ const mockIsCompanyNumberValid = isCompanyNumberValid as jest.Mock;
 mockIsCompanyNumberValid.mockReturnValue(true);
 
 const STOP_PAGE_TITLE_USE_WEBFILING = "You cannot use this service - Company Details";
-const SERVICE_UNAVAILABLE_TEXT = "Sorry, the service is unavailable";
+const SERVICE_UNAVAILABLE_TEXT = "Sorry, there is a problem with the service";
 
 describe("Use Webfiling controller tests", () => {
 

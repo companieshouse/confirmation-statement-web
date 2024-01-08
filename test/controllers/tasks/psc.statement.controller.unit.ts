@@ -31,7 +31,7 @@ import { isActiveFeature } from "../../../src/utils/feature.flag";
 
 const PAGE_TITLE = "Review the people with significant control";
 const PAGE_HEADING = "Is the PSC statement correct?";
-const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
+const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66544";
 const SUBMISSION_ID = "6464647";

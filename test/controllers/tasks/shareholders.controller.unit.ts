@@ -21,7 +21,7 @@ const mockSendUpdate = sendUpdate as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
 const PAGE_HEADING = "Review the shareholders";
-const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
+const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 const SHAREHOLDERS_URL = SHAREHOLDERS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const WRONG_SHAREHOLDERS_URL = WRONG_SHAREHOLDERS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);

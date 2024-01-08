@@ -31,7 +31,7 @@ const REG_NO = "36363";
 const SERV_ADD_LINE_1 = "line1";
 const REGISTER_LOCATION = "UK";
 const COUNTRY_RESIDENCE = "UK";
-const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
+const ERROR_PAGE_TEXT = "Sorry, there is a problem with the service";
 const TEST_RLE_NAME = "Test Rle Name";
 const PEOPLE_WITH_SIGNIFICANT_CONTROL_URL =
   urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH,
@@ -426,7 +426,7 @@ describe("People with significant control controller tests", () => {
       expect(mockCreateAndLogError).toHaveBeenCalledTimes(1);
       expect(mockCreateAndLogError).toHaveBeenCalledWith(expect.stringContaining("No PSC data found, no radio button selected"));
       expect(response.status).toEqual(500);
-      expect(response.text).toContain("Sorry, the service is unavailable");
+      expect(response.text).toContain("Sorry, there is a problem with the service");
     });
 
     it("Should redirect to psc statement page when Recently Filed radio button is selected", async () => {

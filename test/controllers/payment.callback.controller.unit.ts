@@ -64,7 +64,7 @@ describe("Payment callback controller tests", () => {
       .get(successUrl);
 
     expect(response.status).toBe(500);
-    expect(response.text).toContain("Sorry, the service is unavailable");
+    expect(response.text).toContain("Sorry, there is a problem with the service");
     expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
   });
 });

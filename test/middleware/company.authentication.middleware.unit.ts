@@ -28,7 +28,7 @@ mockAuthReturnedFunction.mockImplementation((_req, _res, next) => next());
 mockCompanyAuthMiddleware.mockReturnValue(mockAuthReturnedFunction);
 
 const URL = CONFIRMATION_STATEMENT + COMPANY_AUTH_PROTECTED_BASE.replace(":companyNumber", "12345678");
-const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
+const ERROR_PAGE_TEXT = "Sorry, there is a problem with the service";
 
 const expectedAuthMiddlewareConfig: AuthOptions = {
   chsWebUrl: "http://chs.local",

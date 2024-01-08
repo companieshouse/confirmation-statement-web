@@ -12,7 +12,7 @@ const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as j
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
 
 const PAGE_HEADING = "Registered email address";
-const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
+const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 const COMPANY_NUMBER = "12345678";
 
 const PROVIDE_EMAIL_ADDRESS_URL = PROVIDE_EMAIL_ADDRESS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);

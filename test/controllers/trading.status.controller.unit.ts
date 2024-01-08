@@ -15,7 +15,7 @@ const mockSendTradingStatusUpdate = sendTradingStatusUpdate as jest.Mock;
 
 const PAGE_HEADING = "Check the trading status";
 const COMPANY_NUMBER = "12345678";
-const SERVICE_UNAVAILABLE_TEXT = "Sorry, the service is unavailable";
+const SERVICE_UNAVAILABLE_TEXT = "Sorry, there is a problem with the service";
 
 const TRADING_STATUS_URL = TRADING_STATUS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);

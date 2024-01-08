@@ -12,7 +12,7 @@ import { SECTIONS } from "../../../src/utils/constants";
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 const PAGE_HEADING = "Check the email address";
-const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
+const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 const COMPANY_NUMBER = "12345678";
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const CONFIRM_EMAIL_ADDRESS_URL = CONFIRM_EMAIL_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);

@@ -56,7 +56,7 @@ describe("Confirmation controller tests", () => {
     const response = await request(app)
       .get(URL);
 
-    expect(response.text).toContain("Sorry, the service is unavailable");
+    expect(response.text).toContain("Sorry, there is a problem with the service");
 
     spyGetTrans.mockRestore();
   });

@@ -21,7 +21,7 @@ const TRANSACTION_ID = "12345-12345";
 const SUBMISSION_ID = "86dfssfds";
 const populatedWrongPscDetailsPath = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(WRONG_PSC_DETAILS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 const TASK_LIST_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
-const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
+const ERROR_PAGE_TEXT = "Sorry, there is a problem with the service";
 const WRONG_PSC_ERROR = "Select yes if you have updated the PSC details";
 
 const mockSendUpdate = sendUpdate as jest.Mock;

@@ -14,7 +14,7 @@ const mockIsCompanyNumberValid = isCompanyNumberValid as jest.Mock;
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 
 const USE_PAPER_FILING_PAGE_TITLE = "You cannot use this service - Company Type Paper Filing";
-const SERVICE_UNAVAILABLE_TEXT = "Sorry, the service is unavailable";
+const SERVICE_UNAVAILABLE_TEXT = "Sorry, there is a problem with the service";
 
 describe("User paper filing controller tests", () => {
 
