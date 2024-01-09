@@ -14,7 +14,7 @@ const mockIsCompanyNumberValid = isCompanyNumberValid as jest.Mock;
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 
 const NO_FILING_REQUIRED_PAGE_TITLE = "You cannot use this service - Company Type No Filing Required";
-const SERVICE_UNAVAILABLE_TEXT = "Sorry, the service is unavailable";
+const SERVICE_UNAVAILABLE_TEXT = "Sorry, there is a problem with the service";
 
 describe("No filing required controller tests", () => {
 

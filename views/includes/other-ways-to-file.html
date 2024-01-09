@@ -1,0 +1,15 @@
+{% set fileByPostHTML %}
+<p>You can file a confirmation statement online using our <a href="{{EWF_URL}}">WebFiling service</a>.</p>
+<p>You can also file a confirmation statement by post using the <a href="https://www.gov.uk/government/publications/confirmation-statement-cs01">CS01 paper form</a>. It costs £40 and will take longer than if you file online.</p>
+<p>There are separate paper forms for:</p>
+<ul class="govuk-list govuk-list--bullet">
+  <li><a href="https://www.gov.uk/government/publications/confirmation-statement-for-a-limited-liability-partnership-ll-cs01">limited liability partnerships - LLCS01</a></li>
+  <li><a href="https://www.gov.uk/government/publications/confirmation-statement-for-a-scottish-limited-partnership-slp-cs01">Scottish limited partnerships - SLPCS01</a></li>
+  <li><a href="https://www.gov.uk/government/publications/confirmation-statement-for-a-scottish-qualifying-partnership-sqp-cs01">Scottish qualifying partnerships - SQPCS01</a></li>
+  </ul>
+{% endset %}
+
+{{ govukDetails({
+  summaryText: "Other ways to file",
+  html: fileByPostHTML
+}) }}

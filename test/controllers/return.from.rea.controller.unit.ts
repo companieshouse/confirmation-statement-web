@@ -13,7 +13,7 @@ import { session } from "../mocks/session.middleware.mock";
 
 const mockSendUpdate = sendUpdate as jest.Mock;
 
-const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
+const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
 const SUBMISSION_ID = "435435";

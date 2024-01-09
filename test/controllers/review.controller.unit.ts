@@ -42,7 +42,7 @@ const dummyError = {
 } as Error;
 mockCreateAndLogError.mockReturnValue(dummyError);
 
-const SERVICE_UNAVAILABLE_TEXT = "Sorry, the service is unavailable";
+const SERVICE_UNAVAILABLE_TEXT = "Sorry, there is a problem with the service";
 const PAYMENT_URL = "/payment/1234";
 const PAGE_HEADING = "Submit the confirmation statement";
 const ERROR_PAGE_HEADING = "Service offline - File a confirmation statement";
@@ -192,6 +192,14 @@ describe("review controller tests", () => {
       expect(response.text).toContain(CONFIRMATION_STATEMENT_ECCT_TEXT);
       expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_TEXT);
     });
+
+    it("Should redirect to an error page when error is returned", async () => {
+      mockGetConfirmationStatement.mockRejectedValueOnce(new Error());
+      const response = await request(app)
+        .get(URL);
+      expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
+    });
+
   });
 
   describe("post tests", () => {

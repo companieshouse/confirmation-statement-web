@@ -23,7 +23,7 @@ const populatedWrongRegisteredOfficeAddressPath = urlUtils.getUrlWithCompanyNumb
 const TASK_LIST_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 const WRONG_ROA_ERROR = "Select yes if you have updated the registered office address";
 const WRONG_ROA_PAGE_HEADING = "Incorrect registered office address - File a confirmation statement";
-const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
+const ERROR_PAGE_TEXT = "Sorry, there is a problem with the service";
 
 const mockSendUpdate = sendUpdate as jest.Mock;
 

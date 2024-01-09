@@ -34,7 +34,7 @@ const mockGetNextMadeUpToDate = getNextMadeUpToDate as jest.Mock;
 
 const companyNumber = "12345678";
 const today = "2020-04-25";
-const SERVICE_UNAVAILABLE_TEXT = "Sorry, the service is unavailable";
+const SERVICE_UNAVAILABLE_TEXT = "Sorry, there is a problem with the service";
 
 const useWebFilingRedirectPath = urlUtils.setQueryParam(USE_WEBFILING_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
 

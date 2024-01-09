@@ -35,7 +35,7 @@ describe("Error controller test", () => {
       .get(CONFIRM_COMPANY_PATH);
 
     expect(response.status).toEqual(500);
-    expect(response.text).toContain("Sorry, the service is unavailable");
+    expect(response.text).toContain("Sorry, there is a problem with the service");
     expect(mockLoggerErrorRequest.mock.calls[0][1]).toContain(message);
   });
 });

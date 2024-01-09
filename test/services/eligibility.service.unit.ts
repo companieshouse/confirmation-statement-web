@@ -40,6 +40,26 @@ describe("Test eligibility checks", () => {
     expect(response).toEqual(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
   });
 
+  it("Should throw an error if eligibility check returns status code 500", () => {
+    const EXPECTED_ERROR_500 = "Error retrieving eligibility data from confirmation-statment api: {\"httpStatusCode\":500}";
+    const resource: Resource<CompanyValidationResponse> = {
+      httpStatusCode: 500,
+    };
+    mockGetEligibility.mockResolvedValueOnce(resource);
+    expect(async () => {
+      await checkEligibility(getSessionRequest({ access_token: "token" }), companyNumber);
+    }).rejects.toThrow(EXPECTED_ERROR_500);
+  });
+
+  it("Should throw an error if eligibility check returns status code 401", () => {
+    const EXPECTED_ERROR_401 = "Error retrieving eligibility data from confirmation-statment api: {\"httpStatusCode\":401}";
+    const resource: Resource<CompanyValidationResponse> = {
+      httpStatusCode: 401,
+    };
+    mockGetEligibility.mockResolvedValueOnce(resource);
+    expect(async () => {
+      await checkEligibility(getSessionRequest({ access_token: "token" }), companyNumber);
+    }).rejects.toThrow(EXPECTED_ERROR_401);
+  });
+
 });
-
-

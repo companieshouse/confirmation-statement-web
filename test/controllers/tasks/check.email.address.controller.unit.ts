@@ -21,7 +21,7 @@ const mockSendUpdate = sendUpdate as jest.Mock;
 
 const PAGE_HEADING = "Check registered email address";
 const PAGE_CONTENT_SAMPLE = "Is the registered email address correct?";
-const EXPECTED_ERROR_TEXT = "Sorry, the service is unavailable";
+const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 const EXPECTED_EMAIL = "test@email.com";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";

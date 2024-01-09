@@ -15,7 +15,7 @@ const mockSendTradingStatusUpdate = sendTradingStatusUpdate as jest.Mock;
 
 const PAGE_HEADING = "Check the trading status";
 const COMPANY_NUMBER = "12345678";
-const SERVICE_UNAVAILABLE_TEXT = "Sorry, the service is unavailable";
+const SERVICE_UNAVAILABLE_TEXT = "Sorry, there is a problem with the service";
 
 const TRADING_STATUS_URL = TRADING_STATUS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
@@ -69,6 +69,14 @@ describe("Trading status controller tests", () => {
       .send({ tradingStatus: "malicious code block" });
 
     expect(response.status).toEqual(500);
+    expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
+  });
+
+  it("Should redirect to an error page when error is returned in POST", async () => {
+    mockSendTradingStatusUpdate.mockRejectedValueOnce(new Error());
+    const response = await request(app)
+      .post(TRADING_STATUS_URL)
+      .send({ tradingStatus: "yes" });
     expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
   });
 });

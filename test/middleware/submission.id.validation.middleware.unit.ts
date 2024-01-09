@@ -51,7 +51,7 @@ describe("Submission ID validation middleware tests", () => {
   });
 
   it("Should stop invalid submission id", async () => {
-    const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
+    const ERROR_PAGE_TEXT = "Sorry, there is a problem with the service";
     mockIsUrlIdValid.mockReturnValueOnce(false);
     const spyTruncateRequestUrl = jest.spyOn(urlUtils, "sanitiseReqUrls");
 
@@ -79,7 +79,7 @@ describe("Submission ID validation middleware tests", () => {
   });
 
   it("Should truncate all invalid ids", async () => {
-    const ERROR_PAGE_TEXT = "Sorry, the service is unavailable";
+    const ERROR_PAGE_TEXT = "Sorry, there is a problem with the service";
     const spyTruncateRequestUrl = jest.spyOn(urlUtils, "sanitiseReqUrls");
     mockIsUrlIdValid.mockReturnValueOnce(false);
 
