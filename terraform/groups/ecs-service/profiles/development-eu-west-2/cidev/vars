@@ -23,3 +23,4 @@ feature_flag_five_or_less_officers_journey_21102021 = "true"
 ewf_url = "https://ewf.companieshouse.gov.uk/"
 api_url = "https://api.cidev.aws.chdev.org"
 feature_flag_ecct_start_date_14082023 = "2018-09-01"
+show_service_offline_page=true
