@@ -28,5 +28,5 @@ export const ecctDayOneEnabled = (dateToCompare: Date): boolean => {
 
   const ecctStartDate: Date = new Date(ecctStartDateAsString);
 
-  return dateToCompare >= ecctStartDate;
+  return dateToCompare > ecctStartDate;
 };

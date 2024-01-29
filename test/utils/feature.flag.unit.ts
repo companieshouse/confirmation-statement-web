@@ -77,11 +77,11 @@ describe("feature flag tests", function() {
       expect(ecctEnabled).toEqual(false);
     });
 
-    it("should return true if supplied date is the same as ECCT start date", function() {
+    it("should return false if supplied date is the same as ECCT start date", function() {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2022-04-01";
       const supplyDate = new Date("2022-04-01");
       const ecctEnabled = ecctDayOneEnabled(supplyDate);
-      expect(ecctEnabled).toEqual(true);
+      expect(ecctEnabled).toEqual(false);
     });
 
     it("should return true if supplied date is past ECCT start date", function() {

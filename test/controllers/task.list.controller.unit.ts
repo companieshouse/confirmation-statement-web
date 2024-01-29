@@ -138,14 +138,14 @@ describe("Task list controller tests", () => {
       expect(response.text).not.toContain("Registered email address");
     });
 
-    it("Should enable Registered email address option when confirmation statement date is the same as ECCT start date", async () => {
+    it("Should disable Registered email address option when confirmation statement date is the same as ECCT start date", async () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-      mockInitTaskList.mockReturnValueOnce(mockTaskListWithEmail);
+      mockInitTaskList.mockReturnValueOnce(mockTaskListNoEmail);
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-03-15";
       const response = await request(app).get(URL);
 
-      expect(mockInitTaskList).toBeCalledWith(validCompanyProfile.companyNumber, TRANSACTION_ID, SUBMISSION_ID, mockConfirmationStatementSubmission, true, true);
-      expect(response.text).toContain("Registered email address");
+      expect(mockInitTaskList).toBeCalledWith(validCompanyProfile.companyNumber, TRANSACTION_ID, SUBMISSION_ID, mockConfirmationStatementSubmission, false, true);
+      expect(response.text).not.toContain("Registered email address");
     });
 
     it("Should enable Registered email address option when confirmation statement date is after ECCT start date", async () => {
