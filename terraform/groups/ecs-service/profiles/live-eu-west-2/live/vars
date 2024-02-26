@@ -1,22 +1,11 @@
 environment = "live"
 aws_profile = "live-eu-west-2"
-kms_alias = "alias/live-eu-west-2/environment-services-kms"
-
-# scaling configs
-desired_task_count = 2 # use multi instance in live
 
 # service configs
-log_level = "info"
-cdn_host = "db2062spq951s.cloudfront.net"
-chs_url = "https://find-and-update.company-information.service.gov.uk"
-account_local_url = "https://identity.company-information.service.gov.uk"
-piwik_url = "https://matomo.companieshouse.gov.uk/"
-piwik_site_id = "22"
-piwik_start_goal_id = "3"
-cookie_domain = "company-information.service.gov.uk"
-feature_flag_private_sdk_12052021 = "false"
-feature_flag_active_officers_01072021 = "true"
-feature_flag_five_or_less_officers_journey_21102021 = "true"
-ewf_url = "https://ewf.companieshouse.gov.uk/"
-api_url = "https://private-api.companieshouse.gov.uk"
-feature_flag_ecct_start_date_14082023 = "2024-03-05"
+use_set_environment_files = true
+desired_task_count = 2 # use multi instance in stagingenvironment = "live"
+aws_profile = "live-eu-west-2"
+
+# service configs
+use_set_environment_files = true
+desired_task_count = 2 # use multi instance in staging
