@@ -1,16 +1,16 @@
 # Define all hardcoded local variable and local variables looked up from data resources
 locals {
-  stack_name                = "filing-maintain" # this must match the stack name the service deploys into
-  name_prefix               = "${local.stack_name}-${var.environment}"
+  stack_name                  = "filing-maintain" # this must match the stack name the service deploys into
+  name_prefix                 = "${local.stack_name}-${var.environment}"
   global_prefix               = "global-${var.environment}"
-  service_name              = "confirmation-statement-web"
-  container_port            = "3000" # default node port required here until prod docker container is built allowing port change via env var
-  docker_repo               = "confirmation-statement-web"
+  service_name                = "confirmation-statement-web"
+  container_port              = "3000" # default node port required here until prod docker container is built allowing port change via env var
+  docker_repo                 = "confirmation-statement-web"
   kms_alias                   = "alias/${var.aws_profile}/environment-services-kms"
-  lb_listener_rule_priority = 10
-  lb_listener_paths         = ["/confirmation-statement*"]
-  healthcheck_path          = "/confirmation-statement" #healthcheck path for confirmation statement web
-  healthcheck_matcher       = "200"
+  lb_listener_rule_priority   = 10
+  lb_listener_paths           = ["/confirmation-statement*"]
+  healthcheck_path            = "/confirmation-statement" #healthcheck path for confirmation statement web
+  healthcheck_matcher         = "200"
   vpc_name                    = local.service_secrets["vpc_name"]
   s3_config_bucket            = data.vault_generic_secret.shared_s3.data["config_bucket_name"]
   app_environment_filename    = "confirmation-statement-web.env"
