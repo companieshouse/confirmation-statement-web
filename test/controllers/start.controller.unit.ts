@@ -3,6 +3,7 @@ import request from "supertest";
 import app from "../../src/app";
 
 const EXPECTED_TEXT = "File a confirmation statement";
+const EXPECTED_FEE = "£34";
 
 describe("start controller tests", () => {
 
@@ -23,6 +24,7 @@ describe("start controller tests", () => {
       .get("/confirmation-statement/");
 
     expect(response.text).toContain(EXPECTED_TEXT);
+    expect(response.text).toContain(EXPECTED_FEE);
     expect(middlewareMocks.mockAuthenticationMiddleware).not.toHaveBeenCalled();
   });
 
