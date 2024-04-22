@@ -56,7 +56,7 @@ describe("Test eligibility checks", () => {
   });
 
   test.each([400, 401, 404, 500])("Should throw an error if eligibility check returns error code %s", async (errorStatus) => {
-    const EXPECTED_ERROR = errorMessageTemplate.replace("HTTP_STATUS_CODE",String(errorStatus));
+    const EXPECTED_ERROR = errorMessageTemplate.replace("HTTP_STATUS_CODE", String(errorStatus));
     const resource: Resource<CompanyValidationResponse> = {
       httpStatusCode: errorStatus,
     };
