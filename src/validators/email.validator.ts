@@ -8,20 +8,12 @@ export const isEmailAddressValid = (emailAddress: string): boolean => {
     return false;
   }
 
-  if (emailAddress.includes("..")) {
-    return false;
-  }
-
-  if (emailAddress.startsWith(".")) {
-    return false;
-  }
-
-  if (emailAddress.charAt(emailAddress.indexOf("@") - 1) == ".") {
-    return false;
-  }
-
   const regexResult: RegExpMatchArray | null = emailAddress.match(VALID_EMAIL_REGEX_PATTERN);
   if (!regexResult) {
+    return false;
+  }
+
+  if (emailAddress.includes("..")) {
     return false;
   }
 
