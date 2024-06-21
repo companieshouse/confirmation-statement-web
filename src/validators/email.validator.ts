@@ -4,7 +4,7 @@ const TLD_PART_REGEX = /^(?:[a-z]{2,63}|xn--[a-z0-9]+(?:-[a-z0-9]+){1,4})(?:$|[^
 
 export const isEmailAddressValid = (emailAddress: string): boolean => {
 
-  if (!VALID_EMAIL_REGEX_PATTERN.test(emailAddress)) {
+  if (!emailAddress) {
     return false;
   }
 
