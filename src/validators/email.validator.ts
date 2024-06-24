@@ -1,6 +1,4 @@
-const VALID_EMAIL_REGEX_PATTERN = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~\\-]+@([^.@][^@\\s]+)$/u;
-const HOSTNAME_REGEX = /^(xn|[a-z0-9]+)(-?-[a-z0-9]+)*$/u;
-const TLD_PART_REGEX = /^(?:[a-z]{2,63}|xn--[a-z0-9]+(?:-[a-z0-9]+){1,4})(?:$|[^-])/u;
+import {HOSTNAME_REGEX, VALID_EMAIL_REGEX_PATTERN} from "../utils/constants";
 
 export const isEmailAddressValid = (emailAddress: string): boolean => {
 
