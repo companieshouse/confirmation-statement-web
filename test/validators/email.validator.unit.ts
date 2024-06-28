@@ -22,7 +22,8 @@ describe('Email validation', () => {
     ["Dörte@Sörensen.example.com", false],
     ["me@?i.ai", false],
     ["me@-i.i", false],
-    ["me@i", false]
+    ["me@i", false],
+    ["me@i,com", false]
   ])('For email %p, validation should return %p', (email: string, result: boolean) => {
     expect(isEmailAddressValid(email)).toEqual(result);
   });
