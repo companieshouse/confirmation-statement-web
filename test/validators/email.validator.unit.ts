@@ -21,7 +21,8 @@ describe('Email validation', () => {
     ["χρήστης@παράδειγμα.ελ", false],
     ["Dörte@Sörensen.example.com", false],
     ["me@?i.ai", false],
-    ["me@-i.i", false]
+    ["me@-i.i", false],
+    ["me@i", false]
   ])('For email %p, validation should return %p', (email: string, result: boolean) => {
     expect(isEmailAddressValid(email)).toEqual(result);
   });
