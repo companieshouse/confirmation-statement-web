@@ -20,13 +20,13 @@ export const isEmailAddressValid = (emailAddress: string): boolean => {
   if (parts.length < 2) {
     return false;
   }
+  if (!parts[parts.length - 1].toLowerCase().match(HOSTNAME_REGEX)) {
+    return false;
+  }
   for(const part of parts) {
     if (!part.toLowerCase().match(HOSTNAME_REGEX)) {
       return false;
     }
-  }
-  if (!parts[parts.length - 1].toLowerCase().match(HOSTNAME_REGEX)) {
-    return false;
   }
 
   return true;
