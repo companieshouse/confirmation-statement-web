@@ -34,6 +34,9 @@ export const NO_EMAIL_ADDRESS_SUPPLIED: string =  "Enter the registered email ad
 export const CONFIRMATION_STATEMENT_ERROR: string = "You need to accept the confirmation statement";
 export const LAWFUL_ACTIVITY_STATEMENT_ERROR: string = "You need to accept the statement on the intended future activities of the company";
 export const ACCEPT_LAWFUL_PURPOSE_STATEMENT = "acceptLawfulPurposeStatement";
+export const VALID_EMAIL_REGEX_PATTERN = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~\\-]+@([^.@][^@\\s]+)$";
+export const HOSTNAME_REGEX = "^(xn|[a-z0-9]+)(-?-[a-z0-9]+)*$";
+export const TLD_PART_REGEX = "^(?:[a-z]{2,63}|xn--[a-z0-9]+(?:-[a-z0-9]+){1,4})(?:$|[^-])";
 
 export enum RADIO_BUTTON_VALUE {
   NO = "no",
