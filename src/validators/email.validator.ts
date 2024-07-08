@@ -1,4 +1,4 @@
-import {HOSTNAME_REGEX, VALID_EMAIL_REGEX_PATTERN} from "../utils/constants";
+import { HOSTNAME_REGEX, VALID_EMAIL_REGEX_PATTERN } from "../utils/constants";
 
 export const isEmailAddressValid = (emailAddress: string): boolean => {
 
@@ -23,7 +23,7 @@ export const isEmailAddressValid = (emailAddress: string): boolean => {
   if (!parts[parts.length - 1].toLowerCase().match(HOSTNAME_REGEX)) {
     return false;
   }
-  for(const part of parts) {
+  for (const part of parts) {
     if (!part.toLowerCase().match(HOSTNAME_REGEX)) {
       return false;
     }
