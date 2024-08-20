@@ -15,16 +15,17 @@
     "sourceType": "module"
   },
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "@stylistic/ts"
   ],
   "rules": {
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-inferrable-types": "off",
-    "@typescript-eslint/no-unused-vars": [ "error", { "argsIgnorePattern": "^_" } ],
-    "@typescript-eslint/semi": [ "error", "always" ],
-    "@typescript-eslint/type-annotation-spacing": "error",
+    "@typescript-eslint/no-unused-vars": [ "error", { "argsIgnorePattern": "^_", "caughtErrorsIgnorePattern": "^_" } ],
+    "@stylistic/ts/semi": [ "error", "always" ],
+    "@stylistic/ts/type-annotation-spacing": "error",
     "arrow-spacing": "error",
     "brace-style": [ "error", "1tbs", { "allowSingleLine": true } ],
     "comma-spacing": [ "error", { "before": false, "after": true } ],

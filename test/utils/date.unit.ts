@@ -58,7 +58,7 @@ describe("Date tests", () => {
       try {
         toReadableFormat(badDate);
         fail();
-      } catch (e) {
+      } catch (_e) {
         expect(mockCreateAndLogError).toHaveBeenCalledWith(expect.stringContaining(badDate));
       }
     });
@@ -106,7 +106,7 @@ describe("Date tests", () => {
       try {
         toReadableFormatMonthYear(badMonth, 1975);
         fail();
-      } catch (e) {
+      } catch (_e) {
         expect(mockCreateAndLogError).toHaveBeenCalledWith(expect.stringContaining(badMonth.toString()));
       }
     });

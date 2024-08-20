@@ -30,7 +30,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const buildPageOptions = async (session: Session, companyProfile: CompanyProfile): Promise<Object> => {
+const buildPageOptions = async (session: Session, companyProfile: CompanyProfile): Promise<object> => {
   const pageOptions = {
     company: formatForDisplay(companyProfile),
     templateName: Templates.CONFIRM_COMPANY
