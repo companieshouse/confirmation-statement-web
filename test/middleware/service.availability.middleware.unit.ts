@@ -1,6 +1,7 @@
 jest.mock("ioredis");
 jest.mock("../../src/utils/feature.flag");
 
+import mockCsrfProtectionMiddleware from "../mocks/csrf.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
 import { isActiveFeature } from "../../src/utils/feature.flag";
@@ -11,6 +12,7 @@ describe("service availability middleware tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockCsrfProtectionMiddleware.mockClear();
   });
 
   it("should return service offline page", async () => {
