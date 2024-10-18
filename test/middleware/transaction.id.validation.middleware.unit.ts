@@ -3,6 +3,7 @@ jest.mock("../../src/middleware/submission.id.validation.middleware");
 jest.mock("../../src/services/company.profile.service");
 jest.mock("../../src/utils/logger");
 
+import mockCsrfProtectionMiddleware from "../mocks/csrf.middleware.mock";
 import mockServiceAvailabilityMiddleware from "../mocks/service.availability.middleware.mock";
 import mockAuthenticationMiddleware from "../mocks/authentication.middleware.mock";
 import mockSessionMiddleware from "../mocks/session.middleware.mock";
@@ -47,6 +48,7 @@ describe("Transaction ID validation middleware tests", () => {
     mockIsUrlIdValid.mockClear();
     mockSubmissionIdValidationMiddleware.mockClear();
     mockLoggerErrorRequest.mockClear();
+    mockCsrfProtectionMiddleware.mockClear();
   });
 
   it("Should stop invalid transaction id", async () => {

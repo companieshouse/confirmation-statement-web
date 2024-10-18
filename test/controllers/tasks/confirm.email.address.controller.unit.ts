@@ -30,6 +30,7 @@ describe("Confirm Email Address controller tests", () => {
       mocks.mockAuthenticationMiddleware.mockClear();
       mocks.mockServiceAvailabilityMiddleware.mockClear();
       mocks.mockSessionMiddleware.mockClear();
+      mocks.mockCsrfMiddleware.mockClear();
     });
 
     it("Should navigate to the Confirm Email Address page", async () => {

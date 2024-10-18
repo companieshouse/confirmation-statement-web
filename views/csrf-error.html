@@ -1,0 +1,6 @@
+{% from "web-security-node/components/csrf-error/macro.njk" import csrfError %}
+{% extends "layout.html" %}
+
+{% block content %}
+  {{ csrfError({}) }}
+{% endblock %}  

@@ -6,6 +6,7 @@ import mockSubmissionIdValidationMiddleware from "./submission.id.validation.mid
 import mockTransactionIdValidationMiddleware from "./transaction.id.validation.middleware.mock";
 import mockIsPscQueryParameterValidationMiddleware from "./is.psc.validation.middleware.mock";
 import mockCompanyNumberQueryParameterValidationMiddleware from "./company.number.validation.middleware.mock";
+import mockCsrfMiddleware from "./csrf.middleware.mock";
 
 export default {
   mockServiceAvailabilityMiddleware,
@@ -15,5 +16,6 @@ export default {
   mockSubmissionIdValidationMiddleware,
   mockTransactionIdValidationMiddleware,
   mockIsPscQueryParameterValidationMiddleware,
-  mockCompanyNumberQueryParameterValidationMiddleware
+  mockCompanyNumberQueryParameterValidationMiddleware,
+  mockCsrfMiddleware
 };
