@@ -26,8 +26,8 @@ const csrfErrorHandler = (err: CsrfError | Error, req: Request, res: Response, n
   if (!(err instanceof CsrfError)) {
     return next(err);
   }
-  return res.status(403).render(Templates.ERROR, {
-    templateName: Templates.ERROR,
+  return res.status(403).render(Templates.CSRF_ERROR, {
+    templateName: Templates.CSRF_ERROR,
     csrfErrors: true
   });
 };

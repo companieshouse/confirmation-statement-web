@@ -16,8 +16,8 @@ import { transactionIdValidationMiddleware } from "./middleware/transaction.id.v
 import { submissionIdValidationMiddleware } from "./middleware/submission.id.validation.middleware";
 import { commonTemplateVariablesMiddleware } from "./middleware/common.variables.middleware";
 import { CsrfProtectionMiddleware } from "@companieshouse/web-security-node";
-import { SessionMiddleware, SessionStore } from "@companieshouse/node-session-handler";
-import { CACHE_SERVER, COOKIE_NAME, COOKIE_DOMAIN,COOKIE_SECRET } from "./utils/properties";
+import { SessionStore } from "@companieshouse/node-session-handler";
+import { CACHE_SERVER, COOKIE_NAME } from "./utils/properties";
 import Redis from 'ioredis';
 
 const app = express();
