@@ -1,4 +1,3 @@
-// jest.mock("@companieshouse/web-security-node");
 jest.mock("../../src/controllers/confirm.company.controller");
 
 import mocks from "../mocks/all.middleware.mock";
@@ -10,9 +9,9 @@ import * as confirmCompanyController from "../../src/controllers/confirm.company
 
 const mockGetConfirmCompany = confirmCompanyController.get as jest.Mock;
 
-export const CSRF_TOKEN_ERROR = "CSRF token mismatch";
-export const CSRF_ERROR_PAGE_TEXT = "We have not been able to save the information you submitted on the previous screen.";
-export const CSRF_ERROR_PAGE_HEADING = "Sorry, something went wrong";
+const CSRF_TOKEN_ERROR = "CSRF token mismatch";
+const CSRF_ERROR_PAGE_TEXT = "We have not been able to save the information you submitted on the previous screen.";
+const CSRF_ERROR_PAGE_HEADING = "Sorry, something went wrong";
 
 describe("ERROR controller", () => {
 
