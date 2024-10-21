@@ -15,6 +15,10 @@ import { isPscQueryParameterValidationMiddleware } from "./middleware/is.psc.val
 import { transactionIdValidationMiddleware } from "./middleware/transaction.id.validation.middleware";
 import { submissionIdValidationMiddleware } from "./middleware/submission.id.validation.middleware";
 import { commonTemplateVariablesMiddleware } from "./middleware/common.variables.middleware";
+import { CsrfProtectionMiddleware } from "@companieshouse/web-security-node";
+import { SessionStore } from "@companieshouse/node-session-handler";
+import { CACHE_SERVER, COOKIE_NAME } from "./utils/properties";
+import Redis from 'ioredis';
 
 const app = express();
 app.disable("x-powered-by");
@@ -24,6 +28,7 @@ const nunjucksEnv = nunjucks.configure([
   "views",
   "node_modules/govuk-frontend/",
   "node_modules/govuk-frontend/components/",
+  "node_modules/@companieshouse"
 ], {
   autoescape: true,
   express: app,
@@ -44,6 +49,7 @@ app.set("view engine", "html");
 // apply middleware
 app.use(cookieParser());
 app.use(serviceAvailabilityMiddleware);
+
 // validation middleware for url and query params - comapny number covered by companyAuthenticationMiddleware
 // These need to run before companyAuthenticationMiddleware as that can log out full url
 //  if auth value is invalid and url has invalid data in it
@@ -53,9 +59,20 @@ app.use(`*${urls.ACTIVE_SUBMISSION_BASE}`, transactionIdValidationMiddleware);
 app.use(`*${urls.ACTIVE_SUBMISSION_BASE}`, submissionIdValidationMiddleware);
 
 app.use(`${urls.CONFIRMATION_STATEMENT}*`, sessionMiddleware);
+
 const userAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
 app.use(userAuthRegex, authenticationMiddleware);
 app.use(`${urls.CONFIRMATION_STATEMENT}${urls.COMPANY_AUTH_PROTECTED_BASE}`, companyAuthenticationMiddleware);
+
+//csrf middleware
+const sessionStore = new SessionStore(new Redis(`redis://${CACHE_SERVER}`));
+
+const csrfProtectionMiddleware = CsrfProtectionMiddleware({
+  sessionStore,
+  enabled: false,
+  sessionCookieName: COOKIE_NAME
+});
+app.use(csrfProtectionMiddleware);
 
 app.use(commonTemplateVariablesMiddleware);
 // apply our default router to /confirmation-statement

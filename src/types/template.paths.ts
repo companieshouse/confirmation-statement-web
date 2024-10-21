@@ -34,5 +34,6 @@ export enum Templates {
   CONFIRM_EMAIL_ADDRESS = "tasks/confirm-email-address",
   REGISTERED_OFFICE_ADDRESS = "tasks/registered-office-address",
   REGISTER_LOCATIONS = "tasks/register-locations",
-  REVIEW = "review"
+  REVIEW = "review",
+  CSRF_ERROR = "csrf-error"
 }
