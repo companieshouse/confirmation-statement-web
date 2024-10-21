@@ -16,7 +16,7 @@
     <div class="govuk-grid-column-two-thirds">
 
       <form action="" method="post">
-
+        {% include "includes/csrf_token.html" %}
         {% if tradingStatusErrorMsg %}
           {{ govukErrorSummary({
             titleText: "There is a problem",
