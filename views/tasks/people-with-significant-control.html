@@ -17,7 +17,7 @@
     <div class="govuk-grid-column-three-quarters">
 
       <form action="" method="post">
-
+        {% include "includes/csrf_token.html" %}
         {% if peopleWithSignificantControlErrorMsg %}
           {{ govukErrorSummary({
             titleText: "There is a problem",

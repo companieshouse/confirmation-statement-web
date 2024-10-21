@@ -69,7 +69,7 @@ const sessionStore = new SessionStore(new Redis(`redis://${CACHE_SERVER}`));
 
 const csrfProtectionMiddleware = CsrfProtectionMiddleware({
   sessionStore,
-  enabled: false,
+  enabled: true,
   sessionCookieName: COOKIE_NAME
 });
 app.use(csrfProtectionMiddleware);

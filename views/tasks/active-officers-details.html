@@ -32,6 +32,7 @@
       {% set activeOfficersError = false %}
     {% endif %}
     <form action="" method="post">
+      {% include "includes/csrf_token.html" %}
       <h1 class="govuk-heading-l">Check the officers' details</h1>
 
       {% set naturalSecretaryHTML %}

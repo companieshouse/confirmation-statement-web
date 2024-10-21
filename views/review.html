@@ -21,6 +21,7 @@
       Company number: {{company.companyNumber}}<br>
       Confirmation statement date: {{nextMadeUpToDate}}</h2>
     <form action="" method="post">
+      {% include "includes/csrf_token.html" %}
       {% if ecctEnabled %}
         {% if confirmationStatementError or lawfulActivityStatementError %}
 
