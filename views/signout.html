@@ -40,6 +40,7 @@
     {% endif %}
 
     <form action="/confirmation-statement/signout" method="POST">
+        {% include "includes/csrf_token.html" %}
         {{ govukRadios({
             classes: "govuk-radios--inline",
             idPrefix: "aignout",
