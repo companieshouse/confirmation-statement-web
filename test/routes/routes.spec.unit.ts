@@ -8,7 +8,7 @@ describe("Basic URL Tests", () => {
 
   it("should find the accessibility statement page", async () => {
     mockCsrfProtectionMiddleware.mockClear();
-    
+
     const response = await request(app)
       .get("/confirmation-statement/accessibility-statement");
 
