@@ -16,7 +16,7 @@
       <h1 class="govuk-heading-xl">Confirm this is the correct company</h1>
       <h2 class="govuk-heading-l">{{company.companyName}}</h2>
       <form action="" method="post">
-
+        {% include "includes/csrf_token.html" %}
         {% set notDueWarningHTML %}
         <p style="font-weight: 400; display: inline;">
           You are not due to file a confirmation statement. If you file a confirmation statement today, it will show the date as

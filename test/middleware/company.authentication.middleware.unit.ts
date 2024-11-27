@@ -2,6 +2,7 @@ jest.mock("@companieshouse/web-security-node");
 jest.mock("../../src/utils/logger");
 jest.mock("../../src/validators/company.number.validator");
 
+import mockCsrfProtectionMiddleware from "../mocks/csrf.middleware.mock";
 import mockSessionMiddleware from "../mocks/session.middleware.mock";
 import mockServiceAvailabilityMiddleware from "../mocks/service.availability.middleware.mock";
 import mockAuthenticationMiddleware from "../mocks/authentication.middleware.mock";
@@ -48,6 +49,7 @@ describe("company authentication middleware tests", () => {
     mockTransactionIdValidationMiddleware.mockClear();
     mockSubmissionIdValidationMiddleware.mockClear();
     mockLoggerErrorRequest.mockClear();
+    mockCsrfProtectionMiddleware.mockClear();
   });
 
   it("should call CH authentication library when company pattern in url", async () => {

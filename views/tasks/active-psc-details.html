@@ -29,6 +29,7 @@
         {% set activePscsError = false %}
       {% endif %}
       <form action="" method="post">
+        {% include "includes/csrf_token.html" %}
         <h1 class="govuk-heading-l">Check the people with significant control (PSCs) details</h1>
 
         {% include "includes/psc-details.html" %}
