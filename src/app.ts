@@ -64,7 +64,7 @@ const userAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
 app.use(userAuthRegex, authenticationMiddleware);
 app.use(`${urls.CONFIRMATION_STATEMENT}${urls.COMPANY_AUTH_PROTECTED_BASE}`, companyAuthenticationMiddleware);
 
-//csrf middleware
+// csrf middleware
 const sessionStore = new SessionStore(new Redis(`redis://${CACHE_SERVER}`));
 
 const csrfProtectionMiddleware = CsrfProtectionMiddleware({
