@@ -99,3 +99,5 @@ export const WRONG_PSC_DETAILS = ACTIVE_SUBMISSION_BASE + "incorrect-information
 export const WRONG_PSC_DETAILS_PATH = CONFIRMATION_STATEMENT + WRONG_PSC_DETAILS;
 export const WRONG_PSC_STATEMENT = ACTIVE_SUBMISSION_BASE + "incorrect-information/wrong-psc-statement";
 export const WRONG_PSC_STATEMENT_PATH = CONFIRMATION_STATEMENT + WRONG_PSC_STATEMENT;
+
+export const middlewarePaths = /\/confirmation-statement\/((?!healthcheck).)*/;
