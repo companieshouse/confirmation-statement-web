@@ -58,7 +58,7 @@ app.use(isPscQueryParameterValidationMiddleware);
 app.use(`*${urls.ACTIVE_SUBMISSION_BASE}`, transactionIdValidationMiddleware);
 app.use(`*${urls.ACTIVE_SUBMISSION_BASE}`, submissionIdValidationMiddleware);
 
-app.use(`${urls.CONFIRMATION_STATEMENT}*`, sessionMiddleware);
+app.use(urls.middlewarePaths, sessionMiddleware);
 
 const userAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
 app.use(userAuthRegex, authenticationMiddleware);
@@ -72,7 +72,7 @@ const csrfProtectionMiddleware = CsrfProtectionMiddleware({
   enabled: true,
   sessionCookieName: COOKIE_NAME
 });
-app.use(csrfProtectionMiddleware);
+app.use(urls.middlewarePaths, csrfProtectionMiddleware);
 
 app.use(commonTemplateVariablesMiddleware);
 // apply our default router to /confirmation-statement
