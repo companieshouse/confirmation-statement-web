@@ -46,6 +46,10 @@ app.use(express.urlencoded({ extended: false }));
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "html");
 
+// support view in njk and html
+app.engine("njk", nunjucks.render);
+app.engine("html", nunjucks.render);
+
 // apply middleware
 app.use(cookieParser());
 app.use(serviceAvailabilityMiddleware);
