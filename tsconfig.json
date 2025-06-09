@@ -8,6 +8,7 @@
     "target": "es6",
     "outDir": "./dist",
     "baseUrl": "./src",
+    "skipLibCheck": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "strictNullChecks": true,
