@@ -54,3 +54,7 @@ export const URL_PARAM_MAX_LENGTH: number = parseInt(getEnvironmentVariable("URL
 export const RADIO_BUTTON_VALUE_LOG_LENGTH = parseInt(getEnvironmentVariable("RADIO_BUTTON_VALUE_LOG_LENGTH", "50"), 10);
 
 export const EWF_URL = getEnvironmentVariable("EWF_URL");
+
+export const LOCALES_ENABLED = getEnvironmentVariable("LOCALES_ENABLED", "true");
+
+export const LOCALES_PATH = getEnvironmentVariable("LOCALES_PATH", "locales");
