@@ -1,0 +1,89 @@
+{% extends "govuk/template.njk" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+
+{% set errors = pageProperties.errors %}
+
+{% set title = i18n.beforeYouFileTitle %}
+
+
+{% block head %}
+<link href="{{assetPath}}/stylesheets/services/confirmation-statement/application.css" rel="stylesheet" />
+
+<link href="{{assetPath}}/stylesheets/session-timeout.css" rel="stylesheet" />
+<!--[if !IE 8]><!-->
+<link href="{{assetPath}}/stylesheets/govuk-frontend/v3.11.0/govuk-frontend-3.11.0.min.css" rel="stylesheet" />
+<!-- <link rel="stylesheet" href="/stylesheets/govuk-frontend.min.css"> -->
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-l">ACME LIMITED PARTNERSHIP (SL012345)</span>
+            Before You File a confirmation statement
+        </h1>
+
+        <p class="govuk-body">Check that all the limited partnership information we hold is correct.</p>
+        <p class="govuk-body">If anything has changed, you must update the limited partnership's information before
+            filing the confirmation statement.</p>
+        <p class="govuk-body">The only information you can update within the confirmation statement are the Standard
+            Industrial Classification (SIC) codes.</p>
+
+        {{ govukInsetText({
+        text: "<p class='govuk-body'>Any updates you file may not show immediately in this service.</p>
+        <p class='govuk-body'>You do not need to wait for update filings to be accepted. As long as theyve been
+            submitted, you can file the confirmation statement.</p>"
+        }) }}
+        
+
+        {{ govukCheckboxes({
+        name: "whatWillHappenConfirm",
+        errorMessage: errors.whatWillHappenConfirm if errors,
+        fieldset: {
+        legend: {
+        text: i18n.whatWillHappenConfirmHeading,
+        classes: "govuk-fieldset__legend--s"
+        }
+        },
+        items: [
+        {
+        value: "confirm",
+        text: "I have checked the limited partnership information and submitted any updates"
+        }
+        ]
+        }) }}
+
+        {{ govukButton({
+        text: "Continue"
+        }) }}
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block bodyEnd %}
+{# Run JavaScript at end of the
+
+<body>, to avoid blocking the initial render. #}
+    <script src="{{assetPath}}/javascripts/govuk-frontend/v3.11.0/govuk-frontend-3.11.0.min.js"></script>
+    <script>window.GOVUKFrontend.initAll()</script>
+    {% include "includes/piwik-scripts.html" %}
+    {% endblock %}

@@ -36,5 +36,6 @@ export enum Templates {
   REGISTER_LOCATIONS = "tasks/register-locations",
   REVIEW = "review",
   CSRF_ERROR = "csrf-error",
-  LP_START = "limited-partners/components/index/lp-start.njk"
+  LP_START = "limited-partners/components/index/lp-start.njk",
+  BEFORE_YOU_FILE = "lp-before-you-file.njk"
 }
