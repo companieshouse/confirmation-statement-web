@@ -1,5 +1,25 @@
-{% from "govuk/components/header/macro.njk" import govukHeader %}
+<div class="govuk-grid-row">
+    {% block header %}
+        <html class="govuk-template--rebranded" lang="en">
+        {% include "limited-partners/partials/banners/header-banner.njk" %}
+        {% include "limited-partners/partials/banners/instruction-banner.njk" %}
+    {% endblock %}
 
-{{ govukHeader({
-    homepageUrl: "https://www.gov.uk/"
-}) }}
+    <div class="govuk-width-container">
+        {% block banner %}
+            {% include "limited-partners/partials/banners/beta-banner.njk" %}
+        {% endblock %}
+
+        {% block signout %}
+            {% include "limited-partners/partials/nav/signout-link.njk" %}
+        {% endblock %}
+
+        {% block back %}
+            {% include "limited-partners/partials/nav/back-link.njk" %}
+        {% endblock %}
+
+        {% block lang %}
+            {% include "limited-partners/partials/nav/language-selection.njk" %}
+        {% endblock %}
+    </div>
+</div>
