@@ -1,0 +1,9 @@
+{% from "govuk/components/header/macro.njk" import govukHeader %}
+
+<!-- New GOV branding -->
+{% set govukRebrand = true %}
+{{ govukHeader({
+  govukRebrand: true,
+  homepageUrl: "https://www.gov.uk/"
+}) }}
+

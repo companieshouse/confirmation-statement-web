@@ -1,9 +1,14 @@
-<!DOCTYPE html>
-<!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
-<!--[(if gt IE 8) | (!IE)]><!-->
-<html lang="{{ lang }}" class="govuk-template"> <!--<![endif]-->
-    {% include "partials/header.njk" %}
+{% block head %}
+    <link href="{{assetPath}}/stylesheets/govuk-frontend/v5.10.2/govuk-frontend-5.10.2.min.css" rel="stylesheet" />
 
-    {% include "partials/footer.njk" %}
+{% endblock %}
 
-</html>
+    {% include "limited-partners/partials/header.njk" %}
+    {{i18n.pageContent}}
+    {% include "limited-partners/partials/footer.njk" %}
+
+{% block bodyEnd %}
+    {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
+    <script src="{{assetPath}}/javascripts/govuk-frontend/v5.10.2/govuk-frontend-5.10.2.min.js"></script>
+    <script>window.GOVUKFrontend.initAll()</script>
+{% endblock %}
