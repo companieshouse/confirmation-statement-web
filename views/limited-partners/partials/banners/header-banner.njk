@@ -1,0 +1,18 @@
+{% from "govuk/components/header/macro.njk" import govukHeader %}
+{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
+
+<!-- New GOV branding -->
+{% set govukRebrand = true %}
+{% block header %}
+    <div class="govuk-template--rebranded">
+        {{ govukHeader({
+          govukRebrand: true,
+          homepageUrl: "https://www.gov.uk/"
+        }) }}
+        {{ govukServiceNavigation({
+            serviceName: "File a limited partnership confirmation statement",
+            serviceUrl: "/"
+        }) }}
+    </div>
+{% endblock %}
+

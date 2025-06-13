@@ -1,5 +1,33 @@
-{% from "govuk/components/header/macro.njk" import govukHeader %}
+{% block head %}
+    <link href="{{assetPath}}/stylesheets/govuk-frontend/v5.10.2/govuk-frontend-5.10.2.min.css" rel="stylesheet" />
+{% endblock %}
 
-{{ govukHeader({
-    homepageUrl: "https://www.gov.uk/"
-}) }}
+<div class="govuk-grid-row"">
+    {% block header %}
+        {% include "limited-partners/partials/banners/header-banner.njk" %}
+    {% endblock %}
+
+    <div class="govuk-width-container">
+        {% block banner %}
+            {% include "limited-partners/partials/banners/beta-banner.njk" %}
+        {% endblock %}
+
+        {% block signout %}
+            {% include "limited-partners/partials/nav/signout-link.njk" %}
+        {% endblock %}
+
+        {% block back %}
+            {% include "limited-partners/partials/nav/back-link.njk" %}
+        {% endblock %}
+
+        {% block lang %}
+            {% include "limited-partners/partials/nav/language-selection.njk" %}
+        {% endblock %}
+    </div>
+</div>
+
+{% block bodyEnd %}
+    {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
+    <script src="{{assetPath}}/javascripts/govuk-frontend/v5.10.2/govuk-frontend-5.10.2.min.js"></script>
+    <script>window.GOVUKFrontend.initAll()</script>
+{% endblock %}

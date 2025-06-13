@@ -26,7 +26,7 @@ app.disable("x-powered-by");
 // view engine setup
 const nunjucksEnv = nunjucks.configure([
   "views",
-  "node_modules/govuk-frontend/",
+  "node_modules/govuk-frontend/dist/",
   "node_modules/govuk-frontend/components/",
   "node_modules/@companieshouse/ch-node-utils/templates/",
   "node_modules/@companieshouse"
@@ -38,6 +38,7 @@ const nunjucksEnv = nunjucks.configure([
 nunjucksEnv.addGlobal("assetPath", process.env.CDN_HOST);
 nunjucksEnv.addGlobal("PIWIK_URL", process.env.PIWIK_URL);
 nunjucksEnv.addGlobal("PIWIK_SITE_ID", process.env.PIWIK_SITE_ID);
+nunjucksEnv.addGlobal('govukRebrand', true);
 
 app.enable("trust proxy");
 app.use(express.json());

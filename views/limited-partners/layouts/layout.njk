@@ -1,9 +1,16 @@
-<!DOCTYPE html>
-<!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
-<!--[(if gt IE 8) | (!IE)]><!-->
-<html lang="{{ lang }}" class="govuk-template"> <!--<![endif]-->
-    {% include "partials/header.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+    {% include "limited-partners/partials/header.njk" %}
 
-    {% include "partials/footer.njk" %}
+    <div class="govuk-grid-row">
+        <div class="govuk-width-container">
+            <h1 style="font-family: 'GDS Transport', Arial, Helvetica, sans-serif">{{i18n.pageContent}}</h1>
+            <br>
+            {{ govukButton({
+              text: "Start now",
+              href: '#',
+              isStartButton: true
+            }) }}
+        </div>
+    </div>
 
-</html>
+    {% include "limited-partners/partials/footer.njk" %}
