@@ -1,6 +1,9 @@
-<div class="govuk-grid-row">
+{% block head %}
+    <link href="{{assetPath}}/stylesheets/govuk-frontend/v5.10.2/govuk-frontend-5.10.2.min.css" rel="stylesheet" />
+{% endblock %}
+
+<div class="govuk-grid-row"">
     {% block header %}
-        <html class="govuk-template--rebranded" lang="en">
         {% include "limited-partners/partials/banners/header-banner.njk" %}
         {% include "limited-partners/partials/banners/instruction-banner.njk" %}
     {% endblock %}
@@ -23,3 +26,9 @@
         {% endblock %}
     </div>
 </div>
+
+{% block bodyEnd %}
+    {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
+    <script src="{{assetPath}}/javascripts/govuk-frontend/v5.10.2/govuk-frontend-5.10.2.min.js"></script>
+    <script>window.GOVUKFrontend.initAll()</script>
+{% endblock %}

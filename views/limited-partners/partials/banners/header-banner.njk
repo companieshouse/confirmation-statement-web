@@ -2,8 +2,12 @@
 
 <!-- New GOV branding -->
 {% set govukRebrand = true %}
-{{ govukHeader({
-  govukRebrand: true,
-  homepageUrl: "https://www.gov.uk/"
-}) }}
+{% block header %}
+    <div class="govuk-template--rebranded">
+        {{ govukHeader({
+          govukRebrand: true,
+          homepageUrl: "https://www.gov.uk/"
+        }) }}
+    </div>
+{% endblock %}
 
