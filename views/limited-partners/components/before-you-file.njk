@@ -40,12 +40,15 @@
 
         <p class="govuk-body"> {{i18n.BYFInfoHoldParagraph}}</p>
 
-        <p class="govuk-body">{{i18n.BYFFileUpdatesParagraphStart}}<a href="https://www.gov.uk/">{{i18n.BYFFileUpdatesParagraphLink}}</a>{{i18n.BYFFileUpdatesParagraphStart}}</p>
+        <p class="govuk-body">{{i18n.BYFFileUpdatesParagraphStart}}<a
+                href="https://www.gov.uk/">{{i18n.BYFFileUpdatesParagraphLink}}</a>{{i18n.BYFFileUpdatesParagraphEnd}}
+        </p>
         <p class="govuk-body">{{i18n.BYFOnlyInfoChangedParagraph}}</p>
 
         {{ govukInsetText({
-        html: "<p class='govuk-body'>" + i18n.BYFInsetParagraph1 + "</p><p class='govuk-body'>"
-              + i18n.BYFInsetParagraph2 + "</p>" 
+        html: "<p class='govuk-body'>" + i18n.BYFInsetParagraph1 + "</p>
+        <p class='govuk-body'>"
+            + i18n.BYFInsetParagraph2 + "</p>"
         }) }}
 
 
