@@ -37,6 +37,7 @@ import * as wrongOfficerDetailsRoute from "../controllers/incorrect-information/
 import * as wrongPscDetailsRoute from "../controllers/incorrect-information/wrong.psc.details.controller";
 import * as wrongPscStatementRoute from "../controllers/incorrect-information/wrong.psc.statement.controller";
 import * as lpStartRoute from "../controllers/lp.start.controller";
+import * as beforeYouFileRoute from "../controllers/before.you.file.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 
@@ -150,4 +151,5 @@ router.post(urls.WRONG_PSC_DETAILS, wrongPscDetailsRoute.post);
 router.get(urls.WRONG_PSC_STATEMENT, wrongPscStatementRoute.get);
 router.post(urls.WRONG_PSC_STATEMENT, wrongPscStatementRoute.post);
 
-router.get(urls.LIMITED_PARTNERSHIP, lpStartRoute.get);
+router.get(urls.LIMITED_PARTNERSHIP, beforeYouFileRoute.get);
+router.get(urls.BEFORE_YOU_FILE, beforeYouFileRoute.get)

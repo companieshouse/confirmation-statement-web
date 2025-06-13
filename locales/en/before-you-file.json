@@ -1,0 +1,14 @@
+{
+    "BYFPageTitle" : "Before you file a confirmation statement",
+    "BYFInfoHoldParagraph" : "Check that all the limited partnership information we hold is correct.",
+    "BYFFileUpdatesParagraphStart" : "If anything has changed, you must",
+    "BYFFileUpdatesParagraphLink" : " update the limited partnership's information ",
+    "BYFFileUpdatesParagraphEnd" : "before filing the confirmation statement.",
+    "BYFOnlyInfoChangedParagraph" : "The only information you can update within the confirmation statement are the Standard Industrial Classification (SIC) codes.",
+    "BYFInsetParagraph1" : "Any updates you file may not show immediately in this service.",
+    "BYFInsetParagraph2" : "You do not need to wait for update filings to be accepted. As long as they've been submitted, you can file the confirmation statement.",
+    "BYFCheckboxText" : "I have checked the limited partnership information and submitted any updates",
+    "BYFContinueBotton" : "Continue",
+    "BYFAlternateTextPFLP" : "TBC",
+    "BYFErrorMessageNotChecked" : "TBC"
+}
