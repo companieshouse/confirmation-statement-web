@@ -18,4 +18,63 @@ describe("start controller tests", () => {
     expect(response.text).toContain(EXPECTED_TEXT);
   });
 
+  it("limited partnership start page should contain a header", async () => {
+    const response = await request(app)
+      .get("/confirmation-statement/limited-partnership");
+
+    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    expect(response.text).toContain('govuk-header');
+  });
+
+  it("limited partnership header should contain a service navigation", async () => {
+    const response = await request(app)
+      .get("/confirmation-statement/limited-partnership");
+
+    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    expect(response.text).toContain('govuk-service-navigation');
+    expect(response.text).toContain('File a limited partnership confirmation statement');
+  });
+
+  it("limited partnership header should contain a phase banner", async () => {
+    const response = await request(app)
+      .get("/confirmation-statement/limited-partnership");
+
+    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    expect(response.text).toContain('govuk-phase-banner');
+    expect(response.text).toContain('This is a new service – ');
+  });
+
+  it("limited partnership header should contain sign out lists", async () => {
+    const response = await request(app)
+      .get("/confirmation-statement/limited-partnership");
+
+    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    expect(response.text).toContain('user-name@companieshouse.gov.uk');
+    expect(response.text).toContain('Sign out');
+  });
+
+  it("limited partnership header should contain a back button", async () => {
+    const response = await request(app)
+      .get("/confirmation-statement/limited-partnership");
+
+    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    expect(response.text).toContain('govuk-back-link');
+  });
+
+  it("limited partnership header should contain a language list", async () => {
+    const response = await request(app)
+      .get("/confirmation-statement/limited-partnership");
+
+    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    expect(response.text).toContain('English');
+    expect(response.text).toContain('Cymraeg');
+  });
+
+  it("limited partnership start page should contain a footer", async () => {
+    const response = await request(app)
+      .get("/confirmation-statement/limited-partnership");
+
+    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    expect(response.text).toContain('govuk-footer');
+  });
 });

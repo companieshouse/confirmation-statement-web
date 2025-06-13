@@ -1,14 +1,16 @@
-{% block head %}
-    <link href="{{assetPath}}/stylesheets/govuk-frontend/v5.10.2/govuk-frontend-5.10.2.min.css" rel="stylesheet" />
-
-{% endblock %}
-
+{% from "govuk/components/button/macro.njk" import govukButton %}
     {% include "limited-partners/partials/header.njk" %}
-    {{i18n.pageContent}}
-    {% include "limited-partners/partials/footer.njk" %}
 
-{% block bodyEnd %}
-    {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
-    <script src="{{assetPath}}/javascripts/govuk-frontend/v5.10.2/govuk-frontend-5.10.2.min.js"></script>
-    <script>window.GOVUKFrontend.initAll()</script>
-{% endblock %}
+    <div class="govuk-grid-row">
+        <div class="govuk-width-container">
+            <h1 style="font-family: 'GDS Transport', Arial, Helvetica, sans-serif">{{i18n.pageContent}}</h1>
+            <br>
+            {{ govukButton({
+              text: "Start now",
+              href: '#',
+              isStartButton: true
+            }) }}
+        </div>
+    </div>
+
+    {% include "limited-partners/partials/footer.njk" %}
