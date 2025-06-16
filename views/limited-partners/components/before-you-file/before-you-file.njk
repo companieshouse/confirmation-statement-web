@@ -19,16 +19,6 @@
 
 {% set title = i18n.BYFPageTitle %}
 
-{{ govukErrorSummary({
-titleText: "There is a problem",
-errorList: [
-{
-text: i18n.BYFErrorMessageNotChecked,
-href: "#nationality"
-}
-]
-}) }}
-
 {% block pageContent %}
 
     <div class="govuk-grid-row">
