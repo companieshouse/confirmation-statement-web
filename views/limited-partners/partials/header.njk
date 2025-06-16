@@ -1,8 +1,6 @@
-{% block head %}
-    <link href="{{assetPath}}/stylesheets/govuk-frontend/v5.10.2/govuk-frontend-5.10.2.min.css" rel="stylesheet" />
-{% endblock %}
+<link href="{{assetPath}}/stylesheets/govuk-frontend/v5.10.2/govuk-frontend-5.10.2.min.css" rel="stylesheet" />
 
-<div class="govuk-grid-row"">
+<div class="govuk-grid-row" style="margin: 0; padding: 0;">
     {% block header %}
         {% include "limited-partners/partials/banners/header-banner.njk" %}
     {% endblock %}

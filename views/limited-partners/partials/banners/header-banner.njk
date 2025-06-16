@@ -3,16 +3,16 @@
 
 <!-- New GOV branding -->
 {% set govukRebrand = true %}
-{% block header %}
-    <div class="govuk-template--rebranded">
-        {{ govukHeader({
-          govukRebrand: true,
-          homepageUrl: "https://www.gov.uk/"
-        }) }}
-        {{ govukServiceNavigation({
-            serviceName: "File a limited partnership confirmation statement",
-            serviceUrl: "/"
-        }) }}
-    </div>
-{% endblock %}
+
+<div class="govuk-template--rebranded" style="margin: -10px 0 1em 0; padding: 0;">
+    {{ govukHeader({
+      govukRebrand: true,
+      homepageUrl: "https://www.gov.uk/"
+    }) }}
+    {{ govukServiceNavigation({
+        serviceName: "File a limited partnership confirmation statement",
+        serviceUrl: "/"
+    }) }}
+</div>
+
 
