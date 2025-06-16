@@ -1,3 +1,5 @@
+{% extends "../../layouts/layout.njk" %}
+
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
@@ -13,60 +15,72 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 
-
 {% set errors = pageProperties.errors %}
 
-{% include "limited-partners/partials/header.njk" %}
+{% set title = i18n.BYFPageTitle %}
 
+{{ govukErrorSummary({
+titleText: "There is a problem",
+errorList: [
+{
+text: i18n.BYFErrorMessageNotChecked,
+href: "#nationality"
+}
+]
+}) }}
 
-<div class="govuk-grid-row">
-    <div class="govuk-width-container">
-        <div class="govuk-grid-column-two-thirds">
+{% block pageContent %}
 
-            <h1 class="govuk-heading-xl">
-                <span class="govuk-caption-l">ACME LIMITED PARTNERSHIP (SL012345)</span>
-                {{i18n.BYFPageTitle}}
-            </h1>
+    <div class="govuk-grid-row">
+        <div class="govuk-width-container">
+            <div class="govuk-grid-column-two-thirds">
 
-            <p class="govuk-body"> {{i18n.BYFInfoHoldParagraph}}</p>
+                <h1 class="govuk-heading-xl">
+                    <span class="govuk-caption-l">ACME LIMITED PARTNERSHIP (SL012345)</span>
+                    {{i18n.BYFPageTitle}}
+                </h1>
 
-            <p class="govuk-body">{{i18n.BYFFileUpdatesParagraphStart}}<a
+                <p class="govuk-body">
+                    {{i18n.BYFInfoHoldParagraph}}</p>
+
+                <p class="govuk-body">{{i18n.BYFFileUpdatesParagraphStart}}
+                    <a
                     href="https://www.gov.uk/">{{i18n.BYFFileUpdatesParagraphLink}}</a>{{i18n.BYFFileUpdatesParagraphEnd}}
-            </p>
-            <p class="govuk-body">{{i18n.BYFOnlyInfoChangedParagraph}}</p>
+                </p>
+                <p class="govuk-body">{{i18n.BYFOnlyInfoChangedParagraph}}</p>
 
-            {{ govukInsetText({
+                {{ govukInsetText({
             html: "<p class='govuk-body'>" + i18n.BYFInsetParagraph1 + "</p>
             <p class='govuk-body'>"
                 + i18n.BYFInsetParagraph2 + "</p>"
             }) }}
 
+              
 
-            {{ govukCheckboxes({
-            name: "whatWillHappenConfirm",
-            errorMessage: errors.BYFErrorMessageNotChecked if errors,
-            fieldset: {
-            legend: {
-            text: i18n.whatWillHappenConfirmHeading,
-            classes: "govuk-fieldset__legend--s"
-            }
-            },
-            items: [
-            {
-            value: "confirm",
-            text: i18n.BYFCheckboxText
-            }
-            ]
-            }) }}
+                {{ govukCheckboxes({
+                name: "byfCheckbox",
+                fieldset: {},
+                hint: {
+                },
+                errorMessage: {
+                    text: i18n.BYFErrorMessageNotChecked
+                },
+                items: [
+                    {
+                    value: "confirm",
+                    text: i18n.BYFCheckboxText,
+                    hint: {                    }
+                    }
+                ]
+                }) }}
 
-            {{ govukButton({
+                {{ govukButton({
             text: i18n.BYFContinueBotton
             }) }}
 
+            </div>
         </div>
+
     </div>
 
-</div>
-
-
-{% include "limited-partners/partials/footer.njk" %}
+{% endblock %}
