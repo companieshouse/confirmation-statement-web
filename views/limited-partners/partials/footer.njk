@@ -1,30 +1,32 @@
 {% from "govuk/components/footer/macro.njk" import govukFooter %}
 
-{{ govukFooter({
-    rebrand: true,
-    meta: {
-      items: [
-        {
-          href: "http://resources.companieshouse.gov.uk/legal/termsAndConditions.shtml",
-          text: "Policies"
-        },
-        {
-          href: "/help/cookies",
-          text: "Cookies"
-        },
-        {
-          href: "/help/contact-us",
-          text: "Contact Us"
-        },
-        {
-          href: "/confirmation-statement/accessibility-statement",
-          text: "Accessibility statement"
-        },
-        {
-          href: "https://developer.companieshouse.gov.uk/",
-          text: "Developers"
+<div class="govuk-template--rebranded">
+    {{ govukFooter({
+        rebrand: true,
+        meta: {
+          items: [
+            {
+              href: "http://resources.companieshouse.gov.uk/legal/termsAndConditions.shtml",
+              text: "Policies"
+            },
+            {
+              href: "/help/cookies",
+              text: "Cookies"
+            },
+            {
+              href: "/help/contact-us",
+              text: "Contact Us"
+            },
+            {
+              href: "/confirmation-statement/accessibility-statement",
+              text: "Accessibility statement"
+            },
+            {
+              href: "https://developer.companieshouse.gov.uk/",
+              text: "Developers"
+            }
+          ]
         }
-      ]
-    }
-  })
-}}
+      })
+    }}
+</div>
