@@ -1,16 +1,70 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+
+
     {% include "limited-partners/partials/header.njk" %}
 
-    <div class="govuk-grid-row">
-        <div class="govuk-width-container">
-            <h1 style="font-family: 'GDS Transport', Arial, Helvetica, sans-serif">{{i18n.pageContent}}</h1>
-            <br>
-            {{ govukButton({
-              text: "Start now",
-              href: '#',
-              isStartButton: true
-            }) }}
-        </div>
+    {% set errors = pageProperties.errors %}
+
+<div class="govuk-width-container">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-l">ACME LIMITED PARTNERSHIP (SL012345)</span>
+            {{i18n.BYFPageTitle}}
+        </h1>
+
+        <p class="govuk-body"> {{i18n.BYFInfoHoldParagraph}}</p>
+
+        <p class="govuk-body">{{i18n.BYFFileUpdatesParagraphStart}}<a
+                href="https://www.gov.uk/">{{i18n.BYFFileUpdatesParagraphLink}}</a>{{i18n.BYFFileUpdatesParagraphEnd}}
+        </p>
+        <p class="govuk-body">{{i18n.BYFOnlyInfoChangedParagraph}}</p>
+
+        {{ govukInsetText({
+        html: "<p class='govuk-body'>" + i18n.BYFInsetParagraph1 + "</p>
+        <p class='govuk-body'>"
+            + i18n.BYFInsetParagraph2 + "</p>"
+        }) }}
+
+
+        {{ govukCheckboxes({
+        name: "whatWillHappenConfirm",
+        errorMessage: errors.BYFErrorMessageNotChecked if errors,
+        fieldset: {
+        legend: {
+        text: i18n.whatWillHappenConfirmHeading,
+        classes: "govuk-fieldset__legend--s"
+        }
+        },
+        items: [
+        {
+        value: "confirm",
+        text: i18n.BYFCheckboxText
+        }
+        ]
+        }) }}
+
+        {{ govukButton({
+        text: i18n.BYFContinueBotton
+        }) }}
+
     </div>
+</div>
 
     {% include "limited-partners/partials/footer.njk" %}
