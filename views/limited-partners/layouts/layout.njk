@@ -1,12 +1,20 @@
-{% include "limited-partners/partials/meta_header.njk" %}
+{% extends "govuk/template.njk" %}
 
+{% block head %}
+    {% include "limited-partners/partials/meta_header.njk" %}
+{% endblock %}
 {% block header %}
     {% include "limited-partners/partials/header.njk" %}
 {% endblock %}
-
-{% block pageContent %}
-{% endblock %}
-
 {% block footer %}
     {% include "limited-partners/partials/footer.njk" %}
+{% endblock %}
+
+
+{% block bodyEnd %}
+    {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
+    <script type="module">
+      import { initAll } from '{{assetPath}}/javascripts/govuk-frontend/v5.10.2/govuk-frontend-5.10.2.min.js';
+      initAll();
+    </script>
 {% endblock %}

@@ -1,5 +1,3 @@
-<link href="{{assetPath}}/stylesheets/govuk-frontend/v5.10.2/govuk-frontend-5.10.2.min.css" rel="stylesheet" />
-
 <div class="govuk-grid-row" style="margin: 0; padding: 0;">
     {% block header %}
         {% include "limited-partners/partials/banners/header-banner.njk" %}
@@ -23,9 +21,3 @@
         {% endblock %}
     </div>
 </div>
-
-{% block bodyEnd %}
-    {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
-    <script src="{{assetPath}}/javascripts/govuk-frontend/v5.10.2/govuk-frontend-5.10.2.min.js"></script>
-    <script>window.GOVUKFrontend.initAll()</script>
-{% endblock %}
