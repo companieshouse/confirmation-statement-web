@@ -77,4 +77,23 @@ describe("start controller tests", () => {
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.text).toContain('govuk-footer');
   });
+
+  it("should contain a start button", async () => {
+    const response = await request(app)
+      .get("/confirmation-statement/limited-partnership");
+
+    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    expect(response.text).toContain('id="start-now"');
+    expect(response.text).toContain('Start now');
+  });
+
+  it("should redirect to before-you-file on form submission", async () => {
+    const response = await request(app)
+      .post("/confirmation-statement/limited-partnership")
+      .send();
+
+    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    expect(response.status).toBe(302); // Expecting a redirect response
+    expect(response.headers.location).toBe("/confirmation-statement/limited-partnership/before-you-file");
+  });
 });

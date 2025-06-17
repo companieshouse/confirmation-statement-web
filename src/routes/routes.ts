@@ -152,4 +152,7 @@ router.get(urls.WRONG_PSC_STATEMENT, wrongPscStatementRoute.get);
 router.post(urls.WRONG_PSC_STATEMENT, wrongPscStatementRoute.post);
 
 router.get(urls.LIMITED_PARTNERSHIP, lpStartRoute.get);
-router.get(urls.BEFORE_YOU_FILE, beforeYouFileRoute.get)
+router.post(urls.LIMITED_PARTNERSHIP, lpStartRoute.post);
+
+router.get(urls.BEFORE_YOU_FILE, beforeYouFileRoute.get);
+router.post(urls.BEFORE_YOU_FILE, beforeYouFileRoute.post);
