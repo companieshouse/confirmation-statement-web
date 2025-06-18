@@ -1,6 +1,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {{ govukBackLink({
-    href: "#",
-    text: "Back"
+    href: previousPage,
+    text: "Back",
+    classes: "govuk-!-margin-bottom-0 govuk-!-margin-top-0"
 }) }}
