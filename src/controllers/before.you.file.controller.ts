@@ -21,6 +21,28 @@ export const get = (req: Request, res: Response) => {
 export const post = (req: Request, res: Response) => {
     const lang = req.cookies.lang || 'en';
     const nextPage = `${urls.CONFIRMATION_STATEMENT + urls.LIMITED_PARTNERSHIP}?lang=${lang}`;
+    const byfCheckbox = req.body.byfCheckbox; 
+    const locales = getLocalesService();
+
+    if(!byfCheckbox){
+      return res.render(Templates.BEFORE_YOU_FILE, {
+        ...getLocaleInfo(locales, lang),
+        htmlLang: lang,
+        urls,
+        pageProperties: {
+          errors: [
+            {
+              text: getLocaleInfo(locales, lang).i18n.BYFErrorMessageNotChecked, 
+              href: '#byfCheckbox'
+            }
+          ], 
+          isPost: true
+        }, 
+        formData: {
+          byfCheckbox
+        }
+      }); 
+    }
 
   res.redirect(nextPage);
 };

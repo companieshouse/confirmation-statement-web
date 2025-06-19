@@ -43,24 +43,28 @@
                     html: "<p class='govuk-body'>" + i18n.BYFInsetParagraph1 + "</p>
                     <p class='govuk-body'>"
                         + i18n.BYFInsetParagraph2 + "</p>"
-                }) }}
+                }) }} 
 
-
+                {% set checkboxError = null %}
+                {% if errors and pageProperties.isPost %}
+                    {% set checkboxError = { "text": i18n.BYFErrorMessageNotChecked } %}
+                {% endif %}
+                
                 {{ govukCheckboxes({
                     name: "byfCheckbox",
                     fieldset: {},
                     hint: {},
-                    errorMessage: {
-                        text: i18n.BYFErrorMessageNotChecked
-                    },
-                items: [
-                    {
-                        value: "confirm",
-                        text: i18n.BYFCheckboxText,
-                        hint: {}
-                    }
-                ]
+                    errorMessage: checkboxError,
+                    items: [
+                        {
+                            value: "confirm",
+                            text: i18n.BYFCheckboxText,
+                            hint: {}, 
+                            checked: formData and formData.byfCheckbox === 'confirm'
+                        }
+                    ]
                 }) }}
+                
                 <form action="{{ urls.CONFIRMATION_STATEMENT + urls.BEFORE_YOU_FILE }}" method="POST">
                 {% include "../../partials/csrf-token.njk" %}
                     {{ govukButton({
