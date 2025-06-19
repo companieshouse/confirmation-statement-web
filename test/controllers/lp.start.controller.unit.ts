@@ -112,6 +112,6 @@ describe("start controller tests", () => {
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.status).toBe(302); // Expecting a redirect response
-    expect(response.headers.location).toBe("/confirmation-statement/limited-partnership/before-you-file");
+    expect(response.headers.location).toBe("/confirmation-statement/limited-partnership/before-you-file?lang=en");
   });
 });

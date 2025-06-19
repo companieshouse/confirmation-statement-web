@@ -19,8 +19,8 @@ export const get = (req: Request, res: Response) => {
 };
 
 export const post = (req: Request, res: Response) => {
-    const lang = req.cookies.lang || 'en';
-    const nextPage = `${urls.CONFIRMATION_STATEMENT + urls.LIMITED_PARTNERSHIP}?lang=${lang}`;
+  const lang = req.cookies.lang || 'en';
+  const nextPage = `${urls.CONFIRMATION_STATEMENT + urls.LIMITED_PARTNERSHIP}?lang=${lang}`;
 
   res.redirect(nextPage);
 };

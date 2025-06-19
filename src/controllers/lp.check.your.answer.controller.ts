@@ -11,6 +11,7 @@ export const get = (req: Request, res: Response) => {
 
   return res.render(Templates.LP_CHECK_YOUR_ANSWER, {
     ...getLocaleInfo(locales, lang),
+    htmlLang: lang,
     previousPage,
     csDate: "11 December 2222",
     continuePage
