@@ -7,13 +7,13 @@ export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const locales = getLocalesService();
   const previousPage = urls.LP_CS_DATE_PATH;
-  const continuePage = urls.CONFIRMATION_STATEMENT + urls.LIMITED_PARTNERSHIP + "/xxx";
+  const nextPage = urls.CONFIRMATION_STATEMENT + urls.LIMITED_PARTNERSHIP + "/xxx";
 
   return res.render(Templates.LP_CHECK_YOUR_ANSWER, {
     ...getLocaleInfo(locales, lang),
     htmlLang: lang,
     previousPage,
     csDate: "11 December 2222",
-    continuePage
+    nextPage
   });
 };
