@@ -50,23 +50,24 @@
                     {% set checkboxError = { "text": i18n.BYFErrorMessageNotChecked } %}
                 {% endif %}
                 
-                {{ govukCheckboxes({
-                    name: "byfCheckbox",
-                    fieldset: {},
-                    hint: {},
-                    errorMessage: checkboxError,
-                    items: [
-                        {
-                            value: "confirm",
-                            text: i18n.BYFCheckboxText,
-                            hint: {}, 
-                            checked: formData and formData.byfCheckbox === 'confirm'
-                        }
-                    ]
-                }) }}
-                
                 <form action="{{ urls.CONFIRMATION_STATEMENT + urls.BEFORE_YOU_FILE }}" method="POST">
                 {% include "../../partials/csrf-token.njk" %}
+
+                    {{ govukCheckboxes({
+                        name: "byfCheckbox",
+                        fieldset: {},
+                        hint: {},
+                        errorMessage: checkboxError,
+                        items: [
+                            {
+                                value: "confirm",
+                                text: i18n.BYFCheckboxText,
+                                hint: {}, 
+                                checked: formData and formData.byfCheckbox === 'confirm'
+                            }
+                        ]
+                    }) }}
+                    
                     {{ govukButton({
                         id: 'continue',
                         text: i18n.BYFContinueBotton,
