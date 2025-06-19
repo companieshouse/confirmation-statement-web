@@ -100,6 +100,7 @@ export const WRONG_PSC_DETAILS_PATH = CONFIRMATION_STATEMENT + WRONG_PSC_DETAILS
 export const WRONG_PSC_STATEMENT = ACTIVE_SUBMISSION_BASE + "incorrect-information/wrong-psc-statement";
 export const WRONG_PSC_STATEMENT_PATH = CONFIRMATION_STATEMENT + WRONG_PSC_STATEMENT;
 export const LIMITED_PARTNERSHIP = "/limited-partnership";
+export const LIMITED_PARTNERSHIP_PATH = CONFIRMATION_STATEMENT + "/limited-partnership";
 export const LP_BEFORE_YOU_FILE = LIMITED_PARTNERSHIP + "/before-you-file";
 export const LP_BEFORE_YOU_FILE_PATH = CONFIRMATION_STATEMENT + LIMITED_PARTNERSHIP + "/before-you-file";
 export const LP_CS_DATE = LIMITED_PARTNERSHIP + "/confirmation-statement-date";
