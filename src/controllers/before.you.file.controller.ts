@@ -8,9 +8,9 @@ export const get = (req: Request, res: Response) => {
   res.cookie('lang', lang, { httpOnly: true });
 
   const locales = getLocalesService();
-  const previousPage = urls.CONFIRMATION_STATEMENT + urls.LIMITED_PARTNERSHIP;
+  const previousPage = urls.LIMITED_PARTNERSHIP_PATH;
 
-  return res.render(Templates.BEFORE_YOU_FILE, {
+  return res.render(Templates.LP_BEFORE_YOU_FILE, {
     ...getLocaleInfo(locales, lang),
     htmlLang: lang,
     urls,
@@ -19,8 +19,8 @@ export const get = (req: Request, res: Response) => {
 };
 
 export const post = (req: Request, res: Response) => {
-    const lang = req.cookies.lang || 'en';
-    const nextPage = `${urls.CONFIRMATION_STATEMENT + urls.LIMITED_PARTNERSHIP}?lang=${lang}`;
+  const lang = req.cookies.lang || 'en';
+  const nextPage = `${urls.LIMITED_PARTNERSHIP_PATH}?lang=${lang}`;
 
   res.redirect(nextPage);
 };
