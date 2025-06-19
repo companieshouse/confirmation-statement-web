@@ -6,18 +6,13 @@ import * as urls from "../types/page.urls";
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const locales = getLocalesService();
-  const previousPage = urls.CONFIRMATION_STATEMENT + urls.LIMITED_PARTNERSHIP;
+  const previousPage = urls.CONFIRMATION_STATEMENT + urls.CS_DATE;
+  const continuePage = urls.CONFIRMATION_STATEMENT + urls.LIMITED_PARTNERSHIP + "/#";
 
-  return res.render(Templates.BEFORE_YOU_FILE, {
+  return res.render(Templates.LP_CHECK_YOUR_ANSWER, {
     ...getLocaleInfo(locales, lang),
-    urls,
-    previousPage
+    previousPage,
+    csDate: "11 December 2222",
+    continuePage
   });
-};
-
-export const post = (req: Request, res: Response) => {
-  // Update with next page when available
-  const nextPage = urls.CONFIRMATION_STATEMENT + urls.LIMITED_PARTNERSHIP;
-
-  res.redirect(nextPage);
 };

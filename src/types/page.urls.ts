@@ -101,5 +101,7 @@ export const WRONG_PSC_STATEMENT = ACTIVE_SUBMISSION_BASE + "incorrect-informati
 export const WRONG_PSC_STATEMENT_PATH = CONFIRMATION_STATEMENT + WRONG_PSC_STATEMENT;
 export const LIMITED_PARTNERSHIP = "/limited-partnership";
 export const BEFORE_YOU_FILE = LIMITED_PARTNERSHIP + "/before-you-file";
+export const CS_DATE = LIMITED_PARTNERSHIP + "/confirmation-statement-date";
+export const LP_CHECK_YOUR_ANSWER = LIMITED_PARTNERSHIP + "/check-your-answer";
 
 export const middlewarePaths = /\/confirmation-statement\/((?!healthcheck).)*/;

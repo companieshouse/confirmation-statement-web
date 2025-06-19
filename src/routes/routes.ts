@@ -38,6 +38,7 @@ import * as wrongPscDetailsRoute from "../controllers/incorrect-information/wron
 import * as wrongPscStatementRoute from "../controllers/incorrect-information/wrong.psc.statement.controller";
 import * as lpStartRoute from "../controllers/lp.start.controller";
 import * as beforeYouFileRoute from "../controllers/before.you.file.controller";
+import * as lpCheckYourAnswerRoute from "../controllers/lp.check.your.answer.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 
@@ -156,3 +157,5 @@ router.post(urls.LIMITED_PARTNERSHIP, lpStartRoute.post);
 
 router.get(urls.BEFORE_YOU_FILE, beforeYouFileRoute.get);
 router.post(urls.BEFORE_YOU_FILE, beforeYouFileRoute.post);
+
+router.get(urls.LP_CHECK_YOUR_ANSWER, lpCheckYourAnswerRoute.get);

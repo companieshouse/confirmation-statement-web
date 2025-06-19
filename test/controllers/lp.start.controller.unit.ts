@@ -1,8 +1,26 @@
 import middlewareMocks from "../mocks/all.middleware.mock";
+import { NextFunction, Request, Response } from "express";
+import { sessionMiddleware } from "../../src/middleware/session.middleware";
+import { Session } from "@companieshouse/node-session-handler";
 import request from "supertest";
 import app from "../../src/app";
 
 const EXPECTED_TEXT = "limited partnership landing page";
+const TEST_EMAIL = "user-name@companieshouse.gov.uk";
+
+const mockSessionMiddleware = sessionMiddleware as jest.Mock;
+mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
+  const session: Session = new Session();
+  session.data = {
+    signin_info: {
+      user_profile: {
+        email: TEST_EMAIL,
+      },
+    },
+  };
+  req.session = session;
+  return next();
+});
 
 describe("start controller tests", () => {
 
@@ -49,7 +67,7 @@ describe("start controller tests", () => {
       .get("/confirmation-statement/limited-partnership");
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
-    expect(response.text).toContain('user-name@companieshouse.gov.uk');
+    expect(response.text).toContain(TEST_EMAIL);
     expect(response.text).toContain('Sign out');
   });
 
