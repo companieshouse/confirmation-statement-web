@@ -18,7 +18,7 @@ export const get = (req: Request, res: Response) => {
 
 export const post = (req: Request, res: Response) => {
   const lang = req.cookies.lang || 'en';
-  const nextPage = `${urls.CONFIRMATION_STATEMENT + urls.BEFORE_YOU_FILE}?lang=${lang}`;
+  const nextPage = `${urls.LP_BEFORE_YOU_FILE_PATH}?lang=${lang}`;
 
   res.redirect(nextPage);
 };

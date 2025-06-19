@@ -37,6 +37,6 @@ export enum Templates {
   REVIEW = "review",
   CSRF_ERROR = "csrf-error",
   LP_START = "limited-partners/components/index/lp-start.njk",
-  BEFORE_YOU_FILE = "limited-partners/components/before-you-file/before-you-file.njk",
+  LP_BEFORE_YOU_FILE = "limited-partners/components/before-you-file/before-you-file.njk",
   LP_CHECK_YOUR_ANSWER = "limited-partners/components/check-your-answer/lp-check-your-answer.njk"
 }

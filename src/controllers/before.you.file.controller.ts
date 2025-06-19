@@ -10,7 +10,7 @@ export const get = (req: Request, res: Response) => {
   const locales = getLocalesService();
   const previousPage = urls.CONFIRMATION_STATEMENT + urls.LIMITED_PARTNERSHIP;
 
-  return res.render(Templates.BEFORE_YOU_FILE, {
+  return res.render(Templates.LP_BEFORE_YOU_FILE, {
     ...getLocaleInfo(locales, lang),
     htmlLang: lang,
     urls,
