@@ -9,12 +9,14 @@ export const get = (req: Request, res: Response) => {
 
   const locales = getLocalesService();
   const previousPage = urls.LIMITED_PARTNERSHIP_PATH;
+  const formData = { byfCheckbox: req.cookies.byfCheckbox };
 
   return res.render(Templates.LP_BEFORE_YOU_FILE, {
     ...getLocaleInfo(locales, lang),
     htmlLang: lang,
     urls,
-    previousPage
+    previousPage, 
+    formData
   });
 };
 
@@ -29,6 +31,7 @@ export const post = (req: Request, res: Response) => {
     return reloadPageWithError(req, res, lang, localInfo, byfCheckbox, localInfo.i18n.BYFErrorMessageNotChecked); 
   }
 
+  res.cookie('byfCheckbox', byfCheckbox, { httpOnly: true }); 
   res.redirect(nextPage);
 };
 
