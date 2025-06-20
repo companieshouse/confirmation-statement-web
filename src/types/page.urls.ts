@@ -102,10 +102,12 @@ export const WRONG_PSC_STATEMENT_PATH = CONFIRMATION_STATEMENT + WRONG_PSC_STATE
 export const LIMITED_PARTNERSHIP = "/limited-partnership";
 export const LIMITED_PARTNERSHIP_PATH = CONFIRMATION_STATEMENT + "/limited-partnership";
 export const LP_BEFORE_YOU_FILE = LIMITED_PARTNERSHIP + "/before-you-file";
-export const LP_BEFORE_YOU_FILE_PATH = CONFIRMATION_STATEMENT + LIMITED_PARTNERSHIP + "/before-you-file";
+export const LP_BEFORE_YOU_FILE_PATH = CONFIRMATION_STATEMENT + LP_BEFORE_YOU_FILE;
 export const LP_CS_DATE = LIMITED_PARTNERSHIP + "/confirmation-statement-date";
-export const LP_CS_DATE_PATH = CONFIRMATION_STATEMENT + LIMITED_PARTNERSHIP + "/confirmation-statement-date";
+export const LP_CS_DATE_PATH = CONFIRMATION_STATEMENT + LP_CS_DATE;
+export const LP_CHECK_AND_CONFIRM = LIMITED_PARTNERSHIP + "/check-and-confirm";
+export const LP_CHECK_AND_CONFIRM_PATH = CONFIRMATION_STATEMENT + LP_CHECK_AND_CONFIRM;
 export const LP_CHECK_YOUR_ANSWER = LIMITED_PARTNERSHIP + "/check-your-answer";
-export const LP_CHECK_YOUR_ANSWER_PATH = CONFIRMATION_STATEMENT + LIMITED_PARTNERSHIP + "/check-your-answer";
+export const LP_CHECK_YOUR_ANSWER_PATH = CONFIRMATION_STATEMENT + LP_CHECK_YOUR_ANSWER;
 
 export const middlewarePaths = /\/confirmation-statement\/((?!healthcheck).)*/;

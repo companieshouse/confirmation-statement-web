@@ -1,3 +1,4 @@
+
 import { Request, Response, Router } from "express";
 import * as activeOfficers from "../controllers/tasks/active.officers.controller";
 import * as activeOfficersDetails from "../controllers/tasks/active.officers.details.controller";
@@ -37,8 +38,9 @@ import * as wrongOfficerDetailsRoute from "../controllers/incorrect-information/
 import * as wrongPscDetailsRoute from "../controllers/incorrect-information/wrong.psc.details.controller";
 import * as wrongPscStatementRoute from "../controllers/incorrect-information/wrong.psc.statement.controller";
 import * as lpStartRoute from "../controllers/lp.start.controller";
-import * as lpBeforeYouFileRoute from "../controllers/before.you.file.controller";
+import * as lpBeforeYouFileRoute from "../controllers/lp.before.you.file.controller";
 import * as lpCheckYourAnswerRoute from "../controllers/lp.check.your.answer.controller";
+import * as lpCSDateRoute from "../controllers/lp.cs.date.controller";
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 
@@ -159,3 +161,6 @@ router.get(urls.LP_BEFORE_YOU_FILE, lpBeforeYouFileRoute.get);
 router.post(urls.LP_BEFORE_YOU_FILE, lpBeforeYouFileRoute.post);
 
 router.get(urls.LP_CHECK_YOUR_ANSWER, lpCheckYourAnswerRoute.get);
+
+router.get(urls.LP_CS_DATE, lpCSDateRoute.get);
+router.post(urls.LP_CS_DATE, lpCSDateRoute.post);
