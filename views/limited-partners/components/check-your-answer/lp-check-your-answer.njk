@@ -14,37 +14,38 @@
                     <span class="govuk-caption-l">ACME LIMITED PARTNERSHIP (LP123456)</span>
                     {{ i18n.CDCYATitle }}
                 </h1>
-
-                {{ govukSummaryList({
-                    classes: "govuk-!-margin-bottom-9",
-                    rows: [
-                        {
-                            key: {
-                                text: i18n.CDCYACheckAnswersStart
-                            },
-                            value: {
-                                text: csDate
-                            },
-                            actions: {
-                                items: [
-                                        {
-                                            href: "#",
-                                            text: i18n.CDCYACheckAnswersChange
-                                        }
-                                ]
+                <form action="" method="post">
+                    {% include "includes/csrf_token.html" %}
+                    {{ govukSummaryList({
+                        classes: "govuk-!-margin-bottom-9",
+                        rows: [
+                            {
+                                key: {
+                                    text: i18n.CDCYACheckAnswersStart
+                                },
+                                value: {
+                                    text: csDate
+                                },
+                                actions: {
+                                    items: [
+                                            {
+                                                href: "#",
+                                                text: i18n.CDCYACheckAnswersChange
+                                            }
+                                    ]
+                                }
                             }
-                        }
-                        ]
-                    }) 
-                }}
-
-                <div class="govuk-button-group">
+                            ]
+                        }) 
+                    }}
+                    
                     {{ govukButton({
                         text: i18n.CDCYAContinueButton,
                         href: nextPage,
                         id: "continue-button-id"
                     })}}
-                </div>
+
+                </form>
 
             </div>
         </div>
