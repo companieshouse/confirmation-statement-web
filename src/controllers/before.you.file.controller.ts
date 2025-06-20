@@ -19,30 +19,40 @@ export const get = (req: Request, res: Response) => {
 };
 
 export const post = (req: Request, res: Response) => {
-    const lang = req.cookies.lang || 'en';
-    const nextPage = `${urls.CONFIRMATION_STATEMENT + urls.LIMITED_PARTNERSHIP}?lang=${lang}`;
-    const byfCheckbox = req.body.byfCheckbox; 
-    const locales = getLocalesService();
+  const lang = selectLang(req.query.lang);
+  const nextPage = `${urls.CONFIRMATION_STATEMENT + urls.LIMITED_PARTNERSHIP}?lang=${lang}`;
+  const byfCheckbox = req.body.byfCheckbox; 
+  const locales = getLocalesService();
+  const localInfo = getLocaleInfo(locales, lang); 
 
-    if(!byfCheckbox){
-      return res.render(Templates.BEFORE_YOU_FILE, {
-        ...getLocaleInfo(locales, lang),
-        htmlLang: lang,
-        urls,
-        pageProperties: {
-          errors: [
-            {
-              text: getLocaleInfo(locales, lang).i18n.BYFErrorMessageNotChecked, 
-              href: '#byfCheckbox'
-            }
-          ], 
-          isPost: true
-        }, 
-        formData: {
-          byfCheckbox
-        }
-      }); 
-    }
+  console.log("DAVE --- " + !byfCheckbox); 
+
+  if(!byfCheckbox){
+    return reloadPageWithError(req, res, lang, localInfo, byfCheckbox, localInfo.i18n.BYFErrorMessageNotChecked); 
+  }
 
   res.redirect(nextPage);
 };
+
+function reloadPageWithError(req: Request, res: Response, lang: String, localInfo: Object, byfCheckbox: String, errorMessage: String) {
+  res.cookie('lang', lang, { httpOnly: true}); 
+  
+  res.render(Templates.BEFORE_YOU_FILE, {
+    ...localInfo,
+    htmlLang: lang,
+    urls,
+    previousPage: urls.LIMITED_PARTNERSHIP,
+    pageProperties: {
+      errors: [
+        {
+          text: errorMessage, 
+          href: '#byfCheckbox'
+        }
+      ], 
+      isPost: true
+    }, 
+    formData: {
+      byfCheckbox
+    }
+  }); 
+}
