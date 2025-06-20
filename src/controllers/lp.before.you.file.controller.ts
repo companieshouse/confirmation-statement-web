@@ -8,9 +8,9 @@ export const get = (req: Request, res: Response) => {
   res.cookie('lang', lang, { httpOnly: true });
 
   const locales = getLocalesService();
-  const previousPage = urls.CONFIRMATION_STATEMENT + urls.LIMITED_PARTNERSHIP;
+  const previousPage = urls.LIMITED_PARTNERSHIP_PATH;
 
-  return res.render(Templates.BEFORE_YOU_FILE, {
+  return res.render(Templates.LP_BEFORE_YOU_FILE, {
     ...getLocaleInfo(locales, lang),
     htmlLang: lang,
     urls,
@@ -25,8 +25,6 @@ export const post = (req: Request, res: Response) => {
   const locales = getLocalesService();
   const localInfo = getLocaleInfo(locales, lang); 
 
-  console.log("DAVE --- " + !byfCheckbox); 
-
   if(!byfCheckbox){
     return reloadPageWithError(req, res, lang, localInfo, byfCheckbox, localInfo.i18n.BYFErrorMessageNotChecked); 
   }
@@ -37,7 +35,7 @@ export const post = (req: Request, res: Response) => {
 function reloadPageWithError(req: Request, res: Response, lang: String, localInfo: Object, byfCheckbox: String, errorMessage: String) {
   res.cookie('lang', lang, { httpOnly: true}); 
   
-  res.render(Templates.BEFORE_YOU_FILE, {
+  res.render(Templates.LP_BEFORE_YOU_FILE, {
     ...localInfo,
     htmlLang: lang,
     urls,

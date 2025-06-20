@@ -1,0 +1,81 @@
+{% extends "../../layouts/layout.njk" %}
+{% from "govuk/components/button/macro.njk"     import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/radios/macro.njk"     import govukRadios %}
+
+{% set errors = pageProperties.errors %}
+
+{% set title = i18n.CDSTitle %}
+
+{% set dateSelector -%}
+
+    {{ govukDateInput({
+        id: "confirmationStatementDateSelector",
+        namePrefix: "confirmation-statement-date",
+        fieldset: {
+            legend: {
+            text:  i18n.CDSRadioButtonYesExplainer,
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--m"
+            }
+        },
+        hint: {
+            text: i18n.CDSRadioButtonYesExplainerExample,
+            classes: "govuk-hint"
+        }
+    }) }}
+
+{%- endset %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-width-container">
+            <div class="govuk-grid-column-two-thirds">
+                <form action="" method="post">
+                    {% include "includes/csrf_token.html" %}
+                    <h1 class="govuk-heading-xl">
+                        <span class="govuk-caption-l">ACME LIMITED PARTNERSHIP (SL012345)</span>
+                        {{i18n.CDSTitle}}
+                    </h1>
+
+                    <p class="govuk-body">{{i18n.CDSCurrentDate}} <b>31 May 2025</b></p>
+                    <p class="govuk-body">{{i18n.CDSCurrentDateExplainer}}</p>
+                    <p class="govuk-body">{{i18n.CDSDateChangeExplainer}}</p>
+
+                    <p class="govuk-heading-m">{{i18n.CDSRadioButtonQuestion}}</p>
+
+                    {{ govukRadios({
+                        id: "confirmationStatementDate",
+                        name: "confirmationStatementDate",
+                        fieldset: {
+                            legend: {
+                                text: i18n.CDSRadioButtonQuestion,
+                                isPageHeading: true,
+                                classes: "govuk-fieldset__legend--l"
+                            }
+                        },
+                        items: [
+                            {
+                                value: "yes",
+                                text: i18n.CDSRadioButtonYes,
+                                conditional: {
+                                    html: dateSelector
+                                }
+                            },
+                            {
+                                value: "no",
+                                text: i18n.CDSRadioButtonNo
+                            }
+                        ],
+                        errorMessage: errorMessage
+                    })}}
+
+                    {{ govukButton({
+                        text: i18n.CDSContinueButton
+                    }) }}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

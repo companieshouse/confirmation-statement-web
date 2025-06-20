@@ -1,0 +1,53 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% extends "../../layouts/layout.njk" %}
+
+{% set title = i18n.CDCYATitle %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-width-container">
+            <div class="govuk-grid-column-two-thirds">
+
+                <h1 class="govuk-heading-xl">
+                    <span class="govuk-caption-l">ACME LIMITED PARTNERSHIP (LP123456)</span>
+                    {{ i18n.CDCYATitle }}
+                </h1>
+                <form action="" method="post">
+                    {% include "includes/csrf_token.html" %}
+                    {{ govukSummaryList({
+                        classes: "govuk-!-margin-bottom-9",
+                        rows: [
+                            {
+                                key: {
+                                    text: i18n.CDCYACheckAnswersStart
+                                },
+                                value: {
+                                    text: csDate
+                                },
+                                actions: {
+                                    items: [
+                                            {
+                                                href: "#",
+                                                text: i18n.CDCYACheckAnswersChange
+                                            }
+                                    ]
+                                }
+                            }
+                            ]
+                        }) 
+                    }}
+                    
+                    {{ govukButton({
+                        text: i18n.CDCYAContinueButton,
+                        href: nextPage,
+                        id: "continue-button-id"
+                    })}}
+
+                </form>
+
+            </div>
+        </div>
+    <div>
+{% endblock %}
