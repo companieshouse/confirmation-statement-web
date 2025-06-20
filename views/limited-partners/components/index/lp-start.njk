@@ -7,7 +7,7 @@
         <div class="govuk-width-container">
             <h1 style="font-family: 'GDS Transport', Arial, Helvetica, sans-serif">{{i18n.pageContent}}</h1>
             <br>
-            <form action="{{ urls.CONFIRMATION_STATEMENT + urls.LIMITED_PARTNERSHIP }}" method="POST">
+            <form action="{{ urls.LIMITED_PARTNERSHIP_PATH }}" method="POST">
             {% include "../../partials/csrf-token.njk" %}
                 {{ govukButton({
                   id: 'start-now',

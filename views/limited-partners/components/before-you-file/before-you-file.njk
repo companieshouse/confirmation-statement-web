@@ -20,7 +20,6 @@
 {% set title = i18n.BYFPageTitle %}
 
 {% block content %}
-
     <div class="govuk-grid-row">
         <div class="govuk-width-container">
             <div class="govuk-grid-column-two-thirds">
@@ -43,26 +42,31 @@
                     html: "<p class='govuk-body'>" + i18n.BYFInsetParagraph1 + "</p>
                     <p class='govuk-body'>"
                         + i18n.BYFInsetParagraph2 + "</p>"
-                }) }}
+                }) }} 
 
-
-                {{ govukCheckboxes({
-                    name: "byfCheckbox",
-                    fieldset: {},
-                    hint: {},
-                    errorMessage: {
-                        text: i18n.BYFErrorMessageNotChecked
-                    },
-                items: [
-                    {
-                        value: "confirm",
-                        text: i18n.BYFCheckboxText,
-                        hint: {}
-                    }
-                ]
-                }) }}
-                <form action="{{ urls.LP_BEFORE_YOU_FILE_PATH }}" method="POST">
+                {% set checkboxError = null %}
+                {% if errors and pageProperties.isPost %}
+                    {% set checkboxError = { "text": i18n.BYFErrorMessageNotChecked } %}
+                {% endif %}
+                
+                <form action="{{ LP_BEFORE_YOU_FILE_PATH }}" method="POST">
                 {% include "../../partials/csrf-token.njk" %}
+
+                    {{ govukCheckboxes({
+                        name: "byfCheckbox",
+                        fieldset: {},
+                        hint: {},
+                        errorMessage: checkboxError,
+                        items: [
+                            {
+                                value: "confirm",
+                                text: i18n.BYFCheckboxText,
+                                hint: {}, 
+                                checked: formData and formData.byfCheckbox === 'confirm'
+                            }
+                        ]
+                    }) }}
+                    
                     {{ govukButton({
                         id: 'continue',
                         text: i18n.BYFContinueBotton,
