@@ -20,7 +20,7 @@ export const get = (req: Request, res: Response) => {
 
 export const post = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
-  const nextPage = `${urls.CONFIRMATION_STATEMENT + urls.LIMITED_PARTNERSHIP}?lang=${lang}`;
+  const nextPage = `${urls.LP_CS_DATE_PATH}?lang=${lang}`;
   const byfCheckbox = req.body.byfCheckbox; 
   const locales = getLocalesService();
   const localInfo = getLocaleInfo(locales, lang); 
