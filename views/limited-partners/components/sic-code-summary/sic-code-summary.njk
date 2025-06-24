@@ -51,9 +51,15 @@
                  
 
                 <div class="govuk-inset-text">
-                    <h2>{{ i18n.SICCSAddSICInsetTitle }}</h2> 
-                    <p>{{ i18n.SICCSAddSICInsetInstructions }}</p>
                     {{ govukInput({
+                        label: {
+                            text: i18n.SICCSAddSICInsetTitle, 
+                            classes: "govuk-label--m", 
+                            isPageHeading: true
+                        },
+                        hint: {
+                            text: i18n.SICCSAddSICInsetInstructions
+                        },
                         id: "sic-code-input",
                         name: "sicCodeInput"
                     }) }}
