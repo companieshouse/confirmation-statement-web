@@ -109,5 +109,7 @@ export const LP_CHECK_AND_CONFIRM = LIMITED_PARTNERSHIP + "/check-and-confirm";
 export const LP_CHECK_AND_CONFIRM_PATH = CONFIRMATION_STATEMENT + LP_CHECK_AND_CONFIRM;
 export const LP_CHECK_YOUR_ANSWER = LIMITED_PARTNERSHIP + "/check-your-answer";
 export const LP_CHECK_YOUR_ANSWER_PATH = CONFIRMATION_STATEMENT + LP_CHECK_YOUR_ANSWER;
+export const LP_SIC_CODE_SUMMARY = LIMITED_PARTNERSHIP + "/sic-code-summary"; 
+export const LP_SIC_CODE_SUMMARY_PATH = CONFIRMATION_STATEMENT + LP_SIC_CODE_SUMMARY; 
 
 export const middlewarePaths = /\/confirmation-statement\/((?!healthcheck).)*/;

@@ -41,6 +41,7 @@ import * as lpStartRoute from "../controllers/lp.start.controller";
 import * as lpBeforeYouFileRoute from "../controllers/lp.before.you.file.controller";
 import * as lpCheckYourAnswerRoute from "../controllers/lp.check.your.answer.controller";
 import * as lpCSDateRoute from "../controllers/lp.cs.date.controller";
+import * as lpSicCodeSummaryRoute from "../controllers/lp.sic.code.summary.controller"; 
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 
@@ -164,3 +165,6 @@ router.get(urls.LP_CHECK_YOUR_ANSWER, lpCheckYourAnswerRoute.get);
 
 router.get(urls.LP_CS_DATE, lpCSDateRoute.get);
 router.post(urls.LP_CS_DATE, lpCSDateRoute.post);
+
+router.get(urls.LP_SIC_CODE_SUMMARY, lpSicCodeSummaryRoute.get); 
+router.post(urls.LP_SIC_CODE_SUMMARY, lpSicCodeSummaryRoute.post); 
