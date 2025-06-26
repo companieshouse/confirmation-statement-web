@@ -27,8 +27,37 @@ export const post = (req: Request, res: Response) => {
   res.redirect(nextPage);
 };
 
+export const addSicCode = async (req: Request, res: Response) => {
+  const lang = selectLang(req.query.lang);
+  const { code } = req.body;
 
-const dummySicCodes = [
+  if (!code) return res.status(400).send('Missing SIC code');
+
+  dummySicCodes.push({
+    code,
+    description: `Description for ${code}`
+  });
+
+  res.redirect(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`);
+};
+
+export const removeSicCode = async (req: Request, res: Response) => {
+  const lang = selectLang(req.query.lang);
+  const removeSicCode = req.query.remove as string;
+
+  if (removeSicCode) {
+    const index = dummySicCodes.findIndex(sicCode => sicCode.code === removeSicCode);
+
+    if (index !== -1) {
+      dummySicCodes.splice(index, 1);
+    }
+  }
+
+  res.redirect(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`);
+}
+
+
+export const dummySicCodes = [
   { code: '64205', description: 'Activities of financial service holding companies' },
   { code: '64910', description: 'Financial leasing' },
   { code: '64922', description: 'Activities of mortgage finance companies' }

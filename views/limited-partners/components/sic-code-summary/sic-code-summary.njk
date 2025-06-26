@@ -16,7 +16,7 @@
   <p class="govuk-body">{{ i18n.SICCSWhatIsDetailExpanderParagraph3 }}</p>
   <p class="govuk-body">
     {{ i18n.SICCSWhatIsDetailExpanderParagraph4Start }}
-    <a class="govuk-link" href="#">
+    <a class="govuk-link" href="https://resources.companieshouse.gov.uk/sic/">
       {{ i18n.SICCSWhatIsDetailExpanderParagraph4Link }}
     </a>
     {{ i18n.SICCSWhatIsDetailExpanderParagraph4End }}
@@ -43,13 +43,14 @@
                         <dt class="govuk-summary-list__key">{{ sCode.code }}</dt>
                         <dd class="govuk-summary-list__value">{{ sCode.description }}</dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="#">{{ i18n.SICCSTableRemoveButton }}</a>
+                            <a class="govuk-link" href="{{ urls.LP_SIC_CODE_SUMMARY_PATH }}/remove?remove={{ sCode.code }}">{{ i18n.SICCSTableRemoveButton }}</a>
                         </dd>
                         </div>
                     {% endfor %}
                 </dl>
-                 
-
+                
+                <form action="{{ urls.LP_SIC_CODE_SUMMARY_PATH }}/add" method="POST">
+                {% include "../../partials/csrf-token.njk" %}
                 <div class="govuk-inset-text">
                     {{ govukInput({
                         label: {
@@ -61,13 +62,19 @@
                             text: i18n.SICCSAddSICInsetInstructions
                         },
                         id: "sic-code-input",
-                        name: "sicCodeInput"
+                        name: "code"
                     }) }}
                     {{ govukButton({
                         text: i18n.SICCSAddSICAddCodeButton,
-                        classes: "govuk-button--secondary"
+                        classes: "govuk-button--secondary", 
+                        attributes: {
+                            id: "add-sic-code-button",
+                            type: "submit",
+                            disabled: "disabled"
+                        }
                     }) }}
                 </div>
+                </form>
 
                 {{ govukDetails({
                     summaryText: i18n.SICCSWhatIsDetailExpanderTitle,
@@ -86,4 +93,6 @@
         </div>
     </div>
 
+
+{% include "../../../includes/scripts/lp.sic.code.script.js" %}
 {% endblock %}
