@@ -3,8 +3,8 @@
 {% block beforeContent %}
   {{ govukPhaseBanner({
     tag: {
-      text: "Beta"
+      text: i18n.HEADBeta
     },
-    html: 'This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.'
+    html: i18n.HEADBetaTextStart + "<a class='govuk-link' href='#''>" + i18n.HEADBetaTextLink + "</a>" + i18n.HEADBetaTextEnd
   }) }}
 {% endblock %}
