@@ -16,7 +16,7 @@
   <p class="govuk-body">{{ i18n.SICCSWhatIsDetailExpanderParagraph3 }}</p>
   <p class="govuk-body">
     {{ i18n.SICCSWhatIsDetailExpanderParagraph4Start }}
-    <a class="govuk-link" href="#">
+    <a class="govuk-link" href="https://resources.companieshouse.gov.uk/sic/">
       {{ i18n.SICCSWhatIsDetailExpanderParagraph4Link }}
     </a>
     {{ i18n.SICCSWhatIsDetailExpanderParagraph4End }}
@@ -24,6 +24,17 @@
 {% endset %}
 
 {% block content %}
+  <style>
+    button.govuk-link {
+      background: none;
+      border: none;
+      padding: 0;
+      font: inherit;
+      color: #1d70b8;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
     <div class="govuk-grid-row">
         <div class="govuk-width-container">
             <div class="govuk-grid-column-two-thirds">
@@ -43,13 +54,17 @@
                         <dt class="govuk-summary-list__key">{{ sCode.code }}</dt>
                         <dd class="govuk-summary-list__value">{{ sCode.description }}</dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="#">{{ i18n.SICCSTableRemoveButton }}</a>
+                            <form action="{{ urls.LP_SIC_CODE_SUMMARY_PATH }}/{{ sCode.code }}/remove" method="POST">
+                            {% include "../../partials/csrf-token.njk" %}
+                                <button type="submit" class="govuk-link">{{ i18n.SICCSTableRemoveButton }}</button>
+                            </form>
                         </dd>
                         </div>
                     {% endfor %}
                 </dl>
-                 
-
+                
+                <form action="{{ urls.LP_SIC_CODE_SUMMARY_PATH }}/add" method="POST">
+                {% include "../../partials/csrf-token.njk" %}
                 <div class="govuk-inset-text">
                     {{ govukInput({
                         label: {
@@ -61,13 +76,19 @@
                             text: i18n.SICCSAddSICInsetInstructions
                         },
                         id: "sic-code-input",
-                        name: "sicCodeInput"
+                        name: "code"
                     }) }}
                     {{ govukButton({
                         text: i18n.SICCSAddSICAddCodeButton,
-                        classes: "govuk-button--secondary"
+                        classes: "govuk-button--secondary", 
+                        attributes: {
+                            id: "add-sic-code-button",
+                            type: "submit",
+                            disabled: "disabled"
+                        }
                     }) }}
                 </div>
+                </form>
 
                 {{ govukDetails({
                     summaryText: i18n.SICCSWhatIsDetailExpanderTitle,
@@ -86,4 +107,6 @@
         </div>
     </div>
 
+
+{% include "../../../includes/scripts/lp.sic.code.script.js" %}
 {% endblock %}

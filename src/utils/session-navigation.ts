@@ -6,8 +6,14 @@ export function savePreviousPageInSession(req: Request): string {
   const url = new URL(referer, `http://${req.headers.host}`);
   url.searchParams.delete("lang");
   const previousPage = url.pathname;
-  req.session?.setExtraData("previous-page", previousPage); 
-  return previousPage; 
+  const currentPage = req.originalUrl.split("?")[0];
+  const isInternalAction = req.path.endsWith("/add") || req.path.endsWith("/remove");
+
+  if (!isInternalAction && previousPage !== currentPage) {
+    req.session?.setExtraData("previous-page", previousPage);
+  }
+
+  return req.session?.getExtraData("previous-page")!;
 }
 
 export function getPreviousPageFromSession(session: Session): string {
