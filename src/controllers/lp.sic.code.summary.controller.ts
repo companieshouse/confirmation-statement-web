@@ -43,7 +43,7 @@ export const addSicCode = async (req: Request, res: Response) => {
 
 export const removeSicCode = async (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
-  const removeSicCode = req.query.remove as string;
+  const removeSicCode = req.params.code;
 
   if (removeSicCode) {
     const index = dummySicCodes.findIndex(sicCode => sicCode.code === removeSicCode);

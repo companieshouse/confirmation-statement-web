@@ -36,7 +36,7 @@ describe("start controller tests", () => {
     dummySicCodes.push({code: "1234", description: "Test"})
 
     const response = await request(app)
-      .get(`${LP_SIC_CODE_SUMMARY_PATH}/remove?remove=1234&lang=en`);
+      .post(`${LP_SIC_CODE_SUMMARY_PATH}/1234/remove?lang=en`);
 
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe(`${LP_SIC_CODE_SUMMARY_PATH}?lang=en`);

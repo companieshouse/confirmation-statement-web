@@ -23,7 +23,10 @@
             <dt class="govuk-summary-list__key">${code}</dt>
             <dd class="govuk-summary-list__value">${description}</dd>
             <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" href="{{ urls.LP_SIC_CODE_SUMMARY_PATH }}/remove?remove=${encodeURIComponent(code)}">{{ i18n.SICCSTableRemoveButton }}</a>
+              <form action="{{ urls.LP_SIC_CODE_SUMMARY_PATH }}/${encodeURIComponent(code)}/remove" method="POST">
+              <input type="hidden" name="_csrf" value="${document.querySelector('input[name="_csrf"]').value}" />
+                  <button type="submit" class="govuk-link">{{ i18n.SICCSTableRemoveButton }}</button>
+              </form>
             </dd>
           `;
 
