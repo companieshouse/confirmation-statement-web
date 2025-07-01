@@ -1,0 +1,80 @@
+{% extends "../../layouts/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+{% set errors = pageProperties.errors %}
+
+{% set title = i18n.SCSTitle %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-width-container">
+            <div class="govuk-grid-column-two-thirds">
+
+                <h1 class="govuk-heading-xl">
+                    {{i18n.SCSTitle}}
+                </h1>
+
+                <p class="govuk-body">
+                    {{i18n.BYFInfoHoldParagraph}}</p>
+
+                <p class="govuk-body">{{i18n.BYFFileUpdatesParagraphStart}}
+                    <a
+                    href="https://www.gov.uk/">{{i18n.BYFFileUpdatesParagraphLink}}</a>{{i18n.BYFFileUpdatesParagraphEnd}}
+                </p>
+                <p class="govuk-body">{{i18n.BYFOnlyInfoChangedParagraph}}</p>
+
+                {{ govukInsetText({
+                    html: "<p class='govuk-body'>" + i18n.BYFInsetParagraph1 + "</p>
+                    <p class='govuk-body'>"
+                        + i18n.BYFInsetParagraph2 + "</p>"
+                }) }} 
+
+                {% set checkboxError = null %}
+                {% if errors and pageProperties.isPost %}
+                    {% set checkboxError = { "text": i18n.BYFErrorMessageNotChecked } %}
+                {% endif %}
+                
+                <form action="{{ LP_BEFORE_YOU_FILE_PATH }}" method="POST">
+                {% include "../../partials/csrf-token.njk" %}
+
+                    {{ govukCheckboxes({
+                        name: "byfCheckbox",
+                        fieldset: {},
+                        hint: {},
+                        errorMessage: checkboxError,
+                        items: [
+                            {
+                                value: "confirm",
+                                text: i18n.BYFCheckboxText,
+                                hint: {}, 
+                                checked: formData and formData.byfCheckbox === 'confirm'
+                            }
+                        ]
+                    }) }}
+                    
+                    {{ govukButton({
+                        id: 'continue',
+                        text: i18n.BYFContinueBotton,
+                        type: "submit"
+                    }) }}
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
