@@ -30,7 +30,8 @@ const nunjucksEnv = nunjucks.configure([
   "node_modules/govuk-frontend/dist/",
   "node_modules/govuk-frontend/components/",
   "node_modules/@companieshouse/ch-node-utils/templates/",
-  "node_modules/@companieshouse"
+  "node_modules/@companieshouse", 
+  "node_modules/accessible-autocomplete"
 ], {
   autoescape: true,
   express: app,
