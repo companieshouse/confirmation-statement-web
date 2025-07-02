@@ -28,30 +28,44 @@
                     {{i18n.SCSTitle}}
                 </h1>
 
-                <p class="govuk-body">
-                    {{i18n.BYFInfoHoldParagraph}}</p>
-
-                <p class="govuk-body">{{i18n.BYFFileUpdatesParagraphStart}}
-                    <a
-                    href="https://www.gov.uk/">{{i18n.BYFFileUpdatesParagraphLink}}</a>{{i18n.BYFFileUpdatesParagraphEnd}}
+               <p class="govuk-body">
+                    Limited partnership name: <b>ACME LIMITED PARTNERSHIP</b><br>
+                    Limited partnership number: <b>LP123456</b><br>
+                    Confirmation statement date: <b>31 May 2025</b>
                 </p>
-                <p class="govuk-body">{{i18n.BYFOnlyInfoChangedParagraph}}</p>
-
-                {{ govukInsetText({
-                    html: "<p class='govuk-body'>" + i18n.BYFInsetParagraph1 + "</p>
-                    <p class='govuk-body'>"
-                        + i18n.BYFInsetParagraph2 + "</p>"
-                }) }} 
 
                 {% set checkboxError = null %}
                 {% if errors and pageProperties.isPost %}
-                    {% set checkboxError = { "text": i18n.BYFErrorMessageNotChecked } %}
+                    {% set checkboxError = {
+                        "text": i18n.BYFErrorMessageNotChecked
+                    } %}
                 {% endif %}
-                
+
                 <form action="{{ LP_BEFORE_YOU_FILE_PATH }}" method="POST">
-                {% include "../../partials/csrf-token.njk" %}
+                    {% include "../../partials/csrf-token.njk" %}
 
                     {{ govukCheckboxes({
+                            name: "waste",
+                            fieldset: {
+                                legend: {
+                                isPageHeading: true,
+                                classes: "govuk-fieldset__legend--l"
+                                }
+                            },
+                            items: [
+                                {
+                                value: "carcasses",
+                                text: i18n.SCSCheckboxActComplianceStart
+                                },
+                                {
+                                value: "mines",
+                                text: i18n.SCSCheckboxLawfulActivities
+                                }
+                            ]
+                            }) }}
+
+                    {{
+                    govukCheckboxes({
                         name: "byfCheckbox",
                         fieldset: {},
                         hint: {},
@@ -59,16 +73,19 @@
                         items: [
                             {
                                 value: "confirm",
-                                text: i18n.BYFCheckboxText,
+                                text: i18n.SCSCheckboxLawfulActivities,
                                 hint: {}, 
                                 checked: formData and formData.byfCheckbox === 'confirm'
                             }
                         ]
                     }) }}
-                    
+
+                    <p class="govuk-body">
+                        {{i18n.SCSPaymentMessageRequired}}</p>
+
                     {{ govukButton({
                         id: 'continue',
-                        text: i18n.BYFContinueBotton,
+                        text: i18n.SCSContinueButtonPayment,
                         type: "submit"
                     }) }}
                 </form>
