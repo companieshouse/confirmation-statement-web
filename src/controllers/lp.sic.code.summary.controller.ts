@@ -16,7 +16,8 @@ export const get = (req: Request, res: Response) => {
     htmlLang: lang, 
     previousPage,
     urls,
-    sicCodes: dummySicCodes
+    sicCodes: dummySicCodes, 
+    searchSicCodes: dummySearchSicCodes
   });
 };
 
@@ -33,10 +34,18 @@ export const addSicCode = async (req: Request, res: Response) => {
 
   if (!code) return res.status(400).send('Missing SIC code');
 
-  dummySicCodes.push({
-    code,
-    description: `Description for ${code}`
-  });
+  const duplicate = dummySicCodes.some(sc => sc.code === code); 
+
+  if(duplicate) {
+    console.warn(`Duplicate SIC code: ${code} already exists.`);  
+  } else if (dummySicCodes.length >= 4) {
+    console.warn(`Maximum number of SIC codes reached.`);  
+  } else {
+    dummySicCodes.push({
+      code,
+      description: `Description for ${code}`
+    });    
+  }
 
   res.redirect(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`);
 };
@@ -44,6 +53,11 @@ export const addSicCode = async (req: Request, res: Response) => {
 export const removeSicCode = async (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const removeSicCode = req.params.code;
+
+  if(dummySicCodes.length <= 1) {
+    console.warn("Attempt to remove SIC code was blocked. Limited Partnership requires at least one SIC code."); 
+    return res.redirect(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`);
+  }
 
   if (removeSicCode) {
     const index = dummySicCodes.findIndex(sicCode => sicCode.code === removeSicCode);
@@ -53,12 +67,22 @@ export const removeSicCode = async (req: Request, res: Response) => {
     }
   }
 
-  res.redirect(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`);
+  return res.redirect(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`);
 }
 
+interface SicCode {
+  code: string;
+  description: string;
+}
 
-export const dummySicCodes = [
+export const dummySicCodes: SicCode[] = [
   { code: '64205', description: 'Activities of financial service holding companies' },
   { code: '64910', description: 'Financial leasing' },
   { code: '64922', description: 'Activities of mortgage finance companies' }
+];
+
+export const dummySearchSicCodes: SicCode[] = [
+  { code: '12345', description: 'First dummy search sic codes' },
+  { code: '67890', description: 'Second dummy search sic codes' },
+  { code: '12321', description: 'Third dummy search sic codes' }
 ];

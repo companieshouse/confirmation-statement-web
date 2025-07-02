@@ -31,6 +31,7 @@
     "@companieshouse/node-session-handler": "~5.1.4",
     "@companieshouse/structured-logging-node": "^2.0.1",
     "@companieshouse/web-security-node": "^4.4.0",
+    "accessible-autocomplete": "^3.0.1",
     "cookie-parser": "^1.4.6",
     "express": "^4.17.1",
     "govuk-frontend": "^5.10.2",

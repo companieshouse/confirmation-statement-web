@@ -34,6 +34,10 @@
       text-decoration: underline;
       cursor: pointer;
     }
+    .autocomplete__menu {
+      z-index: 1000;
+      position: absolute;
+    }
   </style>
     <div class="govuk-grid-row">
         <div class="govuk-width-container">
@@ -48,44 +52,43 @@
                     {{ i18n.SICCSTableHeader }}
                 </p>    
 
-                <dl class="govuk-summary-list">
-                    {% for sCode in sicCodes %}
+                <div class="govuk-summary-list" role="list">
+                    {% for sic in sicCodes %}
                         <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">{{ sCode.code }}</dt>
-                        <dd class="govuk-summary-list__value">{{ sCode.description }}</dd>
-                        <dd class="govuk-summary-list__actions">
-                            <form action="{{ urls.LP_SIC_CODE_SUMMARY_PATH }}/{{ sCode.code }}/remove" method="POST">
+                        <div class="govuk-summary-list__key">{{ sic.code }}</div>
+                        <div class="govuk-summary-list__value">{{ sic.description }}</div>
+                        <div class="govuk-summary-list__actions">
+                            <form action="{{ urls.LP_SIC_CODE_SUMMARY_PATH }}/{{ sic.code }}/remove" method="POST">
                             {% include "../../partials/csrf-token.njk" %}
                                 <button type="submit" class="govuk-link">{{ i18n.SICCSTableRemoveButton }}</button>
                             </form>
-                        </dd>
+                        </div>
                         </div>
                     {% endfor %}
-                </dl>
+                </div>
                 
                 <form action="{{ urls.LP_SIC_CODE_SUMMARY_PATH }}/add" method="POST">
                 {% include "../../partials/csrf-token.njk" %}
                 <div class="govuk-inset-text">
-                    {{ govukInput({
-                        label: {
-                            text: i18n.SICCSAddSICInsetTitle, 
-                            classes: "govuk-label--m", 
-                            isPageHeading: true
-                        },
-                        hint: {
-                            text: i18n.SICCSAddSICInsetInstructions
-                        },
-                        id: "sic-code-input",
-                        name: "code"
-                    }) }}
+                    <div class="govuk-form-group govuk-!-margin-bottom-6">
+                        <label class="govuk-label govuk-label--m" for="sic-code-input">
+                          {{ i18n.SICCSAddSICInsetTitle }}
+                        </label>
+                        <div id="sic-hint" class="govuk-hint">
+                          {{ i18n.SICCSAddSICInsetInstructions }}
+                        </div>
+
+                        <div id="sic-code-autocomplete"></div>
+                        <input type="hidden" name="code" id="hidden-sic-code" />
+                    </div>    
                     {{ govukButton({
-                        text: i18n.SICCSAddSICAddCodeButton,
-                        classes: "govuk-button--secondary", 
-                        attributes: {
-                            id: "add-sic-code-button",
-                            type: "submit",
-                            disabled: "disabled"
-                        }
+                      text: i18n.SICCSAddSICAddCodeButton,
+                      classes: "govuk-button--secondary", 
+                      attributes: {
+                        id: "add-sic-code-button",
+                        type: "submit",
+                        disabled: "disabled"
+                      }
                     }) }}
                 </div>
                 </form>
@@ -107,6 +110,10 @@
         </div>
     </div>
 
-
-{% include "../../../includes/scripts/lp.sic.code.script.js" %}
+<script>
+  window.searchSicCodes = {{ searchSicCodes | dump | safe }};
+</script>
+<link rel="stylesheet" href="{{assetPath}}/stylesheets/accessible-autocomplete/autocomplete.min.css" />
+<script type="text/javascript" src="{{assetPath}}/javascripts/app/accessible-autocomplete.min.js"></script>
+{% include "../../../includes/scripts/lp.sic.code.autocomplete.js" %}
 {% endblock %}
