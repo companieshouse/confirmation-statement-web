@@ -11,10 +11,7 @@ export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   res.cookie('lang', lang, { httpOnly: true });
 
-
   const company: CompanyProfile = validCompanyProfile;
-
-  console.log("SIMON :" + company.companyName);
   const locales = getLocalesService();
   const previousPage = savePreviousPageInSession(req);
   const formData = { byfCheckbox: req.cookies.byfCheckbox };
