@@ -3,11 +3,18 @@ import { Templates } from "../types/template.paths";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import * as urls from "../types/page.urls";
 import { savePreviousPageInSession } from "../utils/session-navigation";
+import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import { validCompanyProfile } from "../../test/mocks/lp.company.profile.mock";
+
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   res.cookie('lang', lang, { httpOnly: true });
 
+
+  const company: CompanyProfile = validCompanyProfile;
+
+  console.log("SIMON :" + company.companyName);
   const locales = getLocalesService();
   const previousPage = savePreviousPageInSession(req);
   const formData = { byfCheckbox: req.cookies.byfCheckbox };
@@ -16,6 +23,7 @@ export const get = (req: Request, res: Response) => {
     ...getLocaleInfo(locales, lang),
     htmlLang: lang,
     urls,
+    company,
     previousPage, 
     formData
   });
