@@ -11,7 +11,7 @@ export const validCompanyProfile: CompanyProfile = {
     overdue: false,
   },
   companyName: "Dynamo Innovations",
-  companyNumber: "12345678",
+  companyNumber: "LP123456",
   companyStatus: "active",
   companyStatusDetail: "company status detail",
   confirmationStatement: {

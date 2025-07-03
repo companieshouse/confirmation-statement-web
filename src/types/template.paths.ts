@@ -40,6 +40,5 @@ export enum Templates {
   LP_BEFORE_YOU_FILE = "limited-partners/components/before-you-file/before-you-file.njk",
   LP_CHECK_YOUR_ANSWER = "limited-partners/components/check-your-answer/lp-check-your-answer.njk",
   LP_CS_DATE = "limited-partners/components/date/confirmation-statement-date.njk", 
-  LP_SIC_CODE_SUMMARY = "limited-partners/components/sic-code-summary/sic-code-summary.njk",
-  LP_CS_SUBMIT = "limited-partners/components/confirmation-statement/submit-confirmation-statement.njk"
+  LP_SIC_CODE_SUMMARY = "limited-partners/components/sic-code-summary/sic-code-summary.njk"
 }
