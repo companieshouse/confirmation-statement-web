@@ -29,7 +29,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
         get(req, res);
         break;
       case "no":
-        res.redirect(urls.LP_CHECK_AND_CONFIRM_PATH);
+        res.redirect(urls.LP_SIC_CODE_SUMMARY_PATH);
         break;
       default:
         reloadPageWithError(req, res, lang, localInfo, localInfo.i18n.CDSRadioButtonError);
