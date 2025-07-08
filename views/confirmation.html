@@ -1,10 +1,31 @@
 {% extends "layout.html" %}
 
-{% block pageTitle %}
-Confirmation
-{% endblock %}
+{% if company.type == "limited-partnership" %}
+  {% block pageTitle %}
+    {{ title }}
+  {% endblock %}
+
+  {% block head %}
+    {% include "./limited-partners/partials/meta_header.njk" %}
+  {% endblock %}
+
+  {% block header %}
+    {% include "./limited-partners/partials/header.njk" %}
+  {% endblock %}
+
+  {% block footer %}
+    {% include "./limited-partners/partials/footer.njk" %}
+  {% endblock %}
+{% else %}  
+  {% block pageTitle %}
+  Confirmation
+  {% endblock %}
+{% endif %}  
 
 {% block content %}
+  {% if company.type == "limited-partnership" %}
+    {% include "./limited-partners/partials/confirmation-submitted.njk" %}
+  {% else %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
@@ -32,4 +53,5 @@ Confirmation
 
   </div>
 </div>
+{% endif %}
 {% endblock %}
