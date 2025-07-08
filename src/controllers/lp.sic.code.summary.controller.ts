@@ -3,6 +3,10 @@ import { Templates } from "../types/template.paths";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import * as urls from "../types/page.urls";
 import { savePreviousPageInSession } from "../utils/session-navigation";
+import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import { validCompanyProfile } from "../../test/mocks/lp.company.profile.mock";
+import { urlUtils } from "../utils/url";
+import { CONFIRMATION_PATH, CREATE_TRANSACTION_PATH } from "../types/page.urls";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -10,6 +14,7 @@ export const get = (req: Request, res: Response) => {
 
   const locales = getLocalesService();
   const previousPage = savePreviousPageInSession(req); 
+  const company: CompanyProfile = validCompanyProfile;
 
   return res.render(Templates.LP_SIC_CODE_SUMMARY, {
     ...getLocaleInfo(locales, lang), 
@@ -17,15 +22,27 @@ export const get = (req: Request, res: Response) => {
     previousPage,
     urls,
     sicCodes: dummySicCodes, 
-    searchSicCodes: dummySearchSicCodes
+    searchSicCodes: dummySearchSicCodes, 
+    company
   });
 };
 
 export const post = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const nextPage = `${urls.LIMITED_PARTNERSHIP_PATH + "/next-page"}?lang=${lang}`;
+  const company: CompanyProfile = validCompanyProfile;
+
+  // return res.redirect(urlUtils
+  //         .getUrlWithCompanyNumberTransactionIdAndSubmissionId(CONFIRMATION_PATH, company.companyNumber, "108098-393817-516389", "6867e3d393f03f3583e21e12"));
   
-  res.redirect(nextPage);
+  const nextPageTest = urls.CONFIRMATION_PATH
+    .replace(":companyNumber", "13540635")
+    .replace(":transactionId", "108098-393817-516389")
+    .replace(":submissionId", "6867e3d393f03f3583e21e12");
+
+  console.log("DAVE --- ", nextPageTest);   
+    
+  res.redirect(nextPageTest);
 };
 
 export const addSicCode = async (req: Request, res: Response) => {
