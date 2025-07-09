@@ -1,28 +1,12 @@
-{% extends "layout.html" %}
-
-{% block pageTitle %}
-  {% if confirmationStatementError or lawfulActivityStatementError %}
-    Error:
-  {% endif %}
-  Submit the confirmation statement
-{% endblock %}
-
-{% block backLink %}
-  {% include "includes/back-link.html" %}
-{% endblock %}
-
-{% block content %}
-  {% if company.type == "limited-partnership"%}
-    {% include "./limited-partners/partials/lp-review.njk"%}
-  {% else %}
-    <div class="govuk-grid-row">
+ <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">Submit the confirmation statement</h1>
+        <h1 class="govuk-heading-xl">{{i18n.SCSTitle}}</h1>
 
-        <h2 class="govuk-heading-m">
-      Company name: {{company.companyName}}<br>
-      Company number: {{company.companyNumber}}<br>
-      Confirmation statement date: {{nextMadeUpToDate}}</h2>
+        <p>
+        {{i18n.SCSDataBlockName}} <strong>{{company.companyName}}</strong><br>
+        {{i18n.SCSDataBlockNumber}} <strong>{{company.companyNumber}}</strong><br>
+        {{i18n.SCSDataBlockCSDate}} <strong>{{company.confirmationStatement.nextMadeUpTo}}</strong>
+      </p>
         <form action="" method="post">
           {% include "includes/csrf_token.html" %}
           {% if ecctEnabled %}
@@ -73,10 +57,16 @@
             },
             items: [
               {
-                html: "I confirm that all information required to be delivered by the company pursuant to " +
-                "<a href=" + "https://www.legislation.gov.uk/ukpga/2006/46/section/853A data-event-id=section-831A(1)-information-link>section 853A(1)(a) of the Companies Act 2006</a>" +
-                " in relation to the confirmation period ending " +
-                "<strong>" + nextMadeUpToDate + "</strong>" + " either has been delivered or is being delivered with this statement.",
+                html: 
+                    "<p class='govuk-body'>" +
+                        i18n.SCSCheckboxActComplianceStart +
+                        " <a href='#' class='govuk-link'>" +
+                        (company.jurisdiction === "scotland"
+                        ? i18n.SCSCheckboxActComplianceLinkScotland
+                        : i18n.SCSCheckboxActComplianceLinkEWNI) +
+                        "</a> " +
+                        i18n.SCSCheckboxActComplianceEnd +
+                    "</p>",
                 id: "confirmation-statement",
                 name: "confirmationStatement",
                 value: "true",
@@ -100,7 +90,7 @@
             },
             items: [
               {
-                html: "I confirm that the intended future activities of the company are lawful.",
+                text: i18n.SCSCheckboxLawfulActivities,
                 id: "lawful-activity-statement",
                 name: "lawfulActivityStatement",
                 value: "true",
@@ -112,24 +102,15 @@
           }) }}
             </p>
 
-          {% else %}
-
-            <p>By continuing, you confirm that all information required to be delivered by the company pursuant to
-          <a href="https://www.legislation.gov.uk/ukpga/2006/46/section/853A" data-event-id="section-831A(1)-information-link">section 853A(1)(a) of the Companies Act 2006</a>
-          in relation to the confirmation period ending
-          <strong>{{nextMadeUpToDate}}</strong>
-          either has been delivered or is being delivered with this statement.
-        </p>
-
           {% endif %}
 
           {% if isPaymentDue %}
-            <p>You will need to pay a fee of £34 to submit your confirmation statement.</p>
+            <p>{{i18n.SCSPaymentMessageRequired}}</p>
           {% endif %}
 
           {% if isPaymentDue %}
             {{ govukButton({
-          text: "Confirm and pay",
+          text: i18n.SCSContinueButtonPayment,
           attributes: {
             id: "confirm-and-pay",
             "data-event-id": "confirm-and-pay-button",
@@ -138,7 +119,7 @@
         }) }}
           {% else %}
             {{ govukButton({
-          text: "Confirm and submit",
+          text: i18n.SCSContinueButtonNoPayment,
           attributes: {
             id: "confirm-and-submit",
             "data-event-id": "confirm-and-submit-button",
@@ -150,4 +131,3 @@
         </form>
       </div>
     </div>
-  {% endblock %}

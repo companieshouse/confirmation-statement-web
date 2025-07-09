@@ -17,6 +17,7 @@ import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/di
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
 import { ecctDayOneEnabled } from "../utils/feature.flag";
+import { getLocaleInfo, getLocalesService, selectLang} from "../utils/localise";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -26,6 +27,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const backLinkUrl = urlUtils
       .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId);
+
+    const locales = getLocalesService();
+    const lang = selectLang(req.query.lang);
+    res.cookie('lang', lang, { httpOnly: true }); 
 
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
 
@@ -37,6 +42,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
 
     return res.render(Templates.REVIEW, {
+      ...getLocaleInfo(locales, lang),
       backLinkUrl,
       company,
       nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
