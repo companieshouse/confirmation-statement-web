@@ -20,6 +20,8 @@ import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import { validCompanyProfile } from "../../test/mocks/lp.company.profile.mock";
 
+import i18next from 'i18next';
+
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const session = req.session as Session;
@@ -38,13 +40,24 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     if (company.type == "limited-partnership") {
 
 
+      const checkboxHtml =
+        i18next.t('SCSCheckboxActComplianceStart') +
+        ' <a href="#" class="govuk-link">' +
+        (company.jurisdiction === 'scotland'
+          ? i18next.t('SCSCheckboxActComplianceLinkScotland')
+          : i18next.t('SCSCheckboxActComplianceLinkEWNI')) +
+        '</a> ' +
+        i18next.t('SCSCheckboxActComplianceEnd');
+
+
       return res.render(Templates.REVIEW, {
         ...getLocaleInfo(locales, lang),
         backLinkUrl,
         company,
         nextMadeUpToDate: company.confirmationStatement?.nextMadeUpTo,
         isPaymentDue: true,
-        ecctEnabled: true
+        ecctEnabled: true,
+        checkboxHtml
       });
 
     } else {

@@ -8,7 +8,8 @@
   "SCSCheckboxActComplianceLinkScotland":"X-scot(opens in new tab)",
   "SCSCheckboxActComplianceEnd":"in relation to the confirmation period ending on the confirmation date above either has been delivered, or is being delivered at the same time as this statement.",
   "SCSCheckboxLawfulActivities":"I confirm that the intended future activities of the limited partnership.",
-  "SCSPaymentMessageRequired":"You will need to pay a fee of £X to submit your confirmation statement.",
+  "SCSPaymentMessageRequiredStart":"You will need to pay a fee of ",
+  "SCSPaymentMessageRequiredEnd":" to submit your confirmation statement.",
   "SCSContinueButtonPayment":"Confirm and pay",
   "SCSContinueButtonNoPayment":"TBC-Confirm and submit"
 }

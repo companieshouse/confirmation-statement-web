@@ -3,7 +3,7 @@
         <h1 class="govuk-heading-xl">{{i18n.SCSTitle}}</h1>
 
         <p>
-        {{i18n.SCSDataBlockName}} <strong>{{company.companyName}}</strong><br>
+        {{i18n.SCSDataBlockName}} <strong style="text-transform: uppercase">{{company.companyName}}</strong><br>
         {{i18n.SCSDataBlockNumber}} <strong>{{company.companyNumber}}</strong><br>
         {{i18n.SCSDataBlockCSDate}} <strong>{{company.confirmationStatement.nextMadeUpTo}}</strong>
       </p>
@@ -57,7 +57,7 @@
             },
             items: [
               {
-                html: i18n.SCSCheckboxActComplianceStart,
+                html: checkboxHtml,
                 id: "confirmation-statement",
                 name: "confirmationStatement",
                 value: "true",
@@ -96,7 +96,7 @@
           {% endif %}
 
           {% if isPaymentDue %}
-            <p>{{i18n.SCSPaymentMessageRequired}}</p>
+            <p>{{i18n.SCSPaymentMessageRequiredStart}} <strong>£X</strong>{{i18n.SCSPaymentMessageRequiredEnd}}</p>
           {% endif %}
 
           {% if isPaymentDue %}
