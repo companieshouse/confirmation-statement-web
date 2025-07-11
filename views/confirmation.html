@@ -1,26 +1,35 @@
 {% extends "layout.html" %}
 
-{% if company.type == "limited-partnership" %}
-  {% block pageTitle %}
+{% block pageTitle %}
+  {% if company.type == "limited-partnership" %}
     {{ title }}
-  {% endblock %}
+  {% else %}
+    Confirmation
+  {% endif %}    
+{% endblock %}
 
-  {% block head %}
+{% block head %}
+  {% if company.type == "limited-partnership" %}
     {% include "./limited-partners/partials/meta_header.njk" %}
-  {% endblock %}
+  {% endif %} 
+{% endblock %}
 
-  {% block header %}
+{% block header %}
+  {% if company.type == "limited-partnership" %}
     {% include "./limited-partners/partials/header.njk" %}
-  {% endblock %}
+  {% endif %} 
+{% endblock %}
 
-  {% block footer %}
+{% block beforeContent %}
+  {% if company.type == "limited-partnership" %}
+  {% endif %} 
+{% endblock %}
+
+{% block footer %}
+  {% if company.type == "limited-partnership" %}
     {% include "./limited-partners/partials/footer.njk" %}
-  {% endblock %}
-{% else %}  
-  {% block pageTitle %}
-  Confirmation
-  {% endblock %}
-{% endif %}  
+  {% endif %} 
+{% endblock %} 
 
 {% block content %}
   {% if company.type == "limited-partnership" %}

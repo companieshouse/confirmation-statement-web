@@ -13,7 +13,9 @@
         {% endblock %}
 
         {% block back %}
+        {% if currentScreen != "confirmationSummary" %}
             {% include "limited-partners/partials/nav/back-link.njk" %}
+        {% endif %}    
         {% endblock %}
 
         {% block lang %}
