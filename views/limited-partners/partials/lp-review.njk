@@ -57,16 +57,7 @@
             },
             items: [
               {
-                html: 
-                    "<p class='govuk-body'>" +
-                        i18n.SCSCheckboxActComplianceStart +
-                        " <a href='#' class='govuk-link'>" +
-                        (company.jurisdiction === "scotland"
-                        ? i18n.SCSCheckboxActComplianceLinkScotland
-                        : i18n.SCSCheckboxActComplianceLinkEWNI) +
-                        "</a> " +
-                        i18n.SCSCheckboxActComplianceEnd +
-                    "</p>",
+                html: i18n.SCSCheckboxActComplianceStart,
                 id: "confirmation-statement",
                 name: "confirmationStatement",
                 value: "true",
