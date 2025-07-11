@@ -17,7 +17,8 @@ import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/di
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
 import { ecctDayOneEnabled } from "../utils/feature.flag";
-import { getLocaleInfo, getLocalesService, selectLang} from "../utils/localise";
+import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
+import { validCompanyProfile } from "../../test/mocks/lp.company.profile.mock";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -30,25 +31,42 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const locales = getLocalesService();
     const lang = selectLang(req.query.lang);
-    res.cookie('lang', lang, { httpOnly: true }); 
+    res.cookie('lang', lang, { httpOnly: true });
 
-    const company: CompanyProfile = await getCompanyProfile(companyNumber);
+    const company: CompanyProfile = validCompanyProfile;
 
-    const transaction: Transaction = await getTransaction(session, transactionId);
+    if (company.type == "limited-partnership") {
 
-    const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
 
-    const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
-    const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
+      return res.render(Templates.REVIEW, {
+        ...getLocaleInfo(locales, lang),
+        backLinkUrl,
+        company,
+        nextMadeUpToDate: company.confirmationStatement?.nextMadeUpTo,
+        isPaymentDue: true,
+        ecctEnabled: true
+      });
 
-    return res.render(Templates.REVIEW, {
-      ...getLocaleInfo(locales, lang),
-      backLinkUrl,
-      company,
-      nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
-      isPaymentDue: isPaymentDue(transaction, submissionId),
-      ecctEnabled
-    });
+    } else {
+
+      const company: CompanyProfile = await getCompanyProfile(companyNumber);
+
+      const transaction: Transaction = await getTransaction(session, transactionId);
+
+      const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
+
+      const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
+      const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
+      return res.render(Templates.REVIEW, {
+        ...getLocaleInfo(locales, lang),
+        backLinkUrl,
+        company,
+        nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
+        isPaymentDue: isPaymentDue(transaction, submissionId),
+        ecctEnabled
+      });
+    }
+
   } catch (e) {
     return next(e);
   }
@@ -112,8 +130,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const paymentResourceUri: string = `/transactions/${transactionId}/payment`;
 
       const paymentResponse: ApiResponse<Payment> = await startPaymentsSession(session, paymentUrl,
-                                                                               paymentResourceUri, submissionId,
-                                                                               transactionId, companyNumber);
+        paymentResourceUri, submissionId,
+        transactionId, companyNumber);
 
       if (!paymentResponse.resource) {
         return next(createAndLogError("No resource in payment response"));

@@ -73,10 +73,7 @@
             },
             items: [
               {
-                html: "I confirm that all information required to be delivered by the company pursuant to " +
-                "<a href=" + "https://www.legislation.gov.uk/ukpga/2006/46/section/853A data-event-id=section-831A(1)-information-link>section 853A(1)(a) of the Companies Act 2006</a>" +
-                " in relation to the confirmation period ending " +
-                "<strong>" + nextMadeUpToDate + "</strong>" + " either has been delivered or is being delivered with this statement.",
+                html: i18n.SCSCheckboxActComplianceStart,
                 id: "confirmation-statement",
                 name: "confirmationStatement",
                 value: "true",
@@ -150,4 +147,5 @@
         </form>
       </div>
     </div>
-  {% endblock %}
+  {% endif %}
+{% endblock %}

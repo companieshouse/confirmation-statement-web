@@ -22,7 +22,11 @@ export const get = (req: Request, res: Response) => {
 
 export const post = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
-  const nextPage = `${urls.LIMITED_PARTNERSHIP_PATH + "/next-page"}?lang=${lang}`;
+  const nextPage = urls.REVIEW_PATH
+    .replace(":companyNumber", "11456298")
+    .replace(":transactionId", "108098-393817-516389")
+    .replace(":submissionId", "6867e3d393f03f3583e21e12");
+
   
   res.redirect(nextPage);
 };
