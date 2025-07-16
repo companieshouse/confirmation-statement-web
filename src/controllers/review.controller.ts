@@ -81,6 +81,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const confirmationValid = isStatementCheckboxTicked(
         confirmationCheckboxValue
       );
+      
       const lawfulActivityValid = isStatementCheckboxTicked(
         lawfulActivityCheckboxValue
       );
