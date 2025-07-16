@@ -11,7 +11,7 @@ import { startPaymentsSession } from "../services/payment.service";
 import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { createAndLogError } from "../utils/logger";
-import { links, CONFIRMATION_STATEMENT_ERROR, LAWFUL_ACTIVITY_STATEMENT_ERROR } from "../utils/constants";
+import { links, CONFIRMATION_STATEMENT_ERROR, LAWFUL_ACTIVITY_STATEMENT_ERROR, LP_CONFIRMATION_STATEMENT_ERROR, LP_LAWFUL_ACTIVITY_STATEMENT_ERROR } from "../utils/constants";
 import { toReadableFormat } from "../utils/date";
 import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
@@ -19,8 +19,7 @@ import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.s
 import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import { validCompanyProfile } from "../../test/mocks/lp.company.profile.mock";
-
-import i18next from 'i18next';
+import { savePreviousPageInSession } from "../utils/session-navigation";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -38,26 +37,13 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const company: CompanyProfile = validCompanyProfile;
 
     if (company.type == "limited-partnership") {
-
-
-      const checkboxHtml =
-        i18next.t('SCSCheckboxActComplianceStart') +
-        ' <a href="#" class="govuk-link">' +
-        (company.jurisdiction === 'scotland'
-          ? i18next.t('SCSCheckboxActComplianceLinkScotland')
-          : i18next.t('SCSCheckboxActComplianceLinkEWNI')) +
-        '</a> ' +
-        i18next.t('SCSCheckboxActComplianceEnd');
-
-
       return res.render(Templates.REVIEW, {
         ...getLocaleInfo(locales, lang),
         backLinkUrl,
         company,
         nextMadeUpToDate: company.confirmationStatement?.nextMadeUpTo,
         isPaymentDue: true,
-        ecctEnabled: true,
-        checkboxHtml
+        ecctEnabled: true
       });
 
     } else {
@@ -87,70 +73,143 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const session = req.session as Session;
-    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
-    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
-    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
-
-    const company: CompanyProfile = await getCompanyProfile(companyNumber);
-    const transaction: Transaction = await getTransaction(session, transactionId);
-    const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
-
-    const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
-    const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
-
-    if (ecctEnabled) {
-
+    const cseDummyDev = true; 
+    if (cseDummyDev) {
       const confirmationCheckboxValue = req.body.confirmationStatement;
       const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
 
-      const confirmationValid = isStatementCheckboxTicked(confirmationCheckboxValue);
-      const lawfulActivityValid = isStatementCheckboxTicked(lawfulActivityCheckboxValue);
+      const confirmationValid = isStatementCheckboxTicked(
+        confirmationCheckboxValue
+      );
+      const lawfulActivityValid = isStatementCheckboxTicked(
+        lawfulActivityCheckboxValue
+      );
+
+      const company: CompanyProfile = validCompanyProfile;
+      const ecctEnabled = true;
 
       let confirmationStatementError: string = "";
       if (!confirmationValid) {
-        confirmationStatementError = CONFIRMATION_STATEMENT_ERROR;
+        confirmationStatementError = LP_CONFIRMATION_STATEMENT_ERROR;
       }
 
       let lawfulActivityStatementError: string = "";
       if (!lawfulActivityValid) {
-        lawfulActivityStatementError = LAWFUL_ACTIVITY_STATEMENT_ERROR;
+        lawfulActivityStatementError = LP_LAWFUL_ACTIVITY_STATEMENT_ERROR;
       }
+
+      const lang = selectLang(req.query.lang);
+      const locales = getLocalesService();
+      const previousPage = savePreviousPageInSession(req);
 
       if (!confirmationValid || !lawfulActivityValid) {
         return res.render(Templates.REVIEW, {
-          backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+          ...getLocaleInfo(locales, lang),
+          htmlLang: lang,
+          previousPage,
           company,
-          nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
-          isPaymentDue: isPaymentDue(transaction, submissionId),
           ecctEnabled,
           confirmationStatementError,
-          lawfulActivityStatementError
+          lawfulActivityStatementError,
+          confirmationChecked: confirmationCheckboxValue === "true",
+          lawfulActivityChecked: lawfulActivityCheckboxValue === "true"
         });
       }
 
-      await sendLawfulPurposeStatementUpdate(req, true);
-
-    }
-
-    const paymentUrl: string | undefined = await closeTransaction(session, companyNumber, submissionId, transactionId);
-
-    if (!paymentUrl) {
-      return res.redirect(urlUtils
-        .getUrlWithCompanyNumberTransactionIdAndSubmissionId(CONFIRMATION_PATH, companyNumber, transactionId, submissionId));
+      // Redirect to Confirmation screen
     } else {
-      // Payment required kick off payment journey
-      const paymentResourceUri: string = `/transactions/${transactionId}/payment`;
+      const session = req.session as Session;
+      const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+      const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+      const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
 
-      const paymentResponse: ApiResponse<Payment> = await startPaymentsSession(session, paymentUrl,
-        paymentResourceUri, submissionId,
-        transactionId, companyNumber);
+      const company: CompanyProfile = await getCompanyProfile(companyNumber);
+      const transaction: Transaction = await getTransaction(
+        session,
+        transactionId
+      );
+      const csSubmission: ConfirmationStatementSubmission =
+        await getConfirmationStatement(session, transactionId, submissionId);
 
-      if (!paymentResponse.resource) {
-        return next(createAndLogError("No resource in payment response"));
+      const statementDate: Date = new Date(
+        company.confirmationStatement?.nextMadeUpTo as string
+      );
+      const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
+
+      if (ecctEnabled) {
+        const confirmationCheckboxValue = req.body.confirmationStatement;
+        const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
+
+        const confirmationValid = isStatementCheckboxTicked(
+          confirmationCheckboxValue
+        );
+        const lawfulActivityValid = isStatementCheckboxTicked(
+          lawfulActivityCheckboxValue
+        );
+
+        let confirmationStatementError: string = "";
+        if (!confirmationValid) {
+          confirmationStatementError = CONFIRMATION_STATEMENT_ERROR;
+        }
+
+        let lawfulActivityStatementError: string = "";
+        if (!lawfulActivityValid) {
+          lawfulActivityStatementError = LAWFUL_ACTIVITY_STATEMENT_ERROR;
+        }
+
+        if (!confirmationValid || !lawfulActivityValid) {
+          return res.render(Templates.REVIEW, {
+            backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
+            company,
+            nextMadeUpToDate: toReadableFormat(
+              csSubmission.data?.confirmationStatementMadeUpToDate
+            ),
+            isPaymentDue: isPaymentDue(transaction, submissionId),
+            ecctEnabled,
+            confirmationStatementError,
+            lawfulActivityStatementError,
+          });
+        }
+
+        await sendLawfulPurposeStatementUpdate(req, true);
       }
 
-      res.redirect(paymentResponse.resource.links.journey);
+      const paymentUrl: string | undefined = await closeTransaction(
+        session,
+        companyNumber,
+        submissionId,
+        transactionId
+      );
+
+      if (!paymentUrl) {
+        return res.redirect(
+          urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+            CONFIRMATION_PATH,
+            companyNumber,
+            transactionId,
+            submissionId
+          )
+        );
+      } else {
+        // Payment required kick off payment journey
+        const paymentResourceUri: string = `/transactions/${transactionId}/payment`;
+
+        const paymentResponse: ApiResponse<Payment> =
+          await startPaymentsSession(
+            session,
+            paymentUrl,
+            paymentResourceUri,
+            submissionId,
+            transactionId,
+            companyNumber
+          );
+
+        if (!paymentResponse.resource) {
+          return next(createAndLogError("No resource in payment response"));
+        }
+
+        res.redirect(paymentResponse.resource.links.journey);
+      }
     }
 
   } catch (e) {
