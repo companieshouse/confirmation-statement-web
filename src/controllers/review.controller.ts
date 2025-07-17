@@ -73,8 +73,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const cseDummyDev = true; 
-    if (cseDummyDev) {
+    const company: CompanyProfile = validCompanyProfile;
+    if (company.type == "limited-partnership") {
       const confirmationCheckboxValue = req.body.confirmationStatement;
       const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
 
@@ -86,7 +86,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         lawfulActivityCheckboxValue
       );
 
-      const company: CompanyProfile = validCompanyProfile;
       const ecctEnabled = true;
 
       let confirmationStatementError: string = "";

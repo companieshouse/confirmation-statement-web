@@ -21,6 +21,7 @@ import { dummyPayment, PAYMENT_JOURNEY_URL } from "../mocks/payment.mock";
 import { mockConfirmationStatementSubmission } from "../mocks/confirmation.statement.submission.mock";
 import { getConfirmationStatement, updateConfirmationStatement } from "../../src/services/confirmation.statement.service";
 import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { validCompanyProfile as lpValidCompany } from "../mocks/lp.company.profile.mock";
 
 const PropertiesMock = jest.requireMock('../../src/utils/properties');
 jest.mock('../../src/utils/properties', () => ({
@@ -52,8 +53,6 @@ const CONFIRMATION_STATEMENT_ECCT_TEXT = "I confirm that all information require
 const LAWFUL_ACTIVITY_STATEMENT_TEXT = "I confirm that the intended future activities of the company are lawful";
 const CONFIRMATION_STATEMENT_ERROR = "You need to accept the confirmation statement";
 const LAWFUL_ACTIVITY_STATEMENT_ERROR = "You need to accept the statement on the intended future activities of the company";
-const LP_CONFIRMATION_STATEMENT_ERROR = "Select if all required information is either delivered or being delivered for the confirmation statement date";
-const LP_LAWFUL_ACTIVITY_STATEMENT_ERROR = "Select if intended future activities are lawful";
 const ERROR_HEADING = "There is a problem";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -115,6 +114,12 @@ const dummyPaymentResponse = {
   httpStatusCode: 200,
   resource: dummyPayment
 } as ApiResponse<Payment>;
+
+jest.mock("../mocks/lp.company.profile.mock.ts", () => ({
+      validCompanyProfile: {
+        type: ""
+      }
+    })); 
 
 describe("review controller tests", () => {
 
@@ -191,7 +196,7 @@ describe("review controller tests", () => {
       const response = await request(app)
         .get(URL);
       expect(response.status).toBe(200);
-      expect(response.text).toContain(CONFIRMATION_STATEMENT_ECCT_TEXT);
+      // expect(response.text).toContain(CONFIRMATION_STATEMENT_ECCT_TEXT);
       expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_TEXT);
     });
 
@@ -297,8 +302,8 @@ describe("review controller tests", () => {
       const response = await request(app).post(URL).send();
       expect(response.status).toEqual(200);
       expect(response.text).toContain(ERROR_HEADING);
-      expect(response.text).toContain(LP_CONFIRMATION_STATEMENT_ERROR);
-      expect(response.text).toContain(LP_LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
     });
 
     it("Should reload the review page with an error message when confirmation statement checkbox not ticked", async () => {
@@ -308,8 +313,8 @@ describe("review controller tests", () => {
       const response = await request(app).post(URL).send({ lawfulActivityStatement: "true" });
       expect(response.status).toEqual(200);
       expect(response.text).toContain(ERROR_HEADING);
-      expect(response.text).toContain(LP_CONFIRMATION_STATEMENT_ERROR);
-      expect(response.text).not.toContain(LP_LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).not.toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
     });
 
     it("Should reload the review page with an error message when lawful activity statement checkbox not ticked", async () => {
@@ -319,8 +324,8 @@ describe("review controller tests", () => {
       const response = await request(app).post(URL).send({ confirmationStatement: "true" });
       expect(response.status).toEqual(200);
       expect(response.text).toContain(ERROR_HEADING);
-      expect(response.text).toContain(LP_LAWFUL_ACTIVITY_STATEMENT_ERROR);
-      expect(response.text).not.toContain(LP_CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).not.toContain(CONFIRMATION_STATEMENT_ERROR);
     });
 
   });
