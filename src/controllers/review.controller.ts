@@ -36,7 +36,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const company: CompanyProfile = validCompanyProfile;
 
-    if (company.type == "limited-partnership") {
+    if (company.type === "limited-partnership") {
       return res.render(Templates.REVIEW, {
         ...getLocaleInfo(locales, lang),
         backLinkUrl,
@@ -74,14 +74,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const company: CompanyProfile = validCompanyProfile;
-    if (company.type == "limited-partnership") {
+    if (company.type === "limited-partnership") {
       const confirmationCheckboxValue = req.body.confirmationStatement;
       const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
 
       const confirmationValid = isStatementCheckboxTicked(
         confirmationCheckboxValue
       );
-      
+
       const lawfulActivityValid = isStatementCheckboxTicked(
         lawfulActivityCheckboxValue
       );

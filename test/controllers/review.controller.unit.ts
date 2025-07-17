@@ -21,7 +21,6 @@ import { dummyPayment, PAYMENT_JOURNEY_URL } from "../mocks/payment.mock";
 import { mockConfirmationStatementSubmission } from "../mocks/confirmation.statement.submission.mock";
 import { getConfirmationStatement, updateConfirmationStatement } from "../../src/services/confirmation.statement.service";
 import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
-import { validCompanyProfile as lpValidCompany } from "../mocks/lp.company.profile.mock";
 
 const PropertiesMock = jest.requireMock('../../src/utils/properties');
 jest.mock('../../src/utils/properties', () => ({
@@ -49,7 +48,7 @@ const PAGE_HEADING = "Submit the confirmation statement";
 const ERROR_PAGE_HEADING = "Service offline - File a confirmation statement";
 const COSTS_TEXT = "You will need to pay a fee of £34";
 const CONFIRMATION_STATEMENT_TEXT = "By continuing, you confirm that all information required to be delivered by the company pursuant to";
-const CONFIRMATION_STATEMENT_ECCT_TEXT = "I confirm that all information required to be delivered by the company pursuant to";
+// const CONFIRMATION_STATEMENT_ECCT_TEXT = "I confirm that all information required to be delivered by the company pursuant to";
 const LAWFUL_ACTIVITY_STATEMENT_TEXT = "I confirm that the intended future activities of the company are lawful";
 const CONFIRMATION_STATEMENT_ERROR = "You need to accept the confirmation statement";
 const LAWFUL_ACTIVITY_STATEMENT_ERROR = "You need to accept the statement on the intended future activities of the company";
@@ -116,10 +115,10 @@ const dummyPaymentResponse = {
 } as ApiResponse<Payment>;
 
 jest.mock("../mocks/lp.company.profile.mock.ts", () => ({
-      validCompanyProfile: {
-        type: ""
-      }
-    })); 
+  validCompanyProfile: {
+    type: ""
+  }
+}));
 
 describe("review controller tests", () => {
 

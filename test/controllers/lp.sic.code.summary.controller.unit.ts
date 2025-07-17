@@ -2,13 +2,13 @@ import middlewareMocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
 import { LP_SIC_CODE_SUMMARY_PATH } from "../../src/types/page.urls";
-import { dummySicCodes } from "../../src/controllers/lp.sic.code.summary.controller"
+import { dummySicCodes } from "../../src/controllers/lp.sic.code.summary.controller";
 
 describe("start controller tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.setTimeout(10000); 
+    jest.setTimeout(10000);
     dummySicCodes.length = 0;
   });
 
@@ -21,7 +21,7 @@ describe("start controller tests", () => {
   });
 
   it("should add a valid SIC code", async () => {
-    const response = await request(app)
+    await request(app)
       .post(`${LP_SIC_CODE_SUMMARY_PATH}/add`)
       .send({ code: "5678" });
 
