@@ -34,9 +34,9 @@ describe("start controller tests", () => {
 
   it("should remove a valid SIC code and redirect", async () => {
     dummySicCodes.push(
-      {code: "1234", description: "Test"},
-      {code: "5678", description: "Test 2"}
-    )
+      { code: "1234", description: "Test" },
+      { code: "5678", description: "Test 2" }
+    );
 
     const response = await request(app)
       .post(`${LP_SIC_CODE_SUMMARY_PATH}/1234/remove?lang=en`);
@@ -44,12 +44,12 @@ describe("start controller tests", () => {
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe(`${LP_SIC_CODE_SUMMARY_PATH}?lang=en`);
     expect(dummySicCodes.some(sic => sic.code === "1234")).toBe(false);
-  });  
+  });
 
   it("should not add a duplicate SIC code", async () => {
     dummySicCodes.push({ code: "5678", description: "Description for 5678" });
 
-    const response = await request(app)
+    await request(app)
       .post(`${LP_SIC_CODE_SUMMARY_PATH}/add`)
       .send({ code: "5678" });
 
@@ -64,14 +64,14 @@ describe("start controller tests", () => {
       { code: "4444", description: "desc" }
     );
 
-    const response = await request(app)
+    await request(app)
       .post(`${LP_SIC_CODE_SUMMARY_PATH}/add`)
       .send({ code: "5555" });
 
     expect(dummySicCodes).toHaveLength(4);
     expect(dummySicCodes.some(sc => sc.code === "5555")).toBe(false);
-  }); 
-  
+  });
+
   it("should not remove the only remaining SIC code", async () => {
     dummySicCodes.push({ code: "9999", description: "desc" });
 

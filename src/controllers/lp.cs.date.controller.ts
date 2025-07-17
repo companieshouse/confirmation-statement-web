@@ -25,13 +25,13 @@ export const post = (req: Request, res: Response) => {
     switch (req.body.confirmationStatementDate) {
         case "yes":
         // ToDo URL to forward to for Check your answers
-        get(req, res);
-        break;
-      case "no":
-        res.redirect(urls.LP_SIC_CODE_SUMMARY_PATH);
-        break;
-      default:
-        reloadPageWithError(req, res, lang, localInfo, localInfo.i18n.CDSRadioButtonError);
+          get(req, res);
+          break;
+        case "no":
+          res.redirect(urls.LP_SIC_CODE_SUMMARY_PATH);
+          break;
+        default:
+          reloadPageWithError(req, res, lang, localInfo, localInfo.i18n.CDSRadioButtonError);
 
     }
   }
