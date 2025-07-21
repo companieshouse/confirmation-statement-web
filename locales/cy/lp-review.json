@@ -1,0 +1,15 @@
+{
+  "SCSTitle":"CY-Submit the confirmation statement",
+  "SCSDataBlockName":"CY-Limited partnership name: ",
+  "SCSDataBlockNumber":"CY-Limited partnership number: ",
+  "SCSDataBlockCSDate":"CY-Confirmation statement date: ",
+  "SCSCheckboxActComplianceStart":"CY-I confirm that all information required to be delivered by the limited partnership pursuant to ",
+  "SCSCheckboxActComplianceLinkEWNI":"CY-X(opens in new tab)",
+  "SCSCheckboxActComplianceLinkScotland":"CY-X-scot(opens in new tab)",
+  "SCSCheckboxActComplianceEnd":"CY-in relation to the confirmation period ending on the confirmation date above either has been delivered, or is being delivered at the same time as this statement.",
+  "SCSCheckboxLawfulActivities":"CY-I confirm that the intended future activities of the limited partnership.",
+  "SCSPaymentMessageRequiredStart":"CY-You will need to pay a fee of ",
+  "SCSPaymentMessageRequiredEnd":" to submit your confirmation statement.",
+  "SCSContinueButtonPayment":"CY-Confirm and pay",
+  "SCSContinueButtonNoPayment":"CY-TBC-Confirm and submit"
+}

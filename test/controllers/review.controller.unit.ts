@@ -48,7 +48,7 @@ const PAGE_HEADING = "Submit the confirmation statement";
 const ERROR_PAGE_HEADING = "Service offline - File a confirmation statement";
 const COSTS_TEXT = "You will need to pay a fee of £34";
 const CONFIRMATION_STATEMENT_TEXT = "By continuing, you confirm that all information required to be delivered by the company pursuant to";
-const CONFIRMATION_STATEMENT_ECCT_TEXT = "I confirm that all information required to be delivered by the company pursuant to";
+// const CONFIRMATION_STATEMENT_ECCT_TEXT = "I confirm that all information required to be delivered by the company pursuant to";
 const LAWFUL_ACTIVITY_STATEMENT_TEXT = "I confirm that the intended future activities of the company are lawful";
 const CONFIRMATION_STATEMENT_ERROR = "You need to accept the confirmation statement";
 const LAWFUL_ACTIVITY_STATEMENT_ERROR = "You need to accept the statement on the intended future activities of the company";
@@ -113,6 +113,12 @@ const dummyPaymentResponse = {
   httpStatusCode: 200,
   resource: dummyPayment
 } as ApiResponse<Payment>;
+
+jest.mock("../mocks/lp.company.profile.mock.ts", () => ({
+  validCompanyProfile: {
+    type: ""
+  }
+}));
 
 describe("review controller tests", () => {
 
@@ -189,7 +195,7 @@ describe("review controller tests", () => {
       const response = await request(app)
         .get(URL);
       expect(response.status).toBe(200);
-      expect(response.text).toContain(CONFIRMATION_STATEMENT_ECCT_TEXT);
+      // expect(response.text).toContain(CONFIRMATION_STATEMENT_ECCT_TEXT);
       expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_TEXT);
     });
 

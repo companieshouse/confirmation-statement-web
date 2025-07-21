@@ -33,6 +33,8 @@ export const EMAIL_ADDRESS_INVALID: string =  "Enter an email address in the cor
 export const NO_EMAIL_ADDRESS_SUPPLIED: string =  "Enter the registered email address";
 export const CONFIRMATION_STATEMENT_ERROR: string = "You need to accept the confirmation statement";
 export const LAWFUL_ACTIVITY_STATEMENT_ERROR: string = "You need to accept the statement on the intended future activities of the company";
+export const LP_CONFIRMATION_STATEMENT_ERROR: string = "Select if all required information is either delivered or being delivered for the confirmation statement date";
+export const LP_LAWFUL_ACTIVITY_STATEMENT_ERROR: string = "Select if intended future activities are lawful";
 export const ACCEPT_LAWFUL_PURPOSE_STATEMENT = "acceptLawfulPurposeStatement";
 export const VALID_EMAIL_REGEX_PATTERN = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~\\-]+@([^.@][^@\\s]+)$";
 export const HOSTNAME_REGEX = "^(xn|[a-z0-9]+)(-?-[a-z0-9]+)*$";
