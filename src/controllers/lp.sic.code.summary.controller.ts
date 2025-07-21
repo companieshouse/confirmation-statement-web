@@ -11,7 +11,7 @@ export const get = (req: Request, res: Response) => {
   res.cookie('lang', lang, { httpOnly: true });
 
   const locales = getLocalesService();
-  const previousPage = savePreviousPageInSession(req); 
+  const previousPage = savePreviousPageInSession(req);
   const company: CompanyProfile = validCompanyProfile;
 
   return res.render(Templates.LP_SIC_CODE_SUMMARY, {
@@ -19,22 +19,19 @@ export const get = (req: Request, res: Response) => {
     htmlLang: lang,
     previousPage,
     urls,
-    sicCodes: dummySicCodes, 
-    searchSicCodes: dummySearchSicCodes, 
+    sicCodes: dummySicCodes,
+    searchSicCodes: dummySearchSicCodes,
     company
   });
 };
 
 export const post = (req: Request, res: Response) => {
-  const lang = selectLang(req.query.lang);
-
-  // Replace hardcoded company information with data from API when available.  
-  const nextPageTest = urls.CONFIRMATION_PATH
+  // Replace hardcoded company information with data from API when available.
+  const nextPageTest = urls.REVIEW_PATH
     .replace(":companyNumber", "11456298")
     .replace(":transactionId", "108098-393817-516389")
-    .replace(":submissionId", "6867e3d393f03f3583e21e12"); 
+    .replace(":submissionId", "6867e3d393f03f3583e21e12");
 
-  // For Testing purposes, this page needs to link to lp-review when ready. 
   res.redirect(nextPageTest);
 };
 

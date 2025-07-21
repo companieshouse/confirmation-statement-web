@@ -20,6 +20,7 @@ import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import { validCompanyProfile } from "../../test/mocks/lp.company.profile.mock";
 import { savePreviousPageInSession } from "../utils/session-navigation";
+import * as urls from "../types/page.urls";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -116,7 +117,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         });
       }
 
-      // Redirect to Confirmation screen
+      const nextPage = urls.CONFIRMATION_PATH
+        .replace(":companyNumber", "11456298")
+        .replace(":transactionId", "108098-393817-516389")
+        .replace(":submissionId", "6867e3d393f03f3583e21e12");
+
+      res.redirect(nextPage);
+
     } else {
       const session = req.session as Session;
       const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
