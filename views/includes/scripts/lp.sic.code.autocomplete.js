@@ -28,7 +28,24 @@
                     }
                 }
             }
-        })
+        }); 
+
+        const listenForInput = setInterval(() => {
+            const inputAutocomplete = document.querySelector("#sic-code-autocomplete input");
+            const hiddenInput = document.getElementById('hidden-sic-code'); 
+            const addButton = document.getElementById('add-sic-code-button'); 
+
+            if(inputAutocomplete) {
+                clearInterval(listenForInput); 
+
+                inputAutocomplete.addEventListener("input", () => {
+                    if(!inputAutocomplete.value.trim()) {
+                        hiddenInput.value = ""; 
+                        addButton.disabled = true; 
+                    }
+                });
+            }
+        }, 100); 
     })
   };
 
