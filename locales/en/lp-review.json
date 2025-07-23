@@ -11,5 +11,5 @@
   "SCSPaymentMessageRequiredStart":"You will need to pay a fee of ",
   "SCSPaymentMessageRequiredEnd":" to submit your confirmation statement.",
   "SCSContinueButtonPayment":"Confirm and pay",
-  "SCSContinueButtonNoPayment":"TBC-Confirm and submit"
+  "SCSContinueButtonNoPayment":"Confirm and submit"
 }
