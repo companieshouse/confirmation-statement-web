@@ -4,6 +4,8 @@ import { sessionMiddleware } from "../../src/middleware/session.middleware";
 import { Session } from "@companieshouse/node-session-handler";
 import request from "supertest";
 import app from "../../src/app";
+import { ACSP_LIMITED_PARTNERSHIP_PATH, urlParams } from "../../src/types/page.urls";
+
 
 const EXPECTED_TEXT = "limited partnership landing page";
 const TEST_EMAIL = "user-name@companieshouse.gov.uk";
@@ -22,6 +24,15 @@ mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: Nex
   return next();
 });
 
+
+const COMPANY_NUMBER = "12345678";
+const TRANSACTION_ID = "trans-12345";
+const SUBMISSION_ID = "sub-12345";
+const URL = ACSP_LIMITED_PARTNERSHIP_PATH
+  .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
+  .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
+  .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
+
 describe("start controller tests", () => {
 
   beforeEach(() => {
@@ -30,7 +41,7 @@ describe("start controller tests", () => {
 
   it("should return limited partnership start page", async () => {
     const response = await request(app)
-      .get("/confirmation-statement/limited-partnership");
+      .get(URL);
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.text).toContain(EXPECTED_TEXT);
@@ -38,7 +49,7 @@ describe("start controller tests", () => {
 
   it("limited partnership start page should contain a header", async () => {
     const response = await request(app)
-      .get("/confirmation-statement/limited-partnership");
+      .get(URL);
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.text).toContain('govuk-header');
@@ -46,7 +57,7 @@ describe("start controller tests", () => {
 
   it("limited partnership header should contain a service navigation", async () => {
     const response = await request(app)
-      .get("/confirmation-statement/limited-partnership");
+      .get(URL);
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.text).toContain('govuk-service-navigation');
@@ -55,7 +66,7 @@ describe("start controller tests", () => {
 
   it("limited partnership header should contain a phase banner", async () => {
     const response = await request(app)
-      .get("/confirmation-statement/limited-partnership");
+      .get(URL);
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.text).toContain('govuk-phase-banner');
@@ -64,7 +75,7 @@ describe("start controller tests", () => {
 
   it("limited partnership header should contain sign out lists", async () => {
     const response = await request(app)
-      .get("/confirmation-statement/limited-partnership");
+      .get(URL);
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.text).toContain(TEST_EMAIL);
@@ -73,7 +84,7 @@ describe("start controller tests", () => {
 
   it("limited partnership header should contain a back button", async () => {
     const response = await request(app)
-      .get("/confirmation-statement/limited-partnership");
+      .get(URL);
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.text).toContain('govuk-back-link');
@@ -81,7 +92,7 @@ describe("start controller tests", () => {
 
   it("limited partnership header should contain a language list", async () => {
     const response = await request(app)
-      .get("/confirmation-statement/limited-partnership");
+      .get(URL);
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.text).toContain('English');
@@ -90,7 +101,7 @@ describe("start controller tests", () => {
 
   it("limited partnership start page should contain a footer", async () => {
     const response = await request(app)
-      .get("/confirmation-statement/limited-partnership");
+      .get(URL);
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.text).toContain('govuk-footer');
@@ -98,7 +109,7 @@ describe("start controller tests", () => {
 
   it("should contain a start button", async () => {
     const response = await request(app)
-      .get("/confirmation-statement/limited-partnership");
+      .get(URL);
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.text).toContain('id="start-now"');
@@ -107,11 +118,11 @@ describe("start controller tests", () => {
 
   it("should redirect to before-you-file on form submission", async () => {
     const response = await request(app)
-      .post("/confirmation-statement/limited-partnership")
+      .post(URL)
       .send();
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.status).toBe(302); // Expecting a redirect response
-    expect(response.headers.location).toBe("/confirmation-statement/limited-partnership/before-you-file?lang=en");
+    expect(response.headers.location).toBe("/confirmation-statement/company/12345678/transaction/trans-12345/submission/sub-12345/acsp/before-you-file?lang=en");
   });
 });
