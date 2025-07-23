@@ -29,6 +29,8 @@ export const get = (req: Request, res: Response) => {
 
 export const post = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
+  const locales = getLocalesService();
+  const localInfo = getLocaleInfo(locales, lang);
   const nextPage = urlUtils.getUrlToPath(`${urls.LP_CS_DATE_PATH}?lang=${lang}`, req);
   const byfCheckbox = req.body.byfCheckbox; 
 

@@ -3,6 +3,8 @@ import { Templates } from "../types/template.paths";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import * as urls from "../types/page.urls";
 import { savePreviousPageInSession } from "../utils/session-navigation";
+import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import { validCompanyProfile } from "../../test/mocks/lp.company.profile.mock";
 import { urlUtils } from "../utils/url";
 
 export const get = (req: Request, res: Response) => {
