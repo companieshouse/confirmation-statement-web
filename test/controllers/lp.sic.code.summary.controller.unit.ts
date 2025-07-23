@@ -1,8 +1,16 @@
 import middlewareMocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
-import { LP_SIC_CODE_SUMMARY_PATH } from "../../src/types/page.urls";
+import { LP_SIC_CODE_SUMMARY_PATH, urlParams } from "../../src/types/page.urls";
 import { dummySicCodes } from "../../src/controllers/lp.sic.code.summary.controller"
+
+const COMPANY_NUMBER = "12345678";
+const TRANSACTION_ID = "66454";
+const SUBMISSION_ID = "435435";
+const URL = LP_SIC_CODE_SUMMARY_PATH
+  .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
+  .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
+  .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
 
 describe("start controller tests", () => {
 
@@ -14,7 +22,7 @@ describe("start controller tests", () => {
 
   it("should return SIC Code Check and Confirm page", async () => {
     const response = await request(app)
-      .get(LP_SIC_CODE_SUMMARY_PATH);
+      .get(URL);
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.text).toContain("Check and confirm what the limited partnership will be doing");
@@ -22,7 +30,7 @@ describe("start controller tests", () => {
 
   it("should add a valid SIC code", async () => {
     const response = await request(app)
-      .post(`${LP_SIC_CODE_SUMMARY_PATH}/add`)
+      .post(`${URL}/add`)
       .send({ code: "5678" });
 
     expect(dummySicCodes).toHaveLength(1);
@@ -39,10 +47,10 @@ describe("start controller tests", () => {
     )
 
     const response = await request(app)
-      .post(`${LP_SIC_CODE_SUMMARY_PATH}/1234/remove?lang=en`);
+      .post(`${URL}/1234/remove?lang=en`);
 
     expect(response.status).toBe(302);
-    expect(response.headers.location).toBe(`${LP_SIC_CODE_SUMMARY_PATH}?lang=en`);
+    expect(response.headers.location).toBe(`${URL}?lang=en`);
     expect(dummySicCodes.some(sic => sic.code === "1234")).toBe(false);
   });  
 
@@ -50,7 +58,7 @@ describe("start controller tests", () => {
     dummySicCodes.push({ code: "5678", description: "Description for 5678" });
 
     const response = await request(app)
-      .post(`${LP_SIC_CODE_SUMMARY_PATH}/add`)
+      .post(`${URL}/add`)
       .send({ code: "5678" });
 
     expect(dummySicCodes).toHaveLength(1);
@@ -65,7 +73,7 @@ describe("start controller tests", () => {
     );
 
     const response = await request(app)
-      .post(`${LP_SIC_CODE_SUMMARY_PATH}/add`)
+      .post(`${URL}/add`)
       .send({ code: "5555" });
 
     expect(dummySicCodes).toHaveLength(4);
@@ -76,10 +84,10 @@ describe("start controller tests", () => {
     dummySicCodes.push({ code: "9999", description: "desc" });
 
     const response = await request(app)
-      .post(`${LP_SIC_CODE_SUMMARY_PATH}/9999/remove?lang=en`);
+      .post(`${URL}/9999/remove?lang=en`);
 
     expect(dummySicCodes).toHaveLength(1);
     expect(response.status).toBe(302);
-    expect(response.headers.location).toBe(`${LP_SIC_CODE_SUMMARY_PATH}?lang=en`);
+    expect(response.headers.location).toBe(`${URL}?lang=en`);
   });
 });

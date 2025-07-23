@@ -4,8 +4,9 @@ import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise"
 import * as urls from "../types/page.urls";
 import { savePreviousPageInSession } from "../utils/session-navigation";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { validCompanyProfile } from "../../test/mocks/lp.company.profile.mock";
-
+import { validCompanyProfile, transactionId, submissionId } from "../../test/mocks/lp.company.profile.mock";
+import { urlUtils } from "../utils/url";
+import { stringify } from "uuid";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -28,7 +29,7 @@ export const get = (req: Request, res: Response) => {
 
 export const post = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
-  const nextPage = `${urls.LP_CS_DATE_PATH}?lang=${lang}`;
+  const nextPage = urlUtils.getUrlToPath(`${urls.LP_CS_DATE_PATH}?lang=${lang}`, req);
   const byfCheckbox = req.body.byfCheckbox; 
   const locales = getLocalesService();
   const localInfo = getLocaleInfo(locales, lang); 
@@ -48,7 +49,7 @@ function reloadPageWithError(req: Request, res: Response, lang: String, localInf
     ...localInfo,
     htmlLang: lang,
     urls,
-    previousPage: urls.LIMITED_PARTNERSHIP,
+    previousPage: urls.ACSP_LIMITED_PARTNERSHIP,
     pageProperties: {
       errors: [
         {
