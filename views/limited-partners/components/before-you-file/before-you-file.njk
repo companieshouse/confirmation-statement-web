@@ -51,7 +51,7 @@
                     {% set checkboxError = { "text": i18n.BYFErrorMessageNotChecked } %}
                 {% endif %}
                 
-                <form action="{{ LP_BEFORE_YOU_FILE_PATH }}" method="POST">
+                <form  method="POST">
                 {% include "../../partials/csrf-token.njk" %}
 
                     {{ govukCheckboxes({
