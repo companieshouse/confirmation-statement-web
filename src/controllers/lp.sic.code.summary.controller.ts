@@ -3,8 +3,7 @@ import { Templates } from "../types/template.paths";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import * as urls from "../types/page.urls";
 import { savePreviousPageInSession } from "../utils/session-navigation";
-import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { validCompanyProfile } from "../../test/mocks/lp.company.profile.mock";
+import { urlUtils } from "../utils/url";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -26,13 +25,9 @@ export const get = (req: Request, res: Response) => {
 };
 
 export const post = (req: Request, res: Response) => {
-  // Replace hardcoded company information with data from API when available.
-  const nextPageTest = urls.REVIEW_PATH
-    .replace(":companyNumber", "11456298")
-    .replace(":transactionId", "108098-393817-516389")
-    .replace(":submissionId", "6867e3d393f03f3583e21e12");
-
-  res.redirect(nextPageTest);
+  const lang = selectLang(req.query.lang);
+  const nextPage = urlUtils.getUrlToPath(`${urls.REVIEW_PATH+ "/next-page"}?lang=${lang}`, req);
+  res.redirect(nextPage);
 };
 
 export const addSicCode = (req: Request, res: Response) => {
@@ -56,16 +51,16 @@ export const addSicCode = (req: Request, res: Response) => {
     });
   }
 
-  res.redirect(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`);
+  res.redirect(urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`, req));
 };
 
 export const removeSicCode = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const removeSicCode = req.params.code;
 
-  if (dummySicCodes.length <= 1) {
-    console.warn("Attempt to remove SIC code was blocked. Limited Partnership requires at least one SIC code.");
-    return res.redirect(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`);
+  if(dummySicCodes.length <= 1) {
+    console.warn("Attempt to remove SIC code was blocked. Limited Partnership requires at least one SIC code."); 
+    return res.redirect(urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`, req));
   }
 
   if (removeSicCode) {
@@ -76,7 +71,7 @@ export const removeSicCode = (req: Request, res: Response) => {
     }
   }
 
-  return res.redirect(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`);
+  return res.redirect(urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`, req));
 };
 
 interface SicCode {

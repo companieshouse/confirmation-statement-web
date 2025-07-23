@@ -45,3 +45,7 @@ export const validSDKResource: Resource<CompanyProfile> = {
   httpStatusCode: 200,
   resource: validCompanyProfile,
 };
+
+export const transactionId = 'trans-123456';
+
+export const submissionId = 'sub-123456';

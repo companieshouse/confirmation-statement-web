@@ -67,7 +67,7 @@
                     {% endfor %}
                 </div>
                 
-                <form action="{{ urls.LP_SIC_CODE_SUMMARY_PATH }}/add" method="POST">
+                <form method="POST">
                 {% include "../../partials/csrf-token.njk" %}
                 <div class="govuk-inset-text">
                     <div class="govuk-form-group govuk-!-margin-bottom-6">
@@ -98,7 +98,7 @@
                     html: summaryDetail
                 }) }}
 
-                <form action="{{ LP_SIC_CODE_SUMMARY_PATH }}" method="POST">
+                <form method="POST">
                 {% include "../../partials/csrf-token.njk" %}
                     {{ govukButton({
                         id: 'continue',
