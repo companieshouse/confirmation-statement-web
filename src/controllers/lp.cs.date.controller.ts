@@ -3,6 +3,7 @@ import { Templates } from "../types/template.paths";
 import * as urls from "../types/page.urls";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import { savePreviousPageInSession } from "../utils/session-navigation";
+import { LP_CHECK_YOUR_ANSWER_PATH } from '../types/page.urls';
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -24,8 +25,7 @@ export const post = (req: Request, res: Response) => {
   if (req.body) {
     switch (req.body.confirmationStatementDate) {
         case "yes":
-        // ToDo URL to forward to for Check your answers
-          get(req, res);
+          res.redirect(`${urls.LP_CHECK_YOUR_ANSWER_PATH}?lang=${lang}`);
           break;
         case "no":
           res.redirect(urls.LP_SIC_CODE_SUMMARY_PATH);
