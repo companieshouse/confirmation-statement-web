@@ -7,51 +7,52 @@ import { urlUtils } from "../utils/url";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
-  res.cookie('lang', lang, { httpOnly: true }); 
+  res.cookie('lang', lang, { httpOnly: true });
 
   const locales = getLocalesService();
-  const previousPage = savePreviousPageInSession(req); 
+  const previousPage = savePreviousPageInSession(req);
 
   return res.render(Templates.LP_SIC_CODE_SUMMARY, {
-    ...getLocaleInfo(locales, lang), 
-    htmlLang: lang, 
+    ...getLocaleInfo(locales, lang),
+    htmlLang: lang,
     previousPage,
     urls,
-    sicCodes: dummySicCodes, 
+    sicCodes: dummySicCodes,
     searchSicCodes: dummySearchSicCodes
   });
 };
 
 export const post = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
-  const nextPage = urlUtils.getUrlToPath(`${urls.ACSP_LIMITED_PARTNERSHIP_PATH + "/next-page"}?lang=${lang}`, req);
-  
+  const nextPage = urlUtils.getUrlToPath(`${urls.REVIEW_PATH+ "/next-page"}?lang=${lang}`, req);
   res.redirect(nextPage);
 };
 
-export const addSicCode = async (req: Request, res: Response) => {
+export const addSicCode = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const { code } = req.body;
 
-  if (!code) return res.status(400).send('Missing SIC code');
+  if (!code) {
+    return res.status(400).send('Missing SIC code');
+  }
 
-  const duplicate = dummySicCodes.some(sc => sc.code === code); 
+  const duplicate = dummySicCodes.some(sc => sc.code === code);
 
-  if(duplicate) {
-    console.warn(`Duplicate SIC code: ${code} already exists.`);  
+  if (duplicate) {
+    console.warn(`Duplicate SIC code: ${code} already exists.`);
   } else if (dummySicCodes.length >= 4) {
-    console.warn(`Maximum number of SIC codes reached.`);  
+    console.warn(`Maximum number of SIC codes reached.`);
   } else {
     dummySicCodes.push({
       code,
       description: `Description for ${code}`
-    });    
+    });
   }
 
   res.redirect(urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`, req));
 };
 
-export const removeSicCode = async (req: Request, res: Response) => {
+export const removeSicCode = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const removeSicCode = req.params.code;
 
@@ -69,7 +70,7 @@ export const removeSicCode = async (req: Request, res: Response) => {
   }
 
   return res.redirect(urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`, req));
-}
+};
 
 interface SicCode {
   code: string;

@@ -22,7 +22,7 @@ export const get = (req: Request, res: Response) => {
     htmlLang: lang,
     urls,
     company,
-    previousPage, 
+    previousPage,
     formData
   });
 };
@@ -31,20 +31,17 @@ export const post = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const nextPage = urlUtils.getUrlToPath(`${urls.LP_CS_DATE_PATH}?lang=${lang}`, req);
   const byfCheckbox = req.body.byfCheckbox; 
-  const locales = getLocalesService();
-  const localInfo = getLocaleInfo(locales, lang); 
 
-  if(!byfCheckbox){
-    return reloadPageWithError(req, res, lang, localInfo, byfCheckbox, localInfo.i18n.BYFErrorMessageNotChecked); 
+  if (!byfCheckbox) {
+    return reloadPageWithError(req, res, lang, localInfo, byfCheckbox, localInfo.i18n.BYFErrorMessageNotChecked);
   }
 
-  res.cookie('byfCheckbox', byfCheckbox, { httpOnly: true }); 
+  res.cookie('byfCheckbox', byfCheckbox, { httpOnly: true });
   res.redirect(nextPage);
 };
 
-function reloadPageWithError(req: Request, res: Response, lang: String, localInfo: Object, byfCheckbox: String, errorMessage: String) {
-  res.cookie('lang', lang, { httpOnly: true}); 
-  
+function reloadPageWithError(req: Request, res: Response, lang: string, localInfo: object, byfCheckbox: string, errorMessage: string) {
+  res.cookie('lang', lang, { httpOnly: true });
   res.render(Templates.LP_BEFORE_YOU_FILE, {
     ...localInfo,
     htmlLang: lang,
@@ -53,14 +50,14 @@ function reloadPageWithError(req: Request, res: Response, lang: String, localInf
     pageProperties: {
       errors: [
         {
-          text: errorMessage, 
+          text: errorMessage,
           href: '#byfCheckbox'
         }
-      ], 
+      ],
       isPost: true
-    }, 
+    },
     formData: {
       byfCheckbox
     }
-  }); 
+  });
 }
