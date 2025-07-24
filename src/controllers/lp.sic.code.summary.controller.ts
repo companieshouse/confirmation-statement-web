@@ -28,7 +28,7 @@ export const get = (req: Request, res: Response) => {
 
 export const post = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
-  const nextPage = urlUtils.getUrlToPath(`${urls.REVIEW_PATH + "/next-page"}?lang=${lang}`, req);
+  const nextPage = urlUtils.getUrlToPath(`${urls.REVIEW_PATH}?lang=${lang}`, req);
   res.redirect(nextPage);
 };
 
