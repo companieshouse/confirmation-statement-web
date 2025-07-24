@@ -114,6 +114,7 @@ export const LP_SIC_CODE_SUMMARY_PATH = CONFIRMATION_STATEMENT + LP_SIC_CODE_SUM
 export const LP_SIC_CODE_SUMMARY_ADD = LP_SIC_CODE_SUMMARY + "/add";
 export const LP_SIC_CODE_SUMMARY_REMOVE = LP_SIC_CODE_SUMMARY + "/:code/remove";
 export const LP_MUST_BE_AUTHORISED_AGENT = ACSP_LIMITED_PARTNERSHIP + "/must-be-authorised-agent";
+export const LP_MUST_BE_AUTHORISED_AGENT_PATH = CONFIRMATION_STATEMENT + LP_MUST_BE_AUTHORISED_AGENT;
 
 
 export const middlewarePaths = /\/confirmation-statement\/((?!healthcheck).)*/;
