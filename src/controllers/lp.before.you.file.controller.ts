@@ -2,11 +2,9 @@ import { Request, Response } from "express";
 import { Templates } from "../types/template.paths";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import * as urls from "../types/page.urls";
-import { savePreviousPageInSession } from "../utils/session-navigation";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { validCompanyProfile, transactionId, submissionId } from "../../test/mocks/lp.company.profile.mock";
+import { validCompanyProfile } from "../../test/mocks/lp.company.profile.mock";
 import { urlUtils } from "../utils/url";
-import { stringify } from "uuid";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -14,7 +12,6 @@ export const get = (req: Request, res: Response) => {
 
   const company: CompanyProfile = validCompanyProfile;
   const locales = getLocalesService();
-  const previousPage = savePreviousPageInSession(req);
   const formData = { byfCheckbox: req.cookies.byfCheckbox };
 
   return res.render(Templates.LP_BEFORE_YOU_FILE, {
@@ -22,7 +19,7 @@ export const get = (req: Request, res: Response) => {
     htmlLang: lang,
     urls,
     company,
-    previousPage,
+    previousPageWithoutLang: `${urls.CONFIRM_COMPANY_PATH}?companyNumber=${urlUtils.getCompanyNumberFromRequestParams(req)}`,
     formData
   });
 };
@@ -30,7 +27,8 @@ export const get = (req: Request, res: Response) => {
 export const post = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const nextPage = urlUtils.getUrlToPath(`${urls.LP_CS_DATE_PATH}?lang=${lang}`, req);
-  const byfCheckbox = req.body.byfCheckbox; 
+  const byfCheckbox = req.body.byfCheckbox;
+  const localInfo = getLocaleInfo(getLocalesService(), lang);
 
   if (!byfCheckbox) {
     return reloadPageWithError(req, res, lang, localInfo, byfCheckbox, localInfo.i18n.BYFErrorMessageNotChecked);

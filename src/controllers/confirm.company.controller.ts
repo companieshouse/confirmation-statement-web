@@ -20,6 +20,7 @@ import {
 } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { toReadableFormat } from "../utils/date";
+import { COMPANY_PROFILE_SESSION_KEY } from "../utils/constants";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -60,6 +61,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return displayEligibilityStopPage(res, eligibilityStatusCode, company);
     }
 
+    session.setExtraData(COMPANY_PROFILE_SESSION_KEY, company);
     await createNewConfirmationStatement(session);
     const nextPageUrl = urlUtils.getUrlWithCompanyNumber(CREATE_TRANSACTION_PATH, companyNumber);
     return res.redirect(nextPageUrl);
