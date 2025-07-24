@@ -36,6 +36,8 @@ export const LAWFUL_ACTIVITY_STATEMENT_ERROR: string = "You need to accept the s
 export const LP_CONFIRMATION_STATEMENT_ERROR: string = "Select if all required information is either delivered or being delivered for the confirmation statement date";
 export const LP_LAWFUL_ACTIVITY_STATEMENT_ERROR: string = "Select if intended future activities are lawful";
 export const ACCEPT_LAWFUL_PURPOSE_STATEMENT = "acceptLawfulPurposeStatement";
+export const LIMITED_PARTNERSHIP_COMPANY_TYPE = "limited-partnership";
+export const COMPANY_PROFILE_SESSION_KEY = "company_profile";
 export const VALID_EMAIL_REGEX_PATTERN = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~\\-]+@([^.@][^@\\s]+)$";
 export const HOSTNAME_REGEX = "^(xn|[a-z0-9]+)(-?-[a-z0-9]+)*$";
 export const TLD_PART_REGEX = "^(?:[a-z]{2,63}|xn--[a-z0-9]+(?:-[a-z0-9]+){1,4})(?:$|[^-])";

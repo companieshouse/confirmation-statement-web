@@ -27,7 +27,7 @@ describe("start before you file controller tests", () => {
   it("should forward to Confirmation Statement Date page", async () => {
     const response = await request(app)
       .post(URL).set('Content-Type', 'application/json')
-      .send({ "byfCheckbox": "confirm" },);
+      .send({ "byfCheckbox": "confirm" });
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.status).toBe(302); // Expecting a redirect response
