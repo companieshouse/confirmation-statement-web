@@ -26,13 +26,13 @@ export const post = (req: Request, res: Response) => {
     switch (req.body.confirmationStatementDate) {
         case "yes":
         // ToDo URL to forward to for Check your answers
-        get(req, res);
-        break;
-      case "no":
-        res.redirect(urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`, req));
-        break;
-      default:
-        reloadPageWithError(req, res, lang, localInfo, localInfo.i18n.CDSRadioButtonError);
+          get(req, res);
+          break;
+        case "no":
+          res.redirect(urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`, req));
+          break;
+        default:
+          reloadPageWithError(req, res, lang, localInfo, localInfo.i18n.CDSRadioButtonError);
     }
   }
 };
@@ -43,8 +43,8 @@ function reloadPageWithError(req: Request, res: Response, lang: string, localInf
   return res.render(Templates.LP_CS_DATE, {
     ...localInfo,
     htmlLang: lang,
-    previousPage:urlUtils.getUrlToPath(urls.LP_BEFORE_YOU_FILE_PATH, req),
-    errorMessage:{
+    previousPage: urlUtils.getUrlToPath(urls.LP_BEFORE_YOU_FILE_PATH, req),
+    errorMessage: {
       text: errorMessage
     }
   });

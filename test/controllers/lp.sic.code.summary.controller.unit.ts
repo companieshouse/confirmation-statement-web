@@ -2,7 +2,7 @@ import middlewareMocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
 import { LP_SIC_CODE_SUMMARY_PATH, urlParams } from "../../src/types/page.urls";
-import { dummySicCodes } from "../../src/controllers/lp.sic.code.summary.controller"
+import { dummySicCodes } from "../../src/controllers/lp.sic.code.summary.controller";
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -29,7 +29,7 @@ describe("start controller tests", () => {
   });
 
   it("should add a valid SIC code", async () => {
-    const response = await request(app)
+    await request(app)
       .post(`${URL}/add`)
       .send({ code: "5678" });
 
@@ -57,7 +57,7 @@ describe("start controller tests", () => {
   it("should not add a duplicate SIC code", async () => {
     dummySicCodes.push({ code: "5678", description: "Description for 5678" });
 
-    const response = await request(app)
+    await request(app)
       .post(`${URL}/add`)
       .send({ code: "5678" });
 
@@ -72,7 +72,7 @@ describe("start controller tests", () => {
       { code: "4444", description: "desc" }
     );
 
-    const response = await request(app)
+    await request(app)
       .post(`${URL}/add`)
       .send({ code: "5555" });
 
