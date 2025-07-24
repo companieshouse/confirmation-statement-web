@@ -2,7 +2,7 @@
 
 {% block pageTitle %}
   {% if company.type == "limited-partnership" %}
-    {{ SCSTitle }}
+    {{ i18n.SCSTitle }}
   {% elseif confirmationStatementError or lawfulActivityStatementError %}
     Error:
   {% endif %}
