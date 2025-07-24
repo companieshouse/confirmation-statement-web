@@ -42,6 +42,8 @@ import * as lpBeforeYouFileRoute from "../controllers/lp.before.you.file.control
 import * as lpCheckYourAnswerRoute from "../controllers/lp.check.your.answer.controller";
 import * as lpCSDateRoute from "../controllers/lp.cs.date.controller";
 import * as lpSicCodeSummaryRoute from "../controllers/lp.sic.code.summary.controller";
+import * as lpMustBeAuthorisedAgent from "../controllers/lp.must.be.authorised.agent.controller";
+
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 
@@ -171,3 +173,5 @@ router.post(urls.LP_SIC_CODE_SUMMARY, lpSicCodeSummaryRoute.post);
 
 router.post(urls.LP_SIC_CODE_SUMMARY_REMOVE, lpSicCodeSummaryRoute.removeSicCode);
 router.post(urls.LP_SIC_CODE_SUMMARY_ADD, lpSicCodeSummaryRoute.addSicCode);
+
+router.get(urls.LP_MUST_BE_AUTHORISED_AGENT, lpMustBeAuthorisedAgent.get);

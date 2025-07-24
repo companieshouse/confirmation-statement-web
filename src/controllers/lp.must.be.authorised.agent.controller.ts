@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Templates } from "../types/template.paths";
-import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
+import { addLangToUrl, getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import { savePreviousPageInSession } from "../utils/session-navigation";
 import * as urls from "../types/page.urls";
 import { urlUtils } from "../utils/url";
@@ -11,10 +11,9 @@ export const get = (req: Request, res: Response) => {
   const locales = getLocalesService();
   const previousPage = savePreviousPageInSession(req);
 
-  return res.render(Templates.LP_CHECK_YOUR_ANSWER, {
+  return res.render(Templates.LP_MUST_BE_AUTHORISED_AGENT, {
     ...getLocaleInfo(locales, lang),
     htmlLang: lang,
-    previousPage,
-    applyAsACSPLink: ,
+    applyAsACSPLink: addLangToUrl("/register-as-companies-house-authorised-agent", lang)
   });
 };
