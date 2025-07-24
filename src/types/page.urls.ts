@@ -109,9 +109,9 @@ export const LP_CHECK_AND_CONFIRM = ACSP_LIMITED_PARTNERSHIP + "/check-and-confi
 export const LP_CHECK_AND_CONFIRM_PATH = CONFIRMATION_STATEMENT + LP_CHECK_AND_CONFIRM;
 export const LP_CHECK_YOUR_ANSWER = ACSP_LIMITED_PARTNERSHIP + "/check-your-answer";
 export const LP_CHECK_YOUR_ANSWER_PATH = CONFIRMATION_STATEMENT + LP_CHECK_YOUR_ANSWER;
-export const LP_SIC_CODE_SUMMARY = ACSP_LIMITED_PARTNERSHIP + "/sic-code-summary"; 
-export const LP_SIC_CODE_SUMMARY_PATH = CONFIRMATION_STATEMENT + LP_SIC_CODE_SUMMARY; 
-export const LP_SIC_CODE_SUMMARY_ADD = LP_SIC_CODE_SUMMARY + "/add"; 
+export const LP_SIC_CODE_SUMMARY = ACSP_LIMITED_PARTNERSHIP + "/sic-code-summary";
+export const LP_SIC_CODE_SUMMARY_PATH = CONFIRMATION_STATEMENT + LP_SIC_CODE_SUMMARY;
+export const LP_SIC_CODE_SUMMARY_ADD = LP_SIC_CODE_SUMMARY + "/add";
 export const LP_SIC_CODE_SUMMARY_REMOVE = LP_SIC_CODE_SUMMARY + "/:code/remove";
 
 export const middlewarePaths = /\/confirmation-statement\/((?!healthcheck).)*/;

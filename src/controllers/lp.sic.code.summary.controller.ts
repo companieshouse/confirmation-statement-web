@@ -24,7 +24,7 @@ export const get = (req: Request, res: Response) => {
 
 export const post = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
-  const nextPage = urlUtils.getUrlToPath(`${urls.REVIEW_PATH+ "/next-page"}?lang=${lang}`, req);
+  const nextPage = urlUtils.getUrlToPath(`${urls.REVIEW_PATH + "/next-page"}?lang=${lang}`, req);
   res.redirect(nextPage);
 };
 
@@ -56,8 +56,8 @@ export const removeSicCode = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const removeSicCode = req.params.code;
 
-  if(dummySicCodes.length <= 1) {
-    console.warn("Attempt to remove SIC code was blocked. Limited Partnership requires at least one SIC code."); 
+  if (dummySicCodes.length <= 1) {
+    console.warn("Attempt to remove SIC code was blocked. Limited Partnership requires at least one SIC code.");
     return res.redirect(urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`, req));
   }
 

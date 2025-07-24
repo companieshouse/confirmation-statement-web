@@ -25,7 +25,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
       let nextPageUrl;
       if (isLimitedPartnershipCompanyType(req) && isAuthorisedAgent(req.session)) {
-        nextPageUrl = `${urls.LP_BEFORE_YOU_FILE_PATH}?lang=en`;
+        nextPageUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(`${urls.LP_BEFORE_YOU_FILE_PATH}?lang=en`, companyNumber, transactionId, castedResponseResource.id);
       } else {
         nextPageUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TRADING_STATUS_PATH, companyNumber, transactionId, castedResponseResource.id);
       }
