@@ -3,7 +3,7 @@ import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
 import { CHS_URL } from "../utils/properties";
 import { logger } from "../utils/logger";
 import { isCompanyNumberValid } from "../validators/company.number.validator";
-import { urlParams, USE_WEBFILING_PATH, URL_QUERY_PARAM } from "../types/page.urls";
+import { urlParams } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { Templates } from "../types/template.paths";
 import { isLimitedPartnershipCompanyType } from "../utils/session";
