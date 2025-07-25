@@ -72,8 +72,7 @@ describe("company authentication middleware tests", () => {
     setCompanyTypeAndAcspNumberInSession("limited-partnership", "");
     const response = await request(app).get(URL);
 
-    // TODO: the following code need to be updated to redirect to stop screen (Ticket CSE-745)
-    expect(response.header.location).toBe("/confirmation-statement/use-webfiling?companyNumber=" + expectedAuthMiddlewareConfig.companyNumber);
+    expect(response.header.location).toBe("/confirmation-statement/acsp/must-be-authorised-agent");
   });
 
   it("should call existing CS journey when company type is not limited partnership and contain ACSP member", async () => {
