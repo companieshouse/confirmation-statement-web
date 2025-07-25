@@ -9,7 +9,6 @@ import { urlUtils } from "../utils/url";
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const locales = getLocalesService();
-  const previousPage = savePreviousPageInSession(req);
 
   return res.render(Templates.LP_MUST_BE_AUTHORISED_AGENT, {
     ...getLocaleInfo(locales, lang),
