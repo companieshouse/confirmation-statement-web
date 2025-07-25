@@ -8,6 +8,8 @@ import { urlUtils } from "../utils/url";
 import { Templates } from "../types/template.paths";
 import { isLimitedPartnershipCompanyType } from "../utils/session";
 import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
+import * as urls from "../types/page.urls";
+
 
 export const companyAuthenticationMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
@@ -42,8 +44,7 @@ export const companyAuthenticationMiddleware = (req: Request, res: Response, nex
       return authMiddleware(authMiddlewareConfig)(req, res, next);
 
     } else {
-      // TODO: the following logic need to be updated to redirect to stop screen (Ticket CSE-745)
-      res.redirect(urlUtils.setQueryParam(USE_WEBFILING_PATH, URL_QUERY_PARAM.COMPANY_NUM, companyNumber));
+      res.redirect(urls.LP_MUST_BE_AUTHORISED_AGENT_PATH);
     }
 
   } else {
