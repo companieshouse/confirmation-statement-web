@@ -34,8 +34,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const lang = selectLang(req.query.lang);
     res.cookie('lang', lang, { httpOnly: true });
 
-    // const company: CompanyProfile = validCompanyProfile;
-
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
 
     if (company.type === "limited-partnership") {
