@@ -117,5 +117,4 @@ export const LP_ACSP_BASE = "/acsp";
 export const LP_MUST_BE_AUTHORISED_AGENT = LP_ACSP_BASE + "/must-be-authorised-agent";
 export const LP_MUST_BE_AUTHORISED_AGENT_PATH = CONFIRMATION_STATEMENT + LP_MUST_BE_AUTHORISED_AGENT;
 
-
 export const middlewarePaths = /\/confirmation-statement\/((?!healthcheck).)*/;
