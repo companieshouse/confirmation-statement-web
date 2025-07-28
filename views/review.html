@@ -2,7 +2,7 @@
 
 {% block pageTitle %}
   {% if company.type == "limited-partnership" %}
-    {{ SCSTitle }}
+    {{ i18n.SCSTitle }}
   {% elseif confirmationStatementError or lawfulActivityStatementError %}
     Error:
   {% endif %}
@@ -12,25 +12,34 @@
 {% block head %}
   {% if company.type == "limited-partnership" %}
     {% include "./limited-partners/partials/meta_header.njk" %}
-  {% endif %} 
+  {% else %}
+    {{ super() }}
+  {% endif %}
 {% endblock %}
 
 {% block header %}
   {% if company.type == "limited-partnership" %}
     {% include "./limited-partners/partials/header.njk" %}
-  {% endif %} 
+  {% else %}
+    {{ super() }}
+  {% endif %}
 {% endblock %}
 
 {% block beforeContent %}
   {% if company.type == "limited-partnership" %}
-  {% endif %} 
+    {# Custom LP content here #}
+  {% else %}
+    {{ super() }}
+  {% endif %}
 {% endblock %}
 
 {% block footer %}
   {% if company.type == "limited-partnership" %}
     {% include "./limited-partners/partials/footer.njk" %}
-  {% endif %} 
-{% endblock %} 
+  {% else %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}
 
 {% block content %}
   {% if company.type == "limited-partnership"%}

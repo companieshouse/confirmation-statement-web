@@ -15,14 +15,16 @@ import {
   INVALID_COMPANY_STATUS_PATH, NO_FILING_REQUIRED_PATH,
   URL_QUERY_PARAM,
   USE_PAPER_PATH,
-  USE_WEBFILING_PATH
+  USE_WEBFILING_PATH,
+  LP_MUST_BE_AUTHORISED_AGENT_PATH
 } from "../../src/types/page.urls";
 import { getCompanyProfile, formatForDisplay } from "../../src/services/company.profile.service";
-import { validCompanyProfile } from "../mocks/company.profile.mock";
+import { validCompanyProfile, validLimitedPartnershipProfile } from "../mocks/company.profile.mock";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { toReadableFormat } from "../../src/utils/date";
 import { Settings as luxonSettings } from "luxon";
 import { urlUtils } from "../../src/utils/url";
+import { setCompanyTypeAndAcspNumberInSession } from "../mocks/session.mock";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockFormatForDisplay = formatForDisplay as jest.Mock;
@@ -33,6 +35,7 @@ const mockToReadableFormat = toReadableFormat as jest.Mock;
 const mockGetNextMadeUpToDate = getNextMadeUpToDate as jest.Mock;
 
 const companyNumber = "12345678";
+const lpCompanyNumber: string = "LP123456";
 const today = "2020-04-25";
 const SERVICE_UNAVAILABLE_TEXT = "Sorry, there is a problem with the service";
 
@@ -316,4 +319,35 @@ describe("Confirm company controller tests", () => {
 
     expect(mockToReadableFormat).not.toBeCalled();
   });
+
+  it ("Should call private sdk client and redirect to transaction using company number for limited partnership and logged in ACSP", async() => {
+
+    // mockIsActiveFeature.mockReturnValueOnce(true);
+    mockGetCompanyProfile.mockResolvedValueOnce(validLimitedPartnershipProfile);  
+    setCompanyTypeAndAcspNumberInSession("limited-partnership", "ACSP-1234-5678"); 
+    // mockCreateConfirmationStatement.mockResolvedValueOnce(201);
+    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
+
+    const response = await request(app).post(CONFIRM_COMPANY_PATH + "?companyNumber=" + lpCompanyNumber);
+    
+    expect(response.status).toEqual(302);    
+    expect(response.header.location).toContain("/confirmation-statement/company/" + lpCompanyNumber + "/transaction");
+    expect(mockCreateConfirmationStatement).toHaveBeenCalled();
+  });
+
+  it ("Should forward to Limited Partnership Must be Authorised Agent screen for limited partnership but no logged in ACSP", async() => {
+
+    // mockIsActiveFeature.mockReturnValueOnce(true);
+    mockGetCompanyProfile.mockResolvedValueOnce(validLimitedPartnershipProfile);  
+    setCompanyTypeAndAcspNumberInSession("limited-partnership", ""); 
+    // mockCreateConfirmationStatement.mockResolvedValueOnce(201);
+    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
+
+    const response = await request(app).post(CONFIRM_COMPANY_PATH + "?companyNumber=" + lpCompanyNumber);
+    
+    expect(response.status).toEqual(302);    
+    expect(response.header.location).toEqual(LP_MUST_BE_AUTHORISED_AGENT_PATH);
+    
+  });
+
 });
