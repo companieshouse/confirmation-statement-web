@@ -15,12 +15,12 @@ import { NextFunction, Request, Response } from "express";
 const mockPostTransaction = postTransaction as jest.Mock;
 const mockCreateConfirmationStatement = createConfirmationStatement as jest.Mock;
 
-const PAGE_HEADING = "Found. Redirecting to /confirmation-statement/company/12345678/transaction/1234/submission/87654321/trading-status";
+const PAGE_HEADING = "Found. Redirecting to /confirmation-statement/company/12345678/transaction/1234/submission/87654321/body/trading-status";
 const COMPANY_NUMBER = "12345678";
 const ERROR_PAGE_TEXT = "Service offline - File a confirmation statement";
 const TRANSACTION_ID = "1234";
 const LIMITED_PARTNERSHIP_URL = "/confirmation-statement/company/12345678/transaction/1234/submission/87654321/acsp/before-you-file?lang=en";
-const TRADING_STATUS_URL = "/confirmation-statement/company/12345678/transaction/1234/submission/87654321/trading-status";
+const TRADING_STATUS_URL = "/confirmation-statement/company/12345678/transaction/1234/submission/87654321/body/trading-status";
 
 const dummyTransaction = {
   id: TRANSACTION_ID
