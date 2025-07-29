@@ -115,12 +115,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         });
       }
 
-      const nextPage = urls.CONFIRMATION_PATH
-        .replace(":companyNumber", "11456298")
-        .replace(":transactionId", "108098-393817-516389")
-        .replace(":submissionId", "6867e3d393f03f3583e21e12");
-
-      res.redirect(nextPage);
+      res.redirect(urlUtils.getUrlToPath(`${urls.CONFIRMATION_PATH}?lang=${lang}`, req));
 
     } else {
       const session = req.session as Session;
