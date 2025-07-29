@@ -124,6 +124,8 @@ describe("review controller tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetConfirmationStatement.mockReset();
+    mockGetConfirmationStatement.mockResolvedValue(mockConfirmationStatementSubmission);
   });
 
   describe("get tests", () => {
