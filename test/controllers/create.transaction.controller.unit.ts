@@ -8,9 +8,7 @@ import { postTransaction } from "../../src/services/transaction.service";
 import request from "supertest";
 import app from "../../src/app";
 import { CREATE_TRANSACTION_PATH } from '../../src/types/page.urls';
-import { Session } from "@companieshouse/node-session-handler";
-import { NextFunction, Request, Response } from "express";
-
+import { setCompanyTypeAndAcspNumberInSession } from "../mocks/session.mock";
 
 const mockPostTransaction = postTransaction as jest.Mock;
 const mockCreateConfirmationStatement = createConfirmationStatement as jest.Mock;
@@ -122,20 +120,3 @@ function setPostTransactionAndCreateConfirmationStatement() {
   });
 }
 
-function setCompanyTypeAndAcspNumberInSession(companyType: string, acspNumber: string) {
-  mocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
-    const session: Session = new Session();
-    session.data = {
-      signin_info: {
-        acsp_number: acspNumber
-      },
-      extra_data: {
-        company_profile: {
-          type: companyType
-        }
-      }
-    };
-    req.session = session;
-    return next();
-  });
-}

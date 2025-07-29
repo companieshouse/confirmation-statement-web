@@ -34,7 +34,7 @@ const nunjucksEnv = nunjucks.configure([
   "node_modules/accessible-autocomplete"
 ], {
   autoescape: true,
-  express: app,
+  express: app
 });
 
 nunjucksEnv.addGlobal("assetPath", process.env.CDN_HOST);

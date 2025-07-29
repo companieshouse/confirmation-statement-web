@@ -3,11 +3,13 @@ import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
 import { CHS_URL } from "../utils/properties";
 import { logger } from "../utils/logger";
 import { isCompanyNumberValid } from "../validators/company.number.validator";
-import { urlParams, USE_WEBFILING_PATH, URL_QUERY_PARAM } from "../types/page.urls";
+import { urlParams } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { Templates } from "../types/template.paths";
 import { isLimitedPartnershipCompanyType } from "../utils/session";
 import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
+import * as urls from "../types/page.urls";
+
 
 export const companyAuthenticationMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
@@ -42,8 +44,7 @@ export const companyAuthenticationMiddleware = (req: Request, res: Response, nex
       return authMiddleware(authMiddlewareConfig)(req, res, next);
 
     } else {
-      // TODO: the following logic need to be updated to redirect to stop screen (Ticket CSE-745)
-      res.redirect(urlUtils.setQueryParam(USE_WEBFILING_PATH, URL_QUERY_PARAM.COMPANY_NUM, companyNumber));
+      res.redirect(urls.LP_MUST_BE_AUTHORISED_AGENT_PATH);
     }
 
   } else {
