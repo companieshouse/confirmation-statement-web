@@ -323,14 +323,14 @@ describe("Confirm company controller tests", () => {
   it ("Should call private sdk client and redirect to transaction using company number for limited partnership and logged in ACSP", async() => {
 
     // mockIsActiveFeature.mockReturnValueOnce(true);
-    mockGetCompanyProfile.mockResolvedValueOnce(validLimitedPartnershipProfile);  
-    setCompanyTypeAndAcspNumberInSession("limited-partnership", "ACSP-1234-5678"); 
+    mockGetCompanyProfile.mockResolvedValueOnce(validLimitedPartnershipProfile);
+    setCompanyTypeAndAcspNumberInSession("limited-partnership", "ACSP-1234-5678");
     // mockCreateConfirmationStatement.mockResolvedValueOnce(201);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
 
     const response = await request(app).post(CONFIRM_COMPANY_PATH + "?companyNumber=" + lpCompanyNumber);
-    
-    expect(response.status).toEqual(302);    
+
+    expect(response.status).toEqual(302);
     expect(response.header.location).toContain("/confirmation-statement/company/" + lpCompanyNumber + "/transaction");
     expect(mockCreateConfirmationStatement).toHaveBeenCalled();
   });
@@ -338,16 +338,16 @@ describe("Confirm company controller tests", () => {
   it ("Should forward to Limited Partnership Must be Authorised Agent screen for limited partnership but no logged in ACSP", async() => {
 
     // mockIsActiveFeature.mockReturnValueOnce(true);
-    mockGetCompanyProfile.mockResolvedValueOnce(validLimitedPartnershipProfile);  
-    setCompanyTypeAndAcspNumberInSession("limited-partnership", ""); 
+    mockGetCompanyProfile.mockResolvedValueOnce(validLimitedPartnershipProfile);
+    setCompanyTypeAndAcspNumberInSession("limited-partnership", "");
     // mockCreateConfirmationStatement.mockResolvedValueOnce(201);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
 
     const response = await request(app).post(CONFIRM_COMPANY_PATH + "?companyNumber=" + lpCompanyNumber);
-    
-    expect(response.status).toEqual(302);    
+
+    expect(response.status).toEqual(302);
     expect(response.header.location).toEqual(LP_MUST_BE_AUTHORISED_AGENT_PATH);
-    
+
   });
 
 });
