@@ -18,7 +18,7 @@ import { getConfirmationStatement } from "../services/confirmation.statement.ser
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
 import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
-import { validCompanyProfile } from "../../test/mocks/lp.company.profile.mock";
+import { getCompanyProfileFromSession, isLimitedPartnershipCompanyType } from "../utils/session";
 import { savePreviousPageInSession } from "../utils/session-navigation";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -71,8 +71,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const company: CompanyProfile = validCompanyProfile;
-    if (company.type === "limited-partnership") {
+    if (isLimitedPartnershipCompanyType(req)) {
+      const company = getCompanyProfileFromSession(req);
       const confirmationCheckboxValue = req.body.confirmationStatement;
       const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
 
