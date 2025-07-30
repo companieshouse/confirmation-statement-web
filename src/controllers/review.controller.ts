@@ -36,7 +36,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
 
-    if (company.type === "limited-partnership") {
+    if (isLimitedPartnershipCompanyType(req)) {
       return res.render(Templates.REVIEW, {
         ...getLocaleInfo(locales, lang),
         backLinkUrl,
