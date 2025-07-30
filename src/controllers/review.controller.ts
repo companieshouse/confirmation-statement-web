@@ -79,10 +79,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const isLimitedPartnership = isLimitedPartnershipCompanyType(req);
 
     if (isLimitedPartnership) {
-      return await handleLimitedPartnershipPost(req, res)
-    }
-     else {
-      return await handleCompanyPost(req, res, next); 
+      return handleLimitedPartnershipPost(req, res);
+    } else {
+      return await handleCompanyPost(req, res, next);
     }
 
   } catch (e) {
@@ -90,7 +89,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-async function handleLimitedPartnershipPost(req: Request, res: Response): Promise<void> {
+function handleLimitedPartnershipPost(req: Request, res: Response): void {
   const company = getCompanyProfileFromSession(req);
   const confirmationCheckboxValue = req.body.confirmationStatement;
   const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
@@ -137,7 +136,7 @@ async function handleLimitedPartnershipPost(req: Request, res: Response): Promis
   res.redirect(urlUtils.getUrlToPath(`${urls.CONFIRMATION_PATH}?lang=${lang}`, req));
 
 }
-  
+
 async function handleCompanyPost(req: Request, res: Response, next: NextFunction): Promise<void> {
   const session = req.session as Session;
   const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
