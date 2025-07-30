@@ -3,14 +3,14 @@ import { Templates } from "../types/template.paths";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import * as urls from "../types/page.urls";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { validCompanyProfile } from "../../test/mocks/lp.company.profile.mock";
+import { getCompanyProfileFromSession } from "../utils/session";
 import { urlUtils } from "../utils/url";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   res.cookie('lang', lang, { httpOnly: true });
 
-  const company: CompanyProfile = validCompanyProfile;
+  const company: CompanyProfile = getCompanyProfileFromSession(req);
   const locales = getLocalesService();
   const formData = { byfCheckbox: req.cookies.byfCheckbox };
 
