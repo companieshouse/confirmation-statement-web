@@ -13,7 +13,7 @@
         {% endblock %}
 
         {% block back %}
-        {% if currentScreen != "confirmationSummary" %}
+        {% if not confirmationScreen %}
             {% include "limited-partners/partials/nav/back-link.njk" %}
         {% endif %}    
         {% endblock %}

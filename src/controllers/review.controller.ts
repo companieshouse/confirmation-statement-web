@@ -36,6 +36,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     res.cookie('lang', lang, { httpOnly: true });
 
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
+    const isLimitedPartnership = isLimitedPartnershipCompanyType(req);
 
     if (isLimitedPartnershipCompanyType(req)) {
       return res.render(Templates.REVIEW, {
@@ -44,7 +45,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         company,
         nextMadeUpToDate: company.confirmationStatement?.nextMadeUpTo,
         isPaymentDue: true,
-        ecctEnabled: true
+        ecctEnabled: true,
+        isLimitedPartnership
       });
 
     } else {
@@ -52,6 +54,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       const transaction: Transaction = await getTransaction(session, transactionId);
 
       const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
+
 
       const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
       const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
@@ -61,7 +64,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         company,
         nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
         isPaymentDue: isPaymentDue(transaction, submissionId),
-        ecctEnabled
+        ecctEnabled,
+        isLimitedPartnership
       });
     }
 
@@ -72,7 +76,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (isLimitedPartnershipCompanyType(req)) {
+    const isLimitedPartnership = isLimitedPartnershipCompanyType(req);
+
+    if (isLimitedPartnership) {
       const company = getCompanyProfileFromSession(req);
       const confirmationCheckboxValue = req.body.confirmationStatement;
       const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
@@ -110,6 +116,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
           ecctEnabled,
           confirmationStatementError,
           lawfulActivityStatementError,
+          isLimitedPartnership,
           confirmationChecked: confirmationCheckboxValue === "true",
           lawfulActivityChecked: lawfulActivityCheckboxValue === "true"
         });

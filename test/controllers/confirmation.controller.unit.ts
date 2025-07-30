@@ -6,10 +6,14 @@ import request from "supertest";
 import app from "../../src/app";
 import { urlUtils } from "../../src/utils/url";
 import { CONFIRMATION_PATH } from "../../src/types/page.urls";
-
+import { isLimitedPartnershipCompanyType } from "../../src/utils/session";
+import { getCompanyProfile } from "../../src/services/company.profile.service";
+jest.mock("../../src/utils/session");
+jest.mock("../../src/services/company.profile.service");
 
 const COMPANY_NUMBER = "12345678";
 const PAGE_HEADING = "Confirmation";
+const LP_PAGE_HEADING = "Confirmation statement submitted";
 const TRANSACTION_ID = "66454";
 const SUBMISSION_ID = "435435";
 const URL =
@@ -40,12 +44,32 @@ describe("Confirmation controller tests", () => {
   });
 
   it("should show confirmation page", async () => {
+    (getCompanyProfile as jest.Mock).mockResolvedValue({
+      companyName: "TestCo Ltd"
+    });
+    (isLimitedPartnershipCompanyType as jest.Mock).mockReturnValue(false);
+
     const response = await request(app)
       .get(URL);
 
     expect(response.status).toBe(200);
     expect(response.text).toContain(PAGE_HEADING);
     expect(response.text).toContain(TRANSACTION_ID);
+    expect(response.text).toContain(TEST_EMAIL);
+    expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+  });
+
+  it("should show limited partnership confirmation page", async () => {
+    (getCompanyProfile as jest.Mock).mockResolvedValue({
+      companyName: "TestCo Ltd"
+    });
+    (isLimitedPartnershipCompanyType as jest.Mock).mockReturnValue(true);
+
+    const response = await request(app)
+      .get(URL);
+
+    expect(response.status).toBe(200);
+    expect(response.text).toContain(LP_PAGE_HEADING);
     expect(response.text).toContain(TEST_EMAIL);
     expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
   });

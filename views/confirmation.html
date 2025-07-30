@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  {% if company.type == "limited-partnership" %}
+  {% if isLimitedPartnership %}
     {{ title }}
   {% else %}
     Confirmation
@@ -9,30 +9,30 @@
 {% endblock %}
 
 {% block head %}
-  {% if company.type == "limited-partnership" %}
+  {% if isLimitedPartnership %}
     {% include "./limited-partners/partials/meta_header.njk" %}
   {% endif %} 
 {% endblock %}
 
 {% block header %}
-  {% if company.type == "limited-partnership" %}
+  {% if isLimitedPartnership %}
     {% include "./limited-partners/partials/header.njk" %}
   {% endif %} 
 {% endblock %}
 
 {% block beforeContent %}
-  {% if company.type == "limited-partnership" %}
+  {% if isLimitedPartnership %}
   {% endif %} 
 {% endblock %}
 
 {% block footer %}
-  {% if company.type == "limited-partnership" %}
+  {% if isLimitedPartnership %}
     {% include "./limited-partners/partials/footer.njk" %}
   {% endif %} 
 {% endblock %} 
 
 {% block content %}
-  {% if company.type == "limited-partnership" %}
+  {% if isLimitedPartnership %}
     {% include "./limited-partners/partials/confirmation-submitted.njk" %}
   {% else %}
     <div class="govuk-grid-row">

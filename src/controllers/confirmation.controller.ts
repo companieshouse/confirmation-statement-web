@@ -4,10 +4,11 @@ import { urlUtils } from "../utils/url";
 import { Session } from "@companieshouse/node-session-handler";
 import { ACCOUNTS_SIGNOUT_PATH } from "../types/page.urls";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { validCompanyProfile } from "../../test/mocks/lp.company.profile.mock";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
+import { getCompanyProfile } from "../services/company.profile.service";
+import { isLimitedPartnershipCompanyType } from "../utils/session";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   const lang = selectLang(req.query.lang);
   res.cookie('lang', lang, { httpOnly: true });
 
@@ -17,7 +18,10 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const session = req.session as Session;
     const userEmail = session.data.signin_info?.user_profile?.email;
-    const company: CompanyProfile = validCompanyProfile;
+    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+    const company: CompanyProfile = await getCompanyProfile(companyNumber);
+    const isLimitedPartnership = isLimitedPartnershipCompanyType(req);
+
     return res.render(Templates.CONFIRMATION, {
       ...getLocaleInfo(locales, lang),
       htmlLang: lang,
@@ -25,7 +29,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       referenceNumber: transactionId,
       userEmail,
       company,
-      currentScreen: "confirmationSummary"
+      confirmationScreen: true,
+      isLimitedPartnership
     });
   } catch (e) {
     return next(e);
