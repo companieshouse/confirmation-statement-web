@@ -21,7 +21,6 @@ import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise"
 import { getCompanyProfileFromSession } from "../utils/session";
 import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
 import { savePreviousPageInSession } from "../utils/session-navigation";
-import * as urls from "../types/page.urls";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -45,7 +44,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         company,
         nextMadeUpToDate: company.confirmationStatement?.nextMadeUpTo,
         isPaymentDue: true,
-        ecctEnabled: true, 
+        ecctEnabled: true,
         isLimitedPartnership: true
       });
 
@@ -78,7 +77,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
-    
+
     if (isLimitedPartnershipCompanyType(companyProfile)) {
       const confirmationCheckboxValue = req.body.confirmationStatement;
       const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
@@ -123,13 +122,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       }
 
       return res.redirect(
-          urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
-            CONFIRMATION_PATH,
-            companyNumber,
-            transactionId,
-            submissionId
-          )
-        );
+        urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+          CONFIRMATION_PATH,
+          companyNumber,
+          transactionId,
+          submissionId
+        )
+      );
 
     } else {
       const session = req.session as Session;
