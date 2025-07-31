@@ -30,44 +30,19 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const backLinkUrl = urlUtils
       .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId);
-
-    const locales = getLocalesService();
-    const lang = selectLang(req.query.lang);
-    res.cookie('lang', lang, { httpOnly: true });
-
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
     const isLimitedPartnership = isLimitedPartnershipCompanyType(req);
+    const locales = getLocalesService();
+    const lang = selectLang(req.query.lang);
+    const localeData = getLocaleInfo(locales, lang); 
 
-    if (isLimitedPartnershipCompanyType(req)) {
-      return res.render(Templates.REVIEW, {
-        ...getLocaleInfo(locales, lang),
-        backLinkUrl,
-        company,
-        nextMadeUpToDate: company.confirmationStatement?.nextMadeUpTo,
-        isPaymentDue: true,
-        ecctEnabled: true,
-        isLimitedPartnership
-      });
+    res.cookie('lang', lang, { httpOnly: true });
 
-    } else {
+    const viewInfo = isLimitedPartnership
+      ? getLimitedPartnershipView(localeData, backLinkUrl, company)
+      : getLimitedCompanyView(localeData, backLinkUrl, company, session, transactionId, submissionId); 
 
-      const transaction: Transaction = await getTransaction(session, transactionId);
-
-      const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
-
-
-      const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
-      const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
-      return res.render(Templates.REVIEW, {
-        ...getLocaleInfo(locales, lang),
-        backLinkUrl,
-        company,
-        nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
-        isPaymentDue: isPaymentDue(transaction, submissionId),
-        ecctEnabled,
-        isLimitedPartnership
-      });
-    }
+     return res.render(Templates.REVIEW, viewInfo);  
 
   } catch (e) {
     return next(e);
@@ -88,6 +63,41 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     return next(e);
   }
 };
+
+const getLimitedPartnershipView = (localeData: any, backLinkUrl: string, company: CompanyProfile) => ({
+  localeData,
+  backLinkUrl,
+  company,
+  nextMadeUpToDate: company.confirmationStatement?.nextMadeUpTo,
+  isPaymentDue: true,
+  ecctEnabled: true,
+  isLimitedPartnership: true
+});
+
+const getLimitedCompanyView = async (
+  localeData: any,
+  backLinkUrl: string,
+  company: CompanyProfile,
+  session: Session,
+  transactionId: string,
+  submissionId: string
+) => {
+  const transaction = await getTransaction(session, transactionId);
+  const csSubmission = await getConfirmationStatement(session, transactionId, submissionId);
+  const statementDate = new Date(company.confirmationStatement?.nextMadeUpTo || "");
+  const ecctEnabled = ecctDayOneEnabled(statementDate);
+
+  return {
+    ...localeData,
+    backLinkUrl,
+    company,
+    nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
+    isPaymentDue: isPaymentDue(transaction, submissionId),
+    ecctEnabled,
+    isLimitedPartnership: false
+  };
+};
+
 
 function handleLimitedPartnershipPost(req: Request, res: Response): void {
   const company = getCompanyProfileFromSession(req);
@@ -194,6 +204,10 @@ async function handleCompanyPost(req: Request, res: Response, next: NextFunction
     await sendLawfulPurposeStatementUpdate(req, true);
   }
 
+  handlePayement(req, res, next, session, companyNumber, transactionId, submissionId); 
+}
+
+async function handlePayement(req: Request, res: Response, next: NextFunction, session: Session, companyNumber: string, transactionId: string, submissionId: string): Promise<void> {
   const paymentUrl: string | undefined = await closeTransaction(
     session,
     companyNumber,
