@@ -20,7 +20,6 @@ import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import { getCompanyProfileFromSession, isLimitedPartnershipCompanyType } from "../utils/session";
 import { savePreviousPageInSession } from "../utils/session-navigation";
-import * as urls from "../types/page.urls";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -115,8 +114,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         });
       }
 
-      res.redirect(urlUtils.getUrlToPath(`${urls.CONFIRMATION_PATH}?lang=${lang}`, req));
-
+      // Redirect to Confirmation screen
     } else {
       const session = req.session as Session;
       const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
