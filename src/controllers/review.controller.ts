@@ -21,6 +21,7 @@ import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise"
 import { getCompanyProfileFromSession } from "../utils/session";
 import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
 import { savePreviousPageInSession } from "../utils/session-navigation";
+import * as urls from "../types/page.urls";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -117,7 +118,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         });
       }
 
-      // Redirect to Confirmation screen
+      const nextPage = urlUtils.getUrlToPath(`${urls.CONFIRMATION_PATH}?lang=${lang}`, req);
+      res.redirect(nextPage);
+
     } else {
       const session = req.session as Session;
       const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
