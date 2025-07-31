@@ -204,10 +204,10 @@ async function handleCompanyPost(req: Request, res: Response, next: NextFunction
     await sendLawfulPurposeStatementUpdate(req, true);
   }
 
-  handlePayement(req, res, next, session, companyNumber, transactionId, submissionId); 
+  handlePayment(req, res, next, session, companyNumber, transactionId, submissionId); 
 }
 
-async function handlePayement(req: Request, res: Response, next: NextFunction, session: Session, companyNumber: string, transactionId: string, submissionId: string): Promise<void> {
+async function handlePayment(req: Request, res: Response, next: NextFunction, session: Session, companyNumber: string, transactionId: string, submissionId: string): Promise<void> {
   const paymentUrl: string | undefined = await closeTransaction(
     session,
     companyNumber,
