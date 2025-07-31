@@ -75,6 +75,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const companyProfile = getCompanyProfileFromSession(req);
+    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+    
     if (isLimitedPartnershipCompanyType(companyProfile)) {
       const confirmationCheckboxValue = req.body.confirmationStatement;
       const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
@@ -118,14 +122,17 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         });
       }
 
-      const nextPage = urlUtils.getUrlToPath(`${urls.CONFIRMATION_PATH}?lang=${lang}`, req);
-      res.redirect(nextPage);
+      return res.redirect(
+          urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+            CONFIRMATION_PATH,
+            companyNumber,
+            transactionId,
+            submissionId
+          )
+        );
 
     } else {
       const session = req.session as Session;
-      const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
-      const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
-      const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
 
       const company: CompanyProfile = await getCompanyProfile(companyNumber);
       const transaction: Transaction = await getTransaction(
