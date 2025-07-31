@@ -18,7 +18,8 @@ import { getConfirmationStatement } from "../services/confirmation.statement.ser
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
 import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
-import { getCompanyProfileFromSession, isLimitedPartnershipCompanyType } from "../utils/session";
+import { getCompanyProfileFromSession } from "../utils/session";
+import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
 import { savePreviousPageInSession } from "../utils/session-navigation";
 import * as urls from "../types/page.urls";
 
@@ -38,7 +39,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
     const isLimitedPartnership = isLimitedPartnershipCompanyType(req);
 
-    if (isLimitedPartnershipCompanyType(req)) {
+    if (isLimitedPartnershipCompanyType(company)) {
       return res.render(Templates.REVIEW, {
         ...getLocaleInfo(locales, lang),
         backLinkUrl,
@@ -76,10 +77,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const isLimitedPartnership = isLimitedPartnershipCompanyType(req);
-
-    if (isLimitedPartnership) {
-      const company = getCompanyProfileFromSession(req);
+    const companyProfile = getCompanyProfileFromSession(req);
+    if (isLimitedPartnershipCompanyType(companyProfile)) {
       const confirmationCheckboxValue = req.body.confirmationStatement;
       const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
 
@@ -112,7 +111,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
           ...getLocaleInfo(locales, lang),
           htmlLang: lang,
           previousPage,
-          company,
+          companyProfile,
           ecctEnabled,
           confirmationStatementError,
           lawfulActivityStatementError,

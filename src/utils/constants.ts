@@ -37,6 +37,17 @@ export const LP_CONFIRMATION_STATEMENT_ERROR: string = "Select if all required i
 export const LP_LAWFUL_ACTIVITY_STATEMENT_ERROR: string = "Select if intended future activities are lawful";
 export const ACCEPT_LAWFUL_PURPOSE_STATEMENT = "acceptLawfulPurposeStatement";
 export const LIMITED_PARTNERSHIP_COMPANY_TYPE = "limited-partnership";
+export const LIMITED_PARTNERSHIP_LP_COMPANY_TYPE = "limited-partnership-lp";
+export const LIMITED_PARTNERSHIP_SLP_COMPANY_TYPE = "limited-partnership-slp";
+export const LIMITED_PARTNERSHIP_PFLP_COMPANY_TYPE = "limited-partnership-pflp";
+export const LIMITED_PARTNERSHIP_SPFLP_COMPANY_TYPE = "limited-partnership-spflp";
+export const LIMITED_PARTNERSHIP_COMPANY_TYPES = [
+  LIMITED_PARTNERSHIP_COMPANY_TYPE,
+  LIMITED_PARTNERSHIP_LP_COMPANY_TYPE,
+  LIMITED_PARTNERSHIP_SLP_COMPANY_TYPE,
+  LIMITED_PARTNERSHIP_PFLP_COMPANY_TYPE,
+  LIMITED_PARTNERSHIP_SPFLP_COMPANY_TYPE
+];
 export const COMPANY_PROFILE_SESSION_KEY = "company_profile";
 export const VALID_EMAIL_REGEX_PATTERN = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~\\-]+@([^.@][^@\\s]+)$";
 export const HOSTNAME_REGEX = "^(xn|[a-z0-9]+)(-?-[a-z0-9]+)*$";
