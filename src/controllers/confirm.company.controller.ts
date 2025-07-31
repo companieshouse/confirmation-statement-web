@@ -66,7 +66,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     let nextPageUrl;
     session.setExtraData(COMPANY_PROFILE_SESSION_KEY, company);
-    if (isLimitedPartnershipCompanyType(req) && !isAuthorisedAgent(req.session)) {
+    if (isLimitedPartnershipCompanyType(company) && !isAuthorisedAgent(req.session)) {
       nextPageUrl = LP_MUST_BE_AUTHORISED_AGENT_PATH;
     } else {
       await createNewConfirmationStatement(session);

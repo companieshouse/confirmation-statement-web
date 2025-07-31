@@ -9,6 +9,7 @@ import { Templates } from "../types/template.paths";
 import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
 import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
 import * as urls from "../types/page.urls";
+import { getCompanyProfileFromSession } from "../utils/session";
 
 
 export const companyAuthenticationMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -21,7 +22,7 @@ export const companyAuthenticationMiddleware = (req: Request, res: Response, nex
     return res.status(400).render(Templates.SERVICE_OFFLINE_MID_JOURNEY, { templateName: Templates.SERVICE_OFFLINE_MID_JOURNEY });
   }
 
-  if (isLimitedPartnershipCompanyType(req)) {
+  if (isLimitedPartnershipCompanyType(getCompanyProfileFromSession(req))) {
     if (isAuthorisedAgent(req.session)) {
       /* TODO: ACSP authentication does not support to create transaction at this moment.
       Once this feature become available, the following logic could be reused */

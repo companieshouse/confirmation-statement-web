@@ -37,7 +37,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
 
-    if (isLimitedPartnershipCompanyType(req)) {
+    if (isLimitedPartnershipCompanyType(company)) {
       return res.render(Templates.REVIEW, {
         ...getLocaleInfo(locales, lang),
         backLinkUrl,
@@ -72,8 +72,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (isLimitedPartnershipCompanyType(req)) {
-      const company = getCompanyProfileFromSession(req);
+    const companyProfile = getCompanyProfileFromSession(req);
+    if (isLimitedPartnershipCompanyType(companyProfile)) {
       const confirmationCheckboxValue = req.body.confirmationStatement;
       const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
 
@@ -106,7 +106,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
           ...getLocaleInfo(locales, lang),
           htmlLang: lang,
           previousPage,
-          company,
+          companyProfile,
           ecctEnabled,
           confirmationStatementError,
           lawfulActivityStatementError,
