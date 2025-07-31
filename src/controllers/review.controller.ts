@@ -44,7 +44,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         company,
         nextMadeUpToDate: company.confirmationStatement?.nextMadeUpTo,
         isPaymentDue: true,
-        ecctEnabled: true
+        ecctEnabled: true, 
+        isLimitedPartnership: true
       });
 
     } else {
@@ -111,7 +112,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
           confirmationStatementError,
           lawfulActivityStatementError,
           confirmationChecked: confirmationCheckboxValue === "true",
-          lawfulActivityChecked: lawfulActivityCheckboxValue === "true"
+          lawfulActivityChecked: lawfulActivityCheckboxValue === "true",
+          isLimitedPartnership: true
         });
       }
 
