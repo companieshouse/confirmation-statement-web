@@ -7,9 +7,10 @@ import { Session } from "@companieshouse/node-session-handler";
 import { createConfirmationStatement } from "../services/confirmation.statement.service";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
 import { ConfirmationStatementCreated } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
-import { isLimitedPartnershipCompanyType } from "../utils/session";
+import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
 import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
 import * as urls from "../types/page.urls";
+import { getCompanyProfileFromSession } from "../utils/session";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -24,7 +25,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         submissionResponse.resource as ConfirmationStatementCreated;
 
       let nextPageUrl;
-      if (isLimitedPartnershipCompanyType(req) && isAuthorisedAgent(req.session)) {
+      if (isLimitedPartnershipCompanyType(getCompanyProfileFromSession(req)) && isAuthorisedAgent(req.session)) {
         nextPageUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(`${urls.LP_BEFORE_YOU_FILE_PATH}?lang=en`, companyNumber, transactionId, castedResponseResource.id);
       } else {
         nextPageUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TRADING_STATUS_PATH, companyNumber, transactionId, castedResponseResource.id);
