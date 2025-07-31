@@ -6,7 +6,7 @@ import { isCompanyNumberValid } from "../validators/company.number.validator";
 import { urlParams } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { Templates } from "../types/template.paths";
-import { isLimitedPartnershipCompanyType } from "../utils/session";
+import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
 import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
 import * as urls from "../types/page.urls";
 

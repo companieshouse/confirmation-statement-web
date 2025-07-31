@@ -22,7 +22,7 @@ import {
 import { urlUtils } from "../utils/url";
 import { toReadableFormat } from "../utils/date";
 import { COMPANY_PROFILE_SESSION_KEY } from "../utils/constants";
-import { isLimitedPartnershipCompanyType } from "../utils/session";
+import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
 import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -65,10 +65,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     let nextPageUrl;
+    session.setExtraData(COMPANY_PROFILE_SESSION_KEY, company);
     if (isLimitedPartnershipCompanyType(req) && !isAuthorisedAgent(req.session)) {
       nextPageUrl = LP_MUST_BE_AUTHORISED_AGENT_PATH;
     } else {
-      session.setExtraData(COMPANY_PROFILE_SESSION_KEY, company);
       await createNewConfirmationStatement(session);
       nextPageUrl = urlUtils.getUrlWithCompanyNumber(CREATE_TRANSACTION_PATH, companyNumber);
     }

@@ -18,7 +18,8 @@ import { getConfirmationStatement } from "../services/confirmation.statement.ser
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
 import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
-import { getCompanyProfileFromSession, isLimitedPartnershipCompanyType } from "../utils/session";
+import { getCompanyProfileFromSession } from "../utils/session";
+import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
 import { savePreviousPageInSession } from "../utils/session-navigation";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
