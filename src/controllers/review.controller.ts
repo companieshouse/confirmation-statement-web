@@ -21,7 +21,6 @@ import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise"
 import { getCompanyProfileFromSession } from "../utils/session";
 import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
 import { savePreviousPageInSession } from "../utils/session-navigation";
-import * as urls from "../types/page.urls";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -45,8 +44,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         company,
         nextMadeUpToDate: company.confirmationStatement?.nextMadeUpTo,
         isPaymentDue: true,
-        ecctEnabled: true,
-        isLimitedPartnership: true
+        ecctEnabled: true
       });
 
     } else {
@@ -54,7 +52,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       const transaction: Transaction = await getTransaction(session, transactionId);
 
       const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
-
 
       const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
       const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
@@ -64,8 +61,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         company,
         nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
         isPaymentDue: isPaymentDue(transaction, submissionId),
-        ecctEnabled,
-        isLimitedPartnership: true
+        ecctEnabled
       });
     }
 
@@ -114,14 +110,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
           ecctEnabled,
           confirmationStatementError,
           lawfulActivityStatementError,
-          isLimitedPartnership: true,
           confirmationChecked: confirmationCheckboxValue === "true",
           lawfulActivityChecked: lawfulActivityCheckboxValue === "true"
         });
       }
 
-      res.redirect(urlUtils.getUrlToPath(`${urls.CONFIRMATION_PATH}?lang=${lang}`, req));
-
+      // Redirect to Confirmation screen
     } else {
       const session = req.session as Session;
       const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
