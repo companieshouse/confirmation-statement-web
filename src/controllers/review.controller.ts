@@ -37,7 +37,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     res.cookie('lang', lang, { httpOnly: true });
 
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
-    const isLimitedPartnership = isLimitedPartnershipCompanyType(req);
 
     if (isLimitedPartnershipCompanyType(company)) {
       return res.render(Templates.REVIEW, {
@@ -47,7 +46,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         nextMadeUpToDate: company.confirmationStatement?.nextMadeUpTo,
         isPaymentDue: true,
         ecctEnabled: true,
-        isLimitedPartnership
+        isLimitedPartnership: true
       });
 
     } else {
@@ -66,7 +65,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
         isPaymentDue: isPaymentDue(transaction, submissionId),
         ecctEnabled,
-        isLimitedPartnership
+        isLimitedPartnership: true
       });
     }
 
@@ -115,7 +114,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
           ecctEnabled,
           confirmationStatementError,
           lawfulActivityStatementError,
-          isLimitedPartnership,
+          isLimitedPartnership: true,
           confirmationChecked: confirmationCheckboxValue === "true",
           lawfulActivityChecked: lawfulActivityCheckboxValue === "true"
         });
