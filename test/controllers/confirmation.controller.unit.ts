@@ -6,9 +6,9 @@ import request from "supertest";
 import app from "../../src/app";
 import { urlUtils } from "../../src/utils/url";
 import { CONFIRMATION_PATH } from "../../src/types/page.urls";
-import { isLimitedPartnershipCompanyType } from "../../src/utils/session";
 import { getCompanyProfile } from "../../src/services/company.profile.service";
-jest.mock("../../src/utils/session");
+import { isLimitedPartnershipCompanyType } from "../../src/utils/limited.partnership";
+jest.mock("../../src/utils/limited.partnership");
 jest.mock("../../src/services/company.profile.service");
 
 const COMPANY_NUMBER = "12345678";

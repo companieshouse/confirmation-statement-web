@@ -6,7 +6,7 @@ import { ACCOUNTS_SIGNOUT_PATH } from "../types/page.urls";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import { getCompanyProfile } from "../services/company.profile.service";
-import { isLimitedPartnershipCompanyType } from "../utils/session";
+import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   const lang = selectLang(req.query.lang);
@@ -20,7 +20,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const userEmail = session.data.signin_info?.user_profile?.email;
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
-    const isLimitedPartnership = isLimitedPartnershipCompanyType(req);
+    const isLimitedPartnership = isLimitedPartnershipCompanyType(company);
 
     return res.render(Templates.CONFIRMATION, {
       ...getLocaleInfo(locales, lang),
