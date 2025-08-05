@@ -44,7 +44,7 @@ describe("ACSP Session Utilities", () => {
       mockSession.getExtraData = jest.fn().mockReturnValue(sessionDataWithDate);
 
       const result = getAcspSessionData(mockSession);
-      expect(result?.newConfirmationDate?.getTime()).toEqual!(date.getTime());
+      expect(result?.newConfirmationDate?.getTime()).toEqual(date.getTime());
     });
   });
 
