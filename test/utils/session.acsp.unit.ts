@@ -1,5 +1,9 @@
 import { Session } from "@companieshouse/node-session-handler";
-import { getAcspSessionData, resetAcspSession, defaultAcspSessionData } from "../../src/utils/session.acsp";
+import {
+  getAcspSessionData,
+  resetAcspSession,
+  createDefaultAcspSessionData
+} from "../../src/utils/session.acsp";
 import { ACSP_SESSION_KEY } from "../../src/utils/constants";
 
 const mockSession = {
@@ -14,10 +18,11 @@ describe("ACSP Session Utilities", () => {
 
   describe("getAcspSessionData", () => {
     it("should return ACSP session data when present", () => {
-      mockSession.getExtraData = jest.fn().mockReturnValue(defaultAcspSessionData);
+      const mockData = createDefaultAcspSessionData();
+      mockSession.getExtraData = jest.fn().mockReturnValue(mockData);
 
       const result = getAcspSessionData(mockSession);
-      expect(result).toEqual(defaultAcspSessionData);
+      expect(result).toEqual(mockData);
       expect(mockSession.getExtraData).toHaveBeenCalledWith(ACSP_SESSION_KEY);
     });
 
@@ -28,12 +33,26 @@ describe("ACSP Session Utilities", () => {
       expect(result).toBeUndefined();
       expect(mockSession.getExtraData).toHaveBeenCalledWith(ACSP_SESSION_KEY);
     });
+
+    it("should handle a valid Date in session data", () => {
+      const date = new Date("2025-04-24T00:00:00Z");
+      const sessionDataWithDate = {
+        ...createDefaultAcspSessionData(),
+        newConfirmationDate: date
+      };
+
+      mockSession.getExtraData = jest.fn().mockReturnValue(sessionDataWithDate);
+
+      const result = getAcspSessionData(mockSession);
+      expect(result?.newConfirmationDate?.getTime()).toEqual!(date.getTime());
+    });
   });
 
   describe("resetAcspSession", () => {
     it("should set ACSP session data to default", () => {
+      const defaultData = createDefaultAcspSessionData();
       resetAcspSession(mockSession);
-      expect(mockSession.setExtraData).toHaveBeenCalledWith(ACSP_SESSION_KEY, defaultAcspSessionData);
+      expect(mockSession.setExtraData).toHaveBeenCalledWith(ACSP_SESSION_KEY, defaultData);
     });
   });
 });

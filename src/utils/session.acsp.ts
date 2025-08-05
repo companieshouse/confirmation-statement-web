@@ -10,18 +10,20 @@ interface AcspSessionData {
   confirmLawfulActionsCheck: boolean;
 }
 
-export const defaultAcspSessionData: AcspSessionData = {
-  beforeYouFileCheck: false,
-  changeConfirmationStatementDate: false,
-  newConfirmationDate: null ,
-  confirmAllInformationCheck: false,
-  confirmLawfulActionsCheck: false
-};
+export function createDefaultAcspSessionData(): AcspSessionData {
+  return {
+    beforeYouFileCheck: false,
+    changeConfirmationStatementDate: false,
+    newConfirmationDate: null,
+    confirmAllInformationCheck: false,
+    confirmLawfulActionsCheck: false
+  };
+}
 
 export function getAcspSessionData(session: Session): AcspSessionData | undefined {
   return session.getExtraData(ACSP_SESSION_KEY) as AcspSessionData | undefined;
 }
 
 export function resetAcspSession(session: Session): void {
-  session.setExtraData(ACSP_SESSION_KEY, defaultAcspSessionData);
+  session.setExtraData(ACSP_SESSION_KEY, createDefaultAcspSessionData());
 }
