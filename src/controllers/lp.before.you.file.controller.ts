@@ -4,15 +4,19 @@ import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise"
 import * as urls from "../types/page.urls";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfileFromSession } from "../utils/session";
+import { Session } from "@companieshouse/node-session-handler";
+import { resetAcspSession } from "../utils/session.acsp";
 import { urlUtils } from "../utils/url";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   res.cookie('lang', lang, { httpOnly: true });
-
+  const session: Session = req.session as Session;
   const company: CompanyProfile = getCompanyProfileFromSession(req);
   const locales = getLocalesService();
   const formData = { byfCheckbox: req.cookies.byfCheckbox };
+
+  resetAcspSession(session);
 
   return res.render(Templates.LP_BEFORE_YOU_FILE, {
     ...getLocaleInfo(locales, lang),
