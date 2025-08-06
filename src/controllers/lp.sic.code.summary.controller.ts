@@ -4,16 +4,18 @@ import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise"
 import * as urls from "../types/page.urls";
 import { savePreviousPageInSession } from "../utils/session-navigation";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { validCompanyProfile } from "../../test/mocks/lp.company.profile.mock";
 import { urlUtils } from "../utils/url";
+import { getCompanyProfile } from "../services/company.profile.service";
+import { getReviewPath, isACSPJourney } from '../utils/limited.partnership';
 
-export const get = (req: Request, res: Response) => {
+export const get = async (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   res.cookie('lang', lang, { httpOnly: true });
 
   const locales = getLocalesService();
   const previousPage = savePreviousPageInSession(req);
-  const company: CompanyProfile = validCompanyProfile;
+  const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+  const company: CompanyProfile = await getCompanyProfile(companyNumber);
 
   return res.render(Templates.LP_SIC_CODE_SUMMARY, {
     ...getLocaleInfo(locales, lang),
@@ -27,9 +29,21 @@ export const get = (req: Request, res: Response) => {
 };
 
 export const post = (req: Request, res: Response) => {
-  const lang = selectLang(req.query.lang);
-  const nextPage = urlUtils.getUrlToPath(`${urls.REVIEW_PATH}?lang=${lang}`, req);
-  res.redirect(nextPage);
+  const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+  const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+  const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+  const isAcspJourney = isACSPJourney(req.originalUrl);
+  const nextPage = getReviewPath(isAcspJourney);
+
+  return res.redirect(
+    urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+      nextPage,
+      companyNumber,
+      transactionId,
+      submissionId
+    )
+  );
+
 };
 
 export const addSicCode = (req: Request, res: Response) => {
