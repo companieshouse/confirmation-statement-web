@@ -49,6 +49,7 @@ export const LIMITED_PARTNERSHIP_COMPANY_TYPES = [
   LIMITED_PARTNERSHIP_SPFLP_COMPANY_TYPE
 ];
 export const COMPANY_PROFILE_SESSION_KEY = "company_profile";
+export const ACSP_SESSION_KEY = "acsp_session";
 export const VALID_EMAIL_REGEX_PATTERN = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~\\-]+@([^.@][^@\\s]+)$";
 export const HOSTNAME_REGEX = "^(xn|[a-z0-9]+)(-?-[a-z0-9]+)*$";
 export const TLD_PART_REGEX = "^(?:[a-z]{2,63}|xn--[a-z0-9]+(?:-[a-z0-9]+){1,4})(?:$|[^-])";
