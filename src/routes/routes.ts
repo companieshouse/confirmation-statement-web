@@ -164,6 +164,7 @@ router.get(urls.LP_BEFORE_YOU_FILE, lpBeforeYouFileRoute.get);
 router.post(urls.LP_BEFORE_YOU_FILE, lpBeforeYouFileRoute.post);
 
 router.get(urls.LP_CHECK_YOUR_ANSWER, lpCheckYourAnswerRoute.get);
+router.post(urls.LP_CHECK_YOUR_ANSWER, lpCheckYourAnswerRoute.post);
 
 router.get(urls.LP_CS_DATE, lpCSDateRoute.get);
 router.post(urls.LP_CS_DATE, lpCSDateRoute.post);
@@ -173,5 +174,10 @@ router.post(urls.LP_SIC_CODE_SUMMARY, lpSicCodeSummaryRoute.post);
 
 router.post(urls.LP_SIC_CODE_SUMMARY_REMOVE, lpSicCodeSummaryRoute.removeSicCode);
 router.post(urls.LP_SIC_CODE_SUMMARY_ADD, lpSicCodeSummaryRoute.addSicCode);
+
+router.get(urls.LP_REVIEW, reviewRoute.get);
+router.post(urls.LP_REVIEW, reviewRoute.post);
+
+router.get(urls.LP_CONFIRMATION, confirmationRoute.get);
 
 router.get(urls.LP_MUST_BE_AUTHORISED_AGENT, lpMustBeAuthorisedAgent.get);

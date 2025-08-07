@@ -14,7 +14,7 @@
                     <span class="govuk-caption-l">ACME LIMITED PARTNERSHIP (LP123456)</span>
                     {{ i18n.CDCYATitle }}
                 </h1>
-                <form method="post">
+                    <form method="POST">
                     {% include "includes/csrf_token.html" %}
                     {{ govukSummaryList({
                         classes: "govuk-!-margin-bottom-9",
@@ -41,11 +41,11 @@
                     
                     {{ govukButton({
                         text: i18n.CDCYAContinueButton,
-                        href: nextPage,
+                        type: "submit",
                         id: "continue-button-id"
                     })}}
 
-                </form>
+                    </form>
 
             </div>
         </div>
