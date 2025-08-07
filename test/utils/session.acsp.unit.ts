@@ -2,7 +2,8 @@ import { Session } from "@companieshouse/node-session-handler";
 import {
   getAcspSessionData,
   resetAcspSession,
-  createDefaultAcspSessionData
+  createDefaultAcspSessionData,
+  updateAcspSessionData
 } from "../../src/utils/session.acsp";
 import { ACSP_SESSION_KEY } from "../../src/utils/constants";
 
@@ -54,5 +55,71 @@ describe("ACSP Session Utilities", () => {
       resetAcspSession(mockSession);
       expect(mockSession.setExtraData).toHaveBeenCalledWith(ACSP_SESSION_KEY, defaultData);
     });
+  });
+
+  describe("updateAcspSessionData", () => {
+    it("should merge updates with existing session data", () => {
+      const existingData = createDefaultAcspSessionData();
+      mockSession.getExtraData = jest.fn().mockReturnValue(existingData);
+
+      const updates = { beforeYouFileCheck: true };
+      updateAcspSessionData(mockSession, updates);
+
+      expect(mockSession.setExtraData).toHaveBeenCalledWith(
+        ACSP_SESSION_KEY,
+        expect.objectContaining({
+          ...existingData,
+          beforeYouFileCheck: true
+        })
+      );
+    });
+
+    it("should use default session data if none exists", () => {
+      mockSession.getExtraData = jest.fn().mockReturnValue(undefined);
+
+      const updates = { confirmLawfulActionsCheck: true };
+      const expectedData = {
+        ...createDefaultAcspSessionData(),
+        confirmLawfulActionsCheck: true
+      };
+
+      updateAcspSessionData(mockSession, updates);
+
+      expect(mockSession.setExtraData).toHaveBeenCalledWith(ACSP_SESSION_KEY, expectedData);
+    });
+
+  });
+
+  describe("updateAcspSessionData", () => {
+    it("should merge updates with existing session data", () => {
+      const existingData = createDefaultAcspSessionData();
+      mockSession.getExtraData = jest.fn().mockReturnValue(existingData);
+
+      const updates = { beforeYouFileCheck: true };
+      updateAcspSessionData(mockSession, updates);
+
+      expect(mockSession.setExtraData).toHaveBeenCalledWith(
+        ACSP_SESSION_KEY,
+        expect.objectContaining({
+          ...existingData,
+          beforeYouFileCheck: true
+        })
+      );
+    });
+
+    it("should use default session data if none exists", () => {
+      mockSession.getExtraData = jest.fn().mockReturnValue(undefined);
+
+      const updates = { confirmLawfulActionsCheck: true };
+      const expectedData = {
+        ...createDefaultAcspSessionData(),
+        confirmLawfulActionsCheck: true
+      };
+
+      updateAcspSessionData(mockSession, updates);
+
+      expect(mockSession.setExtraData).toHaveBeenCalledWith(ACSP_SESSION_KEY, expectedData);
+    });
+
   });
 });

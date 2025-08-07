@@ -3,20 +3,18 @@ import { Templates } from "../types/template.paths";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import * as urls from "../types/page.urls";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { getCompanyProfileFromSession } from "../utils/session";
 import { Session } from "@companieshouse/node-session-handler";
-import { resetAcspSession } from "../utils/session.acsp";
+import { getAcspSessionData, resetAcspSession, updateAcspSessionData } from "../utils/session.acsp";
 import { urlUtils } from "../utils/url";
+import { getCompanyProfile } from "../services/company.profile.service";
 
-export const get = (req: Request, res: Response) => {
+export const get = async (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   res.cookie('lang', lang, { httpOnly: true });
-  const session: Session = req.session as Session;
-  const company: CompanyProfile = getCompanyProfileFromSession(req);
+  const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+  const company: CompanyProfile = await getCompanyProfile(companyNumber);
   const locales = getLocalesService();
   const formData = { byfCheckbox: req.cookies.byfCheckbox };
-
-  resetAcspSession(session);
 
   return res.render(Templates.LP_BEFORE_YOU_FILE, {
     ...getLocaleInfo(locales, lang),
@@ -29,10 +27,18 @@ export const get = (req: Request, res: Response) => {
 };
 
 export const post = (req: Request, res: Response) => {
+  const session: Session = req.session as Session;
   const lang = selectLang(req.query.lang);
+  const localInfo = getLocaleInfo(getLocalesService(), lang);
   const nextPage = urlUtils.getUrlToPath(`${urls.LP_CS_DATE_PATH}?lang=${lang}`, req);
   const byfCheckbox = req.body.byfCheckbox;
-  const localInfo = getLocaleInfo(getLocalesService(), lang);
+  const isByfChecked = byfCheckbox === "confirm";
+
+  if (!getAcspSessionData(session)) {
+    resetAcspSession(session);
+  }
+
+  updateAcspSessionData(session, { beforeYouFileCheck: isByfChecked } );
 
   if (!byfCheckbox) {
     return reloadPageWithError(req, res, lang, localInfo, byfCheckbox, localInfo.i18n.BYFErrorMessageNotChecked);

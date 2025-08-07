@@ -2,6 +2,7 @@ import middlewareMocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
 import { LP_BEFORE_YOU_FILE_PATH, urlParams } from "../../src/types/page.urls";
+import { getCompanyProfile } from "../../src/services/company.profile.service";
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -11,6 +12,10 @@ const URL = LP_BEFORE_YOU_FILE_PATH
   .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
   .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
 
+jest.mock("../../src/services/company.profile.service", () => ({
+  getCompanyProfile: jest.fn()
+}));
+
 describe("start before you file controller tests", () => {
 
   beforeEach(() => {
@@ -18,6 +23,11 @@ describe("start before you file controller tests", () => {
   });
 
   it("should return acsp / limited partnership before you file page page", async () => {
+    (getCompanyProfile as jest.Mock).mockResolvedValue({
+      companyNumber: COMPANY_NUMBER,
+      type: "limited-partnership-lp",
+      companyName: "Test Company"
+    });
     const response = await request(app).get(URL);
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
