@@ -6,13 +6,12 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { Session } from "@companieshouse/node-session-handler";
 import { getAcspSessionData, resetAcspSession, updateAcspSessionData } from "../utils/session.acsp";
 import { urlUtils } from "../utils/url";
-import { getCompanyProfile } from "../services/company.profile.service";
+import { getCompanyProfileFromSession } from "../utils/session";
 
-export const get = async (req: Request, res: Response) => {
+export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   res.cookie('lang', lang, { httpOnly: true });
-  const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
-  const company: CompanyProfile = await getCompanyProfile(companyNumber);
+  const company: CompanyProfile = getCompanyProfileFromSession(req);
   const locales = getLocalesService();
   const formData = { byfCheckbox: req.cookies.byfCheckbox };
 
