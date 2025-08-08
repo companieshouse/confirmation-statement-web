@@ -9,6 +9,7 @@ import * as urls from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { Session } from "@companieshouse/node-session-handler";
 import moment from 'moment';
+import { getReviewPath, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType, isACSPJourney } from '../utils/limited.partnership';
 
 
 export const get = (req: Request, res: Response) => {
@@ -36,4 +37,26 @@ export const get = (req: Request, res: Response) => {
     csDatePageUrl,
     nextPage
   });
+};
+
+export const post = async (req: Request, res: Response) => {
+  const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+  const company: CompanyProfile = getCompanyProfileFromSession(req);
+  const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+  const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+  const isAcspJourney = isACSPJourney(req.originalUrl);
+  const reviewPath = getReviewPath(isAcspJourney);
+
+  const nextPage = (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company))
+    ? reviewPath
+    : urls.LP_SIC_CODE_SUMMARY_PATH;
+
+  return res.redirect(
+    urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+      nextPage,
+      companyNumber,
+      transactionId,
+      submissionId
+    )
+  );
 };

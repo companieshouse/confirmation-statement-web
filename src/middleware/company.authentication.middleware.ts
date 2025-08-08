@@ -45,7 +45,7 @@ export const companyAuthenticationMiddleware = (req: Request, res: Response, nex
       return authMiddleware(authMiddlewareConfig)(req, res, next);
 
     } else {
-      res.redirect(urls.LP_MUST_BE_AUTHORISED_AGENT_PATH);
+      return res.redirect(urls.LP_MUST_BE_AUTHORISED_AGENT_PATH);
     }
 
   } else {

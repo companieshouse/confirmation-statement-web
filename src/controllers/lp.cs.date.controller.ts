@@ -9,6 +9,8 @@ import { getCompanyProfileFromSession } from "../utils/session";
 import { Session } from "@companieshouse/node-session-handler";
 import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
 import { RADIO_BUTTON_VALUE } from "../utils/constants";
+import { getCompanyProfile } from "../services/company.profile.service";
+import { getReviewPath, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType, isACSPJourney } from '../utils/limited.partnership';
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -51,12 +53,16 @@ export const get = (req: Request, res: Response) => {
   });
 };
 
-export const post = (req: Request, res: Response) => {
+export const post = async (req: Request, res: Response) => {
+  const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
   const lang = selectLang(req.query.lang);
   const company: CompanyProfile = getCompanyProfileFromSession(req);
   const acspSessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
   const locales = getLocalesService();
   const localInfo = getLocaleInfo(locales, lang);
+  const isAcspJourney = isACSPJourney(req.originalUrl);
+  const reviewPath = getReviewPath(isAcspJourney);
+
   if (req.body) {
     switch (req.body.confirmationStatementDate) {
         case RADIO_BUTTON_VALUE.YES: {
@@ -88,7 +94,12 @@ export const post = (req: Request, res: Response) => {
         }
         case RADIO_BUTTON_VALUE.NO: {
           saveCsDateIntoSession(acspSessionData, false);
-          res.redirect(urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`, req));
+          const path = (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company))
+            ? reviewPath
+            : urls.LP_SIC_CODE_SUMMARY_PATH;
+
+          const nextPage = urlUtils.getUrlToPath(`${path}?lang=${lang}`, req);
+          res.redirect(nextPage);
           break;
         }
         default: {

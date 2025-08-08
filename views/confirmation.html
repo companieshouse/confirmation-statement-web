@@ -1,33 +1,37 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  {% if isLimitedPartnership %}
-    {{ title }}
-  {% else %}
-    Confirmation
-  {% endif %}    
+  Confirmation
 {% endblock %}
 
 {% block head %}
   {% if isLimitedPartnership %}
     {% include "./limited-partners/partials/meta_header.njk" %}
+  {% else %}
+    {{ super() }}
   {% endif %} 
 {% endblock %}
 
 {% block header %}
   {% if isLimitedPartnership %}
     {% include "./limited-partners/partials/header.njk" %}
+  {% else %}
+    {{ super() }}  
   {% endif %} 
 {% endblock %}
 
 {% block beforeContent %}
   {% if isLimitedPartnership %}
-  {% endif %} 
+  {% else %}
+    {{ super() }}
+  {% endif %}
 {% endblock %}
 
 {% block footer %}
   {% if isLimitedPartnership %}
     {% include "./limited-partners/partials/footer.njk" %}
+  {% else %}
+    {{ super() }}  
   {% endif %} 
 {% endblock %} 
 

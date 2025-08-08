@@ -27,3 +27,9 @@ export function getAcspSessionData(session: Session): AcspSessionData | undefine
 export function resetAcspSession(session: Session): void {
   session.setExtraData(ACSP_SESSION_KEY, createDefaultAcspSessionData());
 }
+
+export function updateAcspSessionData(session: Session, updates: Partial<AcspSessionData>): void {
+  const currentSessionData = getAcspSessionData(session) || createDefaultAcspSessionData();
+  const updatedSessionData = { ...currentSessionData, ...updates };
+  session.setExtraData(ACSP_SESSION_KEY, updatedSessionData);
+}
