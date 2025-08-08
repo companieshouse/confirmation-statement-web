@@ -62,4 +62,3 @@ function reloadPageWithError(req: Request, res: Response, lang: string, localInf
     }
   });
 }
-
