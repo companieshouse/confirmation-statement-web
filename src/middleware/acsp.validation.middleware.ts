@@ -10,7 +10,7 @@ export const acspValidationMiddleware = (req: Request, res: Response, next: Next
   logger.debug("Execute ACSP URL validation middleware checks");
 
   if (!isAuthorisedAgent(req.session)) {
-    logger.errorRequest(req, "User is not valid ACSP member");
+    logger.errorRequest(req, "User is not a valid ACSP member");
     return res.redirect(LP_MUST_BE_AUTHORISED_AGENT_PATH);
   } else if (!isLimitedPartnershipCompanyType(getCompanyProfileFromSession(req))) {
     logger.errorRequest(req, "Company type is not valid");
