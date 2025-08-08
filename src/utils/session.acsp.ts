@@ -2,9 +2,9 @@ import { Session } from "@companieshouse/node-session-handler";
 import { ACSP_SESSION_KEY } from "../utils/constants";
 
 
-interface AcspSessionData {
+export interface AcspSessionData {
   beforeYouFileCheck: boolean;
-  changeConfirmationStatementDate: boolean;
+  changeConfirmationStatementDate: boolean | null;
   newConfirmationDate: Date | null;
   confirmAllInformationCheck: boolean;
   confirmLawfulActionsCheck: boolean;
@@ -13,7 +13,7 @@ interface AcspSessionData {
 export function createDefaultAcspSessionData(): AcspSessionData {
   return {
     beforeYouFileCheck: false,
-    changeConfirmationStatementDate: false,
+    changeConfirmationStatementDate: null,
     newConfirmationDate: null,
     confirmAllInformationCheck: false,
     confirmLawfulActionsCheck: false

@@ -24,7 +24,42 @@ describe("start confirmation statement date controller tests", () => {
     expect(response.text).toContain("Confirmation statement date");
   });
 
-  it("should forward to Confirmation Statement Date page", async () => {
+  it("should redirect to check your answer page", async () => {
+    const response = await request(app)
+      .post(URL).set('Content-Type', 'application/json')
+      .send({
+        "confirmationStatementDate": "yes",
+        "csDate-year": "2025",
+        "csDate-month": "08",
+        "csDate-day": "01"
+      });
+
+    expect(response.headers.location).toBe("/confirmation-statement/company/12345678/transaction/66454/submission/435435/acsp/check-your-answer?lang=en");
+  });
+
+  it("should show error message when the entire CS date is missing", async () => {
+    const response = await request(app)
+      .post(URL).set('Content-Type', 'application/json')
+      .send({
+        "confirmationStatementDate": "yes"
+      });
+
+    expect(response.text).toContain("Error: Please enter the confirmation statement date");
+  });
+
+  it("should show error message when the year of CS date is missing", async () => {
+    const response = await request(app)
+      .post(URL).set('Content-Type', 'application/json')
+      .send({
+        "confirmationStatementDate": "yes",
+        "csDate-month": "08",
+        "csDate-day": "01"
+      });
+
+    expect(response.text).toContain("Error: Please enter the confirmation statement date");
+  });
+
+  it("should forward to sic code page", async () => {
     const response = await request(app)
       .post(URL).set('Content-Type', 'application/json')
       .send({ "confirmationStatementDate": "no" });
