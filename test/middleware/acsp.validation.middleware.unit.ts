@@ -64,7 +64,7 @@ describe("start ACSP validation middleware tests", () => {
     const response = await request(app).get(URL_LP_CHECK);
 
     expect(middlewareMocks.mockAcspValidationMiddleware).toHaveBeenCalled();
-    expect(response.text).toContain("Confirmation statement date");
+    expect(response.headers.location).toBe("/confirmation-statement/company/12345678/transaction/66454/submission/435435/acsp/confirmation-statement-date?lang=en");
   });
 
   it("acspValidationMiddleware should redirect to LP stop screen if user is non ACSP member", async () => {

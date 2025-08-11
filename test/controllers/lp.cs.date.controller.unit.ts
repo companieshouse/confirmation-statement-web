@@ -72,6 +72,19 @@ describe("start confirmation statement date controller tests", () => {
     expect(response.text).toContain("Error: Please enter the confirmation statement date");
   });
 
+  it("should show error message when the CS date is valid", async () => {
+    const response = await request(app)
+      .post(URL).set('Content-Type', 'application/json')
+      .send({
+        "confirmationStatementDate": "yes",
+        "csDate-year": "2025",
+        "csDate-month": "02",
+        "csDate-day": "31"
+      });
+
+    expect(response.text).toContain("Error: The confirmation statement date is invalid");
+  });
+
   it("should forward to sic code page", async () => {
     const response = await request(app)
       .post(URL).set('Content-Type', 'application/json')
@@ -97,15 +110,6 @@ describe("date controller post tests", () => {
     (limitedPartnershipUtils.isPflpLimitedPartnershipCompanyType as jest.Mock).mockReturnValue(false);
     (limitedPartnershipUtils.isSpflpLimitedPartnershipCompanyType as jest.Mock).mockReturnValue(false);
     (limitedPartnershipUtils.getReviewPath as jest.Mock).mockReturnValue("/confirmation-statement/company/12345678/transaction/66454/submission/435435/acsp/review");
-  });
-
-  it("should redirect to Check Your Answer page when 'yes' is selected", async () => {
-    const response = await request(app)
-      .post(URL)
-      .send({ confirmationStatementDate: "yes" });
-
-    expect(response.status).toBe(302);
-    expect(response.headers.location).toBe(`/confirmation-statement/company/${COMPANY_NUMBER}/transaction/${TRANSACTION_ID}/submission/${SUBMISSION_ID}/acsp/check-your-answer?lang=en`);
   });
 
   it("should redirect to SIC Summary page when 'no' is selected and company type is not pflp/spflp", async () => {

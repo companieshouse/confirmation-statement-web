@@ -39,7 +39,7 @@ export const get = (req: Request, res: Response) => {
   });
 };
 
-export const post = async (req: Request, res: Response) => {
+export const post = (req: Request, res: Response) => {
   const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
   const company: CompanyProfile = getCompanyProfileFromSession(req);
   const transactionId = urlUtils.getTransactionIdFromRequestParams(req);

@@ -10,8 +10,8 @@
 {% set dateSelector -%}
 
     {{ govukDateInput({
-        id: "confirmationStatementDateSelector",
-        namePrefix: "confirmation-statement-date",
+        id: "csDate",
+        namePrefix: "csDate",
         fieldset: {
             legend: {
             text:  i18n.CDSRadioButtonYesExplainer,
@@ -22,7 +22,36 @@
         hint: {
             text: i18n.CDSRadioButtonYesExplainerExample,
             classes: "govuk-hint"
-        }
+        },
+        items: [
+            {
+              name: "day",
+              classes: "govuk-input--error govuk-input--width-2" if errors else "govuk-input--width-2",
+              id: "csDate-day",
+              value: csDateValue["csDate-day"],
+              attributes: {
+                pattern: "^(0?[1-9]|[12][0-9]|3[01])$"
+              }
+            },
+            {
+              name: "month",
+              classes: "govuk-input--error govuk-input--width-2" if errors else "govuk-input--width-2",
+              id: "csDate-month",
+              value: csDateValue["csDate-month"],
+              attributes: {
+                pattern: "^(0?[1-9]|1[0-2])$"
+              }
+            },
+            {
+              name: "year",
+              classes: "govuk-input--error govuk-input--width-4" if errors else "govuk-input--width-4",
+              id: "csDate-year",
+              value: csDateValue["csDate-year"],
+              attributes: {
+                pattern: "^\\d{4}$"
+              }
+            }
+        ]
     }) }}
 
 {%- endset %}
@@ -35,7 +64,7 @@
                 <form action="" method="post">
                     {% include "includes/csrf_token.html" %}
                     <h1 class="govuk-heading-xl">
-                        <span class="govuk-caption-l">ACME LIMITED PARTNERSHIP (SL012345)</span>
+                        <span class="govuk-caption-l">{{company.companyName}} ({{company.companyNumber}})</span>
                         {{i18n.CDSTitle}}
                     </h1>
 
@@ -55,6 +84,7 @@
                                 classes: "govuk-fieldset__legend--l"
                             }
                         },
+                        value: csDateRadioValue,
                         items: [
                             {
                                 value: "yes",

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Templates } from "../types/template.paths";
 import * as urls from "../types/page.urls";
+import moment from 'moment';
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import { savePreviousPageInSession } from "../utils/session-navigation";
 import { urlUtils } from "../utils/url";
@@ -9,7 +10,6 @@ import { getCompanyProfileFromSession } from "../utils/session";
 import { Session } from "@companieshouse/node-session-handler";
 import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
 import { RADIO_BUTTON_VALUE } from "../utils/constants";
-import { getCompanyProfile } from "../services/company.profile.service";
 import { getReviewPath, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType, isACSPJourney } from '../utils/limited.partnership';
 
 export const get = (req: Request, res: Response) => {
@@ -18,12 +18,6 @@ export const get = (req: Request, res: Response) => {
   const locales = getLocalesService();
   const acspSessionData = getAcspSessionData(req.session as Session);
   res.cookie('lang', lang, { httpOnly: true });
-
-  // //testing
-  // if(acspSessionData) {
-  //   acspSessionData.changeConfirmationStatementDate = true;
-  //   acspSessionData.newConfirmationDate = new Date();
-  // }
 
   let csDateRadioValue, csDateValue;
   if (acspSessionData && acspSessionData.changeConfirmationStatementDate !== null) {
@@ -41,7 +35,6 @@ export const get = (req: Request, res: Response) => {
     }
   }
 
-  console.log("@@@@@@ acspSessionData: 111", acspSessionData);
   return res.render(Templates.LP_CS_DATE, {
     ...getLocaleInfo(locales, lang),
     htmlLang: lang,
@@ -53,8 +46,7 @@ export const get = (req: Request, res: Response) => {
   });
 };
 
-export const post = async (req: Request, res: Response) => {
-  const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+export const post = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const company: CompanyProfile = getCompanyProfileFromSession(req);
   const acspSessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
@@ -66,29 +58,32 @@ export const post = async (req: Request, res: Response) => {
   if (req.body) {
     switch (req.body.confirmationStatementDate) {
         case RADIO_BUTTON_VALUE.YES: {
-          // console.log("@@@@@@@ req.body:", req.body);
-          // console.log("@@@@@@@ req.body.csDate-year:", req.body["csDate-year"]);
-          // console.log("@@@@@@@ req.body.csDate-month:", req.body["csDate-month"]);
-          // console.log("@@@@@@@ req.body.csDate-day:", req.body["csDate-day"]);
           const csDateValue = {
             "csDate-year": req.body["csDate-year"],
             "csDate-month": req.body["csDate-month"],
             "csDate-day": req.body["csDate-day"]
           };
-          if (csDateValue["csDate-year"] && csDateValue["csDate-month"] && csDateValue["csDate-day"]) {
-            const csDateInput = new Date(csDateValue["csDate-year"], csDateValue["csDate-month"] - 1, csDateValue["csDate-day"]);
-            console.log("@@@@@@@ csDateInput:", csDateInput);
-            saveCsDateIntoSession(acspSessionData, true, csDateInput);
-            return res.redirect(urlUtils.getUrlToPath(`${urls.LP_CHECK_YOUR_ANSWER_PATH}?lang=${lang}`, req));
-          } else {
+
+          let errorMessage = undefined;
+          if (!(csDateValue["csDate-year"] && csDateValue["csDate-month"] && csDateValue["csDate-day"])) {
+            errorMessage = localInfo.i18n.CDSDateValueMissingError;
+          } else if (!(moment(`${csDateValue["csDate-year"]}-${csDateValue["csDate-month"]}-${csDateValue["csDate-day"]}`, 'YYYY-MM-DD').isValid())) {
+            errorMessage = localInfo.i18n.CDSDateValueInvalidError;
+          }
+
+          if (errorMessage) {
             reloadPageWithError(req,
                                 res,
                                 lang,
                                 localInfo,
                                 company,
-                                localInfo.i18n.CDSDateValueMissingError,
+                                errorMessage,
                                 RADIO_BUTTON_VALUE.YES,
                                 csDateValue);
+          } else {
+            const csDateInput = new Date(csDateValue["csDate-year"], csDateValue["csDate-month"] - 1, csDateValue["csDate-day"]);
+            saveCsDateIntoSession(acspSessionData, true, csDateInput);
+            return res.redirect(urlUtils.getUrlToPath(`${urls.LP_CHECK_YOUR_ANSWER_PATH}?lang=${lang}`, req));
           }
           break;
         }
@@ -135,4 +130,5 @@ function saveCsDateIntoSession(acspSessionData: AcspSessionData, isChangedConfir
     }
   }
 }
+
 
