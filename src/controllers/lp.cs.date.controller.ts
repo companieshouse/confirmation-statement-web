@@ -21,7 +21,7 @@ export const get = (req: Request, res: Response) => {
 
   let csDateRadioValue, csDateValue;
   if (acspSessionData && acspSessionData.changeConfirmationStatementDate !== null) {
-    if (acspSessionData.changeConfirmationStatementDate){
+    if (acspSessionData.changeConfirmationStatementDate) {
       csDateRadioValue = RADIO_BUTTON_VALUE.YES;
       if (acspSessionData.newConfirmationDate) {
         csDateValue = {
