@@ -9,11 +9,12 @@ import { urlUtils } from "../utils/url";
 import { getCompanyProfileFromSession } from "../utils/session";
 
 export const get = (req: Request, res: Response) => {
+  const session: Session = req.session as Session;
   const lang = selectLang(req.query.lang);
   res.cookie('lang', lang, { httpOnly: true });
   const company: CompanyProfile = getCompanyProfileFromSession(req);
   const locales = getLocalesService();
-  const formData = { byfCheckbox: req.cookies.byfCheckbox };
+  const formData = { byfCheckbox: getAcspSessionData(session)?.beforeYouFileCheck ? 'confirm' : '' };
 
   return res.render(Templates.LP_BEFORE_YOU_FILE, {
     ...getLocaleInfo(locales, lang),
@@ -43,7 +44,6 @@ export const post = (req: Request, res: Response) => {
     return reloadPageWithError(req, res, lang, localInfo, byfCheckbox, localInfo.i18n.BYFErrorMessageNotChecked);
   }
 
-  res.cookie('byfCheckbox', byfCheckbox, { httpOnly: true });
   res.redirect(nextPage);
 };
 
