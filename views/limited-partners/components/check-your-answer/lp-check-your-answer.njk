@@ -11,7 +11,7 @@
             <div class="govuk-grid-column-two-thirds">
 
                 <h1 class="govuk-heading-xl">
-                    <span class="govuk-caption-l">ACME LIMITED PARTNERSHIP (LP123456)</span>
+                    <span class="govuk-caption-l">{{company.companyName}} ({{company.companyNumber}})</span>
                     {{ i18n.CDCYATitle }}
                 </h1>
                     <form method="POST">
@@ -29,7 +29,7 @@
                                 actions: {
                                     items: [
                                             {
-                                                href: "#",
+                                                href: csDatePageUrl,
                                                 text: i18n.CDCYACheckAnswersChange
                                             }
                                     ]

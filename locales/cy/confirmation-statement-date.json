@@ -4,6 +4,8 @@
   "CDSCurrentDateExplainer":"CY-This date is 12 months after the last confirmation statement, or 12 months after the limited partnership's registration date.",
   "CDSDateChangeExplainer":"CY-You can change the date of the confirmation statement if you want to file early. This will start a new 12 month review period, and change the date of future confirmation statements.",
   "CDSRadioButtonError":"CY-Error: Please select yes or no",
+  "CDSDateValueMissingError":"CY-Error: Please enter the confirmation statement date",
+  "CDSDateValueInvalidError":"CY-Error: The confirmation statement date is invalid",
   "CDSRadioButtonQuestion":"CY-Do you want to change the date of your confirmation statement?",
   "CDSRadioButtonYes":"CY-Yes",
   "CDSRadioButtonYesExplainer":"CY-Enter the date of your confirmation statement",
