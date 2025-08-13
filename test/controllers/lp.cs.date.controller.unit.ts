@@ -132,4 +132,13 @@ describe("date controller post tests", () => {
     expect(response.headers.location).toBe(`/confirmation-statement/company/${COMPANY_NUMBER}/transaction/${TRANSACTION_ID}/submission/${SUBMISSION_ID}/acsp/review?lang=en`);
   });
 
+  it("should redirect to previous page when back button clicked", async () => {
+    const response = await request(app).get(URL);
+
+    const expectedBackUrl = `/confirmation-statement/company/${COMPANY_NUMBER}/transaction/${TRANSACTION_ID}/submission/${SUBMISSION_ID}/acsp/before-you-file?lang=en`;
+
+    expect(response.status).toBe(200);
+    expect(response.text).toContain(`href="${expectedBackUrl}"`);
+  });
+
 });

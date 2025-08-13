@@ -3,7 +3,6 @@ import { Templates } from "../types/template.paths";
 import * as urls from "../types/page.urls";
 import moment from 'moment';
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
-import { savePreviousPageInSession } from "../utils/session-navigation";
 import { urlUtils } from "../utils/url";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfileFromSession } from "../utils/session";
@@ -17,6 +16,9 @@ export const get = (req: Request, res: Response) => {
   const company: CompanyProfile = getCompanyProfileFromSession(req);
   const locales = getLocalesService();
   const acspSessionData = getAcspSessionData(req.session as Session);
+  const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+  const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+  const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
   res.cookie('lang', lang, { httpOnly: true });
 
   let csDateRadioValue, csDateValue;
@@ -38,7 +40,12 @@ export const get = (req: Request, res: Response) => {
   return res.render(Templates.LP_CS_DATE, {
     ...getLocaleInfo(locales, lang),
     htmlLang: lang,
-    previousPage: savePreviousPageInSession(req),
+    previousPage: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+      urls.LP_BEFORE_YOU_FILE_PATH,
+      companyNumber,
+      transactionId,
+      submissionId
+    ),
     company,
     csDateRadioValue,
     csDateValue,
