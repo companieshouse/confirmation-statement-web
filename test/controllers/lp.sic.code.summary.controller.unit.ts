@@ -1,9 +1,10 @@
 import middlewareMocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
-import { REVIEW_PATH, LP_REVIEW_PATH, LP_SIC_CODE_SUMMARY_PATH, urlParams } from "../../src/types/page.urls";
+import { REVIEW_PATH, LP_REVIEW_PATH, LP_SIC_CODE_SUMMARY_PATH, urlParams, LP_CHECK_YOUR_ANSWER_PATH, LP_CS_DATE_PATH } from "../../src/types/page.urls";
 import { dummySicCodes } from "../../src/controllers/lp.sic.code.summary.controller";
 import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
+import * as sessionAcspUtils from "../../src/utils/session.acsp";
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -143,5 +144,45 @@ describe("SIC code summary post tests", () => {
 
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe(reviewPath);
+  });
+
+  it("should redirect to Check Your Answer page when back button clicked and confirmation statement date has changed", async() => {
+    jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+      changeConfirmationStatementDate: true,
+      beforeYouFileCheck: true,
+      newConfirmationDate: null,
+      confirmAllInformationCheck: false,
+      confirmLawfulActionsCheck: false
+    });
+
+    const response = await request(app)
+      .get(URL);
+
+    const backPath = LP_CHECK_YOUR_ANSWER_PATH
+      .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
+      .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
+      .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
+
+    expect(response.text).toContain(backPath);
+  });
+
+  it("should redirect to Check Your Answer page when back button clicked and confirmation statement date has NOT changed", async() => {
+    jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+      changeConfirmationStatementDate: false,
+      beforeYouFileCheck: true,
+      newConfirmationDate: null,
+      confirmAllInformationCheck: false,
+      confirmLawfulActionsCheck: false
+    });
+
+    const response = await request(app)
+      .get(URL);
+
+    const backPath = LP_CS_DATE_PATH
+      .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
+      .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
+      .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
+
+    expect(response.text).toContain(backPath);
   });
 });
