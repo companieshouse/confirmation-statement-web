@@ -2,12 +2,13 @@ import { Request, Response } from "express";
 import { Templates } from "../types/template.paths";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import * as urls from "../types/page.urls";
-import { savePreviousPageInSession } from "../utils/session-navigation";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { urlUtils } from "../utils/url";
 import { getCompanyProfileFromSession } from "../utils/session";
 import { getReviewPath, isACSPJourney } from '../utils/limited.partnership';
 import { SIC_CODE_SESSION_KEY } from "../utils/constants";
+import { getAcspSessionData } from "../utils/session.acsp";
+import { Session } from "@companieshouse/node-session-handler";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -16,7 +17,10 @@ export const get = (req: Request, res: Response) => {
   console.log("@@@@@@ GET session:", require('util').inspect(req.session, { showHidden: false, depth: null, colors: true }));
 
   const locales = getLocalesService();
-  const previousPage = savePreviousPageInSession(req);
+  const previousPagePath = getPreviousPagePath(req);
+  const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+  const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+  const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
   const company: CompanyProfile = getCompanyProfileFromSession(req);
 
   const sicCodeList: SicCodeSummaryListItem[] = [];;
@@ -40,7 +44,12 @@ export const get = (req: Request, res: Response) => {
   return res.render(Templates.LP_SIC_CODE_SUMMARY, {
     ...getLocaleInfo(locales, lang),
     htmlLang: lang,
-    previousPage,
+    previousPage: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+      previousPagePath,
+      companyNumber,
+      transactionId,
+      submissionId
+    ),
     urls,
     sicCodes: sicCodeList,
     searchSicCodes: dummySearchSicCodes,
@@ -65,6 +74,16 @@ export const post = (req: Request, res: Response) => {
     )
   );
 
+};
+
+export const getPreviousPagePath = (req: Request) => {
+  const acspSessionData = getAcspSessionData(req.session as Session);
+
+  if (acspSessionData?.changeConfirmationStatementDate) {
+    return urls.LP_CHECK_YOUR_ANSWER_PATH;
+  }
+
+  return urls.LP_CS_DATE_PATH;
 };
 
 export const addSicCode = (req: Request, res: Response) => {

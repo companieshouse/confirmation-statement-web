@@ -75,4 +75,15 @@ describe("start controller tests", () => {
 
     expect(response.headers.location).toBe(csDatePageUrl);
   });
+
+  it("should redirect to previous page when back button clicked", async () => {
+    acspSessionData.changeConfirmationStatementDate = true;
+    acspSessionData.newConfirmationDate = csDate;
+    const response = await request(app).get(URL);
+
+    const expectedBackUrl = `/confirmation-statement/company/${COMPANY_NUMBER}/transaction/${TRANSACTION_ID}/submission/${SUBMISSION_ID}/acsp/confirmation-statement-date?lang=en`;
+
+    expect(response.status).toBe(200);
+    expect(response.text).toContain(`href="${expectedBackUrl}"`);
+  });
 });
