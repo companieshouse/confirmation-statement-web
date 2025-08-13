@@ -5,30 +5,51 @@ import * as urls from "../types/page.urls";
 import { savePreviousPageInSession } from "../utils/session-navigation";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { urlUtils } from "../utils/url";
-import { getCompanyProfile } from "../services/company.profile.service";
+import { getCompanyProfileFromSession } from "../utils/session";
 import { getReviewPath, isACSPJourney } from '../utils/limited.partnership';
+import { SIC_CODE_SESSION_KEY } from "../utils/constants";
 
-export const get = async (req: Request, res: Response) => {
+export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   res.cookie('lang', lang, { httpOnly: true });
 
+  console.log("@@@@@@ GET session:", require('util').inspect(req.session, { showHidden: false, depth: null, colors: true }));
+
   const locales = getLocalesService();
   const previousPage = savePreviousPageInSession(req);
-  const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
-  const company: CompanyProfile = await getCompanyProfile(companyNumber);
+  const company: CompanyProfile = getCompanyProfileFromSession(req);
+
+  const sicCodeList: SicCodeSummaryListItem[] = [];;
+  if (company && company.sicCodes) {
+
+    const sicCodesList = company.sicCodes;
+    req.session?.setExtraData(SIC_CODE_SESSION_KEY, sicCodesList);
+    for (const code of sicCodesList) {
+      sicCodeList.push({
+        sicCode: {
+          code: code,
+          description: code
+        },
+        removeUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}/${code}/remove?lang=${lang}`, req)
+      });
+    }
+  }
+
+  console.log("@@@@@@ GET session.getExtraData(SIC_CODE_SESSION_KEY):", require('util').inspect(req.session?.getExtraData(SIC_CODE_SESSION_KEY), { showHidden: false, depth: null, colors: true }));
 
   return res.render(Templates.LP_SIC_CODE_SUMMARY, {
     ...getLocaleInfo(locales, lang),
     htmlLang: lang,
     previousPage,
     urls,
-    sicCodes: dummySicCodes,
+    sicCodes: sicCodeList,
     searchSicCodes: dummySearchSicCodes,
     company
   });
 };
 
 export const post = (req: Request, res: Response) => {
+  console.log("@@@@@@ post");
   const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
   const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
   const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
@@ -74,18 +95,33 @@ export const removeSicCode = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const removeSicCode = req.params.code;
 
+    console.log("@@@@@@ 000");
   if (dummySicCodes.length <= 1) {
+    console.log("@@@@@@ -1-1-1");
     console.warn("Attempt to remove SIC code was blocked. Limited Partnership requires at least one SIC code.");
     return res.redirect(urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`, req));
   }
 
+  console.log("@@@@@@ 111");
+
   if (removeSicCode) {
-    const index = dummySicCodes.findIndex(sicCode => sicCode.code === removeSicCode);
+    // const index = dummySicCodes.findIndex(sicCode => sicCode.code === removeSicCode);
+    const sessionSicCodeList = req.session?.getExtraData(SIC_CODE_SESSION_KEY) as string[];
+    const index = sessionSicCodeList.findIndex(sicCode => sicCode === removeSicCode);
+    console.log("@@@@@@ index:",index);
+    console.log("@@@@@@ removeSicCode:",removeSicCode);
 
     if (index !== -1) {
-      dummySicCodes.splice(index, 1);
+      // dummySicCodes.splice(index, 1);
+      sessionSicCodeList.splice(index, 1);
+      console.log("@@@@@@ 222");
     }
+     console.log("@@@@@@ 333");
   }
+
+  console.log("@@@@@@ POST session.getExtraData(SIC_CODE_SESSION_KEY):", require('util').inspect(req.session?.getExtraData(SIC_CODE_SESSION_KEY), { showHidden: false, depth: null, colors: true }));
+  console.log("@@@@@@ POST company_profile:", require('util').inspect(req.session?.getExtraData("company_profile"), { showHidden: false, depth: null, colors: true }));
+
 
   return res.redirect(urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`, req));
 };
@@ -93,6 +129,10 @@ export const removeSicCode = (req: Request, res: Response) => {
 interface SicCode {
   code: string;
   description: string;
+}
+interface SicCodeSummaryListItem {
+  sicCode: SicCode;
+  removeUrl: string;
 }
 
 export const dummySicCodes: SicCode[] = [
