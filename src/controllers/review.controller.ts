@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { closeTransaction, getTransaction } from "../services/transaction.service";
 import { Session } from "@companieshouse/node-session-handler";
-import { CONFIRMATION_PATH, CONFIRMATION_STATEMENT, TASK_LIST_PATH } from '../types/page.urls';
+import { CONFIRMATION_PATH, CONFIRMATION_STATEMENT, LP_CHECK_YOUR_ANSWER_PATH, LP_CS_DATE_PATH, LP_SIC_CODE_SUMMARY_PATH, TASK_LIST_PATH } from '../types/page.urls';
 import { Templates } from "../types/template.paths";
 import { urlUtils } from "../utils/url";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
@@ -18,8 +18,9 @@ import { getConfirmationStatement } from "../services/confirmation.statement.ser
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
 import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
-import { getConfirmationPath, isLimitedPartnershipCompanyType, isACSPJourney  } from '../utils/limited.partnership';
+import { getConfirmationPath, isLimitedPartnershipCompanyType, isACSPJourney, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType  } from '../utils/limited.partnership';
 import { savePreviousPageInSession } from "../utils/session-navigation";
+import { getAcspSessionData } from "../utils/session.acsp";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,19 +28,22 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
-    const backLinkUrl = urlUtils
-      .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId);
-
+    const company: CompanyProfile = await getCompanyProfile(companyNumber);
     const locales = getLocalesService();
     const lang = selectLang(req.query.lang);
     res.cookie('lang', lang, { httpOnly: true });
 
-    const company: CompanyProfile = await getCompanyProfile(companyNumber);
-
     if (isLimitedPartnershipCompanyType(company)) {
+      const backLinkPath = getACSPBackPath(req, company);
+
       return res.render(Templates.REVIEW, {
         ...getLocaleInfo(locales, lang),
-        backLinkUrl,
+        previousPage: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+          backLinkPath,
+          companyNumber,
+          transactionId,
+          submissionId
+        ),
         company,
         nextMadeUpToDate: company.confirmationStatement?.nextMadeUpTo,
         isPaymentDue: true,
@@ -50,11 +54,11 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     } else {
 
       const transaction: Transaction = await getTransaction(session, transactionId);
-
+      const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId);
       const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
-
       const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
       const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
+
       return res.render(Templates.REVIEW, {
         ...getLocaleInfo(locales, lang),
         backLinkUrl,
@@ -277,4 +281,16 @@ const isStatementCheckboxTicked = (checkboxValue: string): boolean => {
   }
 
   return false;
+};
+
+const getACSPBackPath = (req: Request, company: CompanyProfile) => {
+  const acspSessionData = getAcspSessionData(req.session as Session);
+
+  if (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company)) {
+    return acspSessionData?.changeConfirmationStatementDate
+      ? LP_CHECK_YOUR_ANSWER_PATH
+      : LP_CS_DATE_PATH;
+  }
+
+  return LP_SIC_CODE_SUMMARY_PATH;
 };
