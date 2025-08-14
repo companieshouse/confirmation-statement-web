@@ -35,15 +35,16 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     if (isLimitedPartnershipCompanyType(company)) {
       const backLinkPath = getACSPBackPath(req, company);
+      const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+        backLinkPath,
+        companyNumber,
+        transactionId,
+        submissionId
+      );
 
       return res.render(Templates.REVIEW, {
         ...getLocaleInfo(locales, lang),
-        previousPage: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
-          backLinkPath,
-          companyNumber,
-          transactionId,
-          submissionId
-        ),
+        previousPage,
         company,
         nextMadeUpToDate: company.confirmationStatement?.nextMadeUpTo,
         isPaymentDue: true,
