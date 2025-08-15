@@ -20,7 +20,7 @@ import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import { getConfirmationPath, isLimitedPartnershipCompanyType, isACSPJourney, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType  } from '../utils/limited.partnership';
 import { savePreviousPageInSession } from "../utils/session-navigation";
-import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
+import { getAcspSessionData } from "../utils/session.acsp";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -288,16 +288,24 @@ const isStatementCheckboxTicked = (checkboxValue: string): boolean => {
 };
 
 const getACSPBackPath = (session: Session, company: CompanyProfile) => {
-  const sessionData = getAcspSessionData(session) as AcspSessionData;
-  const isDateChangedInSession = Boolean(sessionData?.changeConfirmationStatementDate);
-  const isPrivateFundLimitedPartnership = 
-    isPflpLimitedPartnershipCompanyType(company) ||
-    isSpflpLimitedPartnershipCompanyType(company);
+  const sessionData = getAcspSessionData(session);
+  // const isDateChangedInSession = Boolean(sessionData?.changeConfirmationStatementDate);
+  // const isPrivateFundLimitedPartnership = 
+  //   isPflpLimitedPartnershipCompanyType(company) ||
+  //   isSpflpLimitedPartnershipCompanyType(company);
 
-  if(!isPrivateFundLimitedPartnership){
-    return LP_SIC_CODE_SUMMARY_PATH;
+  if (sessionData && sessionData.changeConfirmationStatementDate !== null) {
+    if (sessionData.changeConfirmationStatementDate) { 
+      return LP_CHECK_YOUR_ANSWER_PATH;
+    }
+
+    return LP_CS_DATE_PATH;
   }
+  return LP_CS_DATE_PATH;
+  // if(!isPrivateFundLimitedPartnership){
+  //   return LP_SIC_CODE_SUMMARY_PATH;
+  // }
 
-  return isDateChangedInSession ? LP_CHECK_YOUR_ANSWER_PATH : LP_CS_DATE_PATH;
+  // return isDateChangedInSession ? LP_CHECK_YOUR_ANSWER_PATH : LP_CS_DATE_PATH;
 
 };
