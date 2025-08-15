@@ -34,7 +34,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     res.cookie('lang', lang, { httpOnly: true });
 
     if (isLimitedPartnershipCompanyType(company)) {
-      const backLinkPath = getACSPBackPath(req, company);
+      const backLinkPath = getACSPBackPath(session, company);
       const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
         backLinkPath,
         companyNumber,
@@ -284,8 +284,8 @@ const isStatementCheckboxTicked = (checkboxValue: string): boolean => {
   return false;
 };
 
-const getACSPBackPath = (req: Request, company: CompanyProfile) => {
-  const acspSessionData = getAcspSessionData(req.session as Session);
+const getACSPBackPath = (session: Session, company: CompanyProfile) => {
+  const acspSessionData = getAcspSessionData(session);
 
   if (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company)) {
     return acspSessionData?.changeConfirmationStatementDate
