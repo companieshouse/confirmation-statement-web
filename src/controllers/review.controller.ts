@@ -28,6 +28,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+    const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId);
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
     const locales = getLocalesService();
     const lang = selectLang(req.query.lang);
@@ -55,7 +56,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     } else {
 
       const transaction: Transaction = await getTransaction(session, transactionId);
-      const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId);
       const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
       const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
       const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
