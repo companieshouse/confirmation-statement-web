@@ -291,21 +291,21 @@ const getACSPBackPath = (session: Session, company: CompanyProfile) => {
   const sessionData = getAcspSessionData(session);
   
   // const isDateChangedInSession = Boolean(sessionData?.changeConfirmationStatementDate);
-  // const isPrivateFundLimitedPartnership = 
-  //   isPflpLimitedPartnershipCompanyType(company) ||
-  //   isSpflpLimitedPartnershipCompanyType(company);
+  const isPrivateFundLimitedPartnership = 
+    isPflpLimitedPartnershipCompanyType(company) ||
+    isSpflpLimitedPartnershipCompanyType(company);
 
-  if (sessionData) {
-    // if (sessionData.changeConfirmationStatementDate) { 
-    //   return LP_CHECK_YOUR_ANSWER_PATH;
-    // }
+  if(isPrivateFundLimitedPartnership){
+    if (sessionData && sessionData.changeConfirmationStatementDate !== null) {
+      if (sessionData.changeConfirmationStatementDate) { 
+        return LP_CHECK_YOUR_ANSWER_PATH;
+      }
 
-    return LP_CS_DATE_PATH;
+      return LP_CS_DATE_PATH;
+    }
   }
-  return LP_CS_DATE_PATH;
-  // if(!isPrivateFundLimitedPartnership){
-  //   return LP_SIC_CODE_SUMMARY_PATH;
-  // }
+
+  return LP_SIC_CODE_SUMMARY_PATH;
 
   // return isDateChangedInSession ? LP_CHECK_YOUR_ANSWER_PATH : LP_CS_DATE_PATH;
 
