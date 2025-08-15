@@ -288,21 +288,21 @@ const isStatementCheckboxTicked = (checkboxValue: string): boolean => {
   return false;
 };
 
-const getACSPBackPath = (session: Session, company: CompanyProfile) => {
-  // const sessionData = getAcspSessionData(session);
-  // const isPrivateFundLimitedPartnership = 
-  //   isPflpLimitedPartnershipCompanyType(company) ||
-  //   isSpflpLimitedPartnershipCompanyType(company);
+const getACSPBackPath = (session: Session, company: CompanyProfile): string => {
+  const sessionData = getAcspSessionData(session);
+  const isPrivateFundLimitedPartnership = 
+    isPflpLimitedPartnershipCompanyType(company) ||
+    isSpflpLimitedPartnershipCompanyType(company);
 
-  // if(isPrivateFundLimitedPartnership){
-  //   if (sessionData && sessionData.changeConfirmationStatementDate !== null) {
-  //     if (sessionData.changeConfirmationStatementDate) { 
-  //       return LP_CHECK_YOUR_ANSWER_PATH;
-  //     }
+  if(isPrivateFundLimitedPartnership){
+    if (sessionData && sessionData.changeConfirmationStatementDate !== null) {
+      if (sessionData.changeConfirmationStatementDate) { 
+        return LP_CHECK_YOUR_ANSWER_PATH;
+      }
 
-  //     return LP_CS_DATE_PATH;
-  //   }
-  // }
+      return LP_CS_DATE_PATH;
+    }
+  }
 
   return LP_SIC_CODE_SUMMARY_PATH;
 };
