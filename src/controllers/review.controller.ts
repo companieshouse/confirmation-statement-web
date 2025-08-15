@@ -28,10 +28,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
-    const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId);
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
-    const locales = getLocalesService();
+    const confirmationDate = company.confirmationStatement?.nextMadeUpTo;
     const lang = selectLang(req.query.lang);
+    const localeInfo = getLocaleInfo(getLocalesService(), lang);
     res.cookie('lang', lang, { httpOnly: true });
 
     if (isLimitedPartnershipCompanyType(company)) {
@@ -44,31 +44,33 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       );
 
       return res.render(Templates.REVIEW, {
-        ...getLocaleInfo(locales, lang),
+        ...localeInfo,
         previousPage,
         company,
-        nextMadeUpToDate: company.confirmationStatement?.nextMadeUpTo,
+        nextMadeUpToDate: confirmationDate,
         isPaymentDue: true,
         ecctEnabled: true,
         isLimitedPartnership: true
       });
 
-    } else {
-
-      const transaction: Transaction = await getTransaction(session, transactionId);
-      const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
-      const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
-      const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
-
-      return res.render(Templates.REVIEW, {
-        ...getLocaleInfo(locales, lang),
-        backLinkUrl,
-        company,
-        nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
-        isPaymentDue: isPaymentDue(transaction, submissionId),
-        ecctEnabled
-      });
     }
+
+    const transaction: Transaction = await getTransaction(session, transactionId);
+    const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
+    const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
+    const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
+    const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+      TASK_LIST_PATH, companyNumber, transactionId, submissionId);
+
+
+    return res.render(Templates.REVIEW, {
+      ...localeInfo,
+      backLinkUrl,
+      company,
+      nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
+      isPaymentDue: isPaymentDue(transaction, submissionId),
+      ecctEnabled
+    });
 
   } catch (e) {
     return next(e);
