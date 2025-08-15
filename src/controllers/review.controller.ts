@@ -20,7 +20,7 @@ import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import { getConfirmationPath, isLimitedPartnershipCompanyType, isACSPJourney, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType  } from '../utils/limited.partnership';
 import { savePreviousPageInSession } from "../utils/session-navigation";
-import { getAcspSessionData } from "../utils/session.acsp";
+import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -34,9 +34,13 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
     const confirmationDate = company.confirmationStatement?.nextMadeUpTo;
+    const acspSessionData = getAcspSessionData(session); 
 
     if (isLimitedPartnershipCompanyType(company)) {
-      const backLinkPath = getACSPBackPath(session, company);
+      let backLinkPath = "";
+      if(acspSessionData && acspSessionData !== undefined){
+        backLinkPath = getACSPBackPath(acspSessionData, company);
+      }
       const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
         backLinkPath,
         companyNumber,
@@ -287,15 +291,15 @@ const isStatementCheckboxTicked = (checkboxValue: string): boolean => {
   return false;
 };
 
-const getACSPBackPath = (session: Session, company: CompanyProfile) => {
-  const sessionData = getAcspSessionData(session);
+const getACSPBackPath = (acspSession: AcspSessionData, company: CompanyProfile) => {
+  // const sessionData = getAcspSessionData(acspSession);
   // const isDateChangedInSession = Boolean(sessionData?.changeConfirmationStatementDate);
   // const isPrivateFundLimitedPartnership = 
   //   isPflpLimitedPartnershipCompanyType(company) ||
   //   isSpflpLimitedPartnershipCompanyType(company);
 
-  if (sessionData && sessionData.changeConfirmationStatementDate !== null) {
-    if (sessionData.changeConfirmationStatementDate) { 
+  if (acspSession && acspSession.changeConfirmationStatementDate !== null) {
+    if (acspSession.changeConfirmationStatementDate) { 
       return LP_CHECK_YOUR_ANSWER_PATH;
     }
 
