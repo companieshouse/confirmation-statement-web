@@ -28,8 +28,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+    const locales = getLocalesService();
     const lang = selectLang(req.query.lang);
-    const localeInfo = getLocaleInfo(getLocalesService(), lang);
+    const localeInfo = getLocaleInfo(locales, lang);
     res.cookie('lang', lang, { httpOnly: true });
 
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
@@ -289,8 +290,6 @@ const isStatementCheckboxTicked = (checkboxValue: string): boolean => {
 
 const getACSPBackPath = (session: Session, company: CompanyProfile) => {
   const sessionData = getAcspSessionData(session);
-  
-  // const isDateChangedInSession = Boolean(sessionData?.changeConfirmationStatementDate);
   const isPrivateFundLimitedPartnership = 
     isPflpLimitedPartnershipCompanyType(company) ||
     isSpflpLimitedPartnershipCompanyType(company);
@@ -306,7 +305,4 @@ const getACSPBackPath = (session: Session, company: CompanyProfile) => {
   }
 
   return LP_SIC_CODE_SUMMARY_PATH;
-
-  // return isDateChangedInSession ? LP_CHECK_YOUR_ANSWER_PATH : LP_CS_DATE_PATH;
-
 };
