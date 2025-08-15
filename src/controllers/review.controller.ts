@@ -36,9 +36,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const confirmationDate = company.confirmationStatement?.nextMadeUpTo;
 
     if (isLimitedPartnershipCompanyType(company)) {
-      const backLinkPath = await getACSPBackPath(session, company);
+      // const backLinkPath = getACSPBackPath(session, company);
       const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
-        backLinkPath,
+        TASK_LIST_PATH,
         companyNumber,
         transactionId,
         submissionId
@@ -287,14 +287,14 @@ const isStatementCheckboxTicked = (checkboxValue: string): boolean => {
   return false;
 };
 
-const getACSPBackPath = async (session: Session, company: CompanyProfile) => {
-  const isDateChangedInSession = getAcspSessionData(session)?.changeConfirmationStatementDate;
+// const getACSPBackPath = (session: Session, company: CompanyProfile) => {
+//   const isDateChangedInSession = getAcspSessionData(session)?.changeConfirmationStatementDate;
 
-  if (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company)) {
-    return isDateChangedInSession
-      ? LP_CHECK_YOUR_ANSWER_PATH
-      : LP_CS_DATE_PATH;
-  }
+//   if (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company)) {
+//     return isDateChangedInSession
+//       ? LP_CHECK_YOUR_ANSWER_PATH
+//       : LP_CS_DATE_PATH;
+//   }
 
-  return LP_SIC_CODE_SUMMARY_PATH;
-};
+//   return LP_SIC_CODE_SUMMARY_PATH;
+// };
