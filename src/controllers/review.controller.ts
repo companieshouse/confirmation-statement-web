@@ -45,15 +45,16 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         submissionId
       );
 
-      return res.render(Templates.REVIEW, {
-        ...localeInfo,
-        previousPage,
-        company,
-        nextMadeUpToDate: confirmationDate,
-        isPaymentDue: true,
-        ecctEnabled: true,
-        isLimitedPartnership: true
-      });
+      return res.render(Templates.REVIEW, { message: "Hello" });
+      // return res.render(Templates.REVIEW, {
+      //   ...localeInfo,
+      //   previousPage,
+      //   company,
+      //   nextMadeUpToDate: confirmationDate,
+      //   isPaymentDue: true,
+      //   ecctEnabled: true,
+      //   isLimitedPartnership: true
+      // });
 
     }
 
