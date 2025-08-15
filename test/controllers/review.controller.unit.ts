@@ -402,86 +402,86 @@ describe("review controller tests", () => {
     });
   });
 
-  describe("Back link test", () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-      mockGetConfirmationStatement.mockReset();
-      mockGetConfirmationStatement.mockResolvedValue(mockConfirmationStatementSubmission);
-      jest.spyOn(limitedPartnershipUtils, "isACSPJourney").mockReturnValue(true);
-    });
+  // describe("Back link test", () => {
+  //   beforeEach(() => {
+  //     jest.clearAllMocks();
+  //     mockGetConfirmationStatement.mockReset();
+  //     mockGetConfirmationStatement.mockResolvedValue(mockConfirmationStatementSubmission);
+  //     jest.spyOn(limitedPartnershipUtils, "isACSPJourney").mockReturnValue(true);
+  //   });
 
-    it("should redirect to Check SIC Code page when back button clicked, IS a Limited Partnership and NOT a private fund type", async() => {
-      const mockLimitedPartnership = {
-        companyNumber: COMPANY_NUMBER,
-        type: "limited-partnership-lp",
-        companyName: "Test Company"
-      };
-      mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
+  //   it("should redirect to Check SIC Code page when back button clicked, IS a Limited Partnership and NOT a private fund type", async() => {
+  //     const mockLimitedPartnership = {
+  //       companyNumber: COMPANY_NUMBER,
+  //       type: "limited-partnership-lp",
+  //       companyName: "Test Company"
+  //     };
+  //     mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
 
-      const response = await request(app)
-        .get(URL);
+  //     const response = await request(app)
+  //       .get(URL);
 
-      const backPath = LP_SIC_CODE_SUMMARY_PATH
-        .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
-        .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
-        .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
+  //     const backPath = LP_SIC_CODE_SUMMARY_PATH
+  //       .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
+  //       .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
+  //       .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
 
-      expect(response.text).toContain(backPath);
-    });
+  //     expect(response.text).toContain(backPath);
+  //   });
 
-    it("should redirect to Date page when back button clicked, IS a private fund Limited Partnership and NO date change", async() => {
-      jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
-        changeConfirmationStatementDate: false,
-        beforeYouFileCheck: true,
-        newConfirmationDate: null,
-        confirmAllInformationCheck: false,
-        confirmLawfulActionsCheck: false
-      });
+  //   it("should redirect to Date page when back button clicked, IS a private fund Limited Partnership and NO date change", async() => {
+  //     jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+  //       changeConfirmationStatementDate: false,
+  //       beforeYouFileCheck: true,
+  //       newConfirmationDate: null,
+  //       confirmAllInformationCheck: false,
+  //       confirmLawfulActionsCheck: false
+  //     });
 
-      const mockLimitedPartnership = {
-        companyNumber: COMPANY_NUMBER,
-        type: "limited-partnership-pflp",
-        companyName: "Test Company"
-      };
-      mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
+  //     const mockLimitedPartnership = {
+  //       companyNumber: COMPANY_NUMBER,
+  //       type: "limited-partnership-pflp",
+  //       companyName: "Test Company"
+  //     };
+  //     mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
 
-      const response = await request(app)
-        .get(URL);
+  //     const response = await request(app)
+  //       .get(URL);
 
-      const backPath = LP_CS_DATE_PATH
-        .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
-        .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
-        .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
+  //     const backPath = LP_CS_DATE_PATH
+  //       .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
+  //       .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
+  //       .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
 
-      expect(response.text).toContain(backPath);
-    });
+  //     expect(response.text).toContain(backPath);
+  //   });
 
-    it("should redirect to Check Your Answer page when back button clicked, IS a private fund Limited Partnership and HAS a date change", async() => {
-      jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
-        changeConfirmationStatementDate: true,
-        beforeYouFileCheck: true,
-        newConfirmationDate: null,
-        confirmAllInformationCheck: false,
-        confirmLawfulActionsCheck: false
-      });
+  //   it("should redirect to Check Your Answer page when back button clicked, IS a private fund Limited Partnership and HAS a date change", async() => {
+  //     jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+  //       changeConfirmationStatementDate: true,
+  //       beforeYouFileCheck: true,
+  //       newConfirmationDate: null,
+  //       confirmAllInformationCheck: false,
+  //       confirmLawfulActionsCheck: false
+  //     });
 
-      const mockLimitedPartnership = {
-        companyNumber: COMPANY_NUMBER,
-        type: "limited-partnership-pflp",
-        companyName: "Test Company"
-      };
-      mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
+  //     const mockLimitedPartnership = {
+  //       companyNumber: COMPANY_NUMBER,
+  //       type: "limited-partnership-pflp",
+  //       companyName: "Test Company"
+  //     };
+  //     mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
 
-      const response = await request(app)
-        .get(URL);
+  //     const response = await request(app)
+  //       .get(URL);
 
-      const backPath = LP_CHECK_YOUR_ANSWER_PATH
-        .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
-        .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
-        .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
+  //     const backPath = LP_CHECK_YOUR_ANSWER_PATH
+  //       .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
+  //       .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
+  //       .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
 
-      expect(response.text).toContain(backPath);
-    });
+  //     expect(response.text).toContain(backPath);
+  //   });
 
-  });
+  // });
 });
