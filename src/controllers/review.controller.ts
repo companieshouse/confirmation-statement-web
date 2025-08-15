@@ -38,7 +38,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     if (isLimitedPartnershipCompanyType(company)) {
       const backLinkPath = getACSPBackPath(session, company);
       const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
-        TASK_LIST_PATH,
+        backLinkPath,
         companyNumber,
         transactionId,
         submissionId
