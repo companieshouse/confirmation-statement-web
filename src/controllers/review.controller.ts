@@ -28,14 +28,15 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
-    const company: CompanyProfile = await getCompanyProfile(companyNumber);
-    const confirmationDate = company.confirmationStatement?.nextMadeUpTo;
     const lang = selectLang(req.query.lang);
     const localeInfo = getLocaleInfo(getLocalesService(), lang);
     res.cookie('lang', lang, { httpOnly: true });
 
+    const company: CompanyProfile = await getCompanyProfile(companyNumber);
+    const confirmationDate = company.confirmationStatement?.nextMadeUpTo;
+
     if (isLimitedPartnershipCompanyType(company)) {
-      const backLinkPath = getACSPBackPath(session, company);
+      const backLinkPath = await getACSPBackPath(session, company);
       const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
         backLinkPath,
         companyNumber,
@@ -286,7 +287,7 @@ const isStatementCheckboxTicked = (checkboxValue: string): boolean => {
   return false;
 };
 
-const getACSPBackPath = (session: Session, company: CompanyProfile) => {
+const getACSPBackPath = async (session: Session, company: CompanyProfile) => {
   const isDateChangedInSession = getAcspSessionData(session)?.changeConfirmationStatementDate;
 
   if (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company)) {
