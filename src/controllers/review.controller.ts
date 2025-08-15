@@ -20,7 +20,7 @@ import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import { getConfirmationPath, isLimitedPartnershipCompanyType, isACSPJourney, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType  } from '../utils/limited.partnership';
 import { savePreviousPageInSession } from "../utils/session-navigation";
-import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
+import { getAcspSessionData } from "../utils/session.acsp";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -34,13 +34,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
     const confirmationDate = company.confirmationStatement?.nextMadeUpTo;
-    const acspSessionData = getAcspSessionData(session); 
 
     if (isLimitedPartnershipCompanyType(company)) {
-      let backLinkPath = "";
-      if(acspSessionData && acspSessionData !== undefined){
-        backLinkPath = getACSPBackPath(acspSessionData, company);
-      }
+      const backLinkPath = getACSPBackPath(session, company);
       const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
         backLinkPath,
         companyNumber,
@@ -291,20 +287,21 @@ const isStatementCheckboxTicked = (checkboxValue: string): boolean => {
   return false;
 };
 
-const getACSPBackPath = (acspSession: AcspSessionData, company: CompanyProfile) => {
-  // const sessionData = getAcspSessionData(acspSession);
+const getACSPBackPath = (session: Session, company: CompanyProfile) => {
+  const sessionData = getAcspSessionData(session);
+  console.log(sessionData);
   // const isDateChangedInSession = Boolean(sessionData?.changeConfirmationStatementDate);
   // const isPrivateFundLimitedPartnership = 
   //   isPflpLimitedPartnershipCompanyType(company) ||
   //   isSpflpLimitedPartnershipCompanyType(company);
 
-  if (acspSession && acspSession.changeConfirmationStatementDate !== null) {
-    if (acspSession.changeConfirmationStatementDate) { 
-      return LP_CHECK_YOUR_ANSWER_PATH;
-    }
+  // if (sessionData && sessionData.changeConfirmationStatementDate !== null) {
+  //   if (sessionData.changeConfirmationStatementDate) { 
+  //     return LP_CHECK_YOUR_ANSWER_PATH;
+  //   }
 
-    return LP_CS_DATE_PATH;
-  }
+  //   return LP_CS_DATE_PATH;
+  // }
   return LP_CS_DATE_PATH;
   // if(!isPrivateFundLimitedPartnership){
   //   return LP_SIC_CODE_SUMMARY_PATH;
