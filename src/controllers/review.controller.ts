@@ -45,16 +45,15 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         submissionId
       );
 
-      return res.render(Templates.REVIEW, { message: "Hello" });
-      // return res.render(Templates.REVIEW, {
-      //   ...localeInfo,
-      //   previousPage,
-      //   company,
-      //   nextMadeUpToDate: confirmationDate,
-      //   isPaymentDue: true,
-      //   ecctEnabled: true,
-      //   isLimitedPartnership: true
-      // });
+      return res.render(Templates.REVIEW, {
+        ...localeInfo,
+        previousPage,
+        company,
+        nextMadeUpToDate: confirmationDate,
+        isPaymentDue: true,
+        ecctEnabled: true,
+        isLimitedPartnership: true
+      });
 
     }
 
@@ -290,20 +289,20 @@ const isStatementCheckboxTicked = (checkboxValue: string): boolean => {
 };
 
 const getACSPBackPath = (session: Session, company: CompanyProfile) => {
-  const sessionData = getAcspSessionData(session);
-  const isPrivateFundLimitedPartnership = 
-    isPflpLimitedPartnershipCompanyType(company) ||
-    isSpflpLimitedPartnershipCompanyType(company);
+  // const sessionData = getAcspSessionData(session);
+  // const isPrivateFundLimitedPartnership = 
+  //   isPflpLimitedPartnershipCompanyType(company) ||
+  //   isSpflpLimitedPartnershipCompanyType(company);
 
-  if(isPrivateFundLimitedPartnership){
-    if (sessionData && sessionData.changeConfirmationStatementDate !== null) {
-      if (sessionData.changeConfirmationStatementDate) { 
-        return LP_CHECK_YOUR_ANSWER_PATH;
-      }
+  // if(isPrivateFundLimitedPartnership){
+  //   if (sessionData && sessionData.changeConfirmationStatementDate !== null) {
+  //     if (sessionData.changeConfirmationStatementDate) { 
+  //       return LP_CHECK_YOUR_ANSWER_PATH;
+  //     }
 
-      return LP_CS_DATE_PATH;
-    }
-  }
+  //     return LP_CS_DATE_PATH;
+  //   }
+  // }
 
-  return LP_SIC_CODE_SUMMARY_PATH;
+  return LP_CS_DATE_PATH;
 };
