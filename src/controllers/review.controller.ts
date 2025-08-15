@@ -289,19 +289,19 @@ const isStatementCheckboxTicked = (checkboxValue: string): boolean => {
 
 const getACSPBackPath = (session: Session, company: CompanyProfile) => {
   const sessionData = getAcspSessionData(session);
-  console.log(sessionData);
+  
   // const isDateChangedInSession = Boolean(sessionData?.changeConfirmationStatementDate);
   // const isPrivateFundLimitedPartnership = 
   //   isPflpLimitedPartnershipCompanyType(company) ||
   //   isSpflpLimitedPartnershipCompanyType(company);
 
-  // if (sessionData && sessionData.changeConfirmationStatementDate !== null) {
-  //   if (sessionData.changeConfirmationStatementDate) { 
-  //     return LP_CHECK_YOUR_ANSWER_PATH;
-  //   }
+  if (sessionData) {
+    // if (sessionData.changeConfirmationStatementDate) { 
+    //   return LP_CHECK_YOUR_ANSWER_PATH;
+    // }
 
-  //   return LP_CS_DATE_PATH;
-  // }
+    return LP_CS_DATE_PATH;
+  }
   return LP_CS_DATE_PATH;
   // if(!isPrivateFundLimitedPartnership){
   //   return LP_SIC_CODE_SUMMARY_PATH;
