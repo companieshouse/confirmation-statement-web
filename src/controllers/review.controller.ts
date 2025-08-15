@@ -304,5 +304,5 @@ const getACSPBackPath = (session: Session, company: CompanyProfile) => {
   //   }
   // }
 
-  return LP_CS_DATE_PATH;
+  return LP_CHECK_YOUR_ANSWER_PATH;
 };
