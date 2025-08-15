@@ -36,7 +36,11 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const confirmationDate = company.confirmationStatement?.nextMadeUpTo;
 
     if (isLimitedPartnershipCompanyType(company)) {
-      const backLinkPath = getACSPBackPath(session, company);
+      const isDateChangedInSession = getAcspSessionData(session)?.changeConfirmationStatementDate;
+      const isPrivateFundLimitedPartnership = 
+        isPflpLimitedPartnershipCompanyType(company) ||
+        isSpflpLimitedPartnershipCompanyType(company);
+      const backLinkPath = getACSPBackPath(isDateChangedInSession ?? false, isPrivateFundLimitedPartnership);
       const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
         backLinkPath,
         companyNumber,
@@ -287,15 +291,11 @@ const isStatementCheckboxTicked = (checkboxValue: string): boolean => {
   return false;
 };
 
-const getACSPBackPath = (session: Session, company: CompanyProfile) => {
-  const isDateChangedInSession = getAcspSessionData(session)?.changeConfirmationStatementDate;
-  // const isPrivateFundLimitedPartnership = 
-  //   isPflpLimitedPartnershipCompanyType(company) ||
-  //   isSpflpLimitedPartnershipCompanyType(company);
+const getACSPBackPath = (isPrivateFundLimitedPartnership: boolean, isDateChangedInSession: boolean) => {
 
-  // if(!isPrivateFundLimitedPartnership){
-  //   return LP_SIC_CODE_SUMMARY_PATH;
-  // }
+  if(!isPrivateFundLimitedPartnership){
+    return LP_SIC_CODE_SUMMARY_PATH;
+  }
 
   return isDateChangedInSession ? LP_CHECK_YOUR_ANSWER_PATH : LP_CS_DATE_PATH;
 
