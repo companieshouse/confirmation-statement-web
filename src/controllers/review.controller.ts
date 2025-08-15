@@ -290,11 +290,11 @@ const isStatementCheckboxTicked = (checkboxValue: string): boolean => {
 const getACSPBackPath = (session: Session, company: CompanyProfile) => {
   // const isDateChangedInSession = getAcspSessionData(session)?.changeConfirmationStatementDate;
 
-  // if (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company)) {
-  //   return isDateChangedInSession
-  //     ? LP_CHECK_YOUR_ANSWER_PATH
-  //     : LP_CS_DATE_PATH;
-  // }
+  if (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company)) {
+    return LP_CS_DATE_PATH;
+      // ? LP_CHECK_YOUR_ANSWER_PATH
+      // : LP_CS_DATE_PATH;
+  }
 
   return LP_SIC_CODE_SUMMARY_PATH;
 };
