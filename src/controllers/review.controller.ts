@@ -35,9 +35,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     res.cookie('lang', lang, { httpOnly: true });
 
     if (isLimitedPartnershipCompanyType(company)) {
-      const backLinkPath = getACSPBackPath(session, company);
+      // const backLinkPath = getACSPBackPath(session, company);
       const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
-        backLinkPath,
+        backLinkUrl,
         companyNumber,
         transactionId,
         submissionId
