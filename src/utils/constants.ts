@@ -48,6 +48,16 @@ export const LIMITED_PARTNERSHIP_COMPANY_TYPES = [
   LIMITED_PARTNERSHIP_PFLP_COMPANY_TYPE,
   LIMITED_PARTNERSHIP_SPFLP_COMPANY_TYPE
 ];
+export const LIMITED_PARTNERSHIP_LP_SUBTYPE = "limited-partnership";
+export const LIMITED_PARTNERSHIP_SLP_SUBTYPE = "scottish-limited-partnership";
+export const LIMITED_PARTNERSHIP_PFLP_SUBTYPE = "private-fund-limited-partnership";
+export const LIMITED_PARTNERSHIP_SPFLP_SUBTYPE = "scottish-private-fund-limited-partnership";
+export const LIMITED_PARTNERSHIP_SUBTYPES = {
+  LP: LIMITED_PARTNERSHIP_LP_SUBTYPE,
+  SLP: LIMITED_PARTNERSHIP_SLP_SUBTYPE,
+  PFLP: LIMITED_PARTNERSHIP_PFLP_SUBTYPE,
+  SPFLP: LIMITED_PARTNERSHIP_SPFLP_SUBTYPE
+};
 export const COMPANY_PROFILE_SESSION_KEY = "company_profile";
 export const ACSP_SESSION_KEY = "acsp_session";
 export const VALID_EMAIL_REGEX_PATTERN = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~\\-]+@([^.@][^@\\s]+)$";

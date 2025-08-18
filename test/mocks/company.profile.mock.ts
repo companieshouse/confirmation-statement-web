@@ -79,6 +79,7 @@ export const validLimitedPartnershipProfile: CompanyProfile = {
   },
   sicCodes: ["123"],
   type: "limited-partnership",
+  subtype: "limited-partnership",
 };
 
 export const validSDKResource: Resource<CompanyProfile> = {
