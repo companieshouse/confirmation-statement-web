@@ -21,7 +21,7 @@
                 const addButton = document.getElementById('add-sic-code-button'); 
 
                 if(hiddenInput && selected) {
-                    hiddenInput.value = selected.split('-')[0]; 
+                    hiddenInput.value = selected.split(' - ')[0]; 
 
                     if(addButton) {
                         addButton.disabled = false;
