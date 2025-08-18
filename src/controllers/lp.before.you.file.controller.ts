@@ -31,6 +31,7 @@ export const post = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const localInfo = getLocaleInfo(getLocalesService(), lang);
   const nextPage = urlUtils.getUrlToPath(`${urls.LP_CS_DATE_PATH}?lang=${lang}`, req);
+  const company: CompanyProfile = getCompanyProfileFromSession(req);
   const byfCheckbox = req.body.byfCheckbox;
   const isByfChecked = byfCheckbox === "confirm";
 
@@ -38,7 +39,10 @@ export const post = (req: Request, res: Response) => {
     resetAcspSession(session);
   }
 
-  updateAcspSessionData(session, { beforeYouFileCheck: isByfChecked } );
+  updateAcspSessionData(session, { 
+    beforeYouFileCheck: isByfChecked,
+    limitedPartnershipSubtype: company.subtype 
+  } );
 
   if (!byfCheckbox) {
     return reloadPageWithError(req, res, lang, localInfo, byfCheckbox, localInfo.i18n.BYFErrorMessageNotChecked);
