@@ -5,7 +5,7 @@ import { CONFIRMATION_PATH, LP_CONFIRMATION_PATH, LP_REVIEW_PATH, REVIEW_PATH } 
 
 
 export function isLimitedPartnership(companyProfile: CompanyProfile): boolean {
-  return companyProfile?.type === "limited-partnership" &&
+  return companyProfile?.type === LIMITED_PARTNERSHIP_COMPANY_TYPE &&
          !!companyProfile.subtype &&
          Object.values(LIMITED_PARTNERSHIP_SUBTYPES).includes(companyProfile.subtype);
 }
