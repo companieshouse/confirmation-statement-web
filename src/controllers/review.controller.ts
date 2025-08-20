@@ -18,9 +18,8 @@ import { getConfirmationStatement } from "../services/confirmation.statement.ser
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
 import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
-import { getConfirmationPath, isLimitedPartnershipCompanyType, isACSPJourney, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType  } from '../utils/limited.partnership';
+import { getConfirmationPath, isLimitedPartnershipCompanyType, isACSPJourney, getACSPBackPath } from '../utils/limited.partnership';
 import { savePreviousPageInSession } from "../utils/session-navigation";
-import { getAcspSessionData } from "../utils/session.acsp";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -286,23 +285,4 @@ const isStatementCheckboxTicked = (checkboxValue: string): boolean => {
   }
 
   return false;
-};
-
-const getACSPBackPath = (session: Session, company: CompanyProfile): string => {
-  const sessionData = getAcspSessionData(session);
-  const isPrivateFundLimitedPartnership = 
-    isPflpLimitedPartnershipCompanyType(company) ||
-    isSpflpLimitedPartnershipCompanyType(company);
-
-  if(isPrivateFundLimitedPartnership){
-    if (sessionData && sessionData.changeConfirmationStatementDate !== null) {
-      if (sessionData.changeConfirmationStatementDate) { 
-        return LP_CHECK_YOUR_ANSWER_PATH;
-      }
-
-      return LP_CS_DATE_PATH;
-    }
-  }
-
-  return LP_SIC_CODE_SUMMARY_PATH;
 };
