@@ -3,6 +3,7 @@ import request from "supertest";
 import app from "../../src/app";
 import { LP_BEFORE_YOU_FILE_PATH, urlParams } from "../../src/types/page.urls";
 import { getCompanyProfile } from "../../src/services/company.profile.service";
+import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -25,7 +26,8 @@ describe("start before you file controller tests", () => {
   it("should return acsp / limited partnership before you file page page", async () => {
     (getCompanyProfile as jest.Mock).mockResolvedValue({
       companyNumber: COMPANY_NUMBER,
-      type: "limited-partnership-lp",
+      type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+      subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
       companyName: "Test Company"
     });
     const response = await request(app).get(URL);

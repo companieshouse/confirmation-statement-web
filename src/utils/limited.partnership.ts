@@ -1,10 +1,9 @@
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "./constants";
-
 import { CONFIRMATION_PATH, LP_CONFIRMATION_PATH, LP_REVIEW_PATH, REVIEW_PATH } from "../types/page.urls";
 
 
-export function isLimitedPartnership(companyProfile: CompanyProfile): boolean {
+export function isLimitedPartnershipCompanyType(companyProfile: CompanyProfile): boolean {
   return companyProfile?.type === LIMITED_PARTNERSHIP_COMPANY_TYPE &&
          !!companyProfile.subtype &&
          Object.values(LIMITED_PARTNERSHIP_SUBTYPES).includes(companyProfile.subtype);
@@ -12,24 +11,24 @@ export function isLimitedPartnership(companyProfile: CompanyProfile): boolean {
 
 
 export function isStandardLimitedPartnershipCompanyType(companyProfile: CompanyProfile): boolean {
-  return isLimitedPartnership(companyProfile) &&
+  return isLimitedPartnershipCompanyType(companyProfile) &&
          companyProfile.subtype === LIMITED_PARTNERSHIP_SUBTYPES.LP;
 }
 
 export function isSlpLimitedPartnershipCompanyType(companyProfile: CompanyProfile): boolean {
-  return isLimitedPartnership(companyProfile) &&
+  return isLimitedPartnershipCompanyType(companyProfile) &&
          companyProfile.subtype === LIMITED_PARTNERSHIP_SUBTYPES.SLP;
 }
 
 
 export function isPflpLimitedPartnershipCompanyType(companyProfile: CompanyProfile): boolean {
-  return isLimitedPartnership(companyProfile) &&
+  return isLimitedPartnershipCompanyType(companyProfile) &&
          companyProfile.subtype === LIMITED_PARTNERSHIP_SUBTYPES.PFLP;
 }
 
 
 export function isSpflpLimitedPartnershipCompanyType(companyProfile: CompanyProfile): boolean {
-  return isLimitedPartnership(companyProfile) &&
+  return isLimitedPartnershipCompanyType(companyProfile) &&
          companyProfile.subtype === LIMITED_PARTNERSHIP_SUBTYPES.SPFLP;
 }
 
