@@ -19,7 +19,6 @@ import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.s
 import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import { getConfirmationPath, isLimitedPartnershipCompanyType, isACSPJourney, getACSPBackPath } from '../utils/limited.partnership';
-import { savePreviousPageInSession } from "../utils/session-navigation";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -112,7 +111,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
       const lang = selectLang(req.query.lang);
       const locales = getLocalesService();
-      const previousPage = savePreviousPageInSession(req);
+      const backLinkPath = getACSPBackPath(session, companyProfile);
+      const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+        backLinkPath,
+        companyNumber,
+        transactionId,
+        submissionId
+      );
 
       if (!confirmationValid || !lawfulActivityValid) {
         return res.render(Templates.REVIEW, {
