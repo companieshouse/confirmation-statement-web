@@ -48,13 +48,13 @@ export function isACSPJourney(path: string): boolean {
 
 export function getACSPBackPath(session: Session, company: CompanyProfile): string{
   const sessionData = getAcspSessionData(session);
-  const isPrivateFundLimitedPartnership = 
+  const isPrivateFundLimitedPartnership =
     isPflpLimitedPartnershipCompanyType(company) ||
     isSpflpLimitedPartnershipCompanyType(company);
 
-  if(isPrivateFundLimitedPartnership){
+  if (isPrivateFundLimitedPartnership){
     if (sessionData && sessionData.changeConfirmationStatementDate !== null) {
-      if (sessionData.changeConfirmationStatementDate) { 
+      if (sessionData.changeConfirmationStatementDate) {
         return LP_CHECK_YOUR_ANSWER_PATH;
       }
 
@@ -63,4 +63,4 @@ export function getACSPBackPath(session: Session, company: CompanyProfile): stri
   }
 
   return LP_SIC_CODE_SUMMARY_PATH;
-};
+}
