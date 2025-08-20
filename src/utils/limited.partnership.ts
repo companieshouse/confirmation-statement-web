@@ -5,7 +5,9 @@ import { LIMITED_PARTNERSHIP_COMPANY_TYPE,
   LIMITED_PARTNERSHIP_PFLP_COMPANY_TYPE,
   LIMITED_PARTNERSHIP_SPFLP_COMPANY_TYPE,
   LIMITED_PARTNERSHIP_COMPANY_TYPES } from "./constants";
-import { CONFIRMATION_PATH, LP_CONFIRMATION_PATH, LP_REVIEW_PATH, REVIEW_PATH } from "../types/page.urls";
+import { CONFIRMATION_PATH, LP_CHECK_YOUR_ANSWER_PATH, LP_CONFIRMATION_PATH, LP_CS_DATE_PATH, LP_REVIEW_PATH, LP_SIC_CODE_SUMMARY_PATH, REVIEW_PATH } from "../types/page.urls";
+import { Session } from "@companieshouse/node-session-handler";
+import { getAcspSessionData } from "./session.acsp";
 
 export function isLimitedPartnershipCompanyType(companyProfile: CompanyProfile): boolean {
   return (companyProfile !== undefined
@@ -42,4 +44,23 @@ export function getConfirmationPath(isAcspJourney: boolean): string {
 
 export function isACSPJourney(path: string): boolean {
   return path.toLowerCase().includes("acsp");
+}
+
+export function getACSPBackPath(session: Session, company: CompanyProfile): string{
+  const sessionData = getAcspSessionData(session);
+  const isPrivateFundLimitedPartnership =
+    isPflpLimitedPartnershipCompanyType(company) ||
+    isSpflpLimitedPartnershipCompanyType(company);
+
+  if (isPrivateFundLimitedPartnership){
+    if (sessionData && sessionData.changeConfirmationStatementDate !== null) {
+      if (sessionData.changeConfirmationStatementDate) {
+        return LP_CHECK_YOUR_ANSWER_PATH;
+      }
+
+      return LP_CS_DATE_PATH;
+    }
+  }
+
+  return LP_SIC_CODE_SUMMARY_PATH;
 }
