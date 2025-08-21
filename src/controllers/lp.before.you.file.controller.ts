@@ -31,7 +31,6 @@ export const post = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const localInfo = getLocaleInfo(getLocalesService(), lang);
   const nextPage = urlUtils.getUrlToPath(`${urls.LP_CS_DATE_PATH}?lang=${lang}`, req);
-  const company: CompanyProfile = getCompanyProfileFromSession(req);
   const byfCheckbox = req.body.byfCheckbox;
   const isByfChecked = byfCheckbox === "confirm";
 
@@ -40,8 +39,7 @@ export const post = (req: Request, res: Response) => {
   }
 
   updateAcspSessionData(session, {
-    beforeYouFileCheck: isByfChecked,
-    companySubtype: company.subtype
+    beforeYouFileCheck: isByfChecked
   } );
 
   if (!byfCheckbox) {
