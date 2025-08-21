@@ -25,6 +25,7 @@ import { toReadableFormat } from "../../src/utils/date";
 import { Settings as luxonSettings } from "luxon";
 import { urlUtils } from "../../src/utils/url";
 import { setCompanyTypeAndAcspNumberInSession } from "../mocks/session.mock";
+import { isLimitedPartnershipFeatureEnabled } from "../../src/utils/feature.flag";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockFormatForDisplay = formatForDisplay as jest.Mock;
@@ -327,6 +328,7 @@ describe("Confirm company controller tests", () => {
     setCompanyTypeAndAcspNumberInSession("limited-partnership", "ACSP-1234-5678");
     // mockCreateConfirmationStatement.mockResolvedValueOnce(201);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
+    (isLimitedPartnershipFeatureEnabled as jest.Mock).mockReturnValue(true);
 
     const response = await request(app).post(CONFIRM_COMPANY_PATH + "?companyNumber=" + lpCompanyNumber);
 
@@ -342,6 +344,7 @@ describe("Confirm company controller tests", () => {
     setCompanyTypeAndAcspNumberInSession("limited-partnership", "");
     // mockCreateConfirmationStatement.mockResolvedValueOnce(201);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
+    (isLimitedPartnershipFeatureEnabled as jest.Mock).mockReturnValue(true);
 
     const response = await request(app).post(CONFIRM_COMPANY_PATH + "?companyNumber=" + lpCompanyNumber);
 
@@ -349,5 +352,20 @@ describe("Confirm company controller tests", () => {
     expect(response.header.location).toEqual(LP_MUST_BE_AUTHORISED_AGENT_PATH);
 
   });
+
+  it("Should redirect to use paper stop screen if the LP feature flag is not enabled and type is LP subtype", async () => {
+    mockGetCompanyProfile.mockResolvedValueOnce(validLimitedPartnershipProfile);
+    setCompanyTypeAndAcspNumberInSession("limited-partnership-slp", "TSA001");
+    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
+    (isLimitedPartnershipFeatureEnabled as jest.Mock).mockReturnValue(false);
+
+    const usePaperFilingPath = urlUtils.setQueryParam(USE_PAPER_PATH, URL_QUERY_PARAM.COMPANY_NUM, validLimitedPartnershipProfile.companyNumber);
+    const response = await request(app).post(CONFIRM_COMPANY_PATH + "?companyNumber=" + lpCompanyNumber);
+
+    expect(response.status).toEqual(302);
+    expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
+    expect(response.header.location).toEqual(usePaperFilingPath);
+  });
+
 
 });

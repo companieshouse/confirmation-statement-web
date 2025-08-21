@@ -6,6 +6,11 @@ import { LIMITED_PARTNERSHIP_COMPANY_TYPE,
   LIMITED_PARTNERSHIP_SPFLP_COMPANY_TYPE,
   LIMITED_PARTNERSHIP_COMPANY_TYPES } from "./constants";
 import { CONFIRMATION_PATH, LP_CHECK_YOUR_ANSWER_PATH, LP_CONFIRMATION_PATH, LP_CS_DATE_PATH, LP_REVIEW_PATH, LP_SIC_CODE_SUMMARY_PATH, REVIEW_PATH } from "../types/page.urls";
+import { isLimitedPartnershipFeatureEnabled,
+  isScottishLimitedPartnershipFeatureEnabled,
+  isPrivateFundLimitedPartnershipFeatureEnabled,
+  isScottishPrivateFundimitedPartnershipFeatureEnabled
+} from "../utils/feature.flag";
 import { Session } from "@companieshouse/node-session-handler";
 import { getAcspSessionData } from "./session.acsp";
 
@@ -46,7 +51,7 @@ export function isACSPJourney(path: string): boolean {
   return path.toLowerCase().includes("acsp");
 }
 
-export function getACSPBackPath(session: Session, company: CompanyProfile): string{
+export function getACSPBackPath(session: Session, company: CompanyProfile): string {
   const sessionData = getAcspSessionData(session);
   const isPrivateFundLimitedPartnership =
     isPflpLimitedPartnershipCompanyType(company) ||
@@ -63,4 +68,20 @@ export function getACSPBackPath(session: Session, company: CompanyProfile): stri
   }
 
   return LP_SIC_CODE_SUMMARY_PATH;
+}
+
+export function isLimitedPartnershipSubtypeFeatureFlagEnabled (companyProfile: CompanyProfile): boolean {
+  if (isLimitedPartnershipCompanyType(companyProfile)) {
+    switch (companyProfile.type) {
+        case LIMITED_PARTNERSHIP_COMPANY_TYPE:
+          return isLimitedPartnershipFeatureEnabled();
+        case LIMITED_PARTNERSHIP_SLP_COMPANY_TYPE:
+          return isScottishLimitedPartnershipFeatureEnabled();
+        case LIMITED_PARTNERSHIP_PFLP_COMPANY_TYPE:
+          return isPrivateFundLimitedPartnershipFeatureEnabled();
+        case LIMITED_PARTNERSHIP_SPFLP_COMPANY_TYPE:
+          return isScottishPrivateFundimitedPartnershipFeatureEnabled();
+    }
+  }
+  return false;
 }
