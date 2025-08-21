@@ -22,8 +22,9 @@ import {
 import { urlUtils } from "../utils/url";
 import { toReadableFormat } from "../utils/date";
 import { COMPANY_PROFILE_SESSION_KEY } from "../utils/constants";
-import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
+import { isLimitedPartnershipCompanyType, isLimitedPartnershipSubtypeFeatureFlagEnabled } from "../utils/limited.partnership";
 import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
+
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -62,6 +63,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     if (!isCompanyValidForService(eligibilityStatusCode)) {
       return displayEligibilityStopPage(res, eligibilityStatusCode, company);
+    } else if (isLimitedPartnershipCompanyType(company) && !isLimitedPartnershipSubtypeFeatureFlagEnabled(company)) {
+      return displayEligibilityStopPage(res, EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY, company);
     }
 
     let nextPageUrl;

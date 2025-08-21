@@ -6,6 +6,11 @@ import { LIMITED_PARTNERSHIP_COMPANY_TYPE,
   LIMITED_PARTNERSHIP_SPFLP_COMPANY_TYPE,
   LIMITED_PARTNERSHIP_COMPANY_TYPES } from "./constants";
 import { CONFIRMATION_PATH, LP_CONFIRMATION_PATH, LP_REVIEW_PATH, REVIEW_PATH } from "../types/page.urls";
+import { isLimitedPartnershipFeatureEnabled,
+  isScottishLimitedPartnershipFeatureEnabled,
+  isPrivateFundLimitedPartnershipFeatureEnabled,
+  isScottishPrivateFundimitedPartnershipFeatureEnabled
+} from "../utils/feature.flag";
 
 export function isLimitedPartnershipCompanyType(companyProfile: CompanyProfile): boolean {
   return (companyProfile !== undefined
@@ -42,4 +47,20 @@ export function getConfirmationPath(isAcspJourney: boolean): string {
 
 export function isACSPJourney(path: string): boolean {
   return path.toLowerCase().includes("acsp");
+}
+
+export function isLimitedPartnershipSubtypeFeatureFlagEnabled (companyProfile: CompanyProfile): boolean {
+  if (isLimitedPartnershipCompanyType(companyProfile)) {
+    switch (companyProfile.type) {
+        case LIMITED_PARTNERSHIP_COMPANY_TYPE:
+          return isLimitedPartnershipFeatureEnabled();
+        case LIMITED_PARTNERSHIP_SLP_COMPANY_TYPE:
+          return isScottishLimitedPartnershipFeatureEnabled();
+        case LIMITED_PARTNERSHIP_PFLP_COMPANY_TYPE:
+          return isPrivateFundLimitedPartnershipFeatureEnabled();
+        case LIMITED_PARTNERSHIP_SPFLP_COMPANY_TYPE:
+          return isScottishPrivateFundimitedPartnershipFeatureEnabled();
+    }
+  }
+  return false;
 }
