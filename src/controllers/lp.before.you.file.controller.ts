@@ -41,7 +41,7 @@ export const post = (req: Request, res: Response) => {
 
   updateAcspSessionData(session, {
     beforeYouFileCheck: isByfChecked,
-    limitedPartnershipSubtype: company.subtype
+    companySubtype: company.subtype
   } );
 
   if (!byfCheckbox) {

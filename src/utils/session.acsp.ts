@@ -7,7 +7,7 @@ export interface AcspSessionData {
   newConfirmationDate: Date | null;
   confirmAllInformationCheck: boolean;
   confirmLawfulActionsCheck: boolean;
-  limitedPartnershipSubtype?: string;
+  companySubtype?: string;
 }
 
 export function createDefaultAcspSessionData(): AcspSessionData {
@@ -17,7 +17,7 @@ export function createDefaultAcspSessionData(): AcspSessionData {
     newConfirmationDate: null,
     confirmAllInformationCheck: false,
     confirmLawfulActionsCheck: false,
-    limitedPartnershipSubtype: undefined
+    companySubtype: undefined
   };
 }
 
