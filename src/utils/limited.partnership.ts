@@ -1,15 +1,11 @@
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "./constants";
+import { 
+  LIMITED_PARTNERSHIP_COMPANY_TYPE, 
+  LIMITED_PARTNERSHIP_SUBTYPES} from "./constants";
 import { CONFIRMATION_PATH, LP_CHECK_YOUR_ANSWER_PATH, LP_CONFIRMATION_PATH, LP_CS_DATE_PATH, LP_REVIEW_PATH, LP_SIC_CODE_SUMMARY_PATH, REVIEW_PATH } from "../types/page.urls";
 import { Session } from "@companieshouse/node-session-handler";
-import { 
-  isLimitedPartnershipFeatureEnabled, 
-  isScottishLimitedPartnershipFeatureEnabled, 
-  isPrivateFundLimitedPartnershipFeatureEnabled, 
-  isScottishPrivateFundimitedPartnershipFeatureEnabled 
-} from "./feature.flag";
+import { isLimitedPartnershipFeatureEnabled, isScottishLimitedPartnershipFeatureEnabled, isPrivateFundLimitedPartnershipFeatureEnabled, isScottishPrivateFundimitedPartnershipFeatureEnabled } from "./feature.flag";
 import { getAcspSessionData } from "./session.acsp";
-
 
 export function isLimitedPartnershipCompanyType(companyProfile: CompanyProfile): boolean {
   return companyProfile?.type === LIMITED_PARTNERSHIP_COMPANY_TYPE &&

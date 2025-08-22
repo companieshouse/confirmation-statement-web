@@ -168,7 +168,7 @@ describe("Limited partnership util tests", () => {
   });
 
   it("isLimitedPartnershipSubtypeFeatureFlagEnabled should return true if the company type is LP and the start date of feature flag LP is past", () => {
-    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": "limited-partnership" });
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": LIMITED_PARTNERSHIP_COMPANY_TYPE, "subtype": LIMITED_PARTNERSHIP_SUBTYPES.LP });
     const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
     PropertiesMock.FEATURE_FLAG_LP_SUBTYPE_START_DATE = "2020-01-01";
 
@@ -178,7 +178,7 @@ describe("Limited partnership util tests", () => {
   });
 
   it("isLimitedPartnershipSubtypeFeatureFlagEnabled should return false if the company type is SLP and the start date of feature flag SLP is in the future", () => {
-    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": "limited-partnership-slp" });
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": LIMITED_PARTNERSHIP_COMPANY_TYPE, "subtype": LIMITED_PARTNERSHIP_SUBTYPES.SLP });
     const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
     PropertiesMock.FEATURE_FLAG_SLP_SUBTYPE_START_DATE = "2999-03-03";
 
@@ -188,7 +188,7 @@ describe("Limited partnership util tests", () => {
   });
 
   it("isLimitedPartnershipSubtypeFeatureFlagEnabled should return true if the company type is SLP and the start date of feature flag SLP is past", () => {
-    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": "limited-partnership-slp" });
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": LIMITED_PARTNERSHIP_COMPANY_TYPE, "subtype": LIMITED_PARTNERSHIP_SUBTYPES.SLP });
     const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
     PropertiesMock.FEATURE_FLAG_SLP_SUBTYPE_START_DATE = "2020-03-03";
 
@@ -198,7 +198,7 @@ describe("Limited partnership util tests", () => {
   });
 
   it("isLimitedPartnershipSubtypeFeatureFlagEnabled should return false if the company type is PFLP and the start date of feature flag PFLP is in the future", () => {
-    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": "limited-partnership-pflp" });
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": LIMITED_PARTNERSHIP_COMPANY_TYPE, "subtype": LIMITED_PARTNERSHIP_SUBTYPES.PFLP });
     const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
     PropertiesMock.FEATURE_FLAG_PFLP_SUBTYPE_START_DATE = "2999-05-05";
 
@@ -208,7 +208,7 @@ describe("Limited partnership util tests", () => {
   });
 
   it("isLimitedPartnershipSubtypeFeatureFlagEnabled should return true if the company type is PFLP and the start date of feature flag PFLP is past", () => {
-    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": "limited-partnership-pflp" });
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": LIMITED_PARTNERSHIP_COMPANY_TYPE, "subtype": LIMITED_PARTNERSHIP_SUBTYPES.PFLP });
     const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
     PropertiesMock.FEATURE_FLAG_PFLP_SUBTYPE_START_DATE = "2020-05-05";
 
@@ -218,7 +218,7 @@ describe("Limited partnership util tests", () => {
   });
 
   it("isLimitedPartnershipSubtypeFeatureFlagEnabled should return false if the company type is SPFLP and the start date of feature flag SPFLP is in the future", () => {
-    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": "limited-partnership-spflp" });
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": LIMITED_PARTNERSHIP_COMPANY_TYPE, "subtype": LIMITED_PARTNERSHIP_SUBTYPES.SPFLP  });
     const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
     PropertiesMock.FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE = "2999-09-09";
 
@@ -228,7 +228,7 @@ describe("Limited partnership util tests", () => {
   });
 
   it("isLimitedPartnershipSubtypeFeatureFlagEnabled should return true if the company type is SPFLP and the start date of feature flag SPFLP is past", () => {
-    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": "limited-partnership-spflp" });
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": LIMITED_PARTNERSHIP_COMPANY_TYPE, "subtype": LIMITED_PARTNERSHIP_SUBTYPES.SPFLP });
     const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
     PropertiesMock.FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE = "2020-09-09";
 

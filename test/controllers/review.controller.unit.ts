@@ -417,7 +417,8 @@ describe("review controller tests", () => {
     it("should redirect to Check SIC Code page when back button clicked, IS a Limited Partnership and NOT a private fund type", async() => {
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
-        type: "limited-partnership-lp",
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
         companyName: "Test Company"
       };
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
@@ -444,7 +445,8 @@ describe("review controller tests", () => {
 
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
-        type: "limited-partnership-pflp",
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.PFLP,
         companyName: "Test Company"
       };
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
@@ -471,7 +473,8 @@ describe("review controller tests", () => {
 
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
-        type: "limited-partnership-pflp",
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.PFLP,
         companyName: "Test Company"
       };
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
