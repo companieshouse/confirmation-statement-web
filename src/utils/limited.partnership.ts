@@ -10,22 +10,9 @@ import { getAcspSessionData } from "./session.acsp";
 
 export function isLimitedPartnershipCompanyType(companyProfile: CompanyProfile): boolean {
 
-  if (!companyProfile || companyProfile.type !== LIMITED_PARTNERSHIP_COMPANY_TYPE) {
-    console.warn("Company profile is missing or undefined. Or unexpected company type");
-    return false;
-  }
-
-  if (!companyProfile.subtype) {
-    console.warn("Missing subtype for limited partnership company.");
-    return false;
-  }
-
-  if (!Object.values(LIMITED_PARTNERSHIP_SUBTYPES).includes(companyProfile.subtype)) {
-    console.warn(`Invalid subtype '${companyProfile.subtype}' for limited partnership company.`);
-    return false;
-  }
-
-  return true;
+  return companyProfile?.type === LIMITED_PARTNERSHIP_COMPANY_TYPE &&
+    !!companyProfile.subtype &&
+    Object.values(LIMITED_PARTNERSHIP_SUBTYPES).includes(companyProfile.subtype);
 
 }
 
@@ -86,14 +73,14 @@ export function getACSPBackPath(session: Session, company: CompanyProfile): stri
 export function isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile: CompanyProfile): boolean {
   if (isLimitedPartnershipCompanyType(companyProfile)) {
     switch (companyProfile.subtype) {
-        case LIMITED_PARTNERSHIP_SUBTYPES.LP:
-          return isLimitedPartnershipFeatureEnabled();
-        case LIMITED_PARTNERSHIP_SUBTYPES.SLP:
-          return isScottishLimitedPartnershipFeatureEnabled();
-        case LIMITED_PARTNERSHIP_SUBTYPES.PFLP:
-          return isPrivateFundLimitedPartnershipFeatureEnabled();
-        case LIMITED_PARTNERSHIP_SUBTYPES.SPFLP:
-          return isScottishPrivateFundimitedPartnershipFeatureEnabled();
+      case LIMITED_PARTNERSHIP_SUBTYPES.LP:
+        return isLimitedPartnershipFeatureEnabled();
+      case LIMITED_PARTNERSHIP_SUBTYPES.SLP:
+        return isScottishLimitedPartnershipFeatureEnabled();
+      case LIMITED_PARTNERSHIP_SUBTYPES.PFLP:
+        return isPrivateFundLimitedPartnershipFeatureEnabled();
+      case LIMITED_PARTNERSHIP_SUBTYPES.SPFLP:
+        return isScottishPrivateFundimitedPartnershipFeatureEnabled();
     }
   }
   return false;

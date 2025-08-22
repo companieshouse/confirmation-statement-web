@@ -21,7 +21,7 @@ import {
 } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { toReadableFormat } from "../utils/date";
-import { COMPANY_PROFILE_SESSION_KEY } from "../utils/constants";
+import { COMPANY_PROFILE_SESSION_KEY, LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../utils/constants";
 import { isLimitedPartnershipCompanyType, isLimitedPartnershipSubtypeFeatureFlagEnabled } from "../utils/limited.partnership";
 import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
 
@@ -63,7 +63,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     if (!isCompanyValidForService(eligibilityStatusCode)) {
       return displayEligibilityStopPage(res, eligibilityStatusCode, company);
-    } else if (isLimitedPartnershipCompanyType(company) && !isLimitedPartnershipSubtypeFeatureFlagEnabled(company)) {
+    } else if (shouldRedirectToPaperFiling(company)) {
       return displayEligibilityStopPage(res, EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY, company);
     }
 
@@ -98,6 +98,17 @@ const createNewConfirmationStatement = async (session: Session) => {
     await createConfirmationStatement(session, transactionId);
   }
 };
+
+export function shouldRedirectToPaperFiling(companyProfile: CompanyProfile): boolean {
+  const isLimitedPartnershipType = companyProfile?.type === LIMITED_PARTNERSHIP_COMPANY_TYPE;
+  const isValidSubtype = !!companyProfile?.subtype &&
+    Object.values(LIMITED_PARTNERSHIP_SUBTYPES).includes(companyProfile.subtype);
+  const isFeatureFlagEnabled = isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile);
+
+  return isLimitedPartnershipType && (!isFeatureFlagEnabled || !isValidSubtype);
+}
+
+
 
 const stopPagesPathMap = {
   [EligibilityStatusCode.INVALID_COMPANY_STATUS]: INVALID_COMPANY_STATUS_PATH,
