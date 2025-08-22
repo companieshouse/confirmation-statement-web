@@ -21,6 +21,9 @@ import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise"
 import { getConfirmationPath, isLimitedPartnershipCompanyType, isACSPJourney  } from '../utils/limited.partnership';
 import { savePreviousPageInSession } from "../utils/session-navigation";
 
+const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY'; 
+const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY'; 
+
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const session = req.session as Session;
@@ -36,6 +39,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
 
+      const confirmationStatementCheck: boolean|undefined = session.getExtraData(CONFIRMATION_STATEMENT_SESSION_KEY);
+      
+      const lawfulActivityStatementCheck: boolean|undefined = session.getExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY);
+        
     if (isLimitedPartnershipCompanyType(company)) {
       return res.render(Templates.REVIEW, {
         ...getLocaleInfo(locales, lang),
@@ -44,6 +51,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         nextMadeUpToDate: company.confirmationStatement?.nextMadeUpTo,
         isPaymentDue: true,
         ecctEnabled: true,
+        confirmationChecked: confirmationStatementCheck,
+        lawfulActivityChecked: lawfulActivityStatementCheck,
         isLimitedPartnership: true
       });
 
@@ -79,6 +88,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const session = req.session as Session;
 
     if (isLimitedPartnershipCompanyType(companyProfile)) {
+
+      const ecctEnabled = true;
+
       const confirmationCheckboxValue = req.body.confirmationStatement;
       const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
 
@@ -86,12 +98,14 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         confirmationCheckboxValue
       );
 
+      req.session?.setExtraData(CONFIRMATION_STATEMENT_SESSION_KEY, confirmationValid);
+
       const lawfulActivityValid = isStatementCheckboxTicked(
         lawfulActivityCheckboxValue
       );
 
-      const ecctEnabled = true;
-
+      req.session?.setExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, lawfulActivityValid);
+      
       let confirmationStatementError: string = "";
       if (!confirmationValid) {
         confirmationStatementError = LP_CONFIRMATION_STATEMENT_ERROR;

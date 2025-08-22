@@ -61,6 +61,8 @@
           {% endif %}
         {% endif %}
 
+        {% if confirmationChecked %}
+
         {{ govukCheckboxes({
             idPrefix: "confirmation-statement",
             name: "confirmationStatement",
@@ -77,7 +79,32 @@
                 id: "confirmation-statement",
                 name: "confirmationStatement",
                 checked: confirmationChecked,
-                value: "true",
+                value: confirmationChecked,
+                attributes: {
+                  "data-event-id": "confirmation-statement-checkbox-clicked"
+                }
+              }
+            ]
+          }) }}
+        {% else %}
+
+        {{ govukCheckboxes({
+            idPrefix: "confirmation-statement",
+            name: "confirmationStatement",
+            errorMessage: confirmationStatementError,
+            fieldset: {
+              legend: {
+                isPageHeading: false,
+                classes: "govuk-fieldset__legend--m"
+              }
+            },
+            items: [
+              {
+                html: checkboxHtml,
+                id: "confirmation-statement",
+                name: "confirmationStatement",
+                checked: confirmationChecked,
+                value: "false",
                 attributes: {
                   "data-event-id": "confirmation-statement-checkbox-clicked"
                 }
@@ -85,6 +112,9 @@
             ]
           }) }}
 
+          {% endif %}
+
+        {% if lawfulActivityChecked %} 
         {{ govukCheckboxes({
             idPrefix: "lawful-activity-statement",
             name: "lawfulActivityStatement",
@@ -101,13 +131,38 @@
                 id: "lawful-activity-statement",
                 name: "lawfulActivityStatement",
                 checked: lawfulActivityChecked,
-                value: "true",
+                value: lawfulActivityChecked,
+                attributes: {
+                  "data-event-id": "lawful-activity-statement-checkbox-clicked"
+                }
+              }
+            ]
+          }) }} 
+          {% else %} 
+                  {{ govukCheckboxes({
+            idPrefix: "lawful-activity-statement",
+            name: "lawfulActivityStatement",
+            errorMessage: lawfulActivityStatementError,
+            fieldset: {
+              legend: {
+                isPageHeading: false,
+                classes: "govuk-fieldset__legend--m"
+              }
+            },
+            items: [
+              {
+                text: i18n.SCSCheckboxLawfulActivities,
+                id: "lawful-activity-statement",
+                name: "lawfulActivityStatement",
+                checked: lawfulActivityChecked,
+                value: "false",
                 attributes: {
                   "data-event-id": "lawful-activity-statement-checkbox-clicked"
                 }
               }
             ]
           }) }}
+          {% endif %}
 
       {% endif %}
 
