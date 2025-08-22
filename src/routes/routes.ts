@@ -170,7 +170,7 @@ router.get(urls.LP_CS_DATE, lpCSDateRoute.get);
 router.post(urls.LP_CS_DATE, lpCSDateRoute.post);
 
 router.get(urls.LP_SIC_CODE_SUMMARY, lpSicCodeSummaryRoute.get);
-router.post(urls.LP_SIC_CODE_SUMMARY, lpSicCodeSummaryRoute.post);
+router.post(urls.LP_SIC_CODE_SUMMARY_SAVE, lpSicCodeSummaryRoute.saveAndContinue);
 
 router.post(urls.LP_SIC_CODE_SUMMARY_REMOVE, lpSicCodeSummaryRoute.removeSicCode);
 router.post(urls.LP_SIC_CODE_SUMMARY_ADD, lpSicCodeSummaryRoute.addSicCode);
