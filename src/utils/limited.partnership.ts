@@ -1,39 +1,55 @@
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { 
-  LIMITED_PARTNERSHIP_COMPANY_TYPE, 
-  LIMITED_PARTNERSHIP_SUBTYPES} from "./constants";
+import {
+  LIMITED_PARTNERSHIP_COMPANY_TYPE,
+  LIMITED_PARTNERSHIP_SUBTYPES
+} from "./constants";
 import { CONFIRMATION_PATH, LP_CHECK_YOUR_ANSWER_PATH, LP_CONFIRMATION_PATH, LP_CS_DATE_PATH, LP_REVIEW_PATH, LP_SIC_CODE_SUMMARY_PATH, REVIEW_PATH } from "../types/page.urls";
 import { Session } from "@companieshouse/node-session-handler";
 import { isLimitedPartnershipFeatureEnabled, isScottishLimitedPartnershipFeatureEnabled, isPrivateFundLimitedPartnershipFeatureEnabled, isScottishPrivateFundimitedPartnershipFeatureEnabled } from "./feature.flag";
 import { getAcspSessionData } from "./session.acsp";
 
 export function isLimitedPartnershipCompanyType(companyProfile: CompanyProfile): boolean {
-  return companyProfile?.type === LIMITED_PARTNERSHIP_COMPANY_TYPE &&
-         !!companyProfile.subtype &&
-         Object.values(LIMITED_PARTNERSHIP_SUBTYPES).includes(companyProfile.subtype);
+
+  if (!companyProfile || companyProfile.type !== LIMITED_PARTNERSHIP_COMPANY_TYPE) {
+    console.warn("Company profile is missing or undefined. Or unexpected company type");
+    return false;
+  }
+
+  if (!companyProfile.subtype) {
+    console.warn("Missing subtype for limited partnership company.");
+    return false;
+  }
+
+  if (!Object.values(LIMITED_PARTNERSHIP_SUBTYPES).includes(companyProfile.subtype)) {
+    console.warn(`Invalid subtype '${companyProfile.subtype}' for limited partnership company.`);
+    return false;
+  }
+
+  return true;
+
 }
 
 
 export function isStandardLimitedPartnershipCompanyType(companyProfile: CompanyProfile): boolean {
   return isLimitedPartnershipCompanyType(companyProfile) &&
-         companyProfile.subtype === LIMITED_PARTNERSHIP_SUBTYPES.LP;
+    companyProfile.subtype === LIMITED_PARTNERSHIP_SUBTYPES.LP;
 }
 
 export function isSlpLimitedPartnershipCompanyType(companyProfile: CompanyProfile): boolean {
   return isLimitedPartnershipCompanyType(companyProfile) &&
-         companyProfile.subtype === LIMITED_PARTNERSHIP_SUBTYPES.SLP;
+    companyProfile.subtype === LIMITED_PARTNERSHIP_SUBTYPES.SLP;
 }
 
 
 export function isPflpLimitedPartnershipCompanyType(companyProfile: CompanyProfile): boolean {
   return isLimitedPartnershipCompanyType(companyProfile) &&
-         companyProfile.subtype === LIMITED_PARTNERSHIP_SUBTYPES.PFLP;
+    companyProfile.subtype === LIMITED_PARTNERSHIP_SUBTYPES.PFLP;
 }
 
 
 export function isSpflpLimitedPartnershipCompanyType(companyProfile: CompanyProfile): boolean {
   return isLimitedPartnershipCompanyType(companyProfile) &&
-         companyProfile.subtype === LIMITED_PARTNERSHIP_SUBTYPES.SPFLP;
+    companyProfile.subtype === LIMITED_PARTNERSHIP_SUBTYPES.SPFLP;
 }
 
 export function getReviewPath(isAcspJourney: boolean): string {
@@ -54,7 +70,7 @@ export function getACSPBackPath(session: Session, company: CompanyProfile): stri
     isPflpLimitedPartnershipCompanyType(company) ||
     isSpflpLimitedPartnershipCompanyType(company);
 
-  if (isPrivateFundLimitedPartnership){
+  if (isPrivateFundLimitedPartnership) {
     if (sessionData && sessionData.changeConfirmationStatementDate !== null) {
       if (sessionData.changeConfirmationStatementDate) {
         return LP_CHECK_YOUR_ANSWER_PATH;
@@ -67,7 +83,7 @@ export function getACSPBackPath(session: Session, company: CompanyProfile): stri
   return LP_SIC_CODE_SUMMARY_PATH;
 }
 
-export function isLimitedPartnershipSubtypeFeatureFlagEnabled (companyProfile: CompanyProfile): boolean {
+export function isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile: CompanyProfile): boolean {
   if (isLimitedPartnershipCompanyType(companyProfile)) {
     switch (companyProfile.subtype) {
         case LIMITED_PARTNERSHIP_SUBTYPES.LP:

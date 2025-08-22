@@ -6,7 +6,8 @@ import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session
 import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/session/keys/UserProfileKeys";
 import { IAccessToken } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
 import * as limitedPartnershipUtil from "../../src/utils/limited.partnership";
-import { COMPANY_PROFILE_SESSION_KEY,
+import {
+  COMPANY_PROFILE_SESSION_KEY,
   LIMITED_PARTNERSHIP_COMPANY_TYPE,
   LIMITED_PARTNERSHIP_SUBTYPES
 } from "../../src/utils/constants";
@@ -158,7 +159,7 @@ describe("Limited partnership util tests", () => {
   });
 
   it("isLimitedPartnershipSubtypeFeatureFlagEnabled should return false if the company type is LP and the start date of feature flag LP is in the future", () => {
-    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": "limited-partnership" });
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": LIMITED_PARTNERSHIP_COMPANY_TYPE, "subtype": LIMITED_PARTNERSHIP_SUBTYPES.LP });
     const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
     PropertiesMock.FEATURE_FLAG_LP_SUBTYPE_START_DATE = "2999-01-01";
 
@@ -218,7 +219,7 @@ describe("Limited partnership util tests", () => {
   });
 
   it("isLimitedPartnershipSubtypeFeatureFlagEnabled should return false if the company type is SPFLP and the start date of feature flag SPFLP is in the future", () => {
-    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": LIMITED_PARTNERSHIP_COMPANY_TYPE, "subtype": LIMITED_PARTNERSHIP_SUBTYPES.SPFLP  });
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": LIMITED_PARTNERSHIP_COMPANY_TYPE, "subtype": LIMITED_PARTNERSHIP_SUBTYPES.SPFLP });
     const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
     PropertiesMock.FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE = "2999-09-09";
 
@@ -236,5 +237,57 @@ describe("Limited partnership util tests", () => {
 
     expect(res).toBeTruthy();
   });
+
+
+  it("should return true if the company type and subtype is limited-partnership", () => {
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, {
+      type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+      subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP
+    });
+    const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
+    const res = limitedPartnershipUtil.isStandardLimitedPartnershipCompanyType(companyProfile);
+    expect(res).toBeTruthy();
+  });
+
+  it("should return false if subtype is missing", () => {
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, {
+      type: LIMITED_PARTNERSHIP_COMPANY_TYPE
+      // subtype is missing
+    });
+    const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
+    const res = limitedPartnershipUtil.isStandardLimitedPartnershipCompanyType(companyProfile);
+    expect(res).toBeFalsy();
+  });
+
+  it("should return false if subtype is an empty string", () => {
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, {
+      type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+      subtype: ""
+    });
+    const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
+    const res = limitedPartnershipUtil.isStandardLimitedPartnershipCompanyType(companyProfile);
+    expect(res).toBeFalsy();
+  });
+
+  it("should return false if subtype is an unexpected value", () => {
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, {
+      type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+      subtype: "unexpected-subtype"
+    });
+    const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
+    const res = limitedPartnershipUtil.isStandardLimitedPartnershipCompanyType(companyProfile);
+    expect(res).toBeFalsy();
+  });
+
+  it("should return false if type is not limited-partnership", () => {
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, {
+      type: "some-other-type",
+      subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP
+    });
+    const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
+    const res = limitedPartnershipUtil.isStandardLimitedPartnershipCompanyType(companyProfile);
+    expect(res).toBeFalsy();
+  });
+
 
 });

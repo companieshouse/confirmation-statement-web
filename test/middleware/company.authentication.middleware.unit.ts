@@ -62,7 +62,7 @@ describe("company authentication middleware tests", () => {
   });
 
   it("should call LP journey when company type is limited partnership and contain ACSP member", async () => {
-    setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, "TSA001");
+    setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, "TSA001", LIMITED_PARTNERSHIP_SUBTYPES.LP);
     await request(app).get(URL);
 
     // TODO: the following code need to be updated once ACSP authentication support to create transaction at this moment
