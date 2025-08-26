@@ -100,12 +100,10 @@ const createNewConfirmationStatement = async (session: Session) => {
 };
 
 export function shouldRedirectToPaperFiling(companyProfile: CompanyProfile): boolean {
-  const isLimitedPartnershipType = companyProfile?.type === LIMITED_PARTNERSHIP_COMPANY_TYPE;
-  const isValidSubtype = !!companyProfile?.subtype &&
-    Object.values(LIMITED_PARTNERSHIP_SUBTYPES).includes(companyProfile.subtype);
+  const isLimitedPartnershipTypeWithValidSubtype = isLimitedPartnershipCompanyType(companyProfile);
   const isFeatureFlagEnabled = isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile);
-
-  return isLimitedPartnershipType && (!isFeatureFlagEnabled || !isValidSubtype);
+  
+  return isLimitedPartnershipTypeWithValidSubtype && !isFeatureFlagEnabled;
 }
 
 
