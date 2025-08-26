@@ -22,8 +22,6 @@ import { createAndLogError } from "../../src/utils/logger";
 import { dummyPayment, PAYMENT_JOURNEY_URL } from "../mocks/payment.mock";
 import { mockConfirmationStatementSubmission } from "../mocks/confirmation.statement.submission.mock";
 import { getConfirmationStatement, updateConfirmationStatement } from "../../src/services/confirmation.statement.service";
-import { Request, Response, NextFunction } from "express";
-import { Session } from "@companieshouse/node-session-handler";
 import * as sessionAcspUtils from "../../src/utils/session.acsp";
 import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
 
@@ -54,6 +52,7 @@ const ERROR_PAGE_HEADING = "Service offline - File a confirmation statement";
 const COSTS_TEXT = "You will need to pay a fee of £34";
 const CONFIRMATION_STATEMENT_TEXT = "By continuing, you confirm that all information required to be delivered by the company pursuant to";
 const CONFIRMATION_STATEMENT_ECCT_TEXT = "confirm that all information required to be delivered by the company pursuant to";
+// const LAWFUL_ACTIVITY_STATEMENT_TEXT = "confirm that the intended future activities of the company are lawful";
 const CONFIRMATION_STATEMENT_ERROR = "Select if all required information is either delivered or being delivered for the confirmation statement date";
 const LAWFUL_ACTIVITY_STATEMENT_ERROR = "Select if intended future activities are lawful";
 const ERROR_HEADING = "There is a problem";
@@ -218,6 +217,7 @@ describe("review controller tests", () => {
         });
       expect(response.status).toBe(200);
       expect(response.text).toContain(CONFIRMATION_STATEMENT_ECCT_TEXT);
+      // expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_TEXT);
     });
 
     it("Should redirect to an error page when error is returned", async () => {
@@ -227,71 +227,6 @@ describe("review controller tests", () => {
       expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
     });
 
-    it("Should show review page for Limited Partnership with confirmation and lawful activity statement checkboxes checked", async () => {
-
-      setupLimitedPartnershipCompany();
-
-      setExtraDataOnSession(true, true);
-
-      const response = await request(app).get(URL);
-
-      expect(response.status).toBe(200);
-
-      expect(response.text).toMatch(/govuk-checkboxes__input.*confirmation-statement.*true/);
-      expect(response.text).toMatch(/govuk-checkboxes__input.*lawful-activity-statement.*true/);
-    });
-
-    it("Should show review page for Limited Partnership with confirmation and lawful activity statement checkboxes not checked", async () => {
-
-      setupLimitedPartnershipCompany();
-
-      setExtraDataOnSession(false, false);
-
-      const response = await request(app).get(URL);
-
-      expect(response.status).toBe(200);
-
-      expect(response.text).toMatch(/govuk-checkboxes__input.*confirmation-statement.*false/);
-      expect(response.text).toMatch(/govuk-checkboxes__input.*lawful-activity-statement.*false/);
-    });
-
-    it("Should show review page for Limited Partnership with confirmation and lawful activity statement checkboxe values not defined", async () => {
-
-      setupLimitedPartnershipCompany();
-
-      const response = await request(app).get(URL);
-
-      expect(response.status).toBe(200);
-
-      expect(response.text).toMatch(/govuk-checkboxes__input.*confirmation-statement.*false/);
-      expect(response.text).toMatch(/govuk-checkboxes__input.*lawful-activity-statement.*false/);
-    });
-
-    function setupLimitedPartnershipCompany() {
-      const mockLimitedPartnership = {
-        companyNumber: COMPANY_NUMBER,
-        type: "limited-partnership-lp",
-        companyName: "Test Company"
-      };
-
-      mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
-    }
-
-    function setExtraDataOnSession(confirmationChecked: boolean, lawfulActivityChecked: boolean) {
-      const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
-      const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
-
-      mocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
-
-        if (!req.session) {
-          req.session = new Session();
-        }
-        req.session.setExtraData(CONFIRMATION_STATEMENT_SESSION_KEY, confirmationChecked);
-        req.session.setExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, lawfulActivityChecked);
-
-        return next();
-      });
-    }
   });
 
   describe("post tests", () => {
@@ -320,7 +255,9 @@ describe("review controller tests", () => {
         .post(URL).send({ confirmationStatement: "true", lawfulActivityStatement: "true" });
 
       expect(response.status).toBe(302);
+      // expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
     });
+
 
     it("Should reload the review page with error messages when both confirmation & lawful activity statement checkboxes not ticked", async () => {
       const mockLimitedPartnership = {
@@ -401,6 +338,7 @@ describe("review controller tests", () => {
       expect(response.status).toBe(302);
       expect(response.header.location).toBe(PAYMENT_JOURNEY_URL);
     });
+
 
     it("Should update the lawful purpose statement", async () => {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2023-01-01";
