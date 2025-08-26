@@ -21,7 +21,7 @@ import {
 } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { toReadableFormat } from "../utils/date";
-import { COMPANY_PROFILE_SESSION_KEY, LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../utils/constants";
+import { COMPANY_PROFILE_SESSION_KEY } from "../utils/constants";
 import { isLimitedPartnershipCompanyType, isLimitedPartnershipSubtypeFeatureFlagEnabled } from "../utils/limited.partnership";
 import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
 
@@ -102,7 +102,7 @@ const createNewConfirmationStatement = async (session: Session) => {
 export function shouldRedirectToPaperFiling(companyProfile: CompanyProfile): boolean {
   const isLimitedPartnershipTypeWithValidSubtype = isLimitedPartnershipCompanyType(companyProfile);
   const isFeatureFlagEnabled = isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile);
-  
+
   return isLimitedPartnershipTypeWithValidSubtype && !isFeatureFlagEnabled;
 }
 

@@ -73,14 +73,14 @@ export function getACSPBackPath(session: Session, company: CompanyProfile): stri
 export function isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile: CompanyProfile): boolean {
   if (isLimitedPartnershipCompanyType(companyProfile)) {
     switch (companyProfile.subtype) {
-      case LIMITED_PARTNERSHIP_SUBTYPES.LP:
-        return isLimitedPartnershipFeatureEnabled();
-      case LIMITED_PARTNERSHIP_SUBTYPES.SLP:
-        return isScottishLimitedPartnershipFeatureEnabled();
-      case LIMITED_PARTNERSHIP_SUBTYPES.PFLP:
-        return isPrivateFundLimitedPartnershipFeatureEnabled();
-      case LIMITED_PARTNERSHIP_SUBTYPES.SPFLP:
-        return isScottishPrivateFundimitedPartnershipFeatureEnabled();
+        case LIMITED_PARTNERSHIP_SUBTYPES.LP:
+          return isLimitedPartnershipFeatureEnabled();
+        case LIMITED_PARTNERSHIP_SUBTYPES.SLP:
+          return isScottishLimitedPartnershipFeatureEnabled();
+        case LIMITED_PARTNERSHIP_SUBTYPES.PFLP:
+          return isPrivateFundLimitedPartnershipFeatureEnabled();
+        case LIMITED_PARTNERSHIP_SUBTYPES.SPFLP:
+          return isScottishPrivateFundimitedPartnershipFeatureEnabled();
     }
   }
   return false;
