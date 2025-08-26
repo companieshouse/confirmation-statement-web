@@ -232,7 +232,7 @@ describe("review controller tests", () => {
       setExtraDataOnSession(true, true);
 
       const response = await request(app).get(URL);
-      
+
       expect(response.status).toBe(200);
 
       expect(response.text).toMatch(/govuk-checkboxes__input.*confirmation-statement.*true/);
@@ -244,9 +244,9 @@ describe("review controller tests", () => {
       setupLimitedPartnershipCompany();
 
       setExtraDataOnSession(false, false);
-  
+
       const response = await request(app).get(URL);
-      
+
       expect(response.status).toBe(200);
 
       expect(response.text).toMatch(/govuk-checkboxes__input.*confirmation-statement.*false/);
@@ -254,11 +254,11 @@ describe("review controller tests", () => {
     });
 
     it("Should show review page for Limited Partnership with confirmation and lawful activity statement checkboxe values not defined", async () => {
-      
+
       setupLimitedPartnershipCompany();
 
       const response = await request(app).get(URL);
-      
+
       expect(response.status).toBe(200);
 
       expect(response.text).toMatch(/govuk-checkboxes__input.*confirmation-statement.*false/);
@@ -274,19 +274,19 @@ describe("review controller tests", () => {
 
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
     }
-    
+
     function setExtraDataOnSession(confirmationChecked: boolean, lawfulActivityChecked: boolean) {
-      const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY'; 
-      const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY'; 
-    
+      const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
+      const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
+
       mocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
-    
+
         if (!req.session) {
           req.session = new Session();
         }
         req.session.setExtraData(CONFIRMATION_STATEMENT_SESSION_KEY, confirmationChecked);
         req.session.setExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, lawfulActivityChecked);
-    
+
         return next();
       });
     }
