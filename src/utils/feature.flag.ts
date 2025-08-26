@@ -1,4 +1,8 @@
-import { FEATURE_FLAG_ECCT_START_DATE_14082023 } from "./properties";
+import { FEATURE_FLAG_ECCT_START_DATE_14082023,
+  FEATURE_FLAG_LP_SUBTYPE_START_DATE,
+  FEATURE_FLAG_SLP_SUBTYPE_START_DATE,
+  FEATURE_FLAG_PFLP_SUBTYPE_START_DATE,
+  FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE } from "./properties";
 import { isValidDate } from "./date";
 import { logger } from "./logger";
 
@@ -18,15 +22,34 @@ export const isActiveFeature = (flag: string | undefined): boolean => {
 
 };
 
-export const ecctDayOneEnabled = (dateToCompare: Date): boolean => {
-  const ecctStartDateAsString: string = FEATURE_FLAG_ECCT_START_DATE_14082023;
+export const isDateFeatureFlagEnabled = (featureFlagKey: string, featureFlagDateString: string, dateToCompare: Date): boolean => {
 
-  if (!isValidDate(ecctStartDateAsString)) {
-    logger.info(`Environment Variable "FEATURE_FLAG_ECCT_START_DATE_14082023" must be in yyyy-mm-dd format`);
+  if (!isValidDate(featureFlagDateString)) {
+    logger.info(`Environment Variable "${featureFlagKey}" must be in yyyy-mm-dd format`);
     return false;
   }
 
-  const ecctStartDate: Date = new Date(ecctStartDateAsString);
+  const featureFlagStartDate: Date = new Date(featureFlagDateString);
 
-  return dateToCompare >= ecctStartDate;
+  return dateToCompare >= featureFlagStartDate;
+};
+
+export const ecctDayOneEnabled = (dateToCompare: Date): boolean => {
+  return isDateFeatureFlagEnabled("FEATURE_FLAG_ECCT_START_DATE_14082023", FEATURE_FLAG_ECCT_START_DATE_14082023, dateToCompare);
+};
+
+export const isLimitedPartnershipFeatureEnabled = (): boolean => {
+  return isDateFeatureFlagEnabled("FEATURE_FLAG_LP_SUBTYPE_START_DATE", FEATURE_FLAG_LP_SUBTYPE_START_DATE, new Date());
+};
+
+export const isScottishLimitedPartnershipFeatureEnabled = (): boolean => {
+  return isDateFeatureFlagEnabled("FEATURE_FLAG_SLP_SUBTYPE_START_DATE", FEATURE_FLAG_SLP_SUBTYPE_START_DATE, new Date());
+};
+
+export const isPrivateFundLimitedPartnershipFeatureEnabled = (): boolean => {
+  return isDateFeatureFlagEnabled("FEATURE_FLAG_PFLP_SUBTYPE_START_DATE", FEATURE_FLAG_PFLP_SUBTYPE_START_DATE, new Date());
+};
+
+export const isScottishPrivateFundimitedPartnershipFeatureEnabled = (): boolean => {
+  return isDateFeatureFlagEnabled("FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE", FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE, new Date());
 };

@@ -34,9 +34,16 @@
                 <p class="govuk-body">
                     {{i18n.BYFInfoHoldParagraph}}</p>
 
-                <p class="govuk-body">{{i18n.BYFFileUpdatesParagraphStart}}
-                    <a
-                    href="https://www.gov.uk/">{{i18n.BYFFileUpdatesParagraphLink}}</a>{{i18n.BYFFileUpdatesParagraphEnd}}
+                <p class="govuk-body">
+                    {{i18n.BYFFileUpdatesParagraphStart}}
+                    {% if company.companyNumber %}
+                        <a href="https://find-and-update.company-information.service.gov.uk/company/{{company.companyNumber}}" target="_blank">
+                            {{i18n.BYFFileUpdatesParagraphLink}}
+                        </a>
+                    {% else %}
+                        {{i18n.BYFFileUpdatesParagraphLink}}
+                    {% endif %}    
+                    {{i18n.BYFFileUpdatesParagraphEnd}}
                 </p>
                 <p class="govuk-body">{{i18n.BYFOnlyInfoChangedParagraph}}</p>
 

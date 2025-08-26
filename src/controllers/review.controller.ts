@@ -18,8 +18,7 @@ import { getConfirmationStatement } from "../services/confirmation.statement.ser
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
 import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
-import { getConfirmationPath, isLimitedPartnershipCompanyType, isACSPJourney  } from '../utils/limited.partnership';
-import { savePreviousPageInSession } from "../utils/session-navigation";
+import { getConfirmationPath, isLimitedPartnershipCompanyType, isACSPJourney, getACSPBackPath } from '../utils/limited.partnership';
 
 const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
 const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
@@ -30,25 +29,32 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
-    const backLinkUrl = urlUtils
-      .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, companyNumber, transactionId, submissionId);
-
     const locales = getLocalesService();
     const lang = selectLang(req.query.lang);
+    const localeInfo = getLocaleInfo(locales, lang);
     res.cookie('lang', lang, { httpOnly: true });
 
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
+    const confirmationDate = company.confirmationStatement?.nextMadeUpTo;
 
     const confirmationStatementCheck: boolean|undefined = session.getExtraData(CONFIRMATION_STATEMENT_SESSION_KEY);
 
     const lawfulActivityStatementCheck: boolean|undefined = session.getExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY);
 
     if (isLimitedPartnershipCompanyType(company)) {
+      const backLinkPath = getACSPBackPath(session, company);
+      const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+        backLinkPath,
+        companyNumber,
+        transactionId,
+        submissionId
+      );
+
       return res.render(Templates.REVIEW, {
-        ...getLocaleInfo(locales, lang),
-        backLinkUrl,
+        ...localeInfo,
+        previousPage,
         company,
-        nextMadeUpToDate: company.confirmationStatement?.nextMadeUpTo,
+        nextMadeUpToDate: confirmationDate,
         isPaymentDue: true,
         ecctEnabled: true,
         confirmationChecked: confirmationStatementCheck,
@@ -56,23 +62,24 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         isLimitedPartnership: true
       });
 
-    } else {
-
-      const transaction: Transaction = await getTransaction(session, transactionId);
-
-      const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
-
-      const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
-      const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
-      return res.render(Templates.REVIEW, {
-        ...getLocaleInfo(locales, lang),
-        backLinkUrl,
-        company,
-        nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
-        isPaymentDue: isPaymentDue(transaction, submissionId),
-        ecctEnabled
-      });
     }
+
+    const transaction: Transaction = await getTransaction(session, transactionId);
+    const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
+    const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
+    const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
+    const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+      TASK_LIST_PATH, companyNumber, transactionId, submissionId);
+
+
+    return res.render(Templates.REVIEW, {
+      ...localeInfo,
+      backLinkUrl,
+      company,
+      nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
+      isPaymentDue: isPaymentDue(transaction, submissionId),
+      ecctEnabled
+    });
 
   } catch (e) {
     return next(e);
@@ -118,7 +125,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
       const lang = selectLang(req.query.lang);
       const locales = getLocalesService();
-      const previousPage = savePreviousPageInSession(req);
+      const backLinkPath = getACSPBackPath(session, companyProfile);
+      const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+        backLinkPath,
+        companyNumber,
+        transactionId,
+        submissionId
+      );
 
       if (!confirmationValid || !lawfulActivityValid) {
         return res.render(Templates.REVIEW, {

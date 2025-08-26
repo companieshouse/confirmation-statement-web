@@ -40,6 +40,11 @@ const sessionData: Session = new Session({
   }
 });
 
+const PropertiesMock = jest.requireMock('../../src/utils/properties');
+jest.mock('../../src/utils/properties', () => ({
+  ...jest.requireActual('../../src/utils/properties'),
+}));
+
 describe("Limited partnership util tests", () => {
   it("isLimitedPartnershipCompanyType should return true if the company type is limited-partnership", () => {
     const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
@@ -158,6 +163,86 @@ describe("Limited partnership util tests", () => {
     const res = limitedPartnershipUtil.isSpflpLimitedPartnershipCompanyType(companyProfile);
 
     expect(res).toBeFalsy();
+  });
+
+  it("isLimitedPartnershipSubtypeFeatureFlagEnabled should return false if the company type is LP and the start date of feature flag LP is in the future", () => {
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": "limited-partnership" });
+    const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
+    PropertiesMock.FEATURE_FLAG_LP_SUBTYPE_START_DATE = "2999-01-01";
+
+    const res = limitedPartnershipUtil.isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile);
+
+    expect(res).toBeFalsy();
+  });
+
+  it("isLimitedPartnershipSubtypeFeatureFlagEnabled should return true if the company type is LP and the start date of feature flag LP is past", () => {
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": "limited-partnership" });
+    const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
+    PropertiesMock.FEATURE_FLAG_LP_SUBTYPE_START_DATE = "2020-01-01";
+
+    const res = limitedPartnershipUtil.isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile);
+
+    expect(res).toBeTruthy();
+  });
+
+  it("isLimitedPartnershipSubtypeFeatureFlagEnabled should return false if the company type is SLP and the start date of feature flag SLP is in the future", () => {
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": "limited-partnership-slp" });
+    const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
+    PropertiesMock.FEATURE_FLAG_SLP_SUBTYPE_START_DATE = "2999-03-03";
+
+    const res = limitedPartnershipUtil.isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile);
+
+    expect(res).toBeFalsy();
+  });
+
+  it("isLimitedPartnershipSubtypeFeatureFlagEnabled should return true if the company type is SLP and the start date of feature flag SLP is past", () => {
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": "limited-partnership-slp" });
+    const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
+    PropertiesMock.FEATURE_FLAG_SLP_SUBTYPE_START_DATE = "2020-03-03";
+
+    const res = limitedPartnershipUtil.isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile);
+
+    expect(res).toBeTruthy();
+  });
+
+  it("isLimitedPartnershipSubtypeFeatureFlagEnabled should return false if the company type is PFLP and the start date of feature flag PFLP is in the future", () => {
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": "limited-partnership-pflp" });
+    const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
+    PropertiesMock.FEATURE_FLAG_PFLP_SUBTYPE_START_DATE = "2999-05-05";
+
+    const res = limitedPartnershipUtil.isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile);
+
+    expect(res).toBeFalsy();
+  });
+
+  it("isLimitedPartnershipSubtypeFeatureFlagEnabled should return true if the company type is PFLP and the start date of feature flag PFLP is past", () => {
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": "limited-partnership-pflp" });
+    const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
+    PropertiesMock.FEATURE_FLAG_PFLP_SUBTYPE_START_DATE = "2020-05-05";
+
+    const res = limitedPartnershipUtil.isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile);
+
+    expect(res).toBeTruthy();
+  });
+
+  it("isLimitedPartnershipSubtypeFeatureFlagEnabled should return false if the company type is SPFLP and the start date of feature flag SPFLP is in the future", () => {
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": "limited-partnership-spflp" });
+    const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
+    PropertiesMock.FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE = "2999-09-09";
+
+    const res = limitedPartnershipUtil.isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile);
+
+    expect(res).toBeFalsy();
+  });
+
+  it("isLimitedPartnershipSubtypeFeatureFlagEnabled should return true if the company type is SPFLP and the start date of feature flag SPFLP is past", () => {
+    sessionData.setExtraData(COMPANY_PROFILE_SESSION_KEY, { "type": "limited-partnership-spflp" });
+    const companyProfile = getCompanyProfileFromSession({ session: sessionData } as Request);
+    PropertiesMock.FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE = "2020-09-09";
+
+    const res = limitedPartnershipUtil.isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile);
+
+    expect(res).toBeTruthy();
   });
 
 });
