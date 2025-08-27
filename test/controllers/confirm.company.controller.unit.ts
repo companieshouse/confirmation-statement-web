@@ -377,7 +377,7 @@ describe("Confirm company controller tests", () => {
     expect(shouldRedirectToPaperFilingForInvalidLp(validLimitedPartnershipProfile)).toBeFalsy();
   });
 
-  it("shouldRedirectToPaperFilingForInvalidLp should return true if the company type, subtype are LP feature flag is not enabled", () => {
+  it("shouldRedirectToPaperFilingForInvalidLp should return true if the company type, subtype are LP and feature flag is not enabled", () => {
     (isLimitedPartnershipFeatureEnabled as jest.Mock).mockReturnValue(false);
     validLimitedPartnershipProfile.type = "limited-partnership";
     validLimitedPartnershipProfile.subtype = "limited-partnership";
