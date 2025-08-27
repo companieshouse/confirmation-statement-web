@@ -5,7 +5,7 @@ import { ecctDayOneEnabled,
   isLimitedPartnershipFeatureEnabled,
   isScottishLimitedPartnershipFeatureEnabled,
   isPrivateFundLimitedPartnershipFeatureEnabled,
-  isScottishPrivateFundimitedPartnershipFeatureEnabled
+  isScottishPrivateFundLimitedPartnershipFeatureEnabled
 } from "../../src/utils/feature.flag";
 
 const PropertiesMock = jest.requireMock('../../src/utils/properties');
@@ -230,7 +230,7 @@ describe("feature flag tests", function() {
       };
       global.Date = MockDate as unknown as DateConstructor;
 
-      expect(isScottishPrivateFundimitedPartnershipFeatureEnabled()).toEqual(false);
+      expect(isScottishPrivateFundLimitedPartnershipFeatureEnabled()).toEqual(false);
 
       global.Date = OriginalDate;
 
@@ -238,17 +238,17 @@ describe("feature flag tests", function() {
 
     it("should return true if the date is the same as SPFLP feature flag start date", function() {
       PropertiesMock.FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE = "2019-03-01";
-      expect(isScottishPrivateFundimitedPartnershipFeatureEnabled()).toEqual(true);
+      expect(isScottishPrivateFundLimitedPartnershipFeatureEnabled()).toEqual(true);
     });
 
     it("should return true if the date is past SPFLP feature flag start date", function() {
       PropertiesMock.FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE = "2025-08-01";
-      expect(isScottishPrivateFundimitedPartnershipFeatureEnabled()).toEqual(true);
+      expect(isScottishPrivateFundLimitedPartnershipFeatureEnabled()).toEqual(true);
     });
 
     it("should return false if SPFLP feature flag start date is invalid", function() {
       PropertiesMock.FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE = "2025-99-99";
-      expect(isScottishPrivateFundimitedPartnershipFeatureEnabled()).toEqual(false);
+      expect(isScottishPrivateFundLimitedPartnershipFeatureEnabled()).toEqual(false);
     });
   });
 

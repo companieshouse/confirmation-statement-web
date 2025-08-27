@@ -5,7 +5,7 @@ import {
 } from "./constants";
 import { CONFIRMATION_PATH, LP_CHECK_YOUR_ANSWER_PATH, LP_CONFIRMATION_PATH, LP_CS_DATE_PATH, LP_REVIEW_PATH, LP_SIC_CODE_SUMMARY_PATH, REVIEW_PATH } from "../types/page.urls";
 import { Session } from "@companieshouse/node-session-handler";
-import { isLimitedPartnershipFeatureEnabled, isScottishLimitedPartnershipFeatureEnabled, isPrivateFundLimitedPartnershipFeatureEnabled, isScottishPrivateFundimitedPartnershipFeatureEnabled } from "./feature.flag";
+import { isLimitedPartnershipFeatureEnabled, isScottishLimitedPartnershipFeatureEnabled, isPrivateFundLimitedPartnershipFeatureEnabled, isScottishPrivateFundLimitedPartnershipFeatureEnabled } from "./feature.flag";
 import { getAcspSessionData } from "./session.acsp";
 
 export function isLimitedPartnershipCompanyType(companyProfile: CompanyProfile): boolean {
@@ -80,7 +80,7 @@ export function isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile: Co
         case LIMITED_PARTNERSHIP_SUBTYPES.PFLP:
           return isPrivateFundLimitedPartnershipFeatureEnabled();
         case LIMITED_PARTNERSHIP_SUBTYPES.SPFLP:
-          return isScottishPrivateFundimitedPartnershipFeatureEnabled();
+          return isScottishPrivateFundLimitedPartnershipFeatureEnabled();
     }
   }
   return false;
