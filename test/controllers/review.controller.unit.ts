@@ -24,6 +24,9 @@ import { mockConfirmationStatementSubmission } from "../mocks/confirmation.state
 import { getConfirmationStatement, updateConfirmationStatement } from "../../src/services/confirmation.statement.service";
 import { Request, Response, NextFunction } from "express";
 import { Session } from "@companieshouse/node-session-handler";
+import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
+import * as sessionAcspUtils from "../../src/utils/session.acsp";
+import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
 
 const PropertiesMock = jest.requireMock('../../src/utils/properties');
 jest.mock('../../src/utils/properties', () => ({
@@ -324,6 +327,7 @@ describe("review controller tests", () => {
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
         type: "limited-partnership",
+        subtype: "limited-partnership",
         companyName: "Test Company"
       };
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
@@ -340,6 +344,7 @@ describe("review controller tests", () => {
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
         type: "limited-partnership",
+        subtype: "limited-partnership",
         companyName: "Test Company"
       };
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
@@ -355,7 +360,8 @@ describe("review controller tests", () => {
     it("Should reload the review page with an error message when lawful activity statement checkbox not ticked", async () => {
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
-        type: "limited-partnership",
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
         companyName: "Test Company"
       };
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
@@ -460,5 +466,91 @@ describe("review controller tests", () => {
       expect(response.status).toEqual(302);
       expect(response.header.location).toBe(PAYMENT_JOURNEY_URL);
     });
+  });
+
+  describe("Back link test", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      mockGetConfirmationStatement.mockReset();
+      mockGetConfirmationStatement.mockResolvedValue(mockConfirmationStatementSubmission);
+      jest.spyOn(limitedPartnershipUtils, "isACSPJourney").mockReturnValue(true);
+    });
+
+    it("should redirect to Check SIC Code page when back button clicked, IS a Limited Partnership and NOT a private fund type", async() => {
+      const mockLimitedPartnership = {
+        companyNumber: COMPANY_NUMBER,
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
+        companyName: "Test Company"
+      };
+      mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
+
+      const response = await request(app)
+        .get(URL);
+
+      const backPath = LP_SIC_CODE_SUMMARY_PATH
+        .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
+        .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
+        .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
+
+      expect(response.text).toContain(backPath);
+    });
+
+    it("should redirect to Date page when back button clicked, IS a private fund Limited Partnership and NO date change", async() => {
+      jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+        changeConfirmationStatementDate: false,
+        beforeYouFileCheck: true,
+        newConfirmationDate: null,
+        confirmAllInformationCheck: false,
+        confirmLawfulActionsCheck: false
+      });
+
+      const mockLimitedPartnership = {
+        companyNumber: COMPANY_NUMBER,
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.PFLP,
+        companyName: "Test Company"
+      };
+      mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
+
+      const response = await request(app)
+        .get(URL);
+
+      const backPath = LP_CS_DATE_PATH
+        .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
+        .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
+        .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
+
+      expect(response.text).toContain(backPath);
+    });
+
+    it("should redirect to Check Your Answer page when back button clicked, IS a private fund Limited Partnership and HAS a date change", async() => {
+      jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+        changeConfirmationStatementDate: true,
+        beforeYouFileCheck: true,
+        newConfirmationDate: null,
+        confirmAllInformationCheck: false,
+        confirmLawfulActionsCheck: false
+      });
+
+      const mockLimitedPartnership = {
+        companyNumber: COMPANY_NUMBER,
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.PFLP,
+        companyName: "Test Company"
+      };
+      mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
+
+      const response = await request(app)
+        .get(URL);
+
+      const backPath = LP_CHECK_YOUR_ANSWER_PATH
+        .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
+        .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
+        .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
+
+      expect(response.text).toContain(backPath);
+    });
+
   });
 });

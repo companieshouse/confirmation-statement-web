@@ -1,14 +1,15 @@
 {
     "BYFPageTitle" : "Before you file a confirmation statement",
-    "BYFInfoHoldParagraph" : "Check that all the limited partnership information we hold is correct.",
-    "BYFFileUpdatesParagraphStart" : "If anything has changed, you must ",
-    "BYFFileUpdatesParagraphLink" : "update the limited partnership's information",
-    "BYFFileUpdatesParagraphEnd" : " before filing the confirmation statement.",
-    "BYFOnlyInfoChangedParagraph" : "The only information you can update within the confirmation statement are the Standard Industrial Classification (SIC) codes.",
-    "BYFInsetParagraph1" : "Any updates you file may not show immediately in this service.",
-    "BYFInsetParagraph2" : "You do not need to wait for update filings to be accepted. As long as they've been submitted, you can file the confirmation statement.",
-    "BYFCheckboxText" : "I have checked the limited partnership information and submitted any updates",
+    "BYFOnlyInfoChangedParagraph" : "You will not be able to view or change limited partnership information (except for the SIC codes) as part of this filing.",
+    "BYFAlternateTextPFLP" : "You will not be able to view or change limited partnership information as part of this filing.",
+    "BYFFileUpdatesParagraphStart" : "Before you start, ",
+    "BYFFileUpdatesParagraphLink" : "check the limited partnership information we hold",
+    "BYFFileUpdatesParagraphEnd" : " and update anything that's changed.",
+    "BYFSubmittedUpdatesParagraph" : "Once you've submitted the updates, you can file the confirmation statement. You do not need to wait for the updates to be accepted.", 
+    "BYFCheckboxText" : "I have checked the limited partnership information and submitted updates to information that has changed.",
+    "BYFFeeInfoTitle" : "Fee", 
+    "BYFFeeInfoParagraph1" : "You will need to pay a fee of <strong>£X</strong> to submit your confirmation statement.",
+    "BYFFeeInfoParagraph2" : "You can pay by debit or credit card. You cannot pay with a Companies House payment account.",
     "BYFContinueBotton" : "Continue",
-    "BYFAlternateTextPFLP" : "TBC",
-    "BYFErrorMessageNotChecked" : "TBC"
+    "BYFErrorMessageNotChecked" : "Confirm that you've checked the limited partnership information and submitted any updates"
 }

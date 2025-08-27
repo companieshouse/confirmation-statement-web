@@ -37,17 +37,16 @@ export const LP_CONFIRMATION_STATEMENT_ERROR: string = "Select if all required i
 export const LP_LAWFUL_ACTIVITY_STATEMENT_ERROR: string = "Select if intended future activities are lawful";
 export const ACCEPT_LAWFUL_PURPOSE_STATEMENT = "acceptLawfulPurposeStatement";
 export const LIMITED_PARTNERSHIP_COMPANY_TYPE = "limited-partnership";
-export const LIMITED_PARTNERSHIP_LP_COMPANY_TYPE = "limited-partnership-lp";
-export const LIMITED_PARTNERSHIP_SLP_COMPANY_TYPE = "limited-partnership-slp";
-export const LIMITED_PARTNERSHIP_PFLP_COMPANY_TYPE = "limited-partnership-pflp";
-export const LIMITED_PARTNERSHIP_SPFLP_COMPANY_TYPE = "limited-partnership-spflp";
-export const LIMITED_PARTNERSHIP_COMPANY_TYPES = [
-  LIMITED_PARTNERSHIP_COMPANY_TYPE,
-  LIMITED_PARTNERSHIP_LP_COMPANY_TYPE,
-  LIMITED_PARTNERSHIP_SLP_COMPANY_TYPE,
-  LIMITED_PARTNERSHIP_PFLP_COMPANY_TYPE,
-  LIMITED_PARTNERSHIP_SPFLP_COMPANY_TYPE
-];
+export const LIMITED_PARTNERSHIP_LP_SUBTYPE = "limited-partnership";
+export const LIMITED_PARTNERSHIP_SLP_SUBTYPE = "scottish-limited-partnership";
+export const LIMITED_PARTNERSHIP_PFLP_SUBTYPE = "private-fund-limited-partnership";
+export const LIMITED_PARTNERSHIP_SPFLP_SUBTYPE = "scottish-private-fund-limited-partnership";
+export const LIMITED_PARTNERSHIP_SUBTYPES = {
+  LP: LIMITED_PARTNERSHIP_LP_SUBTYPE,
+  SLP: LIMITED_PARTNERSHIP_SLP_SUBTYPE,
+  PFLP: LIMITED_PARTNERSHIP_PFLP_SUBTYPE,
+  SPFLP: LIMITED_PARTNERSHIP_SPFLP_SUBTYPE
+};
 export const COMPANY_PROFILE_SESSION_KEY = "company_profile";
 export const ACSP_SESSION_KEY = "acsp_session";
 export const SIC_CODE_SESSION_KEY = "sic_code_session";

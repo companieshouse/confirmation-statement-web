@@ -102,7 +102,8 @@ describe("date controller post tests", () => {
 
     (getCompanyProfile as jest.Mock).mockResolvedValue({
       companyNumber: COMPANY_NUMBER,
-      type: "limited-partnership-lp",
+      type: "limited-partnership",
+      subtype: "limited-partnership",
       companyName: "Test Company"
     });
 
