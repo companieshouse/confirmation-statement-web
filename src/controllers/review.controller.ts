@@ -37,9 +37,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
     const confirmationDate = company.confirmationStatement?.nextMadeUpTo;
 
-    const confirmationStatementCheck = session.getExtraData(CONFIRMATION_STATEMENT_SESSION_KEY) as boolean;
+    // const confirmationStatementCheck = session.getExtraData(CONFIRMATION_STATEMENT_SESSION_KEY) as boolean;
 
-    const lawfulActivityStatementCheck = session.getExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY) as boolean;
+    // const lawfulActivityStatementCheck = session.getExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY) as boolean;
 
     if (isLimitedPartnershipCompanyType(company)) {
       const backLinkPath = getACSPBackPath(session, company);
@@ -57,8 +57,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         nextMadeUpToDate: confirmationDate,
         isPaymentDue: true,
         ecctEnabled: true,
-        confirmationChecked: confirmationStatementCheck,
-        lawfulActivityChecked: lawfulActivityStatementCheck,
+        // confirmationChecked: confirmationStatementCheck,
+        // lawfulActivityChecked: lawfulActivityStatementCheck,
         isLimitedPartnership: true
       });
 
@@ -105,13 +105,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         confirmationCheckboxValue
       );
 
-      req.session?.setExtraData(CONFIRMATION_STATEMENT_SESSION_KEY, confirmationValid);
+      // req.session?.setExtraData(CONFIRMATION_STATEMENT_SESSION_KEY, confirmationValid);
 
       const lawfulActivityValid = isStatementCheckboxTicked(
         lawfulActivityCheckboxValue
       );
 
-      req.session?.setExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, lawfulActivityValid);
+      // req.session?.setExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, lawfulActivityValid);
 
       let confirmationStatementError: string = "";
       if (!confirmationValid) {
