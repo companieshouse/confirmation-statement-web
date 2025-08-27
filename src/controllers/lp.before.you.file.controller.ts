@@ -38,7 +38,9 @@ export const post = (req: Request, res: Response) => {
     resetAcspSession(session);
   }
 
-  updateAcspSessionData(session, { beforeYouFileCheck: isByfChecked } );
+  updateAcspSessionData(session, {
+    beforeYouFileCheck: isByfChecked
+  } );
 
   if (!byfCheckbox) {
     return reloadPageWithError(req, res, lang, localInfo, byfCheckbox, localInfo.i18n.BYFErrorMessageNotChecked);

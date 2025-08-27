@@ -22,6 +22,7 @@ import { createAndLogError } from "../../src/utils/logger";
 import { dummyPayment, PAYMENT_JOURNEY_URL } from "../mocks/payment.mock";
 import { mockConfirmationStatementSubmission } from "../mocks/confirmation.statement.submission.mock";
 import { getConfirmationStatement, updateConfirmationStatement } from "../../src/services/confirmation.statement.service";
+import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
 import * as sessionAcspUtils from "../../src/utils/session.acsp";
 import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
 
@@ -263,6 +264,7 @@ describe("review controller tests", () => {
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
         type: "limited-partnership",
+        subtype: "limited-partnership",
         companyName: "Test Company"
       };
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
@@ -279,6 +281,7 @@ describe("review controller tests", () => {
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
         type: "limited-partnership",
+        subtype: "limited-partnership",
         companyName: "Test Company"
       };
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
@@ -294,7 +297,8 @@ describe("review controller tests", () => {
     it("Should reload the review page with an error message when lawful activity statement checkbox not ticked", async () => {
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
-        type: "limited-partnership",
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
         companyName: "Test Company"
       };
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
@@ -413,7 +417,8 @@ describe("review controller tests", () => {
     it("should redirect to Check SIC Code page when back button clicked, IS a Limited Partnership and NOT a private fund type", async() => {
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
-        type: "limited-partnership-lp",
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
         companyName: "Test Company"
       };
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
@@ -440,7 +445,8 @@ describe("review controller tests", () => {
 
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
-        type: "limited-partnership-pflp",
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.PFLP,
         companyName: "Test Company"
       };
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
@@ -467,7 +473,8 @@ describe("review controller tests", () => {
 
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
-        type: "limited-partnership-pflp",
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.PFLP,
         companyName: "Test Company"
       };
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);

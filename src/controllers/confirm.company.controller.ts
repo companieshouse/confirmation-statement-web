@@ -63,7 +63,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     if (!isCompanyValidForService(eligibilityStatusCode)) {
       return displayEligibilityStopPage(res, eligibilityStatusCode, company);
-    } else if (isLimitedPartnershipCompanyType(company) && !isLimitedPartnershipSubtypeFeatureFlagEnabled(company)) {
+    } else if (shouldRedirectToPaperFiling(company)) {
       return displayEligibilityStopPage(res, EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY, company);
     }
 
@@ -98,6 +98,15 @@ const createNewConfirmationStatement = async (session: Session) => {
     await createConfirmationStatement(session, transactionId);
   }
 };
+
+export function shouldRedirectToPaperFiling(companyProfile: CompanyProfile): boolean {
+  const isLimitedPartnershipTypeWithValidSubtype = isLimitedPartnershipCompanyType(companyProfile);
+  const isFeatureFlagEnabled = isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile);
+
+  return isLimitedPartnershipTypeWithValidSubtype && !isFeatureFlagEnabled;
+}
+
+
 
 const stopPagesPathMap = {
   [EligibilityStatusCode.INVALID_COMPANY_STATUS]: INVALID_COMPANY_STATUS_PATH,

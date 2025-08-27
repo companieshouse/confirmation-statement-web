@@ -9,6 +9,7 @@ import request from "supertest";
 import app from "../../src/app";
 import { CREATE_TRANSACTION_PATH } from '../../src/types/page.urls';
 import { setCompanyTypeAndAcspNumberInSession } from "../mocks/session.mock";
+import { LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
 
 const mockPostTransaction = postTransaction as jest.Mock;
 const mockCreateConfirmationStatement = createConfirmationStatement as jest.Mock;
@@ -82,7 +83,7 @@ describe("create transaction controller tests", () => {
   it("should redirect to limited partnership journey if company type is LP and contain ACSP number", async () => {
     const url = CREATE_TRANSACTION_PATH.replace(":companyNumber", COMPANY_NUMBER);
     setPostTransactionAndCreateConfirmationStatement();
-    setCompanyTypeAndAcspNumberInSession("limited-partnership", "123456");
+    setCompanyTypeAndAcspNumberInSession("limited-partnership", "123456", LIMITED_PARTNERSHIP_SUBTYPES.LP);
 
     const response = await request(app).get(url);
 
@@ -119,4 +120,3 @@ function setPostTransactionAndCreateConfirmationStatement() {
     }
   });
 }
-

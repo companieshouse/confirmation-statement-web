@@ -20,7 +20,7 @@ export const getEmptySessionRequest = (): Session => {
 import { Request, Response, NextFunction } from "express";
 import mocks from "../mocks/all.middleware.mock";
 
-export const setCompanyTypeAndAcspNumberInSession = (companyType: string, acspNumber: string) => {
+export const setCompanyTypeAndAcspNumberInSession = (companyType: string,  acspNumber: string, companySubtype?: string) => {
   mocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
     const session: Session = new Session();
     session.data = {
@@ -29,7 +29,8 @@ export const setCompanyTypeAndAcspNumberInSession = (companyType: string, acspNu
       },
       extra_data: {
         company_profile: {
-          type: companyType
+          type: companyType,
+          subtype: companySubtype
         }
       }
     };

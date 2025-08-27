@@ -2,7 +2,7 @@ import { acspValidationMiddleware } from "../../src/middleware/acsp.validation.m
 import { LP_CHECK_YOUR_ANSWER_PATH, LP_BEFORE_YOU_FILE_PATH, TRADING_STATUS_PATH, urlParams } from "../../src/types/page.urls";
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
-import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SLP_COMPANY_TYPE } from "../../src/utils/constants";
+import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
 import middlewareMocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
@@ -37,7 +37,8 @@ middlewareMocks.mockSessionMiddleware.mockImplementation((req: Request, res: Res
     },
     extra_data: {
       company_profile: {
-        type: LIMITED_PARTNERSHIP_COMPANY_TYPE
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP
       }
     }
   };
@@ -52,7 +53,7 @@ describe("start ACSP validation middleware tests", () => {
   });
 
   it("acspValidationMiddleware should redirect to LP before you file page if user is ACSP member and LP type", async () => {
-    setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, ACSP_NUMBER);
+    setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, ACSP_NUMBER, LIMITED_PARTNERSHIP_SUBTYPES.LP);
     const response = await request(app).get(URL_LP_BEFORE);
 
     expect(middlewareMocks.mockAcspValidationMiddleware).toHaveBeenCalled();
@@ -60,7 +61,7 @@ describe("start ACSP validation middleware tests", () => {
   });
 
   it("acspValidationMiddleware should redirect to LP check your answer page if user is ACSP member and LP subtype", async () => {
-    setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_SLP_COMPANY_TYPE, ACSP_NUMBER);
+    setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, ACSP_NUMBER, LIMITED_PARTNERSHIP_SUBTYPES.SLP);
     const response = await request(app).get(URL_LP_CHECK);
 
     expect(middlewareMocks.mockAcspValidationMiddleware).toHaveBeenCalled();
@@ -68,7 +69,7 @@ describe("start ACSP validation middleware tests", () => {
   });
 
   it("acspValidationMiddleware should redirect to LP stop screen if user is non ACSP member", async () => {
-    setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, "");
+    setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, "", LIMITED_PARTNERSHIP_SUBTYPES.LP);
     const response = await request(app).get(URL_LP_CHECK);
 
     expect(middlewareMocks.mockAcspValidationMiddleware).toHaveBeenCalled();
@@ -108,7 +109,7 @@ describe("start ACSP validation middleware tests", () => {
   });
 });
 
-function setCompanyTypeAndAcspNumberInSession(companyType: string, acspNumber: string) {
+function setCompanyTypeAndAcspNumberInSession(companyType: string, acspNumber: string, companySubtype?: string) {
   middlewareMocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
     const session: Session = new Session();
     session.data = {
@@ -117,7 +118,8 @@ function setCompanyTypeAndAcspNumberInSession(companyType: string, acspNumber: s
       },
       extra_data: {
         company_profile: {
-          type: companyType
+          type: companyType,
+          subtype: companySubtype
         }
       }
     };
