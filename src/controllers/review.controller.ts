@@ -37,9 +37,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
     const confirmationDate = company.confirmationStatement?.nextMadeUpTo;
 
-    const confirmationStatementCheck: boolean|undefined = session.getExtraData(CONFIRMATION_STATEMENT_SESSION_KEY);
+    const confirmationStatementCheck = session.getExtraData(CONFIRMATION_STATEMENT_SESSION_KEY) as boolean;
 
-    const lawfulActivityStatementCheck: boolean|undefined = session.getExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY);
+    const lawfulActivityStatementCheck = session.getExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY) as boolean;
 
     if (isLimitedPartnershipCompanyType(company)) {
       const backLinkPath = getACSPBackPath(session, company);
