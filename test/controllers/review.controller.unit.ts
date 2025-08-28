@@ -39,7 +39,7 @@ const mockCreateAndLogError = createAndLogError as jest.Mock;
 const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 mockGetConfirmationStatement.mockResolvedValue(mockConfirmationStatementSubmission);
 
-const mockUpdateConfirmationStatement = updateConfirmationStatement as jest.Mock;
+// const mockUpdateConfirmationStatement = updateConfirmationStatement as jest.Mock;
 
 const dummyError = {
   message: "oops"
