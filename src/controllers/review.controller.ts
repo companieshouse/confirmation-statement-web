@@ -1,19 +1,14 @@
 import { NextFunction, Request, Response } from "express";
-import { closeTransaction, getTransaction } from "../services/transaction.service";
+import { getTransaction } from "../services/transaction.service";
 import { Session } from "@companieshouse/node-session-handler";
-import { CONFIRMATION_PATH, CONFIRMATION_STATEMENT, TASK_LIST_PATH } from '../types/page.urls';
+import { CONFIRMATION_PATH, TASK_LIST_PATH } from '../types/page.urls';
 import { Templates } from "../types/template.paths";
 import { urlUtils } from "../utils/url";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../services/company.profile.service";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
-import { startPaymentsSession } from "../services/payment.service";
-import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
-import { Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
-import { createAndLogError } from "../utils/logger";
-import { links } from "../utils/constants";
 import { toReadableFormat } from "../utils/date";
-import { ConfirmationStatementSubmission, NextMadeUpToDate } from '@companieshouse/api-sdk-node/dist/services/confirmation-statement';
+import { ConfirmationStatementSubmission } from '@companieshouse/api-sdk-node/dist/services/confirmation-statement';
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
 import { ecctDayOneEnabled } from "../utils/feature.flag";
@@ -129,12 +124,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       //   nextPage
       // );
 
-  }
+    }
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
     const csSubmission: ConfirmationStatementSubmission =
     await getConfirmationStatement(session, transactionId, submissionId);
 
-    const noChangeJourneyResponse = handleNoChangeConfirmationJourney(req, res, company, companyNumber, transactionId, submissionId, csSubmission, session);
+    const noChangeJourneyResponse = handleNoChangeConfirmationJourney(req, res, company, companyNumber, transactionId, submissionId, csSubmission);
 
     if (noChangeJourneyResponse?.renderData && "renderData" in noChangeJourneyResponse) {
       return res.render(Templates.REVIEW, {
