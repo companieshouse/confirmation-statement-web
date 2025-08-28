@@ -13,9 +13,10 @@ import { getConfirmationStatement } from "../services/confirmation.statement.ser
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
 import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
-import { isLimitedPartnershipCompanyType, getACSPBackPath, handleLimitedPartnershipConfirmationJourney } from '../utils/limited.partnership';
-import { handleNoChangeConfirmationJourney } from "../utils/no.change";
+import { isLimitedPartnershipCompanyType, getACSPBackPath } from '../utils/limited.partnership';
 import { isPaymentDue, executePaymentJourney } from "../utils/payments";
+import { handleLimitedPartnershipConfirmationJourney } from "../utils/confirmation/limited.partnership.confirmation";
+import { handleNoChangeConfirmationJourney } from "../utils/confirmation/no.change.confirmation";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -88,7 +89,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     if (isLimitedPartnershipCompanyType(companyProfile)) {
 
-      const lpJourneyResponse = handleLimitedPartnershipConfirmationJourney(req, res, companyNumber, companyProfile, transactionId, submissionId, session);
+      const lpJourneyResponse = handleLimitedPartnershipConfirmationJourney(req, companyNumber, companyProfile, transactionId, submissionId, session);
 
       if ("renderData" in lpJourneyResponse && lpJourneyResponse.renderData) {
         return res.render(Templates.REVIEW, {
@@ -129,7 +130,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const csSubmission: ConfirmationStatementSubmission =
     await getConfirmationStatement(session, transactionId, submissionId);
 
-    const noChangeJourneyResponse = handleNoChangeConfirmationJourney(req, res, company, companyNumber, transactionId, submissionId, csSubmission);
+    const noChangeJourneyResponse = handleNoChangeConfirmationJourney(req, company, csSubmission);
 
     if (noChangeJourneyResponse?.renderData && "renderData" in noChangeJourneyResponse) {
       return res.render(Templates.REVIEW, {

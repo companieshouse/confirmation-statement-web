@@ -21,7 +21,7 @@ import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource
 import { createAndLogError } from "../../src/utils/logger";
 import { dummyPayment, PAYMENT_JOURNEY_URL } from "../mocks/payment.mock";
 import { mockConfirmationStatementSubmission } from "../mocks/confirmation.statement.submission.mock";
-import { getConfirmationStatement, updateConfirmationStatement } from "../../src/services/confirmation.statement.service";
+import { getConfirmationStatement } from "../../src/services/confirmation.statement.service";
 import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
 import * as sessionAcspUtils from "../../src/utils/session.acsp";
 import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
