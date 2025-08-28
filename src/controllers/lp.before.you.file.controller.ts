@@ -8,7 +8,8 @@ import { getAcspSessionData, resetAcspSession, updateAcspSessionData } from "../
 import { urlUtils } from "../utils/url";
 import { getCompanyProfileFromSession } from "../utils/session";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
-import { getTransaction } from "services/transaction.service";
+import { getTransaction } from "../services/transaction.service";
+import { isPaymentDue } from "../utils/payments";
 
 export const get = async (req: Request, res: Response) => {
   const session: Session = req.session as Session;
@@ -20,7 +21,6 @@ export const get = async (req: Request, res: Response) => {
   const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
   const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
   const transaction: Transaction = await getTransaction(session, transactionId);
-
 
 
   return res.render(Templates.LP_BEFORE_YOU_FILE, {
