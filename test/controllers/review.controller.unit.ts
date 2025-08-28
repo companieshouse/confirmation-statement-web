@@ -21,7 +21,7 @@ import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource
 import { createAndLogError } from "../../src/utils/logger";
 import { dummyPayment, PAYMENT_JOURNEY_URL } from "../mocks/payment.mock";
 import { mockConfirmationStatementSubmission } from "../mocks/confirmation.statement.submission.mock";
-import { getConfirmationStatement, updateConfirmationStatement } from "../../src/services/confirmation.statement.service";
+import { getConfirmationStatement } from "../../src/services/confirmation.statement.service";
 import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
 import * as sessionAcspUtils from "../../src/utils/session.acsp";
 import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
@@ -39,7 +39,7 @@ const mockCreateAndLogError = createAndLogError as jest.Mock;
 const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 mockGetConfirmationStatement.mockResolvedValue(mockConfirmationStatementSubmission);
 
-const mockUpdateConfirmationStatement = updateConfirmationStatement as jest.Mock;
+// const mockUpdateConfirmationStatement = updateConfirmationStatement as jest.Mock;
 
 const dummyError = {
   message: "oops"
@@ -50,7 +50,7 @@ const SERVICE_UNAVAILABLE_TEXT = "Sorry, there is a problem with the service";
 const PAYMENT_URL = "/payment/1234";
 const PAGE_HEADING = "Submit the confirmation statement";
 const ERROR_PAGE_HEADING = "Service offline - File a confirmation statement";
-const COSTS_TEXT = "You will need to pay a fee of £34";
+const COSTS_TEXT = "You will need to pay a fee of &pound;34";
 const CONFIRMATION_STATEMENT_TEXT = "By continuing, you confirm that all information required to be delivered by the company pursuant to";
 const CONFIRMATION_STATEMENT_ECCT_TEXT = "confirm that all information required to be delivered by the company pursuant to";
 // const LAWFUL_ACTIVITY_STATEMENT_TEXT = "confirm that the intended future activities of the company are lawful";

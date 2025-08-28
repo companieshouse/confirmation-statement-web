@@ -1,18 +1,17 @@
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
-import { TASK_LIST_PATH } from "../types/page.urls";
-import { CONFIRMATION_STATEMENT_ERROR, LAWFUL_ACTIVITY_STATEMENT_ERROR } from "./constants";
-import { toReadableFormat } from "./date";
-import { ecctDayOneEnabled } from "./feature.flag";
-import { urlUtils } from "./url";
-import { isStatementCheckboxTicked } from "./check.box.ticked";
-import { Request, Response } from "express";
+import { Request } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
+import { TASK_LIST_PATH } from "../../types/page.urls";
+import { isCheckboxTicked } from "../components/check.box";
+import { CONFIRMATION_STATEMENT_ERROR, LAWFUL_ACTIVITY_STATEMENT_ERROR } from "../../utils/constants";
+import { toReadableFormat } from "../../utils/date";
+import { ecctDayOneEnabled } from "../../utils/feature.flag";
+import { urlUtils } from "../../utils/url";
 
 export function handleNoChangeConfirmationJourney(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
-  res: Response<any, Record<string, any>>, company: CompanyProfile, companyNumber: string, transactionId: string,
-  submissionId: string, csSubmission: ConfirmationStatementSubmission) {
+  company: CompanyProfile, csSubmission: ConfirmationStatementSubmission) {
 
   const statementDate: Date = new Date(
     company.confirmationStatement?.nextMadeUpTo as string
@@ -23,10 +22,10 @@ export function handleNoChangeConfirmationJourney(req: Request<ParamsDictionary,
     const confirmationCheckboxValue = req.body.confirmationStatement;
     const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
 
-    const confirmationValid = isStatementCheckboxTicked(
+    const confirmationValid = isCheckboxTicked(
       confirmationCheckboxValue
     );
-    const lawfulActivityValid = isStatementCheckboxTicked(
+    const lawfulActivityValid = isCheckboxTicked(
       lawfulActivityCheckboxValue
     );
 

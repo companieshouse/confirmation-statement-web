@@ -75,7 +75,7 @@
               {% if confirmationStatementError %}
                 {% set confirmationStatementErrorMessage = { text: confirmationStatementError } %}
                {% else %}
-                {% set confirmationStatementErrorMessage = false %}
+                {% set confirmationStatementError = false %}
               {% endif %}
 
               {% if lawfulActivityStatementError %}
@@ -148,7 +148,7 @@
           {% endif %}
 
           {% if isPaymentDue %}
-            <p>You will need to pay a fee of £34 to submit your confirmation statement.</p>
+            <p>You will need to pay a fee of &pound;34 to submit your confirmation statement.</p>
           {% endif %}
 
           {% if isPaymentDue %}
