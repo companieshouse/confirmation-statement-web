@@ -4,7 +4,7 @@ import { Request } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
 import { TASK_LIST_PATH } from "../../types/page.urls";
-import { isStatementCheckboxTicked } from "../../utils/check.box.ticked";
+import { isCheckboxTicked } from "./check.box";
 import { CONFIRMATION_STATEMENT_ERROR, LAWFUL_ACTIVITY_STATEMENT_ERROR } from "../../utils/constants";
 import { toReadableFormat } from "../../utils/date";
 import { ecctDayOneEnabled } from "../../utils/feature.flag";
@@ -22,10 +22,10 @@ export function handleNoChangeConfirmationJourney(req: Request<ParamsDictionary,
     const confirmationCheckboxValue = req.body.confirmationStatement;
     const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
 
-    const confirmationValid = isStatementCheckboxTicked(
+    const confirmationValid = isCheckboxTicked(
       confirmationCheckboxValue
     );
-    const lawfulActivityValid = isStatementCheckboxTicked(
+    const lawfulActivityValid = isCheckboxTicked(
       lawfulActivityCheckboxValue
     );
 

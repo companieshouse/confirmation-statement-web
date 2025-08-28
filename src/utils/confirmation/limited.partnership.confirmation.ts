@@ -3,7 +3,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { Request } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
-import { isStatementCheckboxTicked } from "../../utils/check.box.ticked";
+import { isCheckboxTicked } from "./check.box";
 import { LP_CONFIRMATION_STATEMENT_ERROR, LP_LAWFUL_ACTIVITY_STATEMENT_ERROR } from "../../utils/constants";
 import { getACSPBackPath, isACSPJourney, getConfirmationPath } from "../../utils/limited.partnership";
 import { selectLang, getLocalesService } from "../../utils/localise";
@@ -15,11 +15,11 @@ export function handleLimitedPartnershipConfirmationJourney (req: Request<Params
   const confirmationCheckboxValue = req.body.confirmationStatement;
   const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
 
-  const confirmationValid = isStatementCheckboxTicked(
+  const confirmationValid = isCheckboxTicked(
     confirmationCheckboxValue
   );
 
-  const lawfulActivityValid = isStatementCheckboxTicked(
+  const lawfulActivityValid = isCheckboxTicked(
     lawfulActivityCheckboxValue
   );
 
