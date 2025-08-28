@@ -11,14 +11,16 @@ import { startPaymentsSession } from "../services/payment.service";
 import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { createAndLogError } from "../utils/logger";
-import { links, CONFIRMATION_STATEMENT_ERROR, LAWFUL_ACTIVITY_STATEMENT_ERROR, LP_CONFIRMATION_STATEMENT_ERROR, LP_LAWFUL_ACTIVITY_STATEMENT_ERROR } from "../utils/constants";
+import { links } from "../utils/constants";
 import { toReadableFormat } from "../utils/date";
-import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { ConfirmationStatementSubmission, NextMadeUpToDate } from '@companieshouse/api-sdk-node/dist/services/confirmation-statement';
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
 import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
-import { getConfirmationPath, isLimitedPartnershipCompanyType, isACSPJourney, getACSPBackPath } from '../utils/limited.partnership';
+import { isLimitedPartnershipCompanyType, getACSPBackPath, handleLimitedPartnershipConfirmationJourney } from '../utils/limited.partnership';
+import { handleNoChangeConfirmationJourney } from "../utils/no.change";
+import { isPaymentDue, executePaymentJourney } from "../utils/payments";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -84,62 +86,33 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const session = req.session as Session;
+    const transaction: Transaction = await getTransaction(
+      session,
+      transactionId
+    );
 
     if (isLimitedPartnershipCompanyType(companyProfile)) {
-      const confirmationCheckboxValue = req.body.confirmationStatement;
-      const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
 
-      const confirmationValid = isStatementCheckboxTicked(
-        confirmationCheckboxValue
-      );
+      const lpJourneyResponse = handleLimitedPartnershipConfirmationJourney(req, res, companyNumber, companyProfile, transactionId, submissionId, session);
 
-      const lawfulActivityValid = isStatementCheckboxTicked(
-        lawfulActivityCheckboxValue
-      );
-
-      const ecctEnabled = true;
-
-      let confirmationStatementError: string = "";
-      if (!confirmationValid) {
-        confirmationStatementError = LP_CONFIRMATION_STATEMENT_ERROR;
-      }
-
-      let lawfulActivityStatementError: string = "";
-      if (!lawfulActivityValid) {
-        lawfulActivityStatementError = LP_LAWFUL_ACTIVITY_STATEMENT_ERROR;
-      }
-
-      const lang = selectLang(req.query.lang);
-      const locales = getLocalesService();
-      const backLinkPath = getACSPBackPath(session, companyProfile);
-      const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
-        backLinkPath,
-        companyNumber,
-        transactionId,
-        submissionId
-      );
-
-      if (!confirmationValid || !lawfulActivityValid) {
+      if ("renderData" in lpJourneyResponse && lpJourneyResponse.renderData) {
         return res.render(Templates.REVIEW, {
-          ...getLocaleInfo(locales, lang),
-          htmlLang: lang,
-          previousPage,
+          ...getLocaleInfo(lpJourneyResponse.renderData.locales, lpJourneyResponse.renderData.lang),
+          htmlLang: lpJourneyResponse.renderData.lang,
+          previousPage: lpJourneyResponse.renderData.previousPage,
           companyProfile,
-          ecctEnabled,
-          confirmationStatementError,
-          lawfulActivityStatementError,
-          confirmationChecked: confirmationCheckboxValue === "true",
-          lawfulActivityChecked: lawfulActivityCheckboxValue === "true",
+          ecctEnabled: lpJourneyResponse.renderData.ecctEnabled,
+          confirmationStatementError: lpJourneyResponse.renderData.confirmationStatementError,
+          lawfulActivityStatementError: lpJourneyResponse.renderData.lawfulActivityStatementError,
+          confirmationChecked: lpJourneyResponse.renderData.confirmationChecked,
+          lawfulActivityChecked: lpJourneyResponse.renderData.lawfulActivityChecked,
           isLimitedPartnership: true
         });
       }
 
-      const isAcspJourney = isACSPJourney(req.originalUrl);
-      const nextPage = getConfirmationPath(isAcspJourney);
-
       return res.redirect(
         urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
-          nextPage,
+          lpJourneyResponse.nextPage,
           companyNumber,
           transactionId,
           submissionId
@@ -156,138 +129,38 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       //   nextPage
       // );
 
-    } else {
-      const company: CompanyProfile = await getCompanyProfile(companyNumber);
-      const transaction: Transaction = await getTransaction(
-        session,
-        transactionId
-      );
-      const csSubmission: ConfirmationStatementSubmission =
-        await getConfirmationStatement(session, transactionId, submissionId);
+  }
+    const company: CompanyProfile = await getCompanyProfile(companyNumber);
+    const csSubmission: ConfirmationStatementSubmission =
+    await getConfirmationStatement(session, transactionId, submissionId);
 
-      const statementDate: Date = new Date(
-        company.confirmationStatement?.nextMadeUpTo as string
-      );
-      const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
+    const noChangeJourneyResponse = handleNoChangeConfirmationJourney(req, res, company, companyNumber, transactionId, submissionId, csSubmission, session);
 
-      if (ecctEnabled) {
-        const confirmationCheckboxValue = req.body.confirmationStatement;
-        const lawfulActivityCheckboxValue = req.body.lawfulActivityStatement;
-
-        const confirmationValid = isStatementCheckboxTicked(
-          confirmationCheckboxValue
-        );
-        const lawfulActivityValid = isStatementCheckboxTicked(
-          lawfulActivityCheckboxValue
-        );
-
-        let confirmationStatementError: string = "";
-        if (!confirmationValid) {
-          confirmationStatementError = CONFIRMATION_STATEMENT_ERROR;
-        }
-
-        let lawfulActivityStatementError: string = "";
-        if (!lawfulActivityValid) {
-          lawfulActivityStatementError = LAWFUL_ACTIVITY_STATEMENT_ERROR;
-        }
-
-        if (!confirmationValid || !lawfulActivityValid) {
-          return res.render(Templates.REVIEW, {
-            backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-            company,
-            nextMadeUpToDate: toReadableFormat(
-              csSubmission.data?.confirmationStatementMadeUpToDate
-            ),
-            isPaymentDue: isPaymentDue(transaction, submissionId),
-            ecctEnabled,
-            confirmationStatementError,
-            lawfulActivityStatementError,
-          });
-        }
-
-        await sendLawfulPurposeStatementUpdate(req, true);
-      }
-
-      await executePaymentJourney(
-        session,
-        res,
-        next,
-        companyNumber,
-        transactionId,
-        submissionId,
-        CONFIRMATION_PATH
-      );
+    if (noChangeJourneyResponse?.renderData && "renderData" in noChangeJourneyResponse) {
+      return res.render(Templates.REVIEW, {
+        backLinkUrl: noChangeJourneyResponse.renderData.backLinkUrl,
+        company: noChangeJourneyResponse.renderData.company,
+        NextMadeUpToDate: noChangeJourneyResponse.renderData.nextMadeUpToDate,
+        ecctEnabled: noChangeJourneyResponse.renderData.ecctEnabled,
+        confirmationStatementError: noChangeJourneyResponse.renderData.confirmationStatementError,
+        lawfulActivityStatementError: noChangeJourneyResponse.renderData.lawfulActivityStatementError,
+        isPaymentDue: isPaymentDue(transaction, submissionId)
+      });
     }
+
+    await sendLawfulPurposeStatementUpdate(req, true);
+
+    await executePaymentJourney(
+      session,
+      res,
+      next,
+      companyNumber,
+      transactionId,
+      submissionId,
+      CONFIRMATION_PATH
+    );
 
   } catch (e) {
     return next(e);
   }
-};
-
-const executePaymentJourney = async (
-  session: Session, res: Response, next: NextFunction,
-  companyNumber: string, transactionId: string, submissionId: string, nextPage: string ) => {
-
-  let paymentUrl: string | undefined;
-
-  try {
-    paymentUrl = await closeTransaction(
-      session,
-      companyNumber,
-      submissionId,
-      transactionId
-    );
-  } catch (err) {
-    return next(err);
-  }
-
-  if (!paymentUrl) {
-    return res.redirect(
-      urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
-        nextPage,
-        companyNumber,
-        transactionId,
-        submissionId
-      )
-    );
-  } else {
-    // Payment required kick off payment journey
-    const paymentResourceUri: string = `/transactions/${transactionId}/payment`;
-
-    const paymentResponse: ApiResponse<Payment> =
-      await startPaymentsSession(
-        session,
-        paymentUrl,
-        paymentResourceUri,
-        submissionId,
-        transactionId,
-        companyNumber
-      );
-
-    if (!paymentResponse.resource?.links?.journey) {
-      return next(createAndLogError("No resource in payment response"));
-    }
-
-    res.redirect(paymentResponse.resource.links.journey);
-  }
-};
-
-const isPaymentDue = (transaction: Transaction, submissionId: string): boolean => {
-  if (!transaction.resources) {
-    return false;
-  }
-  const resourceKeyName = Object.keys(transaction.resources).find(key => key.endsWith(`${CONFIRMATION_STATEMENT}/${submissionId}`));
-  if (!resourceKeyName) {
-    return false;
-  }
-  return transaction.resources[resourceKeyName].links?.[links.COSTS];
-};
-
-const isStatementCheckboxTicked = (checkboxValue: string): boolean => {
-
-  if (checkboxValue === "true") {
-    return true;
-  }
-
-  return false;
 };
