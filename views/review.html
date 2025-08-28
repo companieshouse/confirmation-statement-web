@@ -73,17 +73,13 @@
           }) }}
 
               {% if confirmationStatementError %}
-                {% set confirmationStatementError = {
-                  text: confirmationStatementError
-                } %}
-              {% else %}
+                {% set confirmationStatementErrorMessage = { text: confirmationStatementError } %}
+               {% else %}
                 {% set confirmationStatementError = false %}
               {% endif %}
 
               {% if lawfulActivityStatementError %}
-                {% set lawfulActivityStatementError = {
-                  text: lawfulActivityStatementError
-                } %}
+                {% set lawfulActivityStatementErrorMessage = { text: lawfulActivityStatementError } %}
               {% else %}
                 {% set lawfulActivityStatementError = false %}
               {% endif %}
@@ -94,7 +90,7 @@
               {{ govukCheckboxes({
             idPrefix: "confirmation-statement",
             name: "confirmationStatement",
-            errorMessage: confirmationStatementError,
+            errorMessage: confirmationStatementErrorMessage,
             fieldset: {
               legend: {
                 isPageHeading: false,
@@ -103,9 +99,11 @@
             },
             items: [
               {
-                html: i18n.SCSCheckboxActComplianceStart,
+                html: "I confirm that all information required to be delivered by the company pursuant to " +
+                "<a href=" + "https://www.legislation.gov.uk/ukpga/2006/46/section/853A data-event-id=section-831A(1)-information-link>section 853A(1)(a) of the Companies Act 2006</a>" +
+                " in relation to the confirmation period ending " +
+                "<strong>" + nextMadeUpToDate + "</strong>" + " either has been delivered or is being delivered with this statement.",
                 id: "confirmation-statement",
-                name: "confirmationStatement",
                 value: "true",
                 attributes: {
                   "data-event-id": "confirmation-statement-checkbox-clicked"
@@ -118,7 +116,7 @@
               {{ govukCheckboxes({
             idPrefix: "lawful-activity-statement",
             name: "lawfulActivityStatement",
-            errorMessage: lawfulActivityStatementError,
+            errorMessage: lawfulActivityStatementErrorMessage,
             fieldset: {
               legend: {
                 isPageHeading: false,
@@ -129,7 +127,6 @@
               {
                 html: "I confirm that the intended future activities of the company are lawful.",
                 id: "lawful-activity-statement",
-                name: "lawfulActivityStatement",
                 value: "true",
                 attributes: {
                   "data-event-id": "lawful-activity-statement-checkbox-clicked"
@@ -151,7 +148,7 @@
           {% endif %}
 
           {% if isPaymentDue %}
-            <p>You will need to pay a fee of £34 to submit your confirmation statement.</p>
+            <p>You will need to pay a fee of &pound;34 to submit your confirmation statement.</p>
           {% endif %}
 
           {% if isPaymentDue %}
