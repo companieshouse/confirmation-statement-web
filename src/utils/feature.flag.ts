@@ -50,6 +50,6 @@ export const isPrivateFundLimitedPartnershipFeatureEnabled = (): boolean => {
   return isDateFeatureFlagEnabled("FEATURE_FLAG_PFLP_SUBTYPE_START_DATE", FEATURE_FLAG_PFLP_SUBTYPE_START_DATE, new Date());
 };
 
-export const isScottishPrivateFundimitedPartnershipFeatureEnabled = (): boolean => {
+export const isScottishPrivateFundLimitedPartnershipFeatureEnabled = (): boolean => {
   return isDateFeatureFlagEnabled("FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE", FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE, new Date());
 };
