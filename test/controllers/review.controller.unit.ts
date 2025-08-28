@@ -11,7 +11,7 @@ import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transact
 import request from "supertest";
 import mocks from "../mocks/all.middleware.mock";
 import app from "../../src/app";
-import { CONFIRMATION_PATH, REVIEW_PATH } from "../../src/types/page.urls";
+import { CONFIRMATION_PATH, LP_CHECK_YOUR_ANSWER_PATH, LP_CS_DATE_PATH, LP_SIC_CODE_SUMMARY_PATH, REVIEW_PATH, urlParams } from '../../src/types/page.urls';
 import { urlUtils } from "../../src/utils/url";
 import { validCompanyProfile } from "../mocks/company.profile.mock";
 import { getCompanyProfile } from "../../src/services/company.profile.service";
@@ -232,7 +232,7 @@ describe("review controller tests", () => {
 
       setupLimitedPartnershipCompany();
 
-      setExtraDataOnSession(true, true);
+      setExtraDataOnSession("true", "true");
 
       const response = await request(app).get(URL);
 
@@ -246,7 +246,7 @@ describe("review controller tests", () => {
 
       setupLimitedPartnershipCompany();
 
-      setExtraDataOnSession(false, false);
+      setExtraDataOnSession("false", "false");
 
       const response = await request(app).get(URL);
 
@@ -271,14 +271,15 @@ describe("review controller tests", () => {
     function setupLimitedPartnershipCompany() {
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
-        type: "limited-partnership-lp",
+        type: "limited-partnership",
+        subtype: "limited-partnership",
         companyName: "Test Company"
       };
 
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
     }
 
-    function setExtraDataOnSession(confirmationChecked: boolean, lawfulActivityChecked: boolean) {
+    function setExtraDataOnSession(confirmationChecked: string, lawfulActivityChecked: string) {
       const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
       const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
 
