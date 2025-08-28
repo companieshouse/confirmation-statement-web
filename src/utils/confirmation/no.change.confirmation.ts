@@ -4,7 +4,7 @@ import { Request } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
 import { TASK_LIST_PATH } from "../../types/page.urls";
-import { isCheckboxTicked } from "./check.box";
+import { isCheckboxTicked } from "../components/check.box";
 import { CONFIRMATION_STATEMENT_ERROR, LAWFUL_ACTIVITY_STATEMENT_ERROR } from "../../utils/constants";
 import { toReadableFormat } from "../../utils/date";
 import { ecctDayOneEnabled } from "../../utils/feature.flag";

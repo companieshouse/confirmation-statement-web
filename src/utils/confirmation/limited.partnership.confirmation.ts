@@ -3,7 +3,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { Request } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
-import { isCheckboxTicked } from "./check.box";
+import { isCheckboxTicked } from "../components/check.box";
 import { LP_CONFIRMATION_STATEMENT_ERROR, LP_LAWFUL_ACTIVITY_STATEMENT_ERROR } from "../../utils/constants";
 import { getACSPBackPath, isACSPJourney, getConfirmationPath } from "../../utils/limited.partnership";
 import { selectLang, getLocalesService } from "../../utils/localise";
