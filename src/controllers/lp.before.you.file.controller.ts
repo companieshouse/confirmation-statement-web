@@ -7,14 +7,21 @@ import { Session } from "@companieshouse/node-session-handler";
 import { getAcspSessionData, resetAcspSession, updateAcspSessionData } from "../utils/session.acsp";
 import { urlUtils } from "../utils/url";
 import { getCompanyProfileFromSession } from "../utils/session";
+import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
+import { getTransaction } from "services/transaction.service";
 
-export const get = (req: Request, res: Response) => {
+export const get = async (req: Request, res: Response) => {
   const session: Session = req.session as Session;
   const lang = selectLang(req.query.lang);
   res.cookie('lang', lang, { httpOnly: true });
   const company: CompanyProfile = getCompanyProfileFromSession(req);
   const locales = getLocalesService();
   const formData = { byfCheckbox: getAcspSessionData(session)?.beforeYouFileCheck ? 'confirm' : '' };
+  const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+  const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+  const transaction: Transaction = await getTransaction(session, transactionId);
+
+
 
   return res.render(Templates.LP_BEFORE_YOU_FILE, {
     ...getLocaleInfo(locales, lang),
@@ -22,8 +29,9 @@ export const get = (req: Request, res: Response) => {
     urls,
     company,
     previousPageWithoutLang: `${urls.CONFIRM_COMPANY_PATH}?companyNumber=${urlUtils.getCompanyNumberFromRequestParams(req)}`,
-    formData
-  });
+    formData,
+    isPaymentDue: isPaymentDue(transaction, submissionId)
+    });
 };
 
 export const post = (req: Request, res: Response) => {
@@ -70,3 +78,4 @@ function reloadPageWithError(req: Request, res: Response, lang: string, localInf
     }
   });
 }
+
