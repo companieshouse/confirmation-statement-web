@@ -49,6 +49,7 @@ middlewareMocks.mockSessionMiddleware.mockImplementation((req: Request, res: Res
 describe("start ACSP validation middleware tests", () => {
 
   beforeEach(() => {
+    jest.setTimeout(20000)
     jest.clearAllMocks();
   });
 

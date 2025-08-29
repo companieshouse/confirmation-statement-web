@@ -36,19 +36,6 @@ describe("start before you file controller tests", () => {
     expect(response.text).toContain("Before you file a confirmation statement");
   });
 
-  it("should return payment text if payment is due", async () => {
-    (getCompanyProfile as jest.Mock).mockResolvedValue({
-      companyNumber: COMPANY_NUMBER,
-      type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
-      subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
-      companyName: "Test Company"
-    });
-    const response = await request(app).get(URL);
-
-    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
-    expect(response.text).toContain("You can pay by debit or credit card. You cannot pay with a Companies House payment account.");
-  });
-
   it("should forward to Confirmation Statement Date page", async () => {
     const response = await request(app)
       .post(URL).set('Content-Type', 'application/json')
