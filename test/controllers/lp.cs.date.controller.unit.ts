@@ -2,8 +2,9 @@ import middlewareMocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
 import { LP_CS_DATE_PATH, urlParams } from "../../src/types/page.urls";
-import { getCompanyProfile } from "../../src/services/company.profile.service";
 import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
+import { validLimitedPartnershipProfile } from "../mocks/company.profile.mock";
+import { getCompanyProfileFromSession } from "../../src/utils/session";
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -13,9 +14,8 @@ const URL = LP_CS_DATE_PATH
   .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
   .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
 
-jest.mock("../../src/services/company.profile.service", () => ({
-  getCompanyProfile: jest.fn()
-}));
+jest.mock("../../src/utils/session");
+const mockGetCompanyProfileFromSession = getCompanyProfileFromSession as jest.Mock;
 
 jest.mock("../../src/utils/limited.partnership", () => ({
   isACSPJourney: jest.fn(),
@@ -28,6 +28,7 @@ describe("start confirmation statement date controller tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetCompanyProfileFromSession.mockReturnValue(validLimitedPartnershipProfile);
   });
 
   it("should return limited partnership confirmation statement date page", async () => {
@@ -94,13 +95,37 @@ describe("start confirmation statement date controller tests", () => {
     expect(response.status).toBe(302); // Expecting a redirect response
     expect(response.headers.location).toBe("/confirmation-statement/company/12345678/transaction/66454/submission/435435/acsp/sic-code-summary?lang=en");
   });
+
+  it("should return on time screen if LP CS date is already late", async () => {
+    const response = await request(app).get(URL);
+
+    expect(response.text).toContain("Confirmation statement date");
+    expect(response.text).toContain("The date of this confirmation statement is:  <b>30 April 2020</b>");
+    expect(response.text).toContain("You must file it by: <b>14 May 2020</b>");
+    console.log(response.text);
+  });
+
+  it("should return early screen if today is before LP CS file date", async () => {
+    mockGetCompanyProfileFromSession.mockReturnValue({
+      companyName: "Test Limited Partnership",
+      companyNumber: "LP123456",
+      confirmationStatement: {
+        nextDue: "2999-09-01",
+      },
+    });
+    const response = await request(app).get(URL);
+
+    expect(response.text).toContain("Confirmation statement date");
+    expect(response.text).toContain("You are not due to file a confirmation statement yet");
+    expect(response.text).toContain("The date of your next expected confirmation statement is  <b>1 September 2999</b>");
+  });
 });
 
 describe("date controller post tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    (getCompanyProfile as jest.Mock).mockResolvedValue({
+    (getCompanyProfileFromSession as jest.Mock).mockResolvedValue({
       companyNumber: COMPANY_NUMBER,
       type: "limited-partnership",
       subtype: "limited-partnership",

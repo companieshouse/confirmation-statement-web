@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
 import { createAndLogError } from "./logger";
+import moment from 'moment';
 
 export const toReadableFormat = (dateToConvert: string): string => {
   if (!dateToConvert) {
@@ -37,4 +38,20 @@ export const toReadableFormatMonthYear = (monthNum: number, year: number): strin
 
 export const isValidDate = (dateAsString: string): boolean => {
   return  !isNaN(Date.parse(dateAsString));
+};
+
+export const formatDateString = (convertDateFormat: string, dateAsString: string): string => {
+  let formattedDateString = "";
+  if (isValidDate(dateAsString)) {
+    formattedDateString = moment(dateAsString).format(convertDateFormat);
+  }
+  return formattedDateString;
+};
+
+export const addDateFromDateString = (convertDateFormat: string, dateAsString: string, dateToAdd: number): string => {
+  let addedDateString = "";
+  if (isValidDate(dateAsString)) {
+    addedDateString = moment(dateAsString).add(dateToAdd, 'days').format(convertDateFormat);
+  }
+  return addedDateString;
 };

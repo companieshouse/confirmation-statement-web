@@ -26,7 +26,7 @@ import { Settings as luxonSettings } from "luxon";
 import { urlUtils } from "../../src/utils/url";
 import { setCompanyTypeAndAcspNumberInSession } from "../mocks/session.mock";
 import { isLimitedPartnershipFeatureEnabled } from "../../src/utils/feature.flag";
-import { LIMITED_PARTNERSHIP_COMPANY_TYPE } from "../../src/utils/constants";
+import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
 import { shouldRedirectToPaperFilingForInvalidLp } from "../../src/controllers/confirm.company.controller";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
@@ -357,7 +357,7 @@ describe("Confirm company controller tests", () => {
 
   it("Should redirect to use paper stop screen if the LP feature flag is not enabled and type is LP subtype", async () => {
     mockGetCompanyProfile.mockResolvedValueOnce(validLimitedPartnershipProfile);
-    setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, "TSA001", "abc");
+    setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, "TSA001", LIMITED_PARTNERSHIP_SUBTYPES.LP);
     mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
     (isLimitedPartnershipFeatureEnabled as jest.Mock).mockReturnValue(false);
 

@@ -68,38 +68,81 @@
                         {{i18n.CDSTitle}}
                     </h1>
 
-                    <p class="govuk-body">{{i18n.CDSCurrentDate}} <b>31 May 2025</b></p>
-                    <p class="govuk-body">{{i18n.CDSCurrentDateExplainer}}</p>
-                    <p class="govuk-body">{{i18n.CDSDateChangeExplainer}}</p>
+                    {% if isTodayBeforeFileCsDate %}
+                        <p class="govuk-body">{{i18n.CDSNotDueToFileEarly}}</p>
+                        <p class="govuk-body">{{i18n.CDSExpectedFileDateTextEarly}} <b>{{cdsCurrentDate}}</b></p>
+                        <p class="govuk-body">{{i18n.CDSDateChangeExplainerStartEarly}} <b>{{dateOfToday}}</b>{{i18n.CDSDateChangeExplainerEndEarly}}</p>
+                        <p class="govuk-body">{{i18n.CDSDateChangeExplainer2Early}}</p>
 
-                    <p class="govuk-heading-m">{{i18n.CDSRadioButtonQuestion}}</p>
-
-                    {{ govukRadios({
-                        id: "confirmationStatementDate",
-                        name: "confirmationStatementDate",
-                        fieldset: {
-                            legend: {
-                                text: i18n.CDSRadioButtonQuestion,
-                                isPageHeading: true,
-                                classes: "govuk-fieldset__legend--l"
-                            }
-                        },
-                        value: csDateRadioValue,
-                        items: [
-                            {
-                                value: "yes",
-                                text: i18n.CDSRadioButtonYes,
-                                conditional: {
-                                    html: dateSelector
+                        {{ govukRadios({
+                            id: "confirmationStatementDate",
+                            name: "confirmationStatementDate",
+                            fieldset: {
+                                legend: {
+                                    text: i18n.CDSRadioButtonQuestion,
+                                    isPageHeading: true,
+                                    classes: "govuk-fieldset__legend--l"
                                 }
                             },
-                            {
-                                value: "no",
-                                text: i18n.CDSRadioButtonNo
-                            }
-                        ],
-                        errorMessage: errorMessage
-                    })}}
+                            value: csDateRadioValue,
+                            items: [
+                                {
+                                    value: "no",
+                                    text: i18n.CDSRadioButtonNoTextEarly + dateOfToday
+                                },
+                                {
+                                    value: "yes",
+                                    text: i18n.CDSRadioButtonYes,
+                                    conditional: {
+                                        html: dateSelector
+                                    }
+                                }
+                            ],
+                            errorMessage: errorMessage
+                        })}}
+
+                    {% else %}
+                        <p class="govuk-body">{{i18n.CDSCurrentDateText}} <b>{{cdsCurrentDate}}</b></p>
+                        <p class="govuk-body">{{i18n.CDSMustFileByDateText}}<b>{{cdsMustFileByDate}}</b></p>
+                        <details class="govuk-details">
+                            <summary class="govuk-details__summary">
+                                <span class="govuk-details__summary-text">
+                                    {{i18n.CDSWhatIsDetailExpanderTitle}}
+                                </span>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <p class="govuk-body">{{i18n.CDSCurrentDateExplainer}}</p>
+                                <p class="govuk-body">{{i18n.CDSDateChangeExplainer}}</p>
+                            </div>
+                        </details>
+
+                        {{ govukRadios({
+                            id: "confirmationStatementDate",
+                            name: "confirmationStatementDate",
+                            fieldset: {
+                                legend: {
+                                    text: i18n.CDSRadioButtonQuestion,
+                                    isPageHeading: true,
+                                    classes: "govuk-fieldset__legend--l"
+                                }
+                            },
+                            value: csDateRadioValue,
+                            items: [
+                                {
+                                    value: "yes",
+                                    text: i18n.CDSRadioButtonYes,
+                                    conditional: {
+                                        html: dateSelector
+                                    }
+                                },
+                                {
+                                    value: "no",
+                                    text: i18n.CDSRadioButtonNo
+                                }
+                            ],
+                            errorMessage: errorMessage
+                        })}}
+                    {% endif %}  
 
                     {{ govukButton({
                         text: i18n.CDSContinueButton
