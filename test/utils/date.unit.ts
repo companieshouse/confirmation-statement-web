@@ -151,7 +151,7 @@ describe("Date tests", () => {
 
   });
 
-  describe("addDateFromDateString tests", () => {
+  describe("addDayToDateString tests", () => {
 
     it("Should return empty string if the date string is invalid", () => {
       const validity = addDayToDateString(DMMMMYYYY_DATE_FORMAT, "9999-99-99", 10);
