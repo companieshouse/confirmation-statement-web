@@ -57,7 +57,7 @@ describe("start ACSP validation middleware tests", () => {
     const response = await request(app).get(URL_LP_BEFORE);
 
     expect(middlewareMocks.mockAcspValidationMiddleware).toHaveBeenCalled();
-    expect(response.text).toContain("Before you file a confirmation statement");
+    expect(response.text).toContain("Before you file the confirmation statement");
   });
 
   it("acspValidationMiddleware should redirect to LP check your answer page if user is ACSP member and LP subtype", async () => {
