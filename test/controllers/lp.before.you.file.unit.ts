@@ -33,7 +33,7 @@ describe("start before you file controller tests", () => {
     const response = await request(app).get(URL);
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
-    expect(response.text).toContain("Before you file a confirmation statement");
+    expect(response.text).toContain("Before you file the confirmation statement");
   });
 
   it("should forward to Confirmation Statement Date page", async () => {
