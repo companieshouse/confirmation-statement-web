@@ -40,18 +40,18 @@ export const isValidDate = (dateAsString: string): boolean => {
   return  !isNaN(Date.parse(dateAsString));
 };
 
-export const formatDateString = (convertDateFormat: string, dateAsString: string): string => {
+export const formatDateString = (resultDateFormat: string, dateAsString: string): string => {
   let formattedDateString = "";
   if (isValidDate(dateAsString)) {
-    formattedDateString = moment(dateAsString).format(convertDateFormat);
+    formattedDateString = moment(dateAsString).format(resultDateFormat);
   }
   return formattedDateString;
 };
 
-export const addDateFromDateString = (convertDateFormat: string, dateAsString: string, dateToAdd: number): string => {
+export const addDayToDateString = (resultDateFormat: string, dateAsString: string, dateToAdd: number): string => {
   let addedDateString = "";
   if (isValidDate(dateAsString)) {
-    addedDateString = moment(dateAsString).add(dateToAdd, 'days').format(convertDateFormat);
+    addedDateString = moment(dateAsString).add(dateToAdd, 'days').format(resultDateFormat);
   }
   return addedDateString;
 };

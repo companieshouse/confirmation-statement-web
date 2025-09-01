@@ -1,6 +1,6 @@
 jest.mock("../../src/utils/logger");
 
-import { addDateFromDateString, formatDateString, isInFuture, isValidDate, toReadableFormat, toReadableFormatMonthYear } from "../../src/utils/date";
+import { addDayToDateString, formatDateString, isInFuture, isValidDate, toReadableFormat, toReadableFormatMonthYear } from "../../src/utils/date";
 import { createAndLogError } from "../../src/utils/logger";
 import { Settings as luxonSettings } from "luxon";
 import { DMMMMYYYY_DATE_FORMAT } from "../../src/utils/constants";
@@ -154,17 +154,17 @@ describe("Date tests", () => {
   describe("addDateFromDateString tests", () => {
 
     it("Should return empty string if the date string is invalid", () => {
-      const validity = addDateFromDateString(DMMMMYYYY_DATE_FORMAT, "9999-99-99", 10);
+      const validity = addDayToDateString(DMMMMYYYY_DATE_FORMAT, "9999-99-99", 10);
       expect(validity).toEqual("");
     });
 
     it("Should return English date string if the date string is valid", () => {
-      const validity = addDateFromDateString(DMMMMYYYY_DATE_FORMAT, "2025-09-01", 10);
+      const validity = addDayToDateString(DMMMMYYYY_DATE_FORMAT, "2025-09-01", 10);
       expect(validity).toEqual("11 September 2025");
     });
 
     it("Should return date string if the date string is valid", () => {
-      const validity = addDateFromDateString("DD-YY-YYYY", "2025-09-01", 10);
+      const validity = addDayToDateString("DD-YY-YYYY", "2025-09-01", 10);
       expect(validity).toEqual("11-25-2025");
     });
 

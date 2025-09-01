@@ -10,7 +10,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
 import { DMMMMYYYY_DATE_FORMAT, RADIO_BUTTON_VALUE } from "../utils/constants";
 import { getReviewPath, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType, isACSPJourney } from '../utils/limited.partnership';
-import { formatDateString, addDateFromDateString } from "../utils/date";
+import { formatDateString, addDayToDateString } from "../utils/date";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -51,7 +51,7 @@ export const get = (req: Request, res: Response) => {
     isTodayBeforeFileCsDate: isTodayBeforeFileCsDate(company),
     dateOfToday: moment().format(DMMMMYYYY_DATE_FORMAT),
     cdsCurrentDate: formatDateString(DMMMMYYYY_DATE_FORMAT, company.confirmationStatement?.nextDue as string),
-    cdsMustFileByDate: addDateFromDateString(DMMMMYYYY_DATE_FORMAT, company.confirmationStatement?.nextDue as string, 14),
+    cdsMustFileByDate: addDayToDateString(DMMMMYYYY_DATE_FORMAT, company.confirmationStatement?.nextDue as string, 14),
     csDateRadioValue,
     csDateValue,
     errorMessage: null
@@ -128,7 +128,7 @@ function reloadPageWithError(req: Request, res: Response, lang: string, localInf
     isTodayBeforeFileCsDate: isTodayBeforeFileCsDate(company),
     dateOfToday: moment().format(DMMMMYYYY_DATE_FORMAT),
     cdsCurrentDate: formatDateString(DMMMMYYYY_DATE_FORMAT, company.confirmationStatement?.nextDue as string),
-    cdsMustFileByDate: addDateFromDateString(DMMMMYYYY_DATE_FORMAT, company.confirmationStatement?.nextDue as string, 14),
+    cdsMustFileByDate: addDayToDateString(DMMMMYYYY_DATE_FORMAT, company.confirmationStatement?.nextDue as string, 14),
     csDateRadioValue,
     csDateValue,
     errorMessage: {
