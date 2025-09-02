@@ -53,6 +53,7 @@ export const SIC_CODE_SESSION_KEY = "sic_code_session";
 export const VALID_EMAIL_REGEX_PATTERN = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~\\-]+@([^.@][^@\\s]+)$";
 export const HOSTNAME_REGEX = "^(xn|[a-z0-9]+)(-?-[a-z0-9]+)*$";
 export const TLD_PART_REGEX = "^(?:[a-z]{2,63}|xn--[a-z0-9]+(?:-[a-z0-9]+){1,4})(?:$|[^-])";
+export const DMMMMYYYY_DATE_FORMAT = "D MMMM YYYY";
 
 export enum RADIO_BUTTON_VALUE {
   NO = "no",

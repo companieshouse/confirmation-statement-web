@@ -8,8 +8,9 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { getCompanyProfileFromSession } from "../utils/session";
 import { Session } from "@companieshouse/node-session-handler";
 import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
-import { RADIO_BUTTON_VALUE } from "../utils/constants";
+import { DMMMMYYYY_DATE_FORMAT, RADIO_BUTTON_VALUE } from "../utils/constants";
 import { getReviewPath, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType, isACSPJourney } from '../utils/limited.partnership';
+import { formatDateString, addDayToDateString } from "../utils/date";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -47,6 +48,10 @@ export const get = (req: Request, res: Response) => {
       submissionId
     ),
     company,
+    isTodayBeforeFileCsDate: isTodayBeforeFileCsDate(company),
+    dateOfToday: moment().format(DMMMMYYYY_DATE_FORMAT),
+    cdsCurrentDate: formatDateString(DMMMMYYYY_DATE_FORMAT, company.confirmationStatement?.nextDue as string),
+    cdsMustFileByDate: addDayToDateString(DMMMMYYYY_DATE_FORMAT, company.confirmationStatement?.nextDue as string, 14),
     csDateRadioValue,
     csDateValue,
     errorMessage: null
@@ -95,7 +100,8 @@ export const post = (req: Request, res: Response) => {
           break;
         }
         case RADIO_BUTTON_VALUE.NO: {
-          saveCsDateIntoSession(acspSessionData, false);
+          const date = isTodayBeforeFileCsDate(company) ? moment().startOf('day').toDate() : null; // Saved the date value into session if user clicked no in early screen
+          saveCsDateIntoSession(acspSessionData, false, date);
           const path = (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company))
             ? reviewPath
             : urls.LP_SIC_CODE_SUMMARY_PATH;
@@ -119,6 +125,10 @@ function reloadPageWithError(req: Request, res: Response, lang: string, localInf
     htmlLang: lang,
     previousPage: urlUtils.getUrlToPath(urls.LP_BEFORE_YOU_FILE_PATH, req),
     company,
+    isTodayBeforeFileCsDate: isTodayBeforeFileCsDate(company),
+    dateOfToday: moment().format(DMMMMYYYY_DATE_FORMAT),
+    cdsCurrentDate: formatDateString(DMMMMYYYY_DATE_FORMAT, company.confirmationStatement?.nextDue as string),
+    cdsMustFileByDate: addDayToDateString(DMMMMYYYY_DATE_FORMAT, company.confirmationStatement?.nextDue as string, 14),
     csDateRadioValue,
     csDateValue,
     errorMessage: {
@@ -127,15 +137,15 @@ function reloadPageWithError(req: Request, res: Response, lang: string, localInf
   });
 }
 
-function saveCsDateIntoSession(acspSessionData: AcspSessionData, isChangedConfirmationStatementDate: boolean, csDateInput?: Date) {
+function saveCsDateIntoSession(acspSessionData: AcspSessionData, isChangedConfirmationStatementDate: boolean, csDateInput: Date | null) {
   if (acspSessionData) {
     acspSessionData.changeConfirmationStatementDate = isChangedConfirmationStatementDate;
-    if (isChangedConfirmationStatementDate && csDateInput) {
-      acspSessionData.newConfirmationDate = csDateInput;
-    } else {
-      acspSessionData.newConfirmationDate = null;
-    }
+    acspSessionData.newConfirmationDate = csDateInput;
   }
+}
+
+function isTodayBeforeFileCsDate(company: CompanyProfile): boolean {
+  return moment().isBefore(moment(company.confirmationStatement?.nextDue), "day");
 }
 
 
