@@ -4,6 +4,21 @@ import app from "../../src/app";
 import { LP_BEFORE_YOU_FILE_PATH, urlParams } from "../../src/types/page.urls";
 import { getCompanyProfile } from "../../src/services/company.profile.service";
 import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
+import { getTransaction } from "../../src/services/transaction.service";
+import { isPaymentDue } from "../../src/utils/payments";
+
+jest.mock("../../src/services/company.profile.service", () => ({
+  getCompanyProfile: jest.fn()
+}));
+
+jest.mock("../../src/services/transaction.service", () => ({
+  getTransaction: jest.fn()
+}));
+
+jest.mock("../../src/utils/payments", () => ({
+  isPaymentDue: jest.fn()
+}));
+
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -12,10 +27,8 @@ const URL = LP_BEFORE_YOU_FILE_PATH
   .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
   .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
   .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
+const mockIsPaymentDue = isPaymentDue as jest.Mock;
 
-jest.mock("../../src/services/company.profile.service", () => ({
-  getCompanyProfile: jest.fn()
-}));
 
 describe("start before you file controller tests", () => {
 
@@ -30,6 +43,10 @@ describe("start before you file controller tests", () => {
       subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
       companyName: "Test Company"
     });
+
+    (getTransaction as jest.Mock).mockResolvedValue({
+      id: TRANSACTION_ID
+    });
     const response = await request(app).get(URL);
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
@@ -39,7 +56,8 @@ describe("start before you file controller tests", () => {
   it("should forward to Confirmation Statement Date page", async () => {
     const response = await request(app)
       .post(URL).set('Content-Type', 'application/json')
-      .send({ "byfCheckbox": "confirm",
+      .send({
+        "byfCheckbox": "confirm",
         "limitedPartnershipSubtype": LIMITED_PARTNERSHIP_SUBTYPES.LP
       });
 

@@ -6,6 +6,11 @@ import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "
 import middlewareMocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
+import { getTransaction } from "../../src/services/transaction.service";
+
+jest.mock("../../src/services/transaction.service", () => ({
+  getTransaction: jest.fn()
+}));
 
 const ACSP_NUMBER = "TSA001";
 const COMPANY_NUMBER = "12345678";
@@ -55,6 +60,11 @@ describe("start ACSP validation middleware tests", () => {
 
   it("acspValidationMiddleware should redirect to LP before you file page if user is ACSP member and LP type", async () => {
     setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, ACSP_NUMBER, LIMITED_PARTNERSHIP_SUBTYPES.LP);
+
+    (getTransaction as jest.Mock).mockResolvedValue({
+            id: TRANSACTION_ID
+        });
+
     const response = await request(app).get(URL_LP_BEFORE);
 
     expect(middlewareMocks.mockAcspValidationMiddleware).toHaveBeenCalled();

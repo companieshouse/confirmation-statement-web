@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { Templates } from "../types/template.paths";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import * as urls from "../types/page.urls";
@@ -11,7 +11,7 @@ import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transact
 import { getTransaction } from "../services/transaction.service";
 import { isPaymentDue } from "../utils/payments";
 
-export const get = async (req: Request, res: Response) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const session: Session = req.session as Session;
@@ -87,6 +87,6 @@ function reloadPageWithError(req: Request, res: Response, lang: string, localInf
 }
 
 function next(e: any) {
-  throw new Error("Function not implemented.");
+  throw new Error("Error retrieving Before You File page");
 }
 
