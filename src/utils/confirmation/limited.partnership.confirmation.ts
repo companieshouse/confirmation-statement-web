@@ -9,6 +9,9 @@ import { getACSPBackPath, isACSPJourney, getConfirmationPath } from "../../utils
 import { selectLang, getLocalesService } from "../../utils/localise";
 import { urlUtils } from "../../utils/url";
 
+const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
+const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
+
 export function handleLimitedPartnershipConfirmationJourney (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
   companyNumber: string, companyProfile: CompanyProfile, transactionId: string, submissionId: string, session: Session) {
 
@@ -19,9 +22,13 @@ export function handleLimitedPartnershipConfirmationJourney (req: Request<Params
     confirmationCheckboxValue
   );
 
+  req.session?.setExtraData(CONFIRMATION_STATEMENT_SESSION_KEY, confirmationValid ? "true" : "false");
+
   const lawfulActivityValid = isCheckboxTicked(
     lawfulActivityCheckboxValue
   );
+
+  req.session?.setExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, lawfulActivityValid ? "true" : "false");
 
   const ecctEnabled = true;
 
@@ -53,8 +60,8 @@ export function handleLimitedPartnershipConfirmationJourney (req: Request<Params
         previousPage,
         confirmationStatementError,
         lawfulActivityStatementError,
-        confirmationChecked: confirmationCheckboxValue === "true",
-        lawfulActivityChecked: lawfulActivityCheckboxValue === "true",
+        confirmationChecked: confirmationValid,
+        lawfulActivityChecked: lawfulActivityValid,
         ecctEnabled
       }
     };

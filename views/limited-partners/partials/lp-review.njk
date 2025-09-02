@@ -61,6 +61,8 @@
           {% endif %}
         {% endif %}
 
+        {% if confirmationChecked == "true" %}
+
         {{ govukCheckboxes({
             idPrefix: "confirmation-statement",
             name: "confirmationStatement",
@@ -84,7 +86,34 @@
               }
             ]
           }) }}
+        {% else %}
 
+        {{ govukCheckboxes({
+            idPrefix: "confirmation-statement",
+            name: "confirmationStatement",
+            errorMessage: confirmationStatementError,
+            fieldset: {
+              legend: {
+                isPageHeading: false,
+                classes: "govuk-fieldset__legend--m"
+              }
+            },
+            items: [
+              {
+                html: checkboxHtml,
+                id: "confirmation-statement",
+                name: "confirmationStatement",
+                value: "true",
+                attributes: {
+                  "data-event-id": "confirmation-statement-checkbox-clicked"
+                }
+              }
+            ]
+          }) }}
+
+          {% endif %}
+
+        {% if lawfulActivityChecked == "true" %} 
         {{ govukCheckboxes({
             idPrefix: "lawful-activity-statement",
             name: "lawfulActivityStatement",
@@ -107,7 +136,31 @@
                 }
               }
             ]
+          }) }} 
+          {% else %} 
+                  {{ govukCheckboxes({
+            idPrefix: "lawful-activity-statement",
+            name: "lawfulActivityStatement",
+            errorMessage: lawfulActivityStatementError,
+            fieldset: {
+              legend: {
+                isPageHeading: false,
+                classes: "govuk-fieldset__legend--m"
+              }
+            },
+            items: [
+              {
+                text: i18n.SCSCheckboxLawfulActivities,
+                id: "lawful-activity-statement",
+                name: "lawfulActivityStatement",
+                value: "true",
+                attributes: {
+                  "data-event-id": "lawful-activity-statement-checkbox-clicked"
+                }
+              }
+            ]
           }) }}
+          {% endif %}
 
       {% endif %}
 

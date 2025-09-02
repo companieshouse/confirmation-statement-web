@@ -18,6 +18,9 @@ import { isPaymentDue, executePaymentJourney } from "../utils/payments";
 import { handleLimitedPartnershipConfirmationJourney } from "../utils/confirmation/limited.partnership.confirmation";
 import { handleNoChangeConfirmationJourney } from "../utils/confirmation/no.change.confirmation";
 
+const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
+const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
+
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const session = req.session as Session;
@@ -31,6 +34,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
     const confirmationDate = company.confirmationStatement?.nextMadeUpTo;
+
+    const confirmationStatementCheck = session.getExtraData(CONFIRMATION_STATEMENT_SESSION_KEY) as string;
+    const lawfulActivityStatementCheck = session.getExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY) as string;
 
     if (isLimitedPartnershipCompanyType(company)) {
       const backLinkPath = getACSPBackPath(session, company);
@@ -48,6 +54,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         nextMadeUpToDate: confirmationDate,
         isPaymentDue: true,
         ecctEnabled: true,
+        confirmationChecked: confirmationStatementCheck,
+        lawfulActivityChecked: lawfulActivityStatementCheck,
         isLimitedPartnership: true
       });
 
