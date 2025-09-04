@@ -5,7 +5,6 @@ import { LP_BEFORE_YOU_FILE_PATH, urlParams } from "../../src/types/page.urls";
 import { getCompanyProfile } from "../../src/services/company.profile.service";
 import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
 import { getTransaction } from "../../src/services/transaction.service";
-import { isPaymentDue } from "../../src/utils/payments";
 
 jest.mock("../../src/services/company.profile.service", () => ({
   getCompanyProfile: jest.fn()
@@ -27,7 +26,6 @@ const URL = LP_BEFORE_YOU_FILE_PATH
   .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
   .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
   .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
-const mockIsPaymentDue = isPaymentDue as jest.Mock;
 
 
 describe("start before you file controller tests", () => {

@@ -54,7 +54,6 @@ middlewareMocks.mockSessionMiddleware.mockImplementation((req: Request, res: Res
 describe("start ACSP validation middleware tests", () => {
 
   beforeEach(() => {
-    jest.setTimeout(20000)
     jest.clearAllMocks();
   });
 
@@ -62,8 +61,8 @@ describe("start ACSP validation middleware tests", () => {
     setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, ACSP_NUMBER, LIMITED_PARTNERSHIP_SUBTYPES.LP);
 
     (getTransaction as jest.Mock).mockResolvedValue({
-            id: TRANSACTION_ID
-        });
+      id: TRANSACTION_ID
+    });
 
     const response = await request(app).get(URL_LP_BEFORE);
 

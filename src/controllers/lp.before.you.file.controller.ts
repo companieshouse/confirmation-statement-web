@@ -85,8 +85,3 @@ function reloadPageWithError(req: Request, res: Response, lang: string, localInf
     }
   });
 }
-
-function next(e: any) {
-  throw new Error("Error retrieving Before You File page");
-}
-
