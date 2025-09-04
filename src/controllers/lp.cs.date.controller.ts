@@ -10,13 +10,13 @@ import { Session } from "@companieshouse/node-session-handler";
 import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
 import { DMMMMYYYY_DATE_FORMAT, RADIO_BUTTON_VALUE } from "../utils/constants";
 import { getReviewPath, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType, isACSPJourney } from '../utils/limited.partnership';
-import { formatDateString, addDayToDateString } from "../utils/date";
+import { formatDateString } from "../utils/date";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const company: CompanyProfile = getCompanyProfileFromSession(req);
   const locales = getLocalesService();
-  const acspSessionData = getAcspSessionData(req.session as Session);
+  const acspSessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
   const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
   const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
   const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
@@ -50,8 +50,9 @@ export const get = (req: Request, res: Response) => {
     company,
     isTodayBeforeFileCsDate: isTodayBeforeFileCsDate(company),
     dateOfToday: moment().format(DMMMMYYYY_DATE_FORMAT),
-    cdsCurrentDate: formatDateString(DMMMMYYYY_DATE_FORMAT, company.confirmationStatement?.nextDue as string),
-    cdsMustFileByDate: addDayToDateString(DMMMMYYYY_DATE_FORMAT, company.confirmationStatement?.nextDue as string, 14),
+    cdsCurrentDate: formatDateString(DMMMMYYYY_DATE_FORMAT, company.confirmationStatement?.nextMadeUpTo as string),
+    cdsMustFileByDate: formatDateString(DMMMMYYYY_DATE_FORMAT, company.confirmationStatement?.nextDue as string),
+    newCsDate: getNewCsDateForEarlyScreen(acspSessionData),
     csDateRadioValue,
     csDateValue,
     errorMessage: null
@@ -89,6 +90,7 @@ export const post = (req: Request, res: Response) => {
                                 lang,
                                 localInfo,
                                 company,
+                                acspSessionData,
                                 errorMessage,
                                 RADIO_BUTTON_VALUE.YES,
                                 csDateValue);
@@ -111,13 +113,22 @@ export const post = (req: Request, res: Response) => {
           break;
         }
         default: {
-          reloadPageWithError(req, res, lang, localInfo, company, localInfo.i18n.CDSRadioButtonError);
+          reloadPageWithError(req, res, lang, localInfo, company, acspSessionData, localInfo.i18n.CDSRadioButtonError);
         }
     }
   }
 };
 
-function reloadPageWithError(req: Request, res: Response, lang: string, localInfo: object, company: CompanyProfile, errorMessage: string, csDateRadioValue?: string, csDateValue?: object) {
+function reloadPageWithError(req: Request,
+  res: Response,
+  lang: string,
+  localInfo: object,
+  company: CompanyProfile,
+  acspSessionData: AcspSessionData,
+  errorMessage: string,
+  csDateRadioValue?: string,
+  csDateValue?: object) {
+
   res.cookie('lang', lang, { httpOnly: true });
 
   return res.render(Templates.LP_CS_DATE, {
@@ -127,8 +138,9 @@ function reloadPageWithError(req: Request, res: Response, lang: string, localInf
     company,
     isTodayBeforeFileCsDate: isTodayBeforeFileCsDate(company),
     dateOfToday: moment().format(DMMMMYYYY_DATE_FORMAT),
-    cdsCurrentDate: formatDateString(DMMMMYYYY_DATE_FORMAT, company.confirmationStatement?.nextDue as string),
-    cdsMustFileByDate: addDayToDateString(DMMMMYYYY_DATE_FORMAT, company.confirmationStatement?.nextDue as string, 14),
+    cdsCurrentDate: formatDateString(DMMMMYYYY_DATE_FORMAT, company.confirmationStatement?.nextMadeUpTo as string),
+    cdsMustFileByDate: formatDateString(DMMMMYYYY_DATE_FORMAT, company.confirmationStatement?.nextDue as string),
+    newCsDate: getNewCsDateForEarlyScreen(acspSessionData),
     csDateRadioValue,
     csDateValue,
     errorMessage: {
@@ -145,7 +157,14 @@ function saveCsDateIntoSession(acspSessionData: AcspSessionData, isChangedConfir
 }
 
 function isTodayBeforeFileCsDate(company: CompanyProfile): boolean {
-  return moment().isBefore(moment(company.confirmationStatement?.nextDue), "day");
+  return moment().isBefore(moment(company.confirmationStatement?.nextMadeUpTo), "day");
 }
 
+function getNewCsDateForEarlyScreen(acspSessionData: AcspSessionData): string {
+  let newCsDateString = moment().format(DMMMMYYYY_DATE_FORMAT);
+  if (acspSessionData && acspSessionData.newConfirmationDate) {
+    newCsDateString = moment(acspSessionData.newConfirmationDate).format(DMMMMYYYY_DATE_FORMAT);
+  }
+  return newCsDateString;
+}
 
