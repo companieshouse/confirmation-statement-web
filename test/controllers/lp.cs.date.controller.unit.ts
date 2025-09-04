@@ -5,6 +5,7 @@ import { LP_CS_DATE_PATH, urlParams } from "../../src/types/page.urls";
 import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
 import { validLimitedPartnershipProfile } from "../mocks/company.profile.mock";
 import { getCompanyProfileFromSession } from "../../src/utils/session";
+import { getAcspSessionData } from "../../src/utils/session.acsp";
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -14,6 +15,7 @@ const URL = LP_CS_DATE_PATH
   .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
   .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
 
+jest.mock("../../src/utils/session.acsp");
 jest.mock("../../src/utils/session");
 const mockGetCompanyProfileFromSession = getCompanyProfileFromSession as jest.Mock;
 
@@ -100,17 +102,21 @@ describe("start confirmation statement date controller tests", () => {
     const response = await request(app).get(URL);
 
     expect(response.text).toContain("Confirmation statement date");
-    expect(response.text).toContain("The date of this confirmation statement is:  <b>30 April 2020</b>");
-    expect(response.text).toContain("You must file it by: <b>14 May 2020</b>");
-    console.log(response.text);
+    expect(response.text).toContain("The date of this confirmation statement is:  <b>15 March 2020</b>");
+    expect(response.text).toContain("You must file it by: <b>29 March 2020</b>");
+    expect(response.text).toContain("No");
   });
 
   it("should return early screen if today is before LP CS file date", async () => {
+
+    (getAcspSessionData as jest.Mock).mockReturnValue({
+      newConfirmationDate: new Date("2025-09-03")
+    });
     mockGetCompanyProfileFromSession.mockReturnValue({
       companyName: "Test Limited Partnership",
       companyNumber: "LP123456",
       confirmationStatement: {
-        nextDue: "2999-09-01",
+        nextMadeUpTo: "2999-09-01",
       },
     });
     const response = await request(app).get(URL);
@@ -118,6 +124,7 @@ describe("start confirmation statement date controller tests", () => {
     expect(response.text).toContain("Confirmation statement date");
     expect(response.text).toContain("You are not due to file a confirmation statement yet");
     expect(response.text).toContain("The date of your next expected confirmation statement is  <b>1 September 2999</b>");
+    expect(response.text).toContain("No, I want to use today&#39;s date -");
   });
 });
 

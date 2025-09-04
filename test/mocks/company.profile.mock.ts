@@ -57,7 +57,7 @@ export const validLimitedPartnershipProfile: CompanyProfile = {
   companyStatusDetail: "company status detail",
   confirmationStatement: {
     lastMadeUpTo: "2019-04-30",
-    nextDue: "2020-04-30",
+    nextDue: "2020-03-29",
     nextMadeUpTo: "2020-03-15",
     overdue: false,
   },
