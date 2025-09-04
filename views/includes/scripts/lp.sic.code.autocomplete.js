@@ -3,6 +3,8 @@
     document.addEventListener('DOMContentLoaded', () => {
         const dummySearchSicCodes = window.searchSicCodes || [];
 
+        console.log("DAVE -- " + dummySearchSicCodes);
+        
         accessibleAutocomplete({
             element: document.querySelector('#sic-code-autocomplete'), 
             id: 'sic-code-input', 
