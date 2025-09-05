@@ -1,0 +1,10 @@
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: i18n.HEADBeta
+    },
+    html: i18n.HEADBetaTextStart + "<a class='govuk-link' href='#''>" + i18n.HEADBetaTextLink + "</a>" + i18n.HEADBetaTextEnd
+  }) }}
+{% endblock %}

@@ -6,8 +6,8 @@ import { PAYMENT_CALLBACK_PATH } from "../../src/types/page.urls";
 
 
 const COMPANY_NUMBER = "12345678";
-const CONFIRMATION_PAGE_HEADING = "Found. Redirecting to /confirmation-statement/company/12345678/transaction/66454/submission/435435/confirmation";
-const REVIEW_PAGE_HEADING = "Found. Redirecting to /confirmation-statement/company/12345678/transaction/66454/submission/435435/review";
+const CONFIRMATION_PAGE_HEADING = "Found. Redirecting to /confirmation-statement/company/12345678/transaction/66454/submission/435435/body/confirmation";
+const REVIEW_PAGE_HEADING = "Found. Redirecting to /confirmation-statement/company/12345678/transaction/66454/submission/435435/body/review";
 const TRANSACTION_ID = "66454";
 const SUBMISSION_ID = "435435";
 const URL =

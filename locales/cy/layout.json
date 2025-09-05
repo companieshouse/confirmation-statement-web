@@ -1,0 +1,14 @@
+{
+    "HEADServiceName" : "CY-File a limited partnership confirmation statement",
+    "HEADSignOut" : "CY-Sign out",
+    "HEADBackText" : "CY-Back",
+    "HEADBeta" : "CY-Beta",
+    "HEADBetaTextStart" : "CY-This is a new service – your ",
+    "HEADBetaTextLink" : "feedback",
+    "HEADBetaTextEnd" : " will help us to improve it.",
+    "FOOTPolicies" : "CY-Policies",
+    "FOOTCookies" : "CY-Cookies",
+    "FOOTContactUs" : "CY-Contact Us",
+    "FOOTAccessibility" : "CY-Accessibility statement",
+    "FOOTDevelopers" : "CY-Developers"
+}

@@ -1,0 +1,14 @@
+{
+    "HEADServiceName" : "File a limited partnership confirmation statement",
+    "HEADSignOut" : "Sign out",
+    "HEADBackText" : "Back",
+    "HEADBeta" : "Beta",
+    "HEADBetaTextStart" : "This is a new service – your ",
+    "HEADBetaTextLink" : "feedback",
+    "HEADBetaTextEnd" : " will help us to improve it.",
+    "FOOTPolicies" : "Policies",
+    "FOOTCookies" : "Cookies",
+    "FOOTContactUs" : "Contact Us",
+    "FOOTAccessibility" : "Accessibility statement",
+    "FOOTDevelopers" : "Developers"
+}

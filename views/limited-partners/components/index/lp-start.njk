@@ -1,0 +1,21 @@
+{% extends "../../layouts/layout.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-width-container">
+            <h1 style="font-family: 'GDS Transport', Arial, Helvetica, sans-serif">{{i18n.pageContent}}</h1>
+            <br>
+            <form method="POST">
+            {% include "../../partials/csrf-token.njk" %}
+                {{ govukButton({
+                  id: 'start-now',
+                  text: "Start now",
+                  isStartButton: true,
+                  type: "submit"
+                }) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

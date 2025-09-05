@@ -1,35 +1,70 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-Confirmation
+  Confirmation
 {% endblock %}
 
-{% block content %}
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
+{% block head %}
+  {% if isLimitedPartnership %}
+    {% include "./limited-partners/partials/meta_header.njk" %}
+  {% else %}
+    {{ super() }}
+  {% endif %} 
+{% endblock %}
 
-    <div class="govuk-panel govuk-panel--confirmation">
-      <h1 class="govuk-panel__title">Confirmation statement submitted</h1>
-      <div class="govuk-panel__body">Reference number<br>
-        <strong>{{ referenceNumber }}</strong>
+{% block header %}
+  {% if isLimitedPartnership %}
+    {% include "./limited-partners/partials/header.njk" %}
+  {% else %}
+    {{ super() }}  
+  {% endif %} 
+{% endblock %}
+
+{% block beforeContent %}
+  {% if isLimitedPartnership %}
+  {% else %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}
+
+{% block footer %}
+  {% if isLimitedPartnership %}
+    {% include "./limited-partners/partials/footer.njk" %}
+  {% else %}
+    {{ super() }}  
+  {% endif %} 
+{% endblock %} 
+
+{% block content %}
+  {% if isLimitedPartnership %}
+    {% include "./limited-partners/partials/confirmation-submitted.njk" %}
+  {% else %}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <div class="govuk-panel govuk-panel--confirmation">
+          <h1 class="govuk-panel__title">Confirmation statement submitted</h1>
+          <div class="govuk-panel__body">Reference number<br>
+            <strong>{{ referenceNumber }}</strong>
+          </div>
+        </div>
+
+        <p>We have sent a confirmation email to {{ userEmail }}</p>
+        <h2 class="govuk-heading-m">What happens next</h2>
+        <p>We will email you within 2 days to let you know if your confirmation statement has been accepted or rejected.</p>
+        <p>Your confirmation statement will then be added to the company's filing history on the
+          <a href="https://find-and-update.company-information.service.gov.uk/" data-event-id="companies-house-register-link">Companies House register</a>.</p>
+        <h3 class="govuk-heading-m">Email reminders</h3>
+        <p>
+          <a href="https://www.gov.uk/government/news/email-reminders-help-companies-file-on-time" data-event-id="register-for-email-reminders-link">Register for email reminders for Companies House</a>
+            and we will email you when your company accounts and confirmation statement are due for filing. Companies that have switched to email reminders are more likely to file on time and avoid late filing penalties.</p>
+
+        <p>
+          <a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-feedback/" data-event-id="survey-link">What did you think of this service?</a>
+            (takes 2 minutes)
+        </p>
+
       </div>
     </div>
-
-    <p>We have sent a confirmation email to {{ userEmail }}</p>
-    <h2 class="govuk-heading-m">What happens next</h2>
-    <p>We will email you within 2 days to let you know if your confirmation statement has been accepted or rejected.</p>
-    <p>Your confirmation statement will then be added to the company's filing history on the
-      <a href="https://find-and-update.company-information.service.gov.uk/" data-event-id="companies-house-register-link">Companies House register</a>.</p>
-    <h3 class="govuk-heading-m">Email reminders</h3>
-    <p>
-      <a href="https://www.gov.uk/government/news/email-reminders-help-companies-file-on-time" data-event-id="register-for-email-reminders-link">Register for email reminders for Companies House</a>
-        and we will email you when your company accounts and confirmation statement are due for filing. Companies that have switched to email reminders are more likely to file on time and avoid late filing penalties.</p>
-
-    <p>
-      <a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-feedback/" data-event-id="survey-link">What did you think of this service?</a>
-        (takes 2 minutes)
-    </p>
-
-  </div>
-</div>
+  {% endif %}
 {% endblock %}

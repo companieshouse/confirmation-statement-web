@@ -1,0 +1,104 @@
+{% extends "../../layouts/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% set errors = pageProperties.errors %}
+
+{% set title = i18n.BYFPageTitle %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-width-container">
+            <div class="govuk-grid-column-two-thirds">
+
+                <h1 class="govuk-heading-xl">
+                    <span class="govuk-caption-l" style="text-transform: uppercase">
+                        {{company.companyName}} ({{company.companyNumber}})
+                    </span>
+                    {{i18n.BYFPageTitle}}
+                </h1>
+
+                {{ govukWarningText({
+                    text: i18n.BYFOnlyInfoChangedParagraph,
+                    iconFallbackText: "Warning"
+                }) }}
+
+                <p class="govuk-body">
+                    {{i18n.BYFFileUpdatesParagraphStart}}
+                    {% if company.companyNumber %}
+                        <a href="https://find-and-update.company-information.service.gov.uk/company/{{company.companyNumber}}" target="_blank">
+                            {{i18n.BYFFileUpdatesParagraphLink}}
+                        </a>
+                    {% else %}
+                        {{i18n.BYFFileUpdatesParagraphLink}}
+                    {% endif %}
+                    {{i18n.BYFFileUpdatesParagraphEnd}}
+                </p>
+
+                <p class="govuk-body">
+                    {{i18n.BYFSubmittedUpdatesParagraph}}</p>
+
+                {% set checkboxError = null %}
+                {% if errors and pageProperties.isPost %}
+                    {% set checkboxError = {
+                        "text": i18n.BYFErrorMessageNotChecked
+                    } %}
+                {% endif %}
+
+                <form  method="POST">
+                    {% include "../../partials/csrf-token.njk" %}
+
+                    {{ govukCheckboxes({
+                            name: "byfCheckbox",
+                            fieldset: {},
+                            hint: {},
+                            errorMessage: checkboxError,
+                            items: [
+                                {
+                                    value: "confirm",
+                                    text: i18n.BYFCheckboxText,
+                                    hint: {}, 
+                                    checked: formData and formData.byfCheckbox
+                                }
+                            ]
+                        }) }}
+
+                    {% if isPaymentDue %}
+
+                        <p class="govuk-heading-l">
+                            {{i18n.BYFFeeInfoTitle}}</p>
+
+                        <p class="govuk-body">
+                            {{i18n.BYFFeeInfoParagraph1 | safe}}</p>
+
+                        <p class="govuk-body">
+                            {{i18n.BYFFeeInfoParagraph2}}</p>
+
+                    {% endif %}
+
+                    {{ govukButton({
+                        id: 'continue',
+                        text: i18n.BYFContinueBotton,
+                        type: "submit"
+                    }) }}
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

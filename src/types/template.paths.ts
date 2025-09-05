@@ -35,5 +35,12 @@ export enum Templates {
   REGISTERED_OFFICE_ADDRESS = "tasks/registered-office-address",
   REGISTER_LOCATIONS = "tasks/register-locations",
   REVIEW = "review",
-  CSRF_ERROR = "csrf-error"
+  CSRF_ERROR = "csrf-error",
+  LP_START = "limited-partners/components/index/lp-start.njk",
+  LP_BEFORE_YOU_FILE = "limited-partners/components/before-you-file/before-you-file.njk",
+  LP_CHECK_YOUR_ANSWER = "limited-partners/components/check-your-answer/lp-check-your-answer.njk",
+  LP_CS_DATE = "limited-partners/components/date/confirmation-statement-date.njk",
+  LP_SIC_CODE_SUMMARY = "limited-partners/components/sic-code-summary/sic-code-summary.njk",
+  LP_MUST_BE_AUTHORISED_AGENT = "limited-partners/components/must-be-authorised-agent/must-be-authorised-agent.njk"
+
 }

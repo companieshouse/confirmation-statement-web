@@ -1,0 +1,42 @@
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+
+{% set title = i18n.CSSBannerTitle %}
+
+{% if userEmail %}
+    {% set email = userEmail | default("Not signed in") %}
+{% endif %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        {{ govukPanel({
+            titleText: i18n.CSSBannerTitle,
+            html: i18n.CSSBannerText ~ "<br><strong>" ~ company.companyNumber ~ "</strong>"
+        }) }}
+
+        <p class="govuk-body">{{ i18n.CSSSubmissionRecievedMessage1 }} {{ company.companyName + " " }} ({{company.companyNumber}})</p>
+
+        <p class="govuk-body">{{ i18n.CSSSubmissionRecievedMessage2 }} <strong>{{ userEmail }}</strong></p>
+        
+        <h2 class="govuk-heading-m">{{ i18n.CSSWhatHappensNextTitle }}</h2>
+
+        <p class="govuk-body">{{ i18n.CSSWhatHappensNextBody1 }}</p>
+        
+        <p class="govuk-body">{{ i18n.CSSWhatHappensNextBody2 }}</p>
+
+        <p class="govuk-body">{{ i18n.CSSWhatHappensNextBody3 }}</p>
+
+        <h2 class="govuk-heading-m">{{ i18n.CSSWhatDoYouNextTitle }}</h2>
+        
+        <p class="govuk-body">
+            <a href="#" class="govuk-link">{{ i18n.CSSWhatDoYouNextFile }}</a>
+        </p>
+
+        <p class="govuk-body">
+            <a href="#" class="govuk-link">{{ i18n.CSSWhatDoYouNextReturn }}</a>
+        </p>
+
+        <p class="govuk-body">
+            <a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-feedback/" data-event-id="survey-link" class="govuk-link">What did you think of this service?</a> (takes 30 seconds)
+        </p>
+    </div>
+</div>

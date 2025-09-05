@@ -1,0 +1,13 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% if previousPageWithoutLang %}
+  {% set backHref = previousPageWithoutLang %}
+{% else %}
+  {% set backHref = previousPage + '?lang=' + htmlLang %}
+{% endif %}
+
+{{ govukBackLink({
+    href: backHref,
+    text: i18n.HEADBackText,
+    classes: "govuk-!-margin-bottom-0 govuk-!-margin-top-0"
+}) }}

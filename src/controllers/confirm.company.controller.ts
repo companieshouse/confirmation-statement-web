@@ -13,6 +13,7 @@ import {
 import {
   CREATE_TRANSACTION_PATH,
   INVALID_COMPANY_STATUS_PATH,
+  LP_MUST_BE_AUTHORISED_AGENT_PATH,
   NO_FILING_REQUIRED_PATH,
   URL_QUERY_PARAM,
   USE_PAPER_PATH,
@@ -20,6 +21,10 @@ import {
 } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { toReadableFormat } from "../utils/date";
+import { COMPANY_PROFILE_SESSION_KEY, LIMITED_PARTNERSHIP_COMPANY_TYPE } from "../utils/constants";
+import { isLimitedPartnershipCompanyType, isLimitedPartnershipSubtypeFeatureFlagEnabled } from "../utils/limited.partnership";
+import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
+
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -58,10 +63,18 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     if (!isCompanyValidForService(eligibilityStatusCode)) {
       return displayEligibilityStopPage(res, eligibilityStatusCode, company);
+    } else if (shouldRedirectToPaperFilingForInvalidLp(company)) {
+      return displayEligibilityStopPage(res, EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY, company);
     }
 
-    await createNewConfirmationStatement(session);
-    const nextPageUrl = urlUtils.getUrlWithCompanyNumber(CREATE_TRANSACTION_PATH, companyNumber);
+    let nextPageUrl;
+    session.setExtraData(COMPANY_PROFILE_SESSION_KEY, company);
+    if (isLimitedPartnershipCompanyType(company) && !isAuthorisedAgent(req.session)) {
+      nextPageUrl = LP_MUST_BE_AUTHORISED_AGENT_PATH;
+    } else {
+      await createNewConfirmationStatement(session);
+      nextPageUrl = urlUtils.getUrlWithCompanyNumber(CREATE_TRANSACTION_PATH, companyNumber);
+    }
     return res.redirect(nextPageUrl);
   } catch (e) {
     return next(e);
@@ -85,6 +98,20 @@ const createNewConfirmationStatement = async (session: Session) => {
     await createConfirmationStatement(session, transactionId);
   }
 };
+
+export function shouldRedirectToPaperFilingForInvalidLp(companyProfile: CompanyProfile): boolean {
+  const isLimitedPartnershipTypeWithValidSubtype = isLimitedPartnershipCompanyType(companyProfile);
+  const isFeatureFlagEnabled = isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile);
+
+  if (companyProfile?.type === LIMITED_PARTNERSHIP_COMPANY_TYPE) {
+    if (!isLimitedPartnershipTypeWithValidSubtype || !isFeatureFlagEnabled) {
+      return true;
+    }
+  }
+  return false;
+}
+
+
 
 const stopPagesPathMap = {
   [EligibilityStatusCode.INVALID_COMPANY_STATUS]: INVALID_COMPANY_STATUS_PATH,

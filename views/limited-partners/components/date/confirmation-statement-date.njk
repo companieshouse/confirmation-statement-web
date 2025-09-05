@@ -1,0 +1,130 @@
+{% extends "../../layouts/layout.njk" %}
+{% from "govuk/components/button/macro.njk"     import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/radios/macro.njk"     import govukRadios %}
+
+{% set errors = pageProperties.errors %}
+
+{% set title = i18n.CDSTitle %}
+
+{% set dateSelector -%}
+
+    {{ govukDateInput({
+        id: "csDate",
+        namePrefix: "csDate",
+        fieldset: {
+            legend: {
+            text:  i18n.CDSRadioButtonYesExplainer,
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--m"
+            }
+        },
+        hint: {
+            text: i18n.CDSRadioButtonYesExplainerExample,
+            classes: "govuk-hint"
+        },
+        items: [
+            {
+              name: "day",
+              classes: "govuk-input--error govuk-input--width-2" if errors else "govuk-input--width-2",
+              id: "csDate-day",
+              value: csDateValue["csDate-day"],
+              attributes: {
+                pattern: "^(0?[1-9]|[12][0-9]|3[01])$"
+              }
+            },
+            {
+              name: "month",
+              classes: "govuk-input--error govuk-input--width-2" if errors else "govuk-input--width-2",
+              id: "csDate-month",
+              value: csDateValue["csDate-month"],
+              attributes: {
+                pattern: "^(0?[1-9]|1[0-2])$"
+              }
+            },
+            {
+              name: "year",
+              classes: "govuk-input--error govuk-input--width-4" if errors else "govuk-input--width-4",
+              id: "csDate-year",
+              value: csDateValue["csDate-year"],
+              attributes: {
+                pattern: "^\\d{4}$"
+              }
+            }
+        ]
+    }) }}
+
+{%- endset %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-width-container">
+            <div class="govuk-grid-column-two-thirds">
+                <form action="" method="post">
+                    {% include "includes/csrf_token.html" %}
+                    <h1 class="govuk-heading-xl">
+                        <span class="govuk-caption-l">{{company.companyName}} ({{company.companyNumber}})</span>
+                        {{i18n.CDSTitle}}
+                    </h1>
+
+                    {% if isTodayBeforeFileCsDate %}
+                        <p class="govuk-body">{{i18n.CDSNotDueToFileEarly}}</p>
+                        <p class="govuk-body">{{i18n.CDSExpectedFileDateTextEarly}} <b>{{cdsCurrentDate}}</b></p>
+                        <p class="govuk-body">{{i18n.CDSDateChangeExplainerStartEarly}} <b>{{newCsDate}}</b>{{i18n.CDSDateChangeExplainerEndEarly}}</p>
+                        <p class="govuk-body">{{i18n.CDSDateChangeExplainer2Early}}</p>
+                        {% set noRadioButtonText = i18n.CDSRadioButtonNoTextEarly + dateOfToday %}
+
+                    {% else %}
+                        <p class="govuk-body">{{i18n.CDSCurrentDateText}} <b>{{cdsCurrentDate}}</b></p>
+                        <p class="govuk-body">{{i18n.CDSMustFileByDateText}}<b>{{cdsMustFileByDate}}</b></p>
+                        <details class="govuk-details">
+                            <summary class="govuk-details__summary">
+                                <span class="govuk-details__summary-text">
+                                    {{i18n.CDSWhatIsDetailExpanderTitle}}
+                                </span>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <p class="govuk-body">{{i18n.CDSCurrentDateExplainer}}</p>
+                                <p class="govuk-body">{{i18n.CDSDateChangeExplainer}}</p>
+                            </div>
+                        </details>
+                        {% set noRadioButtonText = i18n.CDSRadioButtonNo %}
+
+                    {% endif %}
+
+                    {{ govukRadios({
+                        id: "confirmationStatementDate",
+                        name: "confirmationStatementDate",
+                        fieldset: {
+                            legend: {
+                                text: i18n.CDSRadioButtonQuestion,
+                                isPageHeading: true,
+                                classes: "govuk-fieldset__legend--l"
+                            }
+                        },
+                        value: csDateRadioValue,
+                        items: [
+                            {
+                                value: "yes",
+                                text: i18n.CDSRadioButtonYes,
+                                conditional: {
+                                    html: dateSelector
+                                }
+                            },
+                            {
+                                value: "no",
+                                text: noRadioButtonText
+                            }
+                        ],
+                        errorMessage: errorMessage
+                    })}}
+
+                    {{ govukButton({
+                        text: i18n.CDSContinueButton
+                    }) }}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

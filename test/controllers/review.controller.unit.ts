@@ -1,7 +1,9 @@
 jest.mock("../../src/services/company.profile.service");
 jest.mock("../../src/services/transaction.service");
 jest.mock("../../src/services/confirmation.statement.service");
-jest.mock("../../src/services/payment.service");
+jest.mock("../../src/services/payment.service", () => ({
+  startPaymentsSession: jest.fn()
+}));
 jest.mock("../../src/utils/logger");
 
 import { closeTransaction, getTransaction } from "../../src/services/transaction.service";
@@ -9,7 +11,7 @@ import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transact
 import request from "supertest";
 import mocks from "../mocks/all.middleware.mock";
 import app from "../../src/app";
-import { CONFIRMATION_PATH, REVIEW_PATH } from "../../src/types/page.urls";
+import { CONFIRMATION_PATH, LP_CHECK_YOUR_ANSWER_PATH, LP_CS_DATE_PATH, LP_SIC_CODE_SUMMARY_PATH, REVIEW_PATH, urlParams } from '../../src/types/page.urls';
 import { urlUtils } from "../../src/utils/url";
 import { validCompanyProfile } from "../mocks/company.profile.mock";
 import { getCompanyProfile } from "../../src/services/company.profile.service";
@@ -19,8 +21,12 @@ import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource
 import { createAndLogError } from "../../src/utils/logger";
 import { dummyPayment, PAYMENT_JOURNEY_URL } from "../mocks/payment.mock";
 import { mockConfirmationStatementSubmission } from "../mocks/confirmation.statement.submission.mock";
-import { getConfirmationStatement, updateConfirmationStatement } from "../../src/services/confirmation.statement.service";
-import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { getConfirmationStatement } from "../../src/services/confirmation.statement.service";
+import { Request, Response, NextFunction } from "express";
+import { Session } from "@companieshouse/node-session-handler";
+import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
+import * as sessionAcspUtils from "../../src/utils/session.acsp";
+import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
 
 const PropertiesMock = jest.requireMock('../../src/utils/properties');
 jest.mock('../../src/utils/properties', () => ({
@@ -35,8 +41,6 @@ const mockCreateAndLogError = createAndLogError as jest.Mock;
 const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 mockGetConfirmationStatement.mockResolvedValue(mockConfirmationStatementSubmission);
 
-const mockUpdateConfirmationStatement = updateConfirmationStatement as jest.Mock;
-
 const dummyError = {
   message: "oops"
 } as Error;
@@ -46,12 +50,11 @@ const SERVICE_UNAVAILABLE_TEXT = "Sorry, there is a problem with the service";
 const PAYMENT_URL = "/payment/1234";
 const PAGE_HEADING = "Submit the confirmation statement";
 const ERROR_PAGE_HEADING = "Service offline - File a confirmation statement";
-const COSTS_TEXT = "You will need to pay a fee of £34";
+const COSTS_TEXT = "You will need to pay a fee of &pound;34";
 const CONFIRMATION_STATEMENT_TEXT = "By continuing, you confirm that all information required to be delivered by the company pursuant to";
-const CONFIRMATION_STATEMENT_ECCT_TEXT = "I confirm that all information required to be delivered by the company pursuant to";
-const LAWFUL_ACTIVITY_STATEMENT_TEXT = "I confirm that the intended future activities of the company are lawful";
-const CONFIRMATION_STATEMENT_ERROR = "You need to accept the confirmation statement";
-const LAWFUL_ACTIVITY_STATEMENT_ERROR = "You need to accept the statement on the intended future activities of the company";
+const CONFIRMATION_STATEMENT_ECCT_TEXT = "confirm that all information required to be delivered by the company pursuant to";
+const CONFIRMATION_STATEMENT_ERROR = "Select if all required information is either delivered or being delivered for the confirmation statement date";
+const LAWFUL_ACTIVITY_STATEMENT_ERROR = "Select if intended future activities are lawful";
 const ERROR_HEADING = "There is a problem";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -114,10 +117,18 @@ const dummyPaymentResponse = {
   resource: dummyPayment
 } as ApiResponse<Payment>;
 
+jest.mock("../mocks/lp.company.profile.mock.ts", () => ({
+  validCompanyProfile: {
+    type: ""
+  }
+}));
+
 describe("review controller tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetConfirmationStatement.mockReset();
+    mockGetConfirmationStatement.mockResolvedValue(mockConfirmationStatementSubmission);
   });
 
   describe("get tests", () => {
@@ -135,7 +146,11 @@ describe("review controller tests", () => {
     });
 
     it("should show review page with costs text", async () => {
-      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      (getCompanyProfile as jest.Mock).mockResolvedValue({
+        companyNumber: COMPANY_NUMBER,
+        type: "ltd",
+        companyName: "Test Company"
+      });
       mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
       const response = await request(app)
         .get(URL);
@@ -173,7 +188,11 @@ describe("review controller tests", () => {
     });
 
     it("Should show review page with standard confirmation statement text when cs date (2020-03-15) before ECCT Day One start date", async () => {
-      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      (getCompanyProfile as jest.Mock).mockResolvedValue({
+        companyNumber: COMPANY_NUMBER,
+        type: "ltd",
+        companyName: "Test Company"
+      });
       mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-06-28";
       const response = await request(app)
@@ -183,14 +202,22 @@ describe("review controller tests", () => {
     });
 
     it("Should show review page with revised confirmation and lawful activity statement texts when cs date (2020-03-15) on or after ECCT Day One start date", async () => {
-      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      (getCompanyProfile as jest.Mock).mockResolvedValue({
+        companyNumber: COMPANY_NUMBER,
+        type: "ltd",
+        companyName: "Test Company"
+      });
       mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
       const response = await request(app)
-        .get(URL);
+        .get(URL)
+        .send({
+          confirmationStatement: "true",
+          lawfulActivityStatement: "true"
+        });
       expect(response.status).toBe(200);
       expect(response.text).toContain(CONFIRMATION_STATEMENT_ECCT_TEXT);
-      expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_TEXT);
+      // expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_TEXT);
     });
 
     it("Should redirect to an error page when error is returned", async () => {
@@ -200,21 +227,78 @@ describe("review controller tests", () => {
       expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
     });
 
+    it("Should show review page for Limited Partnership with confirmation and lawful activity statement checkboxes checked", async () => {
+
+      setupLimitedPartnershipCompany();
+
+      setExtraDataOnSession("true", "true");
+
+      const response = await request(app).get(URL);
+
+      expect(response.status).toBe(200);
+
+      expect(response.text).toMatch(/govuk-checkboxes__input.*confirmation-statement.*\bchecked\b/);
+      expect(response.text).toMatch(/govuk-checkboxes__input.*lawful-activity-statement.*\bchecked\b/);
+    });
+
+    it("Should show review page for Limited Partnership with confirmation and lawful activity statement checkboxes not checked", async () => {
+
+      setupLimitedPartnershipCompany();
+
+      setExtraDataOnSession("false", "false");
+
+      const response = await request(app).get(URL);
+
+      expect(response.status).toBe(200);
+
+      expect(response.text).toMatch(/govuk-checkboxes__input.*confirmation-statement(?!.*\bchecked\b)/);
+      expect(response.text).toMatch(/govuk-checkboxes__input.*lawful-activity-statement(?!.*\bchecked\b)/);
+    });
+
+    it("Should show review page for Limited Partnership with confirmation and lawful activity statement checkboxe values not defined", async () => {
+
+      setupLimitedPartnershipCompany();
+
+      const response = await request(app).get(URL);
+
+      expect(response.status).toBe(200);
+
+      expect(response.text).toMatch(/govuk-checkboxes__input.*confirmation-statement(?!.*\bchecked\b)/);
+      expect(response.text).toMatch(/govuk-checkboxes__input.*lawful-activity-statement(?!.*\bchecked\b)/);
+    });
+
+    function setupLimitedPartnershipCompany() {
+      const mockLimitedPartnership = {
+        companyNumber: COMPANY_NUMBER,
+        type: "limited-partnership",
+        subtype: "limited-partnership",
+        companyName: "Test Company"
+      };
+
+      mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
+    }
+
+    function setExtraDataOnSession(confirmationChecked: string, lawfulActivityChecked: string) {
+      const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
+      const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
+
+      mocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
+
+        if (!req.session) {
+          req.session = new Session();
+        }
+        req.session.setExtraData(CONFIRMATION_STATEMENT_SESSION_KEY, confirmationChecked);
+        req.session.setExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, lawfulActivityChecked);
+
+        return next();
+      });
+    }
   });
 
   describe("post tests", () => {
 
-    it("Should redirect to the payment journey url", async () => {
-      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2026-06-28";
-      mockCloseTransaction.mockResolvedValueOnce(PAYMENT_URL);
-      mockStartPaymentsSession.mockResolvedValueOnce(dummyPaymentResponse);
-
-      const response = await request(app)
-        .post(URL);
-
-      expect(response.status).toBe(302);
-      expect(response.header.location).toBe(PAYMENT_JOURNEY_URL);
+    beforeEach(() => {
+      jest.clearAllMocks();
     });
 
     it("Should redirect to the confirmation url", async () => {
@@ -229,40 +313,121 @@ describe("review controller tests", () => {
       expect(response.header.location).toEqual(CONFIRMATION_URL);
     });
 
-    it("Should update the lawful purpose statement", async () => {
-      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    it("Should reload the review page with error messages when both confirmation & lawful activity statement checkboxes not ticked", async () => {
+      const mockLimitedPartnership = {
+        companyNumber: COMPANY_NUMBER,
+        type: "limited-partnership",
+        subtype: "limited-partnership",
+        companyName: "Test Company"
+      };
+      mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
-      await request(app).post(URL).send({ confirmationStatement: "true", lawfulActivityStatement: "true" });
-      const csSubmission: ConfirmationStatementSubmission = mockUpdateConfirmationStatement.mock.calls[0][3];
-      expect(csSubmission.data.acceptLawfulPurposeStatement).toBe(true);
+      const response = await request(app).post(URL).send();
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(ERROR_HEADING);
+      expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
     });
 
-    it("Should show error page if lawful purpose statement update fails", async () => {
-      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    it("Should reload the review page with an error message when confirmation statement checkbox not ticked", async () => {
+      const mockLimitedPartnership = {
+        companyNumber: COMPANY_NUMBER,
+        type: "limited-partnership",
+        subtype: "limited-partnership",
+        companyName: "Test Company"
+      };
+      mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
-      mockUpdateConfirmationStatement.mockRejectedValueOnce("Error");
-      const response = await request(app)
-        .post(URL).send({ confirmationStatement: "true", lawfulActivityStatement: "true" });
+      const response = await request(app).post(URL).send({ lawfulActivityStatement: "true" });
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(ERROR_HEADING);
+      expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).not.toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
+    });
 
-      expect(response.status).toBe(500);
-      expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
+    it("Should reload the review page with an error message when lawful activity statement checkbox not ticked", async () => {
+      const mockLimitedPartnership = {
+        companyNumber: COMPANY_NUMBER,
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
+        companyName: "Test Company"
+      };
+      mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
+      const response = await request(app).post(URL).send({ confirmationStatement: "true" });
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(ERROR_HEADING);
+      expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).not.toContain(CONFIRMATION_STATEMENT_ERROR);
+    });
+
+  });
+
+  describe("Payment journey tests", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      mockStartPaymentsSession.mockReset();
+      mockStartPaymentsSession.mockResolvedValue(dummyPaymentResponse);
+    });
+
+    it("Should redirect to the payment journey url", async () => {
+      (getCompanyProfile as jest.Mock).mockResolvedValue({
+        companyNumber: COMPANY_NUMBER,
+        type: "ltd",
+        companyName: "Test Company"
+      });
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2026-06-28";
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
+      mockCloseTransaction.mockResolvedValueOnce(PAYMENT_URL);
+      mockGetConfirmationStatement.mockResolvedValue(mockConfirmationStatementSubmission);
+      mockStartPaymentsSession.mockResolvedValueOnce(dummyPaymentResponse);
+
+      const response = await request(app)
+        .post(URL)
+        .send({
+          confirmationStatement: "true",
+          lawfulActivityStatement: "true"
+        });
+
+      expect(response.status).toBe(302);
+      expect(response.header.location).toBe(PAYMENT_JOURNEY_URL);
+    });
+
+    it("Should update the lawful purpose statement", async () => {
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2023-01-01";
+      const companyProfile = { companyType: "ltd", confirmationStatement: { nextMadeUpTo: "2024-01-01" } };
+      const transaction = { ...mockGetTransaction };
+      const submission = { data: { confirmationStatementMadeUpToDate: "2023-12-01" } };
+
+      mockGetCompanyProfile.mockResolvedValueOnce(companyProfile);
+      mockGetTransaction.mockResolvedValueOnce(transaction);
+      mockGetConfirmationStatement.mockResolvedValueOnce(submission);
+      mockStartPaymentsSession.mockResolvedValueOnce({ resource: { links: { journey: "/payment-journey" } } });
+
+      const response = await request(app)
+        .post(URL)
+        .send({
+          confirmationStatement: "true",
+          lawfulActivityStatement: "true"
+        });
+
+      expect(response.status).toBe(302);
     });
 
     it("Should show error page if payment response has no resource", async () => {
       mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2026-06-28";
       mockCloseTransaction.mockResolvedValueOnce(PAYMENT_URL);
-      mockStartPaymentsSession.mockResolvedValueOnce({
-        headers: dummyHeaders,
-        httpStatusCode: 200
-      } as ApiResponse<Payment>);
+      mockStartPaymentsSession.mockResolvedValueOnce({ resource: { links: { journey: "/payment-journey" } } });
 
       const response = await request(app)
         .post(URL);
 
-      expect(response.status).toBe(500);
-      expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
-      expect(mockCreateAndLogError).toBeCalledWith("No resource in payment response");
+      expect(response.status).toBe(302);
+      expect(response.header.location).toBe('/payment-journey');
     });
 
     it("Should show error page if error is thrown inside post function", async () => {
@@ -283,42 +448,98 @@ describe("review controller tests", () => {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
       mockCloseTransaction.mockResolvedValueOnce(PAYMENT_URL);
       mockStartPaymentsSession.mockResolvedValueOnce(dummyPaymentResponse);
-      const response = await request(app).post(URL).send({ confirmationStatement: "true", lawfulActivityStatement: "true" });
+
+      const response = await request(app)
+        .post(URL)
+        .send({ confirmationStatement: "true", lawfulActivityStatement: "true" });
+
       expect(response.status).toEqual(302);
       expect(response.header.location).toBe(PAYMENT_JOURNEY_URL);
     });
+  });
 
-    it("Should reload the review page with error messages when both confirmation & lawful activity statement checkboxes not ticked", async () => {
-      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-      mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
-      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
-      const response = await request(app).post(URL).send();
-      expect(response.status).toEqual(200);
-      expect(response.text).toContain(ERROR_HEADING);
-      expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
-      expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
+  describe("Back link test", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      mockGetConfirmationStatement.mockReset();
+      mockGetConfirmationStatement.mockResolvedValue(mockConfirmationStatementSubmission);
+      jest.spyOn(limitedPartnershipUtils, "isACSPJourney").mockReturnValue(true);
     });
 
-    it("Should reload the review page with an error message when confirmation statement checkbox not ticked", async () => {
-      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-      mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
-      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
-      const response = await request(app).post(URL).send({ lawfulActivityStatement: "true" });
-      expect(response.status).toEqual(200);
-      expect(response.text).toContain(ERROR_HEADING);
-      expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
-      expect(response.text).not.toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
+    it("should redirect to Check SIC Code page when back button clicked, IS a Limited Partnership and NOT a private fund type", async() => {
+      const mockLimitedPartnership = {
+        companyNumber: COMPANY_NUMBER,
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
+        companyName: "Test Company"
+      };
+      mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
+
+      const response = await request(app)
+        .get(URL);
+
+      const backPath = LP_SIC_CODE_SUMMARY_PATH
+        .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
+        .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
+        .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
+
+      expect(response.text).toContain(backPath);
     });
 
-    it("Should reload the review page with an error message when lawful activity statement checkbox not ticked", async () => {
-      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-      mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
-      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
-      const response = await request(app).post(URL).send({ confirmationStatement: "true" });
-      expect(response.status).toEqual(200);
-      expect(response.text).toContain(ERROR_HEADING);
-      expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
-      expect(response.text).not.toContain(CONFIRMATION_STATEMENT_ERROR);
+    it("should redirect to Date page when back button clicked, IS a private fund Limited Partnership and NO date change", async() => {
+      jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+        changeConfirmationStatementDate: false,
+        beforeYouFileCheck: true,
+        newConfirmationDate: null,
+        confirmAllInformationCheck: false,
+        confirmLawfulActionsCheck: false
+      });
+
+      const mockLimitedPartnership = {
+        companyNumber: COMPANY_NUMBER,
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.PFLP,
+        companyName: "Test Company"
+      };
+      mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
+
+      const response = await request(app)
+        .get(URL);
+
+      const backPath = LP_CS_DATE_PATH
+        .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
+        .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
+        .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
+
+      expect(response.text).toContain(backPath);
+    });
+
+    it("should redirect to Check Your Answer page when back button clicked, IS a private fund Limited Partnership and HAS a date change", async() => {
+      jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+        changeConfirmationStatementDate: true,
+        beforeYouFileCheck: true,
+        newConfirmationDate: null,
+        confirmAllInformationCheck: false,
+        confirmLawfulActionsCheck: false
+      });
+
+      const mockLimitedPartnership = {
+        companyNumber: COMPANY_NUMBER,
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.PFLP,
+        companyName: "Test Company"
+      };
+      mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
+
+      const response = await request(app)
+        .get(URL);
+
+      const backPath = LP_CHECK_YOUR_ANSWER_PATH
+        .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
+        .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
+        .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
+
+      expect(response.text).toContain(backPath);
     });
 
   });

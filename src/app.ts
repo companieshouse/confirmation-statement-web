@@ -14,6 +14,7 @@ import { companyNumberQueryParameterValidationMiddleware } from "./middleware/co
 import { isPscQueryParameterValidationMiddleware } from "./middleware/is.psc.validation.middleware";
 import { transactionIdValidationMiddleware } from "./middleware/transaction.id.validation.middleware";
 import { submissionIdValidationMiddleware } from "./middleware/submission.id.validation.middleware";
+import { acspValidationMiddleware } from "./middleware/acsp.validation.middleware";
 import { commonTemplateVariablesMiddleware } from "./middleware/common.variables.middleware";
 import { CsrfProtectionMiddleware } from "@companieshouse/web-security-node";
 import { SessionStore } from "@companieshouse/node-session-handler";
@@ -27,16 +28,20 @@ app.disable("x-powered-by");
 const nunjucksEnv = nunjucks.configure([
   "views",
   "node_modules/govuk-frontend/",
+  "node_modules/govuk-frontend/dist/",
   "node_modules/govuk-frontend/components/",
-  "node_modules/@companieshouse"
+  "node_modules/@companieshouse/ch-node-utils/templates/",
+  "node_modules/@companieshouse",
+  "node_modules/accessible-autocomplete"
 ], {
   autoescape: true,
-  express: app,
+  express: app
 });
 
 nunjucksEnv.addGlobal("assetPath", process.env.CDN_HOST);
 nunjucksEnv.addGlobal("PIWIK_URL", process.env.PIWIK_URL);
 nunjucksEnv.addGlobal("PIWIK_SITE_ID", process.env.PIWIK_SITE_ID);
+nunjucksEnv.addGlobal('govukRebrand', true);
 
 app.enable("trust proxy");
 app.use(express.json());
@@ -45,6 +50,10 @@ app.use(express.urlencoded({ extended: false }));
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "html");
+
+// support view in njk and html
+app.engine("njk", nunjucks.render);
+app.engine("html", nunjucks.render);
 
 // apply middleware
 app.use(cookieParser());
@@ -63,6 +72,7 @@ app.use(urls.middlewarePaths, sessionMiddleware);
 const userAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
 app.use(userAuthRegex, authenticationMiddleware);
 app.use(`${urls.CONFIRMATION_STATEMENT}${urls.COMPANY_AUTH_PROTECTED_BASE}`, companyAuthenticationMiddleware);
+app.use(urls.ACSP_LIMITED_PARTNERSHIP_PATH, acspValidationMiddleware);
 
 // csrf middleware
 const sessionStore = new SessionStore(new Redis(`redis://${CACHE_SERVER}`));

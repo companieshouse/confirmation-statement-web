@@ -16,6 +16,9 @@ import app from "../../src/app";
 import { COMPANY_AUTH_PROTECTED_BASE, CONFIRMATION_STATEMENT } from "../../src/types/page.urls";
 import { logger } from "../../src/utils/logger";
 import { isCompanyNumberValid } from "../../src/validators/company.number.validator";
+import { Session } from "@companieshouse/node-session-handler";
+import { NextFunction, Request, Response } from "express";
+import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
 
 // get handle on mocked function and create mock function to be returned from calling companyAuthMiddleware
 const mockCompanyAuthMiddleware = authMiddleware as jest.Mock;
@@ -55,8 +58,36 @@ describe("company authentication middleware tests", () => {
   it("should call CH authentication library when company pattern in url", async () => {
     await request(app).get(URL);
 
-    expect(mockCompanyAuthMiddleware).toHaveBeenCalledWith(expectedAuthMiddlewareConfig);
-    expect(mockAuthReturnedFunction).toHaveBeenCalled();
+    expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction();
+  });
+
+  it("should call LP journey when company type is limited partnership and contain ACSP member", async () => {
+    setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, "TSA001", LIMITED_PARTNERSHIP_SUBTYPES.LP);
+    await request(app).get(URL);
+
+    // TODO: the following code need to be updated once ACSP authentication support to create transaction at this moment
+    expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction();
+  });
+
+  it("should display stop screen when company type is limited partnership and do not contain ACSP number", async () => {
+    setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, "", LIMITED_PARTNERSHIP_SUBTYPES.LP);
+    const response = await request(app).get(URL);
+
+    expect(response.header.location).toBe("/confirmation-statement/acsp/must-be-authorised-agent");
+  });
+
+  it("should call existing CS journey when company type is not limited partnership and contain ACSP member", async () => {
+    setCompanyTypeAndAcspNumberInSession("ltd", "TSA001");
+    await request(app).get(URL);
+
+    expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction();
+  });
+
+  it("should call existing CS journey when company type is not limited partnership and contain ACSP member", async () => {
+    setCompanyTypeAndAcspNumberInSession("ltd", "");
+    await request(app).get(URL);
+
+    expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction();
   });
 
   it("should call CH authentication library when company pattern in middle of url", async () => {
@@ -66,8 +97,7 @@ describe("company authentication middleware tests", () => {
 
     await request(app).get(extraUrl);
 
-    expect(mockCompanyAuthMiddleware).toHaveBeenCalledWith(expectedAuthMiddlewareConfig);
-    expect(mockAuthReturnedFunction).toHaveBeenCalled();
+    expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction();
 
     expectedAuthMiddlewareConfig.returnUrl = originalReturnUrl;
   });
@@ -92,3 +122,27 @@ describe("company authentication middleware tests", () => {
     expect(returnedPage.text).toContain(ERROR_PAGE_TEXT);
   });
 });
+
+function setCompanyTypeAndAcspNumberInSession(companyType: string, acspNumber: string, companySubtype?: string) {
+  mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
+    const session: Session = new Session();
+    session.data = {
+      signin_info: {
+        acsp_number: acspNumber
+      },
+      extra_data: {
+        company_profile: {
+          type: companyType,
+          subtype: companySubtype
+        }
+      }
+    };
+    req.session = session;
+    return next();
+  });
+}
+
+function expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction() {
+  expect(mockCompanyAuthMiddleware).toHaveBeenCalledWith(expectedAuthMiddlewareConfig);
+  expect(mockAuthReturnedFunction).toHaveBeenCalled();
+}

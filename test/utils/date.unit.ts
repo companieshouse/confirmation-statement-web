@@ -1,8 +1,9 @@
 jest.mock("../../src/utils/logger");
 
-import { isInFuture, isValidDate, toReadableFormat, toReadableFormatMonthYear } from "../../src/utils/date";
+import { addDayToDateString, formatDateString, isInFuture, isValidDate, toReadableFormat, toReadableFormatMonthYear } from "../../src/utils/date";
 import { createAndLogError } from "../../src/utils/logger";
 import { Settings as luxonSettings } from "luxon";
+import { DMMMMYYYY_DATE_FORMAT } from "../../src/utils/constants";
 
 const mockCreateAndLogError = createAndLogError as jest.Mock;
 mockCreateAndLogError.mockReturnValue(new Error());
@@ -127,6 +128,44 @@ describe("Date tests", () => {
     it("Should return false for unsupplied date string", () => {
       const validity = isValidDate("");
       expect(validity).toEqual(false);
+    });
+
+  });
+
+  describe("formatDateString tests", () => {
+
+    it("Should return empty string if the date string is invalid", () => {
+      const validity = formatDateString(DMMMMYYYY_DATE_FORMAT, "9999-99-99");
+      expect(validity).toEqual("");
+    });
+
+    it("Should return English date string if the date string is valid", () => {
+      const validity = formatDateString(DMMMMYYYY_DATE_FORMAT, "2025-09-01");
+      expect(validity).toEqual("1 September 2025");
+    });
+
+    it("Should return date string if the date string is valid", () => {
+      const validity = formatDateString("DD-MM-YYYY", "2025-09-01");
+      expect(validity).toEqual("01-09-2025");
+    });
+
+  });
+
+  describe("addDayToDateString tests", () => {
+
+    it("Should return empty string if the date string is invalid", () => {
+      const validity = addDayToDateString(DMMMMYYYY_DATE_FORMAT, "9999-99-99", 10);
+      expect(validity).toEqual("");
+    });
+
+    it("Should return English date string if the date string is valid", () => {
+      const validity = addDayToDateString(DMMMMYYYY_DATE_FORMAT, "2025-09-01", 10);
+      expect(validity).toEqual("11 September 2025");
+    });
+
+    it("Should return date string if the date string is valid", () => {
+      const validity = addDayToDateString("DD-YY-YYYY", "2025-09-01", 10);
+      expect(validity).toEqual("11-25-2025");
     });
 
   });

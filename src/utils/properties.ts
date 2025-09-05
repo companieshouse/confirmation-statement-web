@@ -43,6 +43,14 @@ export const FEATURE_FLAG_ECCT_START_DATE_14082023 = getEnvironmentVariable("FEA
 
 export const FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 = getEnvironmentVariable("FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021");
 
+export const FEATURE_FLAG_LP_SUBTYPE_START_DATE = getEnvironmentVariable("FEATURE_FLAG_LP_SUBTYPE_START_DATE", "2025-01-01");
+
+export const FEATURE_FLAG_SLP_SUBTYPE_START_DATE = getEnvironmentVariable("FEATURE_FLAG_SLP_SUBTYPE_START_DATE", "2025-01-03");
+
+export const FEATURE_FLAG_PFLP_SUBTYPE_START_DATE = getEnvironmentVariable("FEATURE_FLAG_PFLP_SUBTYPE_START_DATE", "2025-01-05");
+
+export const FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE = getEnvironmentVariable("FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE", "2025-01-07");
+
 export const PIWIK_START_GOAL_ID = getEnvironmentVariable("PIWIK_START_GOAL_ID");
 
 export const PSC_STATEMENTS_API_PAGE_SIZE = getEnvironmentVariable("PSC_STATEMENTS_API_PAGE_SIZE", "100");
@@ -54,3 +62,7 @@ export const URL_PARAM_MAX_LENGTH: number = parseInt(getEnvironmentVariable("URL
 export const RADIO_BUTTON_VALUE_LOG_LENGTH = parseInt(getEnvironmentVariable("RADIO_BUTTON_VALUE_LOG_LENGTH", "50"), 10);
 
 export const EWF_URL = getEnvironmentVariable("EWF_URL");
+
+export const LOCALES_ENABLED = getEnvironmentVariable("LOCALES_ENABLED", "true");
+
+export const LOCALES_PATH = getEnvironmentVariable("LOCALES_PATH", "locales");

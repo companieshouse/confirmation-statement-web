@@ -1,0 +1,211 @@
+{% set checkboxHtml %}
+{{ i18n.SCSCheckboxActComplianceStart }}
+{% if company.jurisdiction == "scotland" %}
+  <a class="govuk-link" href="https://resources.companieshouse.gov.uk/sic/">
+    {{ i18n.SCSCheckboxActComplianceLinkScotland }}
+  </a>
+{% else %}
+  <a class="govuk-link" href="https://resources.companieshouse.gov.uk/sic/">
+    {{ i18n.SCSCheckboxActComplianceLinkEWNI }}
+  </a>
+{% endif %}
+{{ i18n.SCSCheckboxActComplianceEnd }}
+{% endset %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">{{i18n.SCSTitle}}</h1>
+
+    <p>
+      {{i18n.SCSDataBlockName}}
+      <strong style="text-transform: uppercase">{{company.companyName}}</strong><br>
+      {{i18n.SCSDataBlockNumber}}
+      <strong>{{company.companyNumber}}</strong><br>
+      {{i18n.SCSDataBlockCSDate}}
+      <strong id="formattedDate"></strong>
+    </p>
+
+    <form action="" method="post">
+      {% include "includes/csrf_token.html" %}
+      {% if ecctEnabled %}
+        {% if confirmationStatementError or lawfulActivityStatementError %}
+
+          {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: [
+            {
+              text: confirmationStatementError,
+              href: "#confirmation-statement"
+            },
+            {
+              text: lawfulActivityStatementError,
+              href: "#lawful-activity-statement"
+            }
+          ]
+          }) }}
+
+          {% if confirmationStatementError %}
+            {% set confirmationStatementError = {
+              text: "Select if all required information is either delivered or being delivered for the confirmation statement date"
+            } %}
+          {% else %}
+            {% set confirmationStatementError = false %}
+          {% endif %}
+
+          {% if lawfulActivityStatementError %}
+            {% set lawfulActivityStatementError = {
+              text: "Select if intended future activities are lawful"
+            } %}
+          {% else %}
+            {% set lawfulActivityStatementError = false %}
+          {% endif %}
+        {% endif %}
+
+        {% if confirmationChecked == "true" %}
+
+        {{ govukCheckboxes({
+            idPrefix: "confirmation-statement",
+            name: "confirmationStatement",
+            errorMessage: confirmationStatementError,
+            fieldset: {
+              legend: {
+                isPageHeading: false,
+                classes: "govuk-fieldset__legend--m"
+              }
+            },
+            items: [
+              {
+                html: checkboxHtml,
+                id: "confirmation-statement",
+                name: "confirmationStatement",
+                checked: confirmationChecked,
+                value: "true",
+                attributes: {
+                  "data-event-id": "confirmation-statement-checkbox-clicked"
+                }
+              }
+            ]
+          }) }}
+        {% else %}
+
+        {{ govukCheckboxes({
+            idPrefix: "confirmation-statement",
+            name: "confirmationStatement",
+            errorMessage: confirmationStatementError,
+            fieldset: {
+              legend: {
+                isPageHeading: false,
+                classes: "govuk-fieldset__legend--m"
+              }
+            },
+            items: [
+              {
+                html: checkboxHtml,
+                id: "confirmation-statement",
+                name: "confirmationStatement",
+                value: "true",
+                attributes: {
+                  "data-event-id": "confirmation-statement-checkbox-clicked"
+                }
+              }
+            ]
+          }) }}
+
+          {% endif %}
+
+        {% if lawfulActivityChecked == "true" %} 
+        {{ govukCheckboxes({
+            idPrefix: "lawful-activity-statement",
+            name: "lawfulActivityStatement",
+            errorMessage: lawfulActivityStatementError,
+            fieldset: {
+              legend: {
+                isPageHeading: false,
+                classes: "govuk-fieldset__legend--m"
+              }
+            },
+            items: [
+              {
+                text: i18n.SCSCheckboxLawfulActivities,
+                id: "lawful-activity-statement",
+                name: "lawfulActivityStatement",
+                checked: lawfulActivityChecked,
+                value: "true",
+                attributes: {
+                  "data-event-id": "lawful-activity-statement-checkbox-clicked"
+                }
+              }
+            ]
+          }) }} 
+          {% else %} 
+                  {{ govukCheckboxes({
+            idPrefix: "lawful-activity-statement",
+            name: "lawfulActivityStatement",
+            errorMessage: lawfulActivityStatementError,
+            fieldset: {
+              legend: {
+                isPageHeading: false,
+                classes: "govuk-fieldset__legend--m"
+              }
+            },
+            items: [
+              {
+                text: i18n.SCSCheckboxLawfulActivities,
+                id: "lawful-activity-statement",
+                name: "lawfulActivityStatement",
+                value: "true",
+                attributes: {
+                  "data-event-id": "lawful-activity-statement-checkbox-clicked"
+                }
+              }
+            ]
+          }) }}
+          {% endif %}
+
+      {% endif %}
+
+      {% if isPaymentDue %}
+        <p>{{i18n.SCSPaymentMessageRequiredStart}}
+          <strong>£X</strong>
+          {{i18n.SCSPaymentMessageRequiredEnd}}</p>
+      {% endif %}
+
+      {% if isPaymentDue %}
+        {{ govukButton({
+          text: i18n.SCSContinueButtonPayment,
+          attributes: {
+            id: "confirm-and-pay",
+            "data-event-id": "confirm-and-pay-button",
+            "onclick": "_paq.push(['trackGoal', 4])"
+          }
+        }) }}
+      {% else %}
+        {{ govukButton({
+          text: i18n.SCSContinueButtonNoPayment,
+          attributes: {
+            id: "confirm-and-submit",
+            "data-event-id": "confirm-and-submit-button",
+            "onclick": "_paq.push(['trackGoal', 5])"
+          }
+        }) }}
+      {% endif %}
+
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const date = "{{ company.confirmationStatement.nextMadeUpTo }}";
+    const dateObj = new Date(date);
+    const formattedDate = dateObj.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+
+    document
+      .getElementById("formattedDate")
+      .textContent = formattedDate;
+  });
+</script>

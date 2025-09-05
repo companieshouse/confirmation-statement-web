@@ -1,31 +1,64 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  {% if confirmationStatementError or lawfulActivityStatementError %}
+  {% if isLimitedPartnership %}
+    {{ i18n.SCSTitle }}
+  {% elseif confirmationStatementError or lawfulActivityStatementError %}
     Error:
   {% endif %}
   Submit the confirmation statement
 {% endblock %}
 
-{% block backLink %}
-  {% include "includes/back-link.html" %}
+{% block head %}
+  {% if isLimitedPartnership %}
+    {% include "./limited-partners/partials/meta_header.njk" %}
+  {% else %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}
+
+{% block header %}
+  {% if isLimitedPartnership %}
+    {% include "./limited-partners/partials/header.njk" %}
+  {% else %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}
+
+{% block beforeContent %}
+  {% if isLimitedPartnership %}
+    {# Custom LP content here #}
+  {% else %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}
+
+{% block footer %}
+  {% if isLimitedPartnership %}
+    {% include "./limited-partners/partials/footer.njk" %}
+  {% else %}
+    {{ super() }}
+  {% endif %}
 {% endblock %}
 
 {% block content %}
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-xl">Submit the confirmation statement</h1>
+  {% if isLimitedPartnership %}
+    {% include "./limited-partners/partials/lp-review.njk"%}
+  {% else %}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Submit the confirmation statement</h1>
 
-    <h2 class="govuk-heading-m">
+        <h2 class="govuk-heading-m">
       Company name: {{company.companyName}}<br>
       Company number: {{company.companyNumber}}<br>
       Confirmation statement date: {{nextMadeUpToDate}}</h2>
-    <form action="" method="post">
-      {% include "includes/csrf_token.html" %}
-      {% if ecctEnabled %}
-        {% if confirmationStatementError or lawfulActivityStatementError %}
+        <form action="" method="post">
+          {% include "includes/csrf_token.html" %}
+          {% if ecctEnabled %}
+            {% if confirmationStatementError or lawfulActivityStatementError %}
 
-          {{ govukErrorSummary({
+              {{ govukErrorSummary({
             titleText: "There is a problem",
             errorList: [
             {
@@ -39,29 +72,25 @@
           ]
           }) }}
 
-          {% if confirmationStatementError %}
-            {% set confirmationStatementError = {
-              text: confirmationStatementError
-            } %}
-          {% else %}
-            {% set confirmationStatementError = false %}
-          {% endif %}
+              {% if confirmationStatementError %}
+                {% set confirmationStatementErrorMessage = { text: confirmationStatementError } %}
+               {% else %}
+                {% set confirmationStatementError = false %}
+              {% endif %}
 
-          {% if lawfulActivityStatementError %}
-            {% set lawfulActivityStatementError = {
-              text: lawfulActivityStatementError
-            } %}
-          {% else %}
-            {% set lawfulActivityStatementError = false %}
-          {% endif %}
+              {% if lawfulActivityStatementError %}
+                {% set lawfulActivityStatementErrorMessage = { text: lawfulActivityStatementError } %}
+              {% else %}
+                {% set lawfulActivityStatementError = false %}
+              {% endif %}
 
-        {% endif %}
+            {% endif %}
 
-        <p>
-          {{ govukCheckboxes({
+            <p>
+              {{ govukCheckboxes({
             idPrefix: "confirmation-statement",
             name: "confirmationStatement",
-            errorMessage: confirmationStatementError,
+            errorMessage: confirmationStatementErrorMessage,
             fieldset: {
               legend: {
                 isPageHeading: false,
@@ -75,7 +104,6 @@
                 " in relation to the confirmation period ending " +
                 "<strong>" + nextMadeUpToDate + "</strong>" + " either has been delivered or is being delivered with this statement.",
                 id: "confirmation-statement",
-                name: "confirmationStatement",
                 value: "true",
                 attributes: {
                   "data-event-id": "confirmation-statement-checkbox-clicked"
@@ -83,12 +111,12 @@
               }
             ]
           }) }}
-        </p>
-        <p>
-          {{ govukCheckboxes({
+            </p>
+            <p>
+              {{ govukCheckboxes({
             idPrefix: "lawful-activity-statement",
             name: "lawfulActivityStatement",
-            errorMessage: lawfulActivityStatementError,
+            errorMessage: lawfulActivityStatementErrorMessage,
             fieldset: {
               legend: {
                 isPageHeading: false,
@@ -99,7 +127,6 @@
               {
                 html: "I confirm that the intended future activities of the company are lawful.",
                 id: "lawful-activity-statement",
-                name: "lawfulActivityStatement",
                 value: "true",
                 attributes: {
                   "data-event-id": "lawful-activity-statement-checkbox-clicked"
@@ -107,25 +134,25 @@
               }
             ]
           }) }}
-        </p>
+            </p>
 
-      {% else %}
+          {% else %}
 
-        <p>By continuing, you confirm that all information required to be delivered by the company pursuant to
+            <p>By continuing, you confirm that all information required to be delivered by the company pursuant to
           <a href="https://www.legislation.gov.uk/ukpga/2006/46/section/853A" data-event-id="section-831A(1)-information-link">section 853A(1)(a) of the Companies Act 2006</a>
           in relation to the confirmation period ending
           <strong>{{nextMadeUpToDate}}</strong>
           either has been delivered or is being delivered with this statement.
         </p>
 
-      {% endif %}
+          {% endif %}
 
-      {% if isPaymentDue %}
-        <p>You will need to pay a fee of £34 to submit your confirmation statement.</p>
-      {% endif %}
+          {% if isPaymentDue %}
+            <p>You will need to pay a fee of &pound;34 to submit your confirmation statement.</p>
+          {% endif %}
 
-      {% if isPaymentDue %}
-        {{ govukButton({
+          {% if isPaymentDue %}
+            {{ govukButton({
           text: "Confirm and pay",
           attributes: {
             id: "confirm-and-pay",
@@ -133,8 +160,8 @@
             "onclick": "_paq.push(['trackGoal', 4])"
           }
         }) }}
-      {% else %}
-        {{ govukButton({
+          {% else %}
+            {{ govukButton({
           text: "Confirm and submit",
           attributes: {
             id: "confirm-and-submit",
@@ -142,9 +169,10 @@
             "onclick": "_paq.push(['trackGoal', 5])"
           }
         }) }}
-      {% endif %}
+          {% endif %}
 
-    </form>
-  </div>
-</div>
+        </form>
+      </div>
+    </div>
+  {% endif %}
 {% endblock %}

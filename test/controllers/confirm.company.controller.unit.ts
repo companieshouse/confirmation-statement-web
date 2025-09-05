@@ -15,14 +15,19 @@ import {
   INVALID_COMPANY_STATUS_PATH, NO_FILING_REQUIRED_PATH,
   URL_QUERY_PARAM,
   USE_PAPER_PATH,
-  USE_WEBFILING_PATH
+  USE_WEBFILING_PATH,
+  LP_MUST_BE_AUTHORISED_AGENT_PATH
 } from "../../src/types/page.urls";
 import { getCompanyProfile, formatForDisplay } from "../../src/services/company.profile.service";
-import { validCompanyProfile } from "../mocks/company.profile.mock";
-import { isActiveFeature } from "../../src/utils/feature.flag";
+import { validCompanyProfile, validLimitedPartnershipProfile } from "../mocks/company.profile.mock";
+import { isActiveFeature, isScottishPrivateFundLimitedPartnershipFeatureEnabled } from "../../src/utils/feature.flag";
 import { toReadableFormat } from "../../src/utils/date";
 import { Settings as luxonSettings } from "luxon";
 import { urlUtils } from "../../src/utils/url";
+import { setCompanyTypeAndAcspNumberInSession } from "../mocks/session.mock";
+import { isLimitedPartnershipFeatureEnabled } from "../../src/utils/feature.flag";
+import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
+import { shouldRedirectToPaperFilingForInvalidLp } from "../../src/controllers/confirm.company.controller";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockFormatForDisplay = formatForDisplay as jest.Mock;
@@ -33,6 +38,7 @@ const mockToReadableFormat = toReadableFormat as jest.Mock;
 const mockGetNextMadeUpToDate = getNextMadeUpToDate as jest.Mock;
 
 const companyNumber = "12345678";
+const lpCompanyNumber: string = "LP123456";
 const today = "2020-04-25";
 const SERVICE_UNAVAILABLE_TEXT = "Sorry, there is a problem with the service";
 
@@ -316,4 +322,107 @@ describe("Confirm company controller tests", () => {
 
     expect(mockToReadableFormat).not.toBeCalled();
   });
+
+  it ("Should call private sdk client and redirect to transaction using company number for limited partnership and logged in ACSP", async() => {
+
+    // mockIsActiveFeature.mockReturnValueOnce(true);
+    mockGetCompanyProfile.mockResolvedValueOnce(validLimitedPartnershipProfile);
+    setCompanyTypeAndAcspNumberInSession("limited-partnership", "ACSP-1234-5678");
+    // mockCreateConfirmationStatement.mockResolvedValueOnce(201);
+    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
+    (isLimitedPartnershipFeatureEnabled as jest.Mock).mockReturnValue(true);
+
+    const response = await request(app).post(CONFIRM_COMPANY_PATH + "?companyNumber=" + lpCompanyNumber);
+
+    expect(response.status).toEqual(302);
+    expect(response.header.location).toContain("/confirmation-statement/company/" + lpCompanyNumber + "/transaction");
+    expect(mockCreateConfirmationStatement).toHaveBeenCalled();
+  });
+
+  it ("Should forward to Limited Partnership Must be Authorised Agent screen for limited partnership but no logged in ACSP", async() => {
+
+    // mockIsActiveFeature.mockReturnValueOnce(true);
+    mockGetCompanyProfile.mockResolvedValueOnce(validLimitedPartnershipProfile);
+    setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, "");
+    // mockCreateConfirmationStatement.mockResolvedValueOnce(201);
+    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
+    (isLimitedPartnershipFeatureEnabled as jest.Mock).mockReturnValue(true);
+
+    const response = await request(app).post(CONFIRM_COMPANY_PATH + "?companyNumber=" + lpCompanyNumber);
+
+    expect(response.status).toEqual(302);
+    expect(response.header.location).toEqual(LP_MUST_BE_AUTHORISED_AGENT_PATH);
+
+  });
+
+  it("Should redirect to use paper stop screen if the LP feature flag is not enabled and type is LP subtype", async () => {
+    mockGetCompanyProfile.mockResolvedValueOnce(validLimitedPartnershipProfile);
+    setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, "TSA001", LIMITED_PARTNERSHIP_SUBTYPES.LP);
+    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.COMPANY_VALID_FOR_SERVICE);
+    (isLimitedPartnershipFeatureEnabled as jest.Mock).mockReturnValue(false);
+
+    const usePaperFilingPath = urlUtils.setQueryParam(USE_PAPER_PATH, URL_QUERY_PARAM.COMPANY_NUM, validLimitedPartnershipProfile.companyNumber);
+    const response = await request(app).post(CONFIRM_COMPANY_PATH + "?companyNumber=" + lpCompanyNumber);
+
+    expect(response.status).toEqual(302);
+    expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
+    expect(response.header.location).toEqual(usePaperFilingPath);
+  });
+
+  it("shouldRedirectToPaperFilingForInvalidLp should return false if the company type and subtype are LP", () => {
+    (isLimitedPartnershipFeatureEnabled as jest.Mock).mockReturnValue(true);
+    validLimitedPartnershipProfile.type = "limited-partnership";
+    validLimitedPartnershipProfile.subtype = "limited-partnership";
+
+    expect(shouldRedirectToPaperFilingForInvalidLp(validLimitedPartnershipProfile)).toBeFalsy();
+  });
+
+  it("shouldRedirectToPaperFilingForInvalidLp should return true if the company type, subtype are LP and feature flag is not enabled", () => {
+    (isLimitedPartnershipFeatureEnabled as jest.Mock).mockReturnValue(false);
+    validLimitedPartnershipProfile.type = "limited-partnership";
+    validLimitedPartnershipProfile.subtype = "limited-partnership";
+
+    expect(shouldRedirectToPaperFilingForInvalidLp(validLimitedPartnershipProfile)).toBeTruthy();
+  });
+
+  it("shouldRedirectToPaperFilingForInvalidLp should return false if the company type is not LP and subtype is LP", () => {
+    (isLimitedPartnershipFeatureEnabled as jest.Mock).mockReturnValue(true);
+    validLimitedPartnershipProfile.type = "otherType";
+    validLimitedPartnershipProfile.subtype = "limited-partnership";
+
+    expect(shouldRedirectToPaperFilingForInvalidLp(validLimitedPartnershipProfile)).toBeFalsy();
+  });
+
+  it("shouldRedirectToPaperFilingForInvalidLp should return true if the company type is LP and subtype is invalid", () => {
+    (isLimitedPartnershipFeatureEnabled as jest.Mock).mockReturnValue(true);
+    validLimitedPartnershipProfile.type = "limited-partnership";
+    validLimitedPartnershipProfile.subtype = "123";
+
+    expect(shouldRedirectToPaperFilingForInvalidLp(validLimitedPartnershipProfile)).toBeTruthy();
+  });
+
+  it("shouldRedirectToPaperFilingForInvalidLp should return false if the company type is LP and subtype is SPFLP", () => {
+    (isScottishPrivateFundLimitedPartnershipFeatureEnabled as jest.Mock).mockReturnValue(true);
+    validLimitedPartnershipProfile.type = "limited-partnership";
+    validLimitedPartnershipProfile.subtype = "scottish-private-fund-limited-partnership";
+
+    expect(shouldRedirectToPaperFilingForInvalidLp(validLimitedPartnershipProfile)).toBeFalsy();
+  });
+
+  it("shouldRedirectToPaperFilingForInvalidLp should return true if the company type is LP, subtype is SPFLP and SPFLP feature flag is not enabled", () => {
+    (isScottishPrivateFundLimitedPartnershipFeatureEnabled as jest.Mock).mockReturnValue(false);
+    validLimitedPartnershipProfile.type = "limited-partnership";
+    validLimitedPartnershipProfile.subtype = "scottish-private-fund-limited-partnership";
+
+    expect(shouldRedirectToPaperFilingForInvalidLp(validLimitedPartnershipProfile)).toBeTruthy();
+  });
+
+  it("shouldRedirectToPaperFilingForInvalidLp should return true if the company type is LP and subtype is not SPFLP", () => {
+    (isScottishPrivateFundLimitedPartnershipFeatureEnabled as jest.Mock).mockReturnValue(true);
+    validLimitedPartnershipProfile.type = "limited-partnership";
+    validLimitedPartnershipProfile.subtype = "scottish-private-fund-limited-partnership-test";
+
+    expect(shouldRedirectToPaperFilingForInvalidLp(validLimitedPartnershipProfile)).toBeTruthy();
+  });
+
 });

@@ -1,3 +1,4 @@
+
 import { Request, Response, Router } from "express";
 import * as activeOfficers from "../controllers/tasks/active.officers.controller";
 import * as activeOfficersDetails from "../controllers/tasks/active.officers.details.controller";
@@ -36,6 +37,13 @@ import * as wrongRegisterLocationsRoute from "../controllers/incorrect-informati
 import * as wrongOfficerDetailsRoute from "../controllers/incorrect-information/wrong.officer.details.controller";
 import * as wrongPscDetailsRoute from "../controllers/incorrect-information/wrong.psc.details.controller";
 import * as wrongPscStatementRoute from "../controllers/incorrect-information/wrong.psc.statement.controller";
+import * as lpStartRoute from "../controllers/lp.start.controller";
+import * as lpBeforeYouFileRoute from "../controllers/lp.before.you.file.controller";
+import * as lpCheckYourAnswerRoute from "../controllers/lp.check.your.answer.controller";
+import * as lpCSDateRoute from "../controllers/lp.cs.date.controller";
+import * as lpSicCodeSummaryRoute from "../controllers/lp.sic.code.summary.controller";
+import * as lpMustBeAuthorisedAgent from "../controllers/lp.must.be.authorised.agent.controller";
+
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 
@@ -148,3 +156,28 @@ router.post(urls.WRONG_PSC_DETAILS, wrongPscDetailsRoute.post);
 
 router.get(urls.WRONG_PSC_STATEMENT, wrongPscStatementRoute.get);
 router.post(urls.WRONG_PSC_STATEMENT, wrongPscStatementRoute.post);
+
+router.get(urls.ACSP_LIMITED_PARTNERSHIP, lpStartRoute.get);
+router.post(urls.ACSP_LIMITED_PARTNERSHIP, lpStartRoute.post);
+
+router.get(urls.LP_BEFORE_YOU_FILE, lpBeforeYouFileRoute.get);
+router.post(urls.LP_BEFORE_YOU_FILE, lpBeforeYouFileRoute.post);
+
+router.get(urls.LP_CHECK_YOUR_ANSWER, lpCheckYourAnswerRoute.get);
+router.post(urls.LP_CHECK_YOUR_ANSWER, lpCheckYourAnswerRoute.post);
+
+router.get(urls.LP_CS_DATE, lpCSDateRoute.get);
+router.post(urls.LP_CS_DATE, lpCSDateRoute.post);
+
+router.get(urls.LP_SIC_CODE_SUMMARY, lpSicCodeSummaryRoute.get);
+router.post(urls.LP_SIC_CODE_SUMMARY_SAVE, lpSicCodeSummaryRoute.saveAndContinue);
+
+router.post(urls.LP_SIC_CODE_SUMMARY_REMOVE, lpSicCodeSummaryRoute.removeSicCode);
+router.post(urls.LP_SIC_CODE_SUMMARY_ADD, lpSicCodeSummaryRoute.addSicCode);
+
+router.get(urls.LP_REVIEW, reviewRoute.get);
+router.post(urls.LP_REVIEW, reviewRoute.post);
+
+router.get(urls.LP_CONFIRMATION, confirmationRoute.get);
+
+router.get(urls.LP_MUST_BE_AUTHORISED_AGENT, lpMustBeAuthorisedAgent.get);
