@@ -9,6 +9,8 @@ import { getReviewPath, isACSPJourney } from '../utils/limited.partnership';
 import { SIC_CODE_SESSION_KEY } from "../utils/constants";
 import { getAcspSessionData } from "../utils/session.acsp";
 import { Session } from "@companieshouse/node-session-handler";
+import { createApiClient } from "@companieshouse/api-sdk-node";
+import { API_URL, CHS_API_KEY } from "../utils/properties";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -128,7 +130,7 @@ export function getSicCodeSummaryList(req: Request, lang: string, sicCodesList: 
   return sicCodeSummaryList;
 }
 
-export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicCodeSummaryListItem[], unsavedCodeList: string[]): void {
+export async function renderPage(req: Request, res: Response, sicCodeSummaryList: SicCodeSummaryListItem[], unsavedCodeList: string[]): Promise<void> {
   const lang = selectLang(req.query.lang);
   const locales = getLocalesService();
   const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
@@ -139,6 +141,30 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
   );
   const company = getCompanyProfileFromSession(req);
 
+  const API_URL='http://api.chs.local:4001'
+  const CHS_API_KEY='MGQ1MGNlYmFkYzkxZTM2MzlkNGVmMzg4ZjgxMmEz'
+
+  console.log("Started harness");
+  const client = createApiClient(API_URL, undefined, CHS_API_KEY);
+
+  const sicCodeService = client.sicCodeService;
+
+  const data = await sicCodeService.getCondensedSicCodes();
+  console.log("SIC Code data:\n\n");
+
+  console.log(data);
+
+  data.resource?.forEach((sic) => {
+    console.log(`Code: ${sic.sic_code}, Description: ${sic.sic_description}`);
+  });
+
+  const sicCodeSearch: SicCode[] = data.resource?.map(sc => ({
+    code: sc.sic_code,
+    description: sc.sic_description
+  })) ?? [];
+
+  console.log("DAVE -- ", sicCodeSearch);
+
   return res.render(Templates.LP_SIC_CODE_SUMMARY, {
     ...getLocaleInfo(locales, lang),
     htmlLang: lang,
@@ -148,7 +174,7 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
     isShowingAddSection: (sicCodeSummaryList.length < 4),
     addUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_ADD_PATH}?lang=${lang}`, req),
     saveUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_SAVE_PATH}?lang=${lang}`, req),
-    searchSicCodes: dummySearchSicCodes,
+    searchSicCodes: sicCodeSearch,
     company: company,
     unsavedCodeList: unsavedCodeList
   });
