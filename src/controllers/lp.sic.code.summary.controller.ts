@@ -10,6 +10,7 @@ import { SIC_CODE_SESSION_KEY } from "../utils/constants";
 import { getAcspSessionData } from "../utils/session.acsp";
 import { Session } from "@companieshouse/node-session-handler";
 import { createApiClient } from "@companieshouse/api-sdk-node";
+import { API_URL, CHS_API_KEY } from "../utils/properties";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -140,9 +141,6 @@ export async function renderPage(req: Request, res: Response, sicCodeSummaryList
   );
   const company = getCompanyProfileFromSession(req);
 
-  const API_URL='http://api.chs.local:4001'
-  const CHS_API_KEY='MGQ1MGNlYmFkYzkxZTM2MzlkNGVmMzg4ZjgxMmEz'
-
   console.log("Started harness");
   const client = createApiClient(API_URL, undefined, CHS_API_KEY);
 
@@ -160,7 +158,7 @@ export async function renderPage(req: Request, res: Response, sicCodeSummaryList
   const sicCodeSearch: SicCode[] = data.resource?.map(sc => ({
     code: sc.sic_code,
     description: sc.sic_description
-  }));
+  })) ?? [];
 
   console.log("DAVE -- ", sicCodeSearch);
 

@@ -9,7 +9,7 @@ import {
 import { Session } from "@companieshouse/node-session-handler";
 import {
   ActiveOfficerDetails,
-  SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+  SectionStatus } from "@companieshouse/api-sdk-node";
 
 import { formatAddressForDisplay, formatOfficerDetails, formatTitleCase } from "../../utils/format";
 import { getActiveOfficerDetailsData } from "../../services/active.director.details.service";
