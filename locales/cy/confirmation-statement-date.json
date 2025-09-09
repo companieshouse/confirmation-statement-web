@@ -17,7 +17,7 @@
   "CDSRadioButtonQuestion":"CY-Do you want to change the date of this confirmation statement?",
   "CDSRadioButtonYes":"CY-Yes",
   "CDSRadioButtonYesExplainer":"CY-Enter the new confirmation statement date",
-  "CDSRadioButtonYesExplainerExample":"CY-For example, 30 9 2025. You cannot enter a date in the future",
+  "CDSRadioButtonYesExplainerExample":"CY-For example, 30 9 2025. You cannot enter a date in the future.",
   "CDSRadioButtonYesDateComponent":"CY-Day Month Year",
   "CDSRadioButtonNo":"CY-No",
   "CDSContinueButton":"CY-Save & Continue"
