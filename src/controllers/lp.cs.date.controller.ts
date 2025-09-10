@@ -7,10 +7,11 @@ import { urlUtils } from "../utils/url";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfileFromSession } from "../utils/session";
 import { Session } from "@companieshouse/node-session-handler";
-import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
+import { AcspSessionData, getAcspSessionData } from '../utils/session.acsp';
 import { DMMMMYYYY_DATE_FORMAT, RADIO_BUTTON_VALUE } from "../utils/constants";
-import { getReviewPath, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType, isACSPJourney } from '../utils/limited.partnership';
+import { getReviewPath, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType, isACSPJourney, CsDateValue } from '../utils/limited.partnership';
 import { formatDateString } from "../utils/date";
+import { isTodayBeforeFileCsDate, validateDateSelectorValue } from "../validators/lp.cs.date.validator";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -28,9 +29,9 @@ export const get = (req: Request, res: Response) => {
       csDateRadioValue = RADIO_BUTTON_VALUE.YES;
       if (acspSessionData.newConfirmationDate) {
         csDateValue = {
-          "csDate-year": acspSessionData.newConfirmationDate.getFullYear(),
-          "csDate-month": acspSessionData.newConfirmationDate.getMonth() + 1,
-          "csDate-day": acspSessionData.newConfirmationDate.getDate()
+          csDateYear: `${acspSessionData.newConfirmationDate.getFullYear()}`,
+          csDateMonth: `${acspSessionData.newConfirmationDate.getMonth() + 1}`,
+          csDateDay: `${acspSessionData.newConfirmationDate.getDate()}`
         };
       }
     } else {
@@ -71,18 +72,19 @@ export const post = (req: Request, res: Response) => {
   if (req.body) {
     switch (req.body.confirmationStatementDate) {
         case RADIO_BUTTON_VALUE.YES: {
-          const csDateValue = {
-            "csDate-year": req.body["csDate-year"],
-            "csDate-month": req.body["csDate-month"],
-            "csDate-day": req.body["csDate-day"]
+          const csDateValue: CsDateValue = {
+            csDateYear: req.body["csDate-year"],
+            csDateMonth: req.body["csDate-month"],
+            csDateDay: req.body["csDate-day"]
           };
 
-          let errorMessage = undefined;
-          if (!(csDateValue["csDate-year"] && csDateValue["csDate-month"] && csDateValue["csDate-day"])) {
-            errorMessage = localInfo.i18n.CDSDateValueMissingError;
-          } else if (!(moment(`${csDateValue["csDate-year"]}-${csDateValue["csDate-month"]}-${csDateValue["csDate-day"]}`, 'YYYY-MM-DD').isValid())) {
-            errorMessage = localInfo.i18n.CDSDateValueInvalidError;
-          }
+          // let errorMessage = undefined;
+          // if (!(csDateValue["csDate-year"] && csDateValue["csDate-month"] && csDateValue["csDate-day"])) {
+          //   errorMessage = localInfo.i18n.CDSErrorDateNoData;
+          // } else if (!(moment(`${csDateValue["csDate-year"]}-${csDateValue["csDate-month"]}-${csDateValue["csDate-day"]}`, 'YYYY-MM-DD').isValid())) {
+          //   errorMessage = localInfo.i18n.CDSDateValueInvalidError;
+          // }
+          const errorMessage = validateDateSelectorValue(localInfo, csDateValue, company);
 
           if (errorMessage) {
             reloadPageWithError(req,
@@ -95,7 +97,7 @@ export const post = (req: Request, res: Response) => {
                                 RADIO_BUTTON_VALUE.YES,
                                 csDateValue);
           } else {
-            const csDateInput = new Date(csDateValue["csDate-year"], csDateValue["csDate-month"] - 1, csDateValue["csDate-day"]);
+            const csDateInput = new Date(Number(csDateValue.csDateYear), Number(csDateValue.csDateMonth) - 1, Number(csDateValue.csDateDay));
             saveCsDateIntoSession(acspSessionData, true, csDateInput);
             return res.redirect(urlUtils.getUrlToPath(`${urls.LP_CHECK_YOUR_ANSWER_PATH}?lang=${lang}`, req));
           }
@@ -113,7 +115,7 @@ export const post = (req: Request, res: Response) => {
           break;
         }
         default: {
-          reloadPageWithError(req, res, lang, localInfo, company, acspSessionData, localInfo.i18n.CDSRadioButtonError);
+          reloadPageWithError(req, res, lang, localInfo, company, acspSessionData, localInfo.i18n.CDSErrorNoRadioSelected);
         }
     }
   }
@@ -127,7 +129,7 @@ function reloadPageWithError(req: Request,
   acspSessionData: AcspSessionData,
   errorMessage: string,
   csDateRadioValue?: string,
-  csDateValue?: object) {
+  csDateValue?: CsDateValue) {
 
   res.cookie('lang', lang, { httpOnly: true });
 
@@ -154,10 +156,6 @@ function saveCsDateIntoSession(acspSessionData: AcspSessionData, isChangedConfir
     acspSessionData.changeConfirmationStatementDate = isChangedConfirmationStatementDate;
     acspSessionData.newConfirmationDate = csDateInput;
   }
-}
-
-function isTodayBeforeFileCsDate(company: CompanyProfile): boolean {
-  return moment().isBefore(moment(company.confirmationStatement?.nextMadeUpTo), "day");
 }
 
 function getNewCsDateForEarlyScreen(acspSessionData: AcspSessionData): string {

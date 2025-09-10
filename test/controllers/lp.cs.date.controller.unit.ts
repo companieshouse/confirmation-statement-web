@@ -60,7 +60,7 @@ describe("start confirmation statement date controller tests", () => {
         "confirmationStatementDate": "yes"
       });
 
-    expect(response.text).toContain("Error: Please enter the confirmation statement date");
+    expect(response.text).toContain("Enter the new confirmation statement date");
   });
 
   it("should show error message when the year of CS date is missing", async () => {
@@ -72,7 +72,7 @@ describe("start confirmation statement date controller tests", () => {
         "csDate-day": "01"
       });
 
-    expect(response.text).toContain("Error: Please enter the confirmation statement date");
+    expect(response.text).toContain("Confirmation statement date must include a year");
   });
 
   it("should show error message when the CS date is valid", async () => {
@@ -85,7 +85,7 @@ describe("start confirmation statement date controller tests", () => {
         "csDate-day": "31"
       });
 
-    expect(response.text).toContain("Error: The confirmation statement date is invalid");
+    expect(response.text).toContain("Confirmation statement date must be a real date");
   });
 
   it("should forward to sic code page", async () => {
