@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
 import { Templates } from "../types/template.paths";
 import * as urls from "../types/page.urls";
-import moment from 'moment';
+import moment from "moment";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import { urlUtils } from "../utils/url";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfileFromSession } from "../utils/session";
 import { Session } from "@companieshouse/node-session-handler";
-import { AcspSessionData, getAcspSessionData } from '../utils/session.acsp';
+import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
 import { DMMMMYYYY_DATE_FORMAT, RADIO_BUTTON_VALUE } from "../utils/constants";
-import { getReviewPath, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType, isACSPJourney, CsDateValue } from '../utils/limited.partnership';
+import { getReviewPath, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType, isACSPJourney, CsDateValue } from "../utils/limited.partnership";
 import { formatDateString } from "../utils/date";
 import { isTodayBeforeFileCsDate, validateDateSelectorValue } from "../validators/lp.cs.date.validator";
 
@@ -78,12 +78,6 @@ export const post = (req: Request, res: Response) => {
             csDateDay: req.body["csDate-day"]
           };
 
-          // let errorMessage = undefined;
-          // if (!(csDateValue["csDate-year"] && csDateValue["csDate-month"] && csDateValue["csDate-day"])) {
-          //   errorMessage = localInfo.i18n.CDSErrorDateNoData;
-          // } else if (!(moment(`${csDateValue["csDate-year"]}-${csDateValue["csDate-month"]}-${csDateValue["csDate-day"]}`, 'YYYY-MM-DD').isValid())) {
-          //   errorMessage = localInfo.i18n.CDSDateValueInvalidError;
-          // }
           const errorMessage = validateDateSelectorValue(localInfo, csDateValue, company);
 
           if (errorMessage) {
