@@ -54,6 +54,10 @@ export const VALID_EMAIL_REGEX_PATTERN = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~\\-]+@([
 export const HOSTNAME_REGEX = "^(xn|[a-z0-9]+)(-?-[a-z0-9]+)*$";
 export const TLD_PART_REGEX = "^(?:[a-z]{2,63}|xn--[a-z0-9]+(?:-[a-z0-9]+){1,4})(?:$|[^-])";
 export const DMMMMYYYY_DATE_FORMAT = "D MMMM YYYY";
+export const YYYYMMDD_WITH_HYPHEN_DATE_FORMAT = "YYYY-MM-DD";
+export const DATE_DAY_REGEX: RegExp = /^(0?[1-9]|[12][0-9]|3[01])$/;
+export const DATE_MONTH_REGEX: RegExp = /^(0?[1-9]|1[0-2])$/;
+export const DATE_YEAR_REGEX: RegExp = /^\d{4}$/;
 
 export enum RADIO_BUTTON_VALUE {
   NO = "no",

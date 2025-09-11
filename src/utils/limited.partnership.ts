@@ -6,6 +6,12 @@ import { Session } from "@companieshouse/node-session-handler";
 import { isLimitedPartnershipFeatureEnabled, isScottishLimitedPartnershipFeatureEnabled, isPrivateFundLimitedPartnershipFeatureEnabled, isScottishPrivateFundLimitedPartnershipFeatureEnabled } from "./feature.flag";
 import { getAcspSessionData } from "./session.acsp";
 
+export interface CsDateValue {
+  csDateYear: string;
+  csDateMonth: string;
+  csDateDay: string;
+}
+
 export function isLimitedPartnershipCompanyType(companyProfile: CompanyProfile): boolean {
 
   return companyProfile?.type === LIMITED_PARTNERSHIP_COMPANY_TYPE &&
