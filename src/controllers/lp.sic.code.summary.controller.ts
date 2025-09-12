@@ -7,8 +7,9 @@ import { urlUtils } from "../utils/url";
 import { getCompanyProfileFromSession } from "../utils/session";
 import { getReviewPath, isACSPJourney } from '../utils/limited.partnership';
 import { SIC_CODE_SESSION_KEY } from "../utils/constants";
-import { getAcspSessionData } from "../utils/session.acsp";
+import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
 import { Session } from "@companieshouse/node-session-handler";
+import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services/sic-code";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -115,12 +116,16 @@ interface SicCodeSummaryListItem {
 }
 
 export function getSicCodeSummaryList(req: Request, lang: string, sicCodesList: string[]): SicCodeSummaryListItem[] {
+  const sessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
+  const allSicCodes: CondensedSicCodeData[] = sessionData?.sicCodes || [];
   const sicCodeSummaryList: SicCodeSummaryListItem[] = [];
+
   for (const code of sicCodesList) {
+    const macthed = allSicCodes.find(sc => sc.sic_code === code);
     sicCodeSummaryList.push({
       sicCode: {
         code: code,
-        description: code
+        description: macthed?.sic_description || "No Description Found."
       },
       removeUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}/${code}/remove?lang=${lang}`, req)
     });
@@ -138,6 +143,7 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
     urlUtils.getSubmissionIdFromRequestParams(req)
   );
   const company = getCompanyProfileFromSession(req);
+  const sessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
 
   return res.render(Templates.LP_SIC_CODE_SUMMARY, {
     ...getLocaleInfo(locales, lang),
@@ -148,20 +154,8 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
     isShowingAddSection: (sicCodeSummaryList.length < 4),
     addUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_ADD_PATH}?lang=${lang}`, req),
     saveUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_SAVE_PATH}?lang=${lang}`, req),
-    searchSicCodes: dummySearchSicCodes,
+    searchSicCodes: sessionData.sicCodes,
     company: company,
     unsavedCodeList: unsavedCodeList
   });
 }
-
-export const dummySicCodes: SicCode[] = [
-  { code: '64205', description: 'Activities of financial service holding companies' },
-  { code: '64910', description: 'Financial leasing' },
-  { code: '64922', description: 'Activities of mortgage finance companies' }
-];
-
-export const dummySearchSicCodes: SicCode[] = [
-  { code: '12345', description: 'First dummy search sic codes' },
-  { code: '67890', description: 'Second dummy search sic codes' },
-  { code: '12321', description: 'Third dummy search sic codes' }
-];

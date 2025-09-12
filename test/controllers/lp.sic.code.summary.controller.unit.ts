@@ -38,6 +38,19 @@ describe("Controller tests", () => {
     jest.clearAllMocks();
     jest.setTimeout(15000);
     jest.spyOn(limitedPartnershipUtils, "isACSPJourney").mockReturnValue(true);
+    jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+      changeConfirmationStatementDate: false,
+      beforeYouFileCheck: true,
+      newConfirmationDate: null,
+      confirmAllInformationCheck: false,
+      confirmLawfulActionsCheck: false,
+      sicCodes: [
+        { sic_code: "70001", sic_description: "Description 1" },
+        { sic_code: "70002", sic_description: "Description 2" },
+        { sic_code: "70003", sic_description: "Description 3" },
+        { sic_code: "70005", sic_description: "Description 5" }
+      ]
+    });
   });
 
   it("should return SIC Code Check and Confirm page", async () => {
@@ -45,9 +58,9 @@ describe("Controller tests", () => {
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.text).toContain("Check and confirm what the limited partnership will be doing");
-    expect(response.text).toContain('<div class="govuk-summary-list__value">70001</div>');
-    expect(response.text).toContain('<div class="govuk-summary-list__value">70002</div>');
-    expect(response.text).toContain('<div class="govuk-summary-list__value">70003</div>');
+    expect(response.text).toContain('<div class="govuk-summary-list__key">70001</div>');
+    expect(response.text).toContain('<div class="govuk-summary-list__key">70002</div>');
+    expect(response.text).toContain('<div class="govuk-summary-list__key">70003</div>');
     expect(response.text).toContain('Add a new SIC code');
   });
 
@@ -56,20 +69,20 @@ describe("Controller tests", () => {
       .post(`${URL}/add`)
       .send({ code: "70005", unsavedCodeList: "70001,70002,70003" });
 
-    expect(response.text).toContain('<div class="govuk-summary-list__value">70001</div>');
-    expect(response.text).toContain('<div class="govuk-summary-list__value">70002</div>');
-    expect(response.text).toContain('<div class="govuk-summary-list__value">70003</div>');
-    expect(response.text).toContain('<div class="govuk-summary-list__value">70005</div>');
+    expect(response.text).toContain('<div class="govuk-summary-list__key">70001</div>');
+    expect(response.text).toContain('<div class="govuk-summary-list__key">70002</div>');
+    expect(response.text).toContain('<div class="govuk-summary-list__key">70003</div>');
+    expect(response.text).toContain('<div class="govuk-summary-list__key">70005</div>');
   });
 
   it("should not add a duplicate SIC code", async () => {
     const response = await request(app)
       .post(`${URL}/add`)
-      .send({ code: "70005" });
+      .send({ code: "70005", unsavedCodeList: "70001,70002,70003,70005"  });
 
-    const matches = response.text.match(/<div class="govuk-summary-list__value">70005<\/div>/g);
+    const matches = response.text.match(/<div class="govuk-summary-list__key">70005<\/div>/g);
 
-    expect(response.text).toContain('<div class="govuk-summary-list__value">70005</div>');
+    expect(response.text).toContain('<div class="govuk-summary-list__key">70005</div>');
     expect(matches?.length).toBe(1);
   });
 
@@ -98,10 +111,10 @@ describe("Controller tests", () => {
       .post(`${URL}/70002/remove?lang=en`)
       .send({ unsavedCodeList: "70001,70002,70003,70005" });
 
-    expect(response.text).toContain('<div class="govuk-summary-list__value">70001</div>');
-    expect(response.text).not.toContain('<div class="govuk-summary-list__value">70002</div>');
-    expect(response.text).toContain('<div class="govuk-summary-list__value">70003</div>');
-    expect(response.text).toContain('<div class="govuk-summary-list__value">70005</div>');
+    expect(response.text).toContain('<div class="govuk-summary-list__key">70001</div>');
+    expect(response.text).not.toContain('<div class="govuk-summary-list__key">70002</div>');
+    expect(response.text).toContain('<div class="govuk-summary-list__key">70003</div>');
+    expect(response.text).toContain('<div class="govuk-summary-list__key">70005</div>');
   });
 });
 
@@ -147,7 +160,8 @@ describe("SIC code summary post tests", () => {
       beforeYouFileCheck: true,
       newConfirmationDate: null,
       confirmAllInformationCheck: false,
-      confirmLawfulActionsCheck: false
+      confirmLawfulActionsCheck: false,
+      sicCodes: []
     });
 
     const response = await request(app)
@@ -167,7 +181,8 @@ describe("SIC code summary post tests", () => {
       beforeYouFileCheck: true,
       newConfirmationDate: null,
       confirmAllInformationCheck: false,
-      confirmLawfulActionsCheck: false
+      confirmLawfulActionsCheck: false,
+      sicCodes: []
     });
 
     const response = await request(app)
