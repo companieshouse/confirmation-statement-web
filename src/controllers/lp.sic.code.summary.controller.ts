@@ -31,6 +31,7 @@ export const get = (req: Request, res: Response) => {
 };
 
 export const saveAndContinue = (req: Request, res: Response) => {
+  const lang = selectLang(req.query.lang);
   const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
   const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
   const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
@@ -38,6 +39,12 @@ export const saveAndContinue = (req: Request, res: Response) => {
   const nextPage = getReviewPath(isAcspJourney);
 
   const unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
+
+  if (unsavedCodeList.length === 0) {
+    const sicCodeSummaryList = getSicCodeSummaryList(req, lang, unsavedCodeList);
+    const errors = [{ text: "Add a SIC code. A limited partnership must have at least one SIC code." }];
+    return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, errors);
+  }
 
   if (unsavedCodeList) {
     req.session?.setExtraData(SIC_CODE_SESSION_KEY, unsavedCodeList);
@@ -75,8 +82,9 @@ export const addSicCode = (req: Request, res: Response) => {
   const unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
   const duplicate = unsavedCodeList.includes(code);
 
+  let errors;
   if (duplicate) {
-    console.warn(`Duplicate SIC code: ${code} already exists.`);
+    errors = [{ text: `This SIC code already exists for the limited partnership. Enter a different SIC code` }];
   } else if (unsavedCodeList.length >= 4) {
     console.warn(`Maximum number of SIC codes reached.`);
   } else {
@@ -85,13 +93,13 @@ export const addSicCode = (req: Request, res: Response) => {
 
   const sicCodeSummaryList = getSicCodeSummaryList(req, lang, unsavedCodeList);
 
-  return renderPage(req, res, sicCodeSummaryList, unsavedCodeList);
+  return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, errors);
 };
 
 export const removeSicCode = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const removeSicCode = req.params.code;
-  const unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
+  let unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
 
   if (removeSicCode) {
     const index = unsavedCodeList.findIndex(sicCode => sicCode === removeSicCode);
@@ -102,6 +110,8 @@ export const removeSicCode = (req: Request, res: Response) => {
   }
 
   const sicCodeSummaryList = getSicCodeSummaryList(req, lang, unsavedCodeList);
+
+  console.log("unsavedList: ", unsavedCodeList);
 
   return renderPage(req, res, sicCodeSummaryList, unsavedCodeList);
 };
@@ -130,10 +140,12 @@ export function getSicCodeSummaryList(req: Request, lang: string, sicCodesList: 
       removeUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}/${code}/remove?lang=${lang}`, req)
     });
   }
+  console.log("sicCOdeList: ", sicCodesList);
+  console.log("summaryList: ", sicCodeSummaryList);
   return sicCodeSummaryList;
 }
 
-export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicCodeSummaryListItem[], unsavedCodeList: string[]): void {
+export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicCodeSummaryListItem[], unsavedCodeList: string[], errors?: { text: string }[]): void {
   const lang = selectLang(req.query.lang);
   const locales = getLocalesService();
   const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
@@ -144,6 +156,14 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
   );
   const company = getCompanyProfileFromSession(req);
   const sessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
+
+  const sessionSicCodes = getSicCodeSummaryList(req, lang, unsavedCodeList); 
+
+  const validationErrors = sessionSicCodes.length === 0 
+    ? [{ text: "Add a SIC code. A limited partnership must have at least one SIC code." }]
+    : undefined;
+
+  const combinedErrors = [...(errors || []), ...(validationErrors || [])];
 
   return res.render(Templates.LP_SIC_CODE_SUMMARY, {
     ...getLocaleInfo(locales, lang),
@@ -156,6 +176,7 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
     saveUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_SAVE_PATH}?lang=${lang}`, req),
     searchSicCodes: sessionData.sicCodes,
     company: company,
-    unsavedCodeList: unsavedCodeList
+    unsavedCodeList: unsavedCodeList,
+    errors: combinedErrors
   });
 }
