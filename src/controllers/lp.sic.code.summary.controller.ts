@@ -10,6 +10,7 @@ import { SIC_CODE_SESSION_KEY } from "../utils/constants";
 import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
 import { Session } from "@companieshouse/node-session-handler";
 import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services/sic-code";
+import { validateSicCodes } from "../services/sic.code.service";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -39,11 +40,12 @@ export const saveAndContinue = (req: Request, res: Response) => {
   const nextPage = getReviewPath(isAcspJourney);
 
   const unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
+  const sicCodeSummaryList = getSicCodeSummaryList(req, lang, unsavedCodeList);
 
-  if (unsavedCodeList.length === 0) {
-    const sicCodeSummaryList = getSicCodeSummaryList(req, lang, unsavedCodeList);
-    const errors = [{ text: "Add a SIC code. A limited partnership must have at least one SIC code." }];
-    return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, errors);
+  const { formErrors, maxError, duplicateError } = validateSicCodes(unsavedCodeList);
+
+  if (formErrors || maxError || duplicateError) {
+    return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, formErrors, maxError, duplicateError);
   }
 
   if (unsavedCodeList) {
@@ -99,7 +101,7 @@ export const addSicCode = (req: Request, res: Response) => {
 export const removeSicCode = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const removeSicCode = req.params.code;
-  let unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
+  const unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
 
   if (removeSicCode) {
     const index = unsavedCodeList.findIndex(sicCode => sicCode === removeSicCode);
@@ -110,8 +112,6 @@ export const removeSicCode = (req: Request, res: Response) => {
   }
 
   const sicCodeSummaryList = getSicCodeSummaryList(req, lang, unsavedCodeList);
-
-  console.log("unsavedList: ", unsavedCodeList);
 
   return renderPage(req, res, sicCodeSummaryList, unsavedCodeList);
 };
@@ -140,12 +140,12 @@ export function getSicCodeSummaryList(req: Request, lang: string, sicCodesList: 
       removeUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}/${code}/remove?lang=${lang}`, req)
     });
   }
-  console.log("sicCOdeList: ", sicCodesList);
-  console.log("summaryList: ", sicCodeSummaryList);
+
   return sicCodeSummaryList;
 }
 
-export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicCodeSummaryListItem[], unsavedCodeList: string[], errors?: { text: string }[]): void {
+export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicCodeSummaryListItem[],
+  unsavedCodeList: string[], errors?: { text: string }[], maxError?: string, duplicateError?: string): void {
   const lang = selectLang(req.query.lang);
   const locales = getLocalesService();
   const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
@@ -157,9 +157,9 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
   const company = getCompanyProfileFromSession(req);
   const sessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
 
-  const sessionSicCodes = getSicCodeSummaryList(req, lang, unsavedCodeList); 
+  const sessionSicCodes = getSicCodeSummaryList(req, lang, unsavedCodeList);
 
-  const validationErrors = sessionSicCodes.length === 0 
+  const validationErrors = sessionSicCodes.length === 0
     ? [{ text: "Add a SIC code. A limited partnership must have at least one SIC code." }]
     : undefined;
 
@@ -177,6 +177,8 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
     searchSicCodes: sessionData.sicCodes,
     company: company,
     unsavedCodeList: unsavedCodeList,
-    errors: combinedErrors
+    errors: combinedErrors,
+    maxError: maxError,
+    duplicateError: duplicateError
   });
 }

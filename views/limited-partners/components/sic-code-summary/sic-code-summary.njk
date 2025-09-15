@@ -46,6 +46,23 @@
                     {{ i18n.SICCSPageTitle }}
                 </h1>
 
+                {% if maxError or duplicateError %}
+                  <div class="govuk-error-summary" role="alert" aria-labelledby="error-summary-title" tabindex="-1">
+                    <h2 class="govuk-error-summary__title" id="error-summary-title">
+                      There is a problem
+                    </h2>
+                    <div class="govuk-error-summary__body">
+                      <ul class="govuk-list govuk-error-summary__list">
+                        {% if maxError %}
+                          <li>{{ maxError }}</li>
+                        {% endif %}
+                        {% if duplicateError %}
+                          <li>{{ duplicateError }}</li>
+                        {% endif %}
+                      </ul>
+                    </div>
+                  </div>
+                {% endif %}
                 <p class="govuk-body">
                     {{ i18n.SICCSTableHeader }}
                 </p>    
