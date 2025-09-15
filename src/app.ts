@@ -18,6 +18,7 @@ import { acspValidationMiddleware } from "./middleware/acsp.validation.middlewar
 import { commonTemplateVariablesMiddleware } from "./middleware/common.variables.middleware";
 import { CsrfProtectionMiddleware } from "@companieshouse/web-security-node";
 import { SessionStore } from "@companieshouse/node-session-handler";
+import { getGOVUKFrontendVersion } from "@companieshouse/ch-node-utils";
 import { CACHE_SERVER, COOKIE_NAME } from "./utils/properties";
 import Redis from 'ioredis';
 
@@ -38,6 +39,7 @@ const nunjucksEnv = nunjucks.configure([
   express: app
 });
 
+nunjucksEnv.addGlobal("govukFrontendVersion", getGOVUKFrontendVersion());
 nunjucksEnv.addGlobal("assetPath", process.env.CDN_HOST);
 nunjucksEnv.addGlobal("PIWIK_URL", process.env.PIWIK_URL);
 nunjucksEnv.addGlobal("PIWIK_SITE_ID", process.env.PIWIK_SITE_ID);
