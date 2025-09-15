@@ -39,8 +39,8 @@ const nunjucksEnv = nunjucks.configure([
   express: app
 });
 
-nunjucksEnv.addGlobal("govukFrontendVersion", getGOVUKFrontendVersion());
 nunjucksEnv.addGlobal("assetPath", process.env.CDN_HOST);
+nunjucksEnv.addGlobal("govukFrontendVersion", getGOVUKFrontendVersion());
 nunjucksEnv.addGlobal("PIWIK_URL", process.env.PIWIK_URL);
 nunjucksEnv.addGlobal("PIWIK_SITE_ID", process.env.PIWIK_SITE_ID);
 nunjucksEnv.addGlobal('govukRebrand', true);
