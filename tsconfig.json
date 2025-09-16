@@ -1,17 +1,22 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "module": "commonjs",
     "moduleResolution": "node",
     "pretty": true,
     "sourceMap": true,
-    "target": "es6",
     "outDir": "./dist",
     "baseUrl": "./src",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "strictNullChecks": true,
-    "esModuleInterop": true
+    "target": "ES2022",
+    "lib": ["ES2022", "esnext", "DOM"],
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": false
   },
   "include": [
     "src/**/*"
