@@ -12,7 +12,8 @@ import app from "../app";
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(yargs.argv.PORT  || yargs.argv._[0]);
+const argv = yargs.argv as { PORT?: string | number; _: (string | number)[] };
+const port = normalizePort(argv.PORT  || argv._[0]);
 app.set("port", port);
 
 /**
