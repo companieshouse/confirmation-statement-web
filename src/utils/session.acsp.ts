@@ -1,5 +1,6 @@
 import { Session } from "@companieshouse/node-session-handler";
 import { ACSP_SESSION_KEY } from "../utils/constants";
+import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services/sic-code";
 
 export interface AcspSessionData {
   beforeYouFileCheck: boolean;
@@ -8,6 +9,7 @@ export interface AcspSessionData {
   confirmAllInformationCheck: boolean;
   confirmLawfulActionsCheck: boolean;
   companySubtype?: string;
+  sicCodes: CondensedSicCodeData[];
 }
 
 export function createDefaultAcspSessionData(): AcspSessionData {
@@ -17,7 +19,8 @@ export function createDefaultAcspSessionData(): AcspSessionData {
     newConfirmationDate: null,
     confirmAllInformationCheck: false,
     confirmLawfulActionsCheck: false,
-    companySubtype: undefined
+    companySubtype: undefined,
+    sicCodes: []
   };
 }
 

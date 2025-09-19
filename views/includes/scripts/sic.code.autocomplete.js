@@ -1,19 +1,19 @@
 <script>
   function addAutocompleteEventListener() {
     document.addEventListener('DOMContentLoaded', () => {
-        const dummySearchSicCodes = window.searchSicCodes || [];
+        const searchSicCodes = window.searchSicCodes || [];
 
         accessibleAutocomplete({
             element: document.querySelector('#sic-code-autocomplete'), 
             id: 'sic-code-input', 
             name: 'code-display', 
             source: (query, populateResults) => {
-                const results = dummySearchSicCodes.filter(sc => 
-                    sc.code.includes(query) ||
-                    sc.description.toLowerCase().includes(query.toLowerCase())
+                const results = searchSicCodes.filter(sc => 
+                    sc.sic_code.includes(query) ||
+                    sc.sic_description.toLowerCase().includes(query.toLowerCase())
                 ); 
                 populateResults(
-                    results.map(sc => `${sc.code} - ${sc.description}`)
+                    results.map(sc => `${sc.sic_code} - ${sc.sic_description}`)
                 );
             }, 
             onConfirm: selected => {

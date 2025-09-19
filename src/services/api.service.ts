@@ -32,3 +32,7 @@ export const createPaymentApiClient = (session: Session, paymentUrl: string): Ap
 export const createPrivateApiKeyClient = (): PrivateApiClient => {
   return createPrivateApiClient(CHS_INTERNAL_API_KEY, undefined, API_URL, undefined);
 };
+
+export const createInternalApiKeyClient = (): ApiClient => {
+  return createApiClient(CHS_INTERNAL_API_KEY, undefined, API_URL);
+};

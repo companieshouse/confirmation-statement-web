@@ -10,6 +10,7 @@ import { getCompanyProfileFromSession } from "../utils/session";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
 import { getTransaction } from "../services/transaction.service";
 import { isPaymentDue } from "../utils/payments";
+import { getSicCodeCondensedList } from "../services/sic.code.service";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -23,6 +24,16 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const transaction: Transaction = await getTransaction(session, transactionId);
+
+    if (!getAcspSessionData(session)) {
+      resetAcspSession(session);
+    }
+
+    const sicCodeList = await getSicCodeCondensedList();
+
+    updateAcspSessionData(session, {
+      sicCodes: sicCodeList
+    });
 
 
     return res.render(Templates.LP_BEFORE_YOU_FILE, {
