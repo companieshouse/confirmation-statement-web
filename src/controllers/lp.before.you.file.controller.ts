@@ -11,6 +11,7 @@ import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transact
 import { getTransaction } from "../services/transaction.service";
 import { isPaymentDue } from "../utils/payments";
 import { getSicCodeCondensedList } from "../services/sic.code.service";
+import { logger } from "../utils/logger";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -30,6 +31,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const sicCodeList = await getSicCodeCondensedList();
+
+    logger.debug("Sic Codes retrieved from API: " + JSON.stringify(sicCodeList, null, 2));
 
     updateAcspSessionData(session, {
       sicCodes: sicCodeList
