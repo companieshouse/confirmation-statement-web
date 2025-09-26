@@ -13,6 +13,10 @@ import {
 } from "../../src/utils/constants";
 import { Request } from "express";
 import { getCompanyProfileFromSession } from "../../src/utils/session";
+import { getConfirmationStatement } from "../../src/services/confirmation.statement.service";
+import { mockConfirmationStatementSubmission } from "../mocks/confirmation.statement.submission.mock";
+import { sendLimitedPartnershipTransactionUpdate } from "../../src/utils/confirmation/limited.partnership.confirmation";
+import { ParamsDictionary } from "express-serve-static-core";
 
 export const USER_EMAIL = "userEmail@companieshouse.gov.uk";
 export const USER_ID = "testUserID";
@@ -40,10 +44,12 @@ const sessionData: Session = new Session({
   }
 });
 
+jest.mock("../../src/services/confirmation.statement.service");
 const PropertiesMock = jest.requireMock('../../src/utils/properties');
 jest.mock('../../src/utils/properties', () => ({
   ...jest.requireActual('../../src/utils/properties'),
 }));
+const mockGetConfirmationStatement = getConfirmationStatement as jest.Mock;
 
 describe("Limited partnership util tests", () => {
   it("isLimitedPartnershipCompanyType should return true if the company type is limited-partnership", () => {
@@ -289,5 +295,15 @@ describe("Limited partnership util tests", () => {
     expect(res).toBeFalsy();
   });
 
+  it("sendLimitedPartnershipTransactionUpdate should update the value of newConfirmationDate", async () => {
+    const req = {
+      session: sessionData,
+      params: { companyNumber: "258258", transactionId: "123456", sumbmissionId: "654321" } as ParamsDictionary
+    } as Request;
+    mockGetConfirmationStatement.mockResolvedValue(mockConfirmationStatementSubmission);
+
+    await sendLimitedPartnershipTransactionUpdate(req, "2025-09-01");
+    expect(mockConfirmationStatementSubmission.data.newConfirmationDate).toContain("2025-09-01");
+  });
 
 });

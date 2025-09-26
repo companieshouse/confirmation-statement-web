@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { Templates } from "../types/template.paths";
 import * as urls from "../types/page.urls";
 import moment from "moment";
@@ -8,10 +8,11 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { getCompanyProfileFromSession } from "../utils/session";
 import { Session } from "@companieshouse/node-session-handler";
 import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
-import { DMMMMYYYY_DATE_FORMAT, RADIO_BUTTON_VALUE } from "../utils/constants";
+import { DMMMMYYYY_DATE_FORMAT, RADIO_BUTTON_VALUE, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT } from "../utils/constants";
 import { getReviewPath, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType, isACSPJourney, CsDateValue } from "../utils/limited.partnership";
 import { formatDateString } from "../utils/date";
 import { isTodayBeforeFileCsDate, validateDateSelectorValue } from "../validators/lp.cs.date.validator";
+import { sendLimitedPartnershipTransactionUpdate } from "../utils/confirmation/limited.partnership.confirmation";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -60,58 +61,66 @@ export const get = (req: Request, res: Response) => {
   });
 };
 
-export const post = (req: Request, res: Response) => {
-  const lang = selectLang(req.query.lang);
-  const company: CompanyProfile = getCompanyProfileFromSession(req);
-  const acspSessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
-  const locales = getLocalesService();
-  const localInfo = getLocaleInfo(locales, lang);
-  const isAcspJourney = isACSPJourney(req.originalUrl);
-  const reviewPath = getReviewPath(isAcspJourney);
+export const post = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const lang = selectLang(req.query.lang);
+    const company: CompanyProfile = getCompanyProfileFromSession(req);
+    const acspSessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
+    const locales = getLocalesService();
+    const localInfo = getLocaleInfo(locales, lang);
+    const isAcspJourney = isACSPJourney(req.originalUrl);
+    const reviewPath = getReviewPath(isAcspJourney);
 
-  if (req.body) {
-    switch (req.body.confirmationStatementDate) {
-        case RADIO_BUTTON_VALUE.YES: {
-          const csDateValue: CsDateValue = {
-            csDateYear: req.body["csDate-year"],
-            csDateMonth: req.body["csDate-month"],
-            csDateDay: req.body["csDate-day"]
-          };
+    if (req.body) {
+      switch (req.body.confirmationStatementDate) {
+          case RADIO_BUTTON_VALUE.YES: {
+            const csDateValue: CsDateValue = {
+              csDateYear: req.body["csDate-year"],
+              csDateMonth: req.body["csDate-month"],
+              csDateDay: req.body["csDate-day"]
+            };
 
-          const errorMessage = validateDateSelectorValue(localInfo, csDateValue, company);
+            const errorMessage = validateDateSelectorValue(localInfo, csDateValue, company);
 
-          if (errorMessage) {
-            reloadPageWithError(req,
-                                res,
-                                lang,
-                                localInfo,
-                                company,
-                                acspSessionData,
-                                errorMessage,
-                                RADIO_BUTTON_VALUE.YES,
-                                csDateValue);
-          } else {
-            const csDateInput = new Date(Number(csDateValue.csDateYear), Number(csDateValue.csDateMonth) - 1, Number(csDateValue.csDateDay));
-            saveCsDateIntoSession(acspSessionData, true, csDateInput);
-            return res.redirect(urlUtils.getUrlToPath(`${urls.LP_CHECK_YOUR_ANSWER_PATH}?lang=${lang}`, req));
+            if (errorMessage) {
+              reloadPageWithError(req,
+                                  res,
+                                  lang,
+                                  localInfo,
+                                  company,
+                                  acspSessionData,
+                                  errorMessage,
+                                  RADIO_BUTTON_VALUE.YES,
+                                  csDateValue);
+            } else {
+              const csDateInput = new Date(Number(csDateValue.csDateYear), Number(csDateValue.csDateMonth) - 1, Number(csDateValue.csDateDay));
+              saveCsDateIntoSession(acspSessionData, true, csDateInput);
+              await sendLimitedPartnershipTransactionUpdate(req, moment(csDateInput).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT));
+
+              return res.redirect(urlUtils.getUrlToPath(`${urls.LP_CHECK_YOUR_ANSWER_PATH}?lang=${lang}`, req));
+            }
+            break;
           }
-          break;
-        }
-        case RADIO_BUTTON_VALUE.NO: {
-          const date = isTodayBeforeFileCsDate(company) ? moment().startOf('day').toDate() : null; // Saved the date value into session if user clicked no in early screen
-          saveCsDateIntoSession(acspSessionData, false, date);
-          const path = (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company))
-            ? reviewPath
-            : urls.LP_SIC_CODE_SUMMARY_PATH;
+          case RADIO_BUTTON_VALUE.NO: {
+            const date = isTodayBeforeFileCsDate(company) ? moment().startOf('day').toDate() : null; // Saved the date value into session if user clicked no in early screen
+            saveCsDateIntoSession(acspSessionData, false, date);
+            await sendLimitedPartnershipTransactionUpdate(req, (date ? moment(date).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT) : null));
 
-          const nextPage = urlUtils.getUrlToPath(`${path}?lang=${lang}`, req);
-          res.redirect(nextPage);
-          break;
-        }
-        default: {
-          reloadPageWithError(req, res, lang, localInfo, company, acspSessionData, localInfo.i18n.CDSErrorNoRadioSelected);
-        }
+            const path = (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company))
+              ? reviewPath
+              : urls.LP_SIC_CODE_SUMMARY_PATH;
+
+            const nextPage = urlUtils.getUrlToPath(`${path}?lang=${lang}`, req);
+            res.redirect(nextPage);
+            break;
+          }
+          default: {
+            reloadPageWithError(req, res, lang, localInfo, company, acspSessionData, localInfo.i18n.CDSErrorNoRadioSelected);
+          }
+      }
     }
+  } catch (e) {
+    return next(e);
   }
 };
 
