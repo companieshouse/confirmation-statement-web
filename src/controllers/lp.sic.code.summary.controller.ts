@@ -6,10 +6,12 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { urlUtils } from "../utils/url";
 import { getCompanyProfileFromSession } from "../utils/session";
 import { getReviewPath, isACSPJourney } from '../utils/limited.partnership';
-import { SIC_CODE_SESSION_KEY } from "../utils/constants";
+import { SECTIONS, SIC_CODE_SESSION_KEY } from "../utils/constants";
 import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
 import { Session } from "@companieshouse/node-session-handler";
 import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services/sic-code";
+import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { sendUpdate } from "../utils/update.confirmation.statement.submission";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -30,7 +32,7 @@ export const get = (req: Request, res: Response) => {
   return renderPage(req, res, sicCodeSummaryList, sicCodesList);
 };
 
-export const saveAndContinue = (req: Request, res: Response) => {
+export const saveAndContinue = async (req: Request, res: Response) => {
   const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
   const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
   const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
@@ -42,6 +44,8 @@ export const saveAndContinue = (req: Request, res: Response) => {
   if (unsavedCodeList) {
     req.session?.setExtraData(SIC_CODE_SESSION_KEY, unsavedCodeList);
   }
+
+  await sendUpdate(req, SECTIONS.SIC, SectionStatus.CONFIRMED);
 
   return res.redirect(
     urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
