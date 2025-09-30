@@ -2,7 +2,8 @@ import { FEATURE_FLAG_ECCT_START_DATE_14082023,
   FEATURE_FLAG_LP_SUBTYPE_START_DATE,
   FEATURE_FLAG_SLP_SUBTYPE_START_DATE,
   FEATURE_FLAG_PFLP_SUBTYPE_START_DATE,
-  FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE } from "./properties";
+  FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE,
+  FEATURE_FLAG_SAIL_ADDRESS } from "./properties";
 import { isValidDate } from "./date";
 import { logger } from "./logger";
 
@@ -52,4 +53,8 @@ export const isPrivateFundLimitedPartnershipFeatureEnabled = (): boolean => {
 
 export const isScottishPrivateFundLimitedPartnershipFeatureEnabled = (): boolean => {
   return isDateFeatureFlagEnabled("FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE", FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE, new Date());
+};
+
+export const isSAILAddressFeatureEnabled = (): boolean => {
+  return isDateFeatureFlagEnabled("FEATURE_FLAG_SAIL_ADDRESS", FEATURE_FLAG_SAIL_ADDRESS, new Date());
 };

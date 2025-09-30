@@ -11,6 +11,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { getRegisterLocationData } from "../../services/register.location.service";
 import { RegisterLocation, SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { formatAddress, formatAddressForDisplay } from "../../utils/format";
+import { isSAILAddressFeatureEnabled } from '../../utils/feature.flag';
 import {
   getRadioButtonInvalidValueErrorMessage,
   isRadioButtonValueValid
@@ -24,10 +25,13 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const registerLocations: RegisterLocation[] = await getRegisterLocationData(session, transactionId, submissionId);
     const sailAddress = formatSailForDisplay(registerLocations);
     const registers = formatRegisterForDisplay(registerLocations);
+    const updateSailAddressText = isSAILAddressFeatureEnabled();
+    const hasRegisters = registers.length > 0;
+
     return res.render(Templates.REGISTER_LOCATIONS, {
       templateName: Templates.REGISTER_LOCATIONS,
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
-      registers, sailAddress });
+      registers, sailAddress, updateSailAddressText, hasRegisters });
   } catch (error) {
     return next(error);
   }
