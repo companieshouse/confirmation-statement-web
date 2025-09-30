@@ -1,11 +1,11 @@
 {% set checkboxHtml %}
 {{ i18n.SCSCheckboxActComplianceStart }}
 {% if company.jurisdiction == "scotland" %}
-  <a class="govuk-link" href="https://resources.companieshouse.gov.uk/sic/">
+  <a class="govuk-link" href="https://www.legislation.gov.uk/uksi/2017/694/regulation/35/">
     {{ i18n.SCSCheckboxActComplianceLinkScotland }}
   </a>
 {% else %}
-  <a class="govuk-link" href="https://resources.companieshouse.gov.uk/sic/">
+  <a class="govuk-link" href="https://www.legislation.gov.uk/ukpga/Edw7/7/24/section/10D">
     {{ i18n.SCSCheckboxActComplianceLinkEWNI }}
   </a>
 {% endif %}
