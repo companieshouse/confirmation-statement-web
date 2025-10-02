@@ -79,7 +79,7 @@ export async function sendLimitedPartnershipTransactionUpdate(req: Request, newC
   const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
   const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
   const session = req.session as Session;
-  
+
   const currentCsSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
   currentCsSubmission.data.newConfirmationDate = newCsDate;
 
