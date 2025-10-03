@@ -8,6 +8,8 @@ import { LP_CONFIRMATION_STATEMENT_ERROR, LP_LAWFUL_ACTIVITY_STATEMENT_ERROR } f
 import { getACSPBackPath, isACSPJourney, getConfirmationPath } from "../../utils/limited.partnership";
 import { selectLang, getLocalesService } from "../../utils/localise";
 import { urlUtils } from "../../utils/url";
+import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { getConfirmationStatement, updateConfirmationStatement } from "../../services/confirmation.statement.service";
 
 const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
 const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
@@ -71,4 +73,15 @@ export function handleLimitedPartnershipConfirmationJourney (req: Request<Params
   const nextPage = getConfirmationPath(isAcspJourney);
 
   return { nextPage };
+}
+
+export async function sendLimitedPartnershipTransactionUpdate(req: Request, newCsDate: string | null) {
+  const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+  const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+  const session = req.session as Session;
+
+  const currentCsSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
+  currentCsSubmission.data.newConfirmationDate = newCsDate;
+
+  await updateConfirmationStatement(session, transactionId, submissionId, currentCsSubmission);
 }

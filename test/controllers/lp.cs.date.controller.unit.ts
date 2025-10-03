@@ -6,6 +6,7 @@ import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
 import { validLimitedPartnershipProfile } from "../mocks/company.profile.mock";
 import { getCompanyProfileFromSession } from "../../src/utils/session";
 import { getAcspSessionData } from "../../src/utils/session.acsp";
+import { sendLimitedPartnershipTransactionUpdate } from "../../src/utils/confirmation/limited.partnership.confirmation.ts";
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -19,6 +20,9 @@ jest.mock("../../src/utils/session.acsp");
 jest.mock("../../src/utils/session");
 const mockGetCompanyProfileFromSession = getCompanyProfileFromSession as jest.Mock;
 
+jest.mock("../../src/utils/confirmation/limited.partnership.confirmation.ts");
+const mockSendLimitedPartnershipTransactionUpdate = sendLimitedPartnershipTransactionUpdate as jest.Mock;
+
 jest.mock("../../src/utils/limited.partnership", () => ({
   isACSPJourney: jest.fn(),
   isPflpLimitedPartnershipCompanyType: jest.fn(),
@@ -31,6 +35,7 @@ describe("start confirmation statement date controller tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetCompanyProfileFromSession.mockReturnValue(validLimitedPartnershipProfile);
+    mockSendLimitedPartnershipTransactionUpdate.mockClear();
   });
 
   it("should return limited partnership confirmation statement date page", async () => {
@@ -50,6 +55,7 @@ describe("start confirmation statement date controller tests", () => {
         "csDate-day": "01"
       });
 
+    expect(mockSendLimitedPartnershipTransactionUpdate.mock.calls[0][1]).toBe("2025-08-01");
     expect(response.headers.location).toBe("/confirmation-statement/company/12345678/transaction/66454/submission/435435/acsp/check-your-answer?lang=en");
   });
 

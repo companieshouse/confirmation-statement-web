@@ -1,9 +1,9 @@
 jest.mock("../../src/utils/logger");
 
-import { addDayToDateString, formatDateString, isInFuture, isValidDate, toReadableFormat, toReadableFormatMonthYear } from "../../src/utils/date";
+import { addDayToDateString, convertDateToString, formatDateString, isInFuture, isValidDate, toReadableFormat, toReadableFormatMonthYear } from "../../src/utils/date";
 import { createAndLogError } from "../../src/utils/logger";
 import { Settings as luxonSettings } from "luxon";
-import { DMMMMYYYY_DATE_FORMAT } from "../../src/utils/constants";
+import { DMMMMYYYY_DATE_FORMAT, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT } from "../../src/utils/constants";
 
 const mockCreateAndLogError = createAndLogError as jest.Mock;
 mockCreateAndLogError.mockReturnValue(new Error());
@@ -168,5 +168,18 @@ describe("Date tests", () => {
       expect(validity).toEqual("11-25-2025");
     });
 
+  });
+
+  describe("convertDateToString tests", () => {
+
+    it("Should return null if the date is null", () => {
+      const validity = convertDateToString(null, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT);
+      expect(validity).toEqual(null);
+    });
+
+    it("Should return date string if the date value is valid", () => {
+      const validity = convertDateToString(new Date("2025/09/30"), YYYYMMDD_WITH_HYPHEN_DATE_FORMAT);
+      expect(validity).toEqual("2025-09-30");
+    });
   });
 });

@@ -119,7 +119,7 @@ export function getSicCodeSummaryList(req: Request, lang: string, sicCodesList: 
   const sessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
   const allSicCodes: CondensedSicCodeData[] = sessionData?.sicCodes || [];
   const sicCodeSummaryList: SicCodeSummaryListItem[] = [];
-  
+
   if (!allSicCodes.length) {
     return [];
   }
