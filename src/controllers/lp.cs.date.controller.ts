@@ -10,7 +10,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
 import { DMMMMYYYY_DATE_FORMAT, RADIO_BUTTON_VALUE, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT } from "../utils/constants";
 import { getReviewPath, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType, isACSPJourney, CsDateValue } from "../utils/limited.partnership";
-import { formatDateString } from "../utils/date";
+import { convertDateToString, formatDateString } from "../utils/date";
 import { isTodayBeforeFileCsDate, validateDateSelectorValue } from "../validators/lp.cs.date.validator";
 import { sendLimitedPartnershipTransactionUpdate } from "../utils/confirmation/limited.partnership.confirmation";
 
@@ -102,9 +102,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
             break;
           }
           case RADIO_BUTTON_VALUE.NO: {
-            const date = isTodayBeforeFileCsDate(company) ? moment().startOf('day').toDate() : null; // Saved the date value into session if user clicked no in early screen
+            const date = returnTodayOnlyIfBeforeFileCsDate(company); // Saved the date value into session if user clicked no in early screen
             saveCsDateIntoSession(acspSessionData, false, date);
-            await sendLimitedPartnershipTransactionUpdate(req, (date ? moment(date).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT) : null));
+            await sendLimitedPartnershipTransactionUpdate(req, convertDateToString(date, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT));
 
             const path = (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company))
               ? reviewPath
@@ -123,6 +123,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     return next(e);
   }
 };
+
+function returnTodayOnlyIfBeforeFileCsDate(company: CompanyProfile): Date | null {
+  return isTodayBeforeFileCsDate(company) ? moment().startOf('day').toDate() : null;
+}
 
 function reloadPageWithError(req: Request,
   res: Response,
