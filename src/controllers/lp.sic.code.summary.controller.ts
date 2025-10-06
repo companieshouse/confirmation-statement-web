@@ -15,7 +15,6 @@ import { validateSicCodes } from "../services/sic.code.service";
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   res.cookie('lang', lang, { httpOnly: true });
-
   const company: CompanyProfile = getCompanyProfileFromSession(req);
   let sicCodesList: string[] = [];
 
