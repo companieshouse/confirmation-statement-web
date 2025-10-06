@@ -1,0 +1,5 @@
+{
+    "startUseWebFilingInstead" : "CY-You can currently only file a confirmation statement online using our ",
+    "startWebFilingServiceName" : "CY-WebFiling service",
+    "startWebFilingLink" : "CY-https://ewf.companieshouse.gov.uk//seclogin?tc=1/#lang-{{lang|default('en')}}"
+}
