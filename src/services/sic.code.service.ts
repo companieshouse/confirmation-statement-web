@@ -23,7 +23,7 @@ export function validateSicCodes(sicCodes: string[]): SicCodeValidationResult {
   const duplicates: string[] = [];
 
   for (const code of sicCodes) {
-    const count = duplicateSicCodes.get(code) || 0;
+    const count = duplicateSicCodes.get(code) ?? 0;
     duplicateSicCodes.set(code, count + 1);
     if (count === 1) {
       duplicates.push(code);
