@@ -51,7 +51,7 @@ export function validateDateSelectorValue(localInfo: any, csDateValue: CsDateVal
     }
 
     // validate that user tries to enter a past date that is already covered in a previous CS
-    if (moment(csDateInput).isBefore(moment(lastOrNextMadeUpDate), "day")){
+    if (moment(csDateInput).isBefore(moment(lastOrNextMadeUpDate), "day")) {
       return localInfo.i18n.CDSErrorCsDateAfterlastCsDate;
     }
   }

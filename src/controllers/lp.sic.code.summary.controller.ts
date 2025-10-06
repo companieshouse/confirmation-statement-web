@@ -130,6 +130,10 @@ export function getSicCodeSummaryList(req: Request, lang: string, sicCodesList: 
   const allSicCodes: CondensedSicCodeData[] = sessionData?.sicCodes || [];
   const sicCodeSummaryList: SicCodeSummaryListItem[] = [];
 
+  if (!allSicCodes.length) {
+    return [];
+  }
+
   for (const code of sicCodesList) {
     const macthed = allSicCodes.find(sc => sc.sic_code === code);
     sicCodeSummaryList.push({
