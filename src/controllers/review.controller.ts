@@ -38,6 +38,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const confirmationStatementCheck = session.getExtraData(CONFIRMATION_STATEMENT_SESSION_KEY) as string;
     const lawfulActivityStatementCheck = session.getExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY) as string;
 
+
+    const transaction: Transaction = await getTransaction(session, transactionId);
+    const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
+    const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
+    const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
+    const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+      TASK_LIST_PATH, companyNumber, transactionId, submissionId);
+
     if (isLimitedPartnershipCompanyType(company)) {
       const backLinkPath = getACSPBackPath(session, company);
       const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
@@ -52,7 +60,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         previousPage,
         company,
         nextMadeUpToDate: confirmationDate,
-        isPaymentDue: true,
+        isPaymentDue: isPaymentDue(transaction, submissionId),
         ecctEnabled: true,
         confirmationChecked: confirmationStatementCheck,
         lawfulActivityChecked: lawfulActivityStatementCheck,
@@ -60,14 +68,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       });
 
     }
-
-    const transaction: Transaction = await getTransaction(session, transactionId);
-    const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
-    const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
-    const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
-    const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
-      TASK_LIST_PATH, companyNumber, transactionId, submissionId);
-
 
     return res.render(Templates.REVIEW, {
       ...localeInfo,
