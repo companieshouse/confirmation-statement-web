@@ -6,6 +6,7 @@ import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
 import * as sessionAcspUtils from "../../src/utils/session.acsp";
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
+import { validateSicCodes } from "../../src/services/sic.code.service";
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -127,7 +128,7 @@ describe("SIC code summary post tests", () => {
   it("should redirect to review page when valid SIC codes present", async () => {
     const response = await request(app)
       .post(`${URL}/save`)
-      .send();
+      .send({ unsavedCodeList: "70001,70002,70003,70005" });
 
     const reviewPath = LP_REVIEW_PATH
       .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
@@ -143,7 +144,7 @@ describe("SIC code summary post tests", () => {
 
     const response = await request(app)
       .post(`${URL}/save`)
-      .send();
+      .send({ unsavedCodeList: "70001,70002,70003,70005" });
 
     const reviewPath = REVIEW_PATH
       .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
@@ -194,5 +195,38 @@ describe("SIC code summary post tests", () => {
       .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
 
     expect(response.text).toContain(backPath);
+  });
+});
+
+describe("validateSicCodes", () => {
+  it("should return error for empty list", () => {
+    const result = validateSicCodes([]);
+    expect(result.formErrors).toContainEqual({
+      text: "Add a SIC code. A limited partnership must have at least one SIC code."
+    });
+  });
+
+  it("should return error for more than 4 codes", () => {
+    const result = validateSicCodes(["10001", "10002", "10003", "10004", "10005"]);
+    expect(result.maxError).toBe("Remove SIC code(s). A limited partnership can only have a maximum of 4 SIC codes.");
+  });
+
+  it("should return error for duplicate codes", () => {
+    const result = validateSicCodes(["10001", "10002", "10001"]);
+    expect(result.duplicateError).toBe("Remove duplicate SIC codes. A limited partnership can not have duplicate SIC codes.");
+  });
+
+  it("should return multiple errors if multiple rules are violated", () => {
+    const result = validateSicCodes(["10001", "10001", "10002", "10003", "10004", "10005"]);
+    expect(result.formErrors).toBeUndefined();
+    expect(result.maxError).toBe("Remove SIC code(s). A limited partnership can only have a maximum of 4 SIC codes.");
+    expect(result.duplicateError).toBe("Remove duplicate SIC codes. A limited partnership can not have duplicate SIC codes.");
+  });
+
+  it("should return no errors for valid input", () => {
+    const result = validateSicCodes(["10001", "10002", "10003"]);
+    expect(result.formErrors).toBeUndefined();
+    expect(result.maxError).toBeUndefined();
+    expect(result.duplicateError).toBeUndefined();
   });
 });

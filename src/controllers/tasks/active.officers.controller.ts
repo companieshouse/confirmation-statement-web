@@ -7,9 +7,6 @@ import {
   RADIO_BUTTON_VALUE,
   SECTIONS } from "../../utils/constants";
 import { Session } from "@companieshouse/node-session-handler";
-import {
-  ActiveOfficerDetails,
-  SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 import { formatAddressForDisplay, formatOfficerDetails, formatTitleCase } from "../../utils/format";
 import { getActiveOfficerDetailsData } from "../../services/active.director.details.service";
@@ -18,6 +15,7 @@ import {
   getRadioButtonInvalidValueErrorMessage,
   isRadioButtonValueValid
 } from "../../validators/radio.button.validator";
+import { ActiveOfficerDetails, SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
