@@ -20,7 +20,7 @@ export const get = (req: Request, res: Response) => {
 
   if (req.session?.getExtraData(SIC_CODE_SESSION_KEY)) {
     sicCodesList = req.session?.getExtraData(SIC_CODE_SESSION_KEY) as string[];
-  } else if (company && company.sicCodes) {
+  } else if (company?.sicCodes) {
     sicCodesList = company.sicCodes;
     req.session?.setExtraData(SIC_CODE_SESSION_KEY, sicCodesList);
   }
