@@ -9,6 +9,7 @@ export default () => {
   process.env.CHS_INTERNAL_API_KEY = "54321";
   process.env.API_URL = "http://localhost:8080";
   process.env.INTERNAL_API_URL = "http://localhost:9333";
+  process.env.FEATURE_FLAG_SERVICE_WITHDRAWN_02102025 = "false";
   process.env.FEATURE_FLAG_PRIVATE_SDK_12052021 = "true";
   process.env.FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 = "false";
   process.env.CHS_URL = "http://chs.local";

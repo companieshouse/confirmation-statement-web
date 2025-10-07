@@ -37,6 +37,8 @@ export const API_URL = getEnvironmentVariable("API_URL");
 
 export const INTERNAL_API_URL = getEnvironmentVariable("INTERNAL_API_URL");
 
+export const FEATURE_FLAG_SERVICE_WITHDRAWN_02102025 = getEnvironmentVariable("FEATURE_FLAG_SERVICE_WITHDRAWN_02102025", "false");
+
 export const FEATURE_FLAG_PRIVATE_SDK_12052021 = getEnvironmentVariable("FEATURE_FLAG_PRIVATE_SDK_12052021");
 
 export const FEATURE_FLAG_ECCT_START_DATE_14082023 = getEnvironmentVariable("FEATURE_FLAG_ECCT_START_DATE_14082023", "9999-12-31");

@@ -5,7 +5,8 @@ import { ecctDayOneEnabled,
   isLimitedPartnershipFeatureEnabled,
   isScottishLimitedPartnershipFeatureEnabled,
   isPrivateFundLimitedPartnershipFeatureEnabled,
-  isScottishPrivateFundLimitedPartnershipFeatureEnabled
+  isScottishPrivateFundLimitedPartnershipFeatureEnabled,
+  isServiceWithdrawnFeatureEnabled
 } from "../../src/utils/feature.flag";
 
 const PropertiesMock = jest.requireMock('../../src/utils/properties');
@@ -252,4 +253,16 @@ describe("feature flag tests", function() {
     });
   });
 
+  // add a test block named "Service Withdrawn feature flag tests"
+  describe("Service Withdrawn feature flag tests", () => {
+    it("should return true if the feature flag is enabled", () => {
+      PropertiesMock.FEATURE_FLAG_SERVICE_WITHDRAWN_02102025 = "true";
+      expect(isServiceWithdrawnFeatureEnabled()).toEqual(true);
+    });
+
+    it("should return false if the feature flag is disabled", () => {
+      PropertiesMock.FEATURE_FLAG_SERVICE_WITHDRAWN_02102025 = "false";
+      expect(isServiceWithdrawnFeatureEnabled()).toEqual(false);
+    });
+  });
 });
