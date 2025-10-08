@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
 {% block pageTitle %}
   File a confirmation statement - Companies House
 {% endblock %}
@@ -19,6 +21,19 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+
+      {% if FEATURE_FLAG_SERVICE_WITHDRAWN_02102025 === "true" %}
+        {% set html %}
+          <p class="govuk-notification-banner__heading">
+            <span>{{ i18n.startUseWebFilingInstead }}</span>
+            <a class="govuk-notification-banner__link" href="{{ i18n.startWebFilingLink }}" data-event-id="web-filing-link-clicked">{{ i18n.startWebFilingServiceName }}</a>.
+          </p>
+        {% endset %}
+
+        {{ govukNotificationBanner({
+            html: html
+        }) }}
+      {% endif %}
 
       {% set fileByPostHTML %}
         <p>You can also file a confirmation statement by post using the
@@ -70,12 +85,20 @@
 
         <p>It can take up to 15 minutes to file a confirmation statement. The service will time out after 60 minutes and your answers will not be saved.</p>
 
+      {% if FEATURE_FLAG_SERVICE_WITHDRAWN_02102025 === "true" %}
+        <div class="call-to-action">
+          <span>{{ i18n.startUseWebFilingInstead }}</span>
+          <a class="govuk-notification-banner__link" href="{{ i18n.startWebFilingLink }}" data-event-id="web-filing-link-clicked">{{ i18n.startWebFilingServiceName }}</a>.
+        </div>
+      {% else %}
         <a href="/confirmation-statement/company-number" id="start-now" onclick="_paq.push(['trackGoal', '{{PIWIK_START_GOAL_ID}}'])" role="button" draggable="false" class="govuk-button govuk-button--start govuk-!-margin-top-2 govuk-!-margin-bottom-8" data-module="govuk-button">
           Start now
           <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewbox="0 0 33 40" role="presentation" focusable="false">
             <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"></path>
           </svg>
         </a>
+      {% endif %}
+
 
         <h2 class="govuk-heading-m">Before you start</h2>
 

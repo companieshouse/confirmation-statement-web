@@ -2,7 +2,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { SessionKey } from "@companieshouse/node-session-handler/lib/session/keys/SessionKey";
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
 import { AccessTokenKeys } from "@companieshouse/node-session-handler/lib/session/keys/AccessTokenKeys";
-import { API_URL, CHS_API_KEY, CHS_INTERNAL_API_KEY } from "../utils/properties";
+import { API_URL, CHS_API_KEY, CHS_INTERNAL_API_KEY, INTERNAL_API_URL } from "../utils/properties";
 import { createAndLogError } from "../utils/logger";
 import { createApiClient } from "@companieshouse/api-sdk-node";
 import { createPrivateApiClient } from "private-api-sdk-node";
@@ -34,5 +34,5 @@ export const createPrivateApiKeyClient = (): PrivateApiClient => {
 };
 
 export const createInternalApiKeyClient = (): ApiClient => {
-  return createApiClient(CHS_INTERNAL_API_KEY, undefined, API_URL);
+  return createApiClient(CHS_INTERNAL_API_KEY, undefined, INTERNAL_API_URL);
 };

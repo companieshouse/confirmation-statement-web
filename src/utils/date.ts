@@ -55,3 +55,7 @@ export const addDayToDateString = (resultDateFormat: string, dateAsString: strin
   }
   return addedDateString;
 };
+
+export const convertDateToString = (date: Date | null, resultDateFormat: string): string | null => {
+  return date ? moment(date).format(resultDateFormat) : null;
+};
