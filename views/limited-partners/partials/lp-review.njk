@@ -1,11 +1,11 @@
 {% set checkboxHtml %}
 {{ i18n.SCSCheckboxActComplianceStart }}
 {% if company.jurisdiction == "scotland" %}
-  <a class="govuk-link" href="https://www.legislation.gov.uk/uksi/2017/694/regulation/35/">
+  <a class="govuk-link" target="_blank" href="https://www.legislation.gov.uk/uksi/2017/694/regulation/35/">
     {{ i18n.SCSCheckboxActComplianceLinkScotland }}
   </a>
 {% else %}
-  <a class="govuk-link" href="https://www.legislation.gov.uk/ukpga/Edw7/7/24/section/10D">
+  <a class="govuk-link" target="_blank" href="https://www.legislation.gov.uk/ukpga/Edw7/7/24/section/10D">
     {{ i18n.SCSCheckboxActComplianceLinkEWNI }}
   </a>
 {% endif %}
@@ -16,14 +16,36 @@
   <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-xl">{{i18n.SCSTitle}}</h1>
 
-    <p>
-      {{i18n.SCSDataBlockName}}
-      <strong style="text-transform: uppercase">{{company.companyName}}</strong><br>
-      {{i18n.SCSDataBlockNumber}}
-      <strong>{{company.companyNumber}}</strong><br>
-      {{i18n.SCSDataBlockCSDate}}
-      <strong id="formattedDate"></strong>
-    </p>
+    {{ govukTable({
+        captionClasses: "govuk-table__caption--m",
+        firstCellIsHeader: true,
+        rows: [
+          [
+            {
+              text: i18n.SCSDataBlockName
+            },
+            {
+              text: company.companyName
+            }
+          ],
+          [
+            {
+              text: i18n.SCSDataBlockNumber
+            },
+            {
+              text: company.companyNumber
+            }
+          ],
+          [
+            {
+              text: i18n.SCSDataBlockCSDate
+            },
+            {
+              text: csDateValue
+            }
+          ]
+        ]
+      }) }}
 
     <form action="" method="post">
       {% include "includes/csrf_token.html" %}
@@ -63,7 +85,7 @@
 
         {% if confirmationChecked == "true" %}
 
-        {{ govukCheckboxes({
+          {{ govukCheckboxes({
             idPrefix: "confirmation-statement",
             name: "confirmationStatement",
             errorMessage: confirmationStatementError,
@@ -88,7 +110,7 @@
           }) }}
         {% else %}
 
-        {{ govukCheckboxes({
+          {{ govukCheckboxes({
             idPrefix: "confirmation-statement",
             name: "confirmationStatement",
             errorMessage: confirmationStatementError,
@@ -111,10 +133,10 @@
             ]
           }) }}
 
-          {% endif %}
+        {% endif %}
 
-        {% if lawfulActivityChecked == "true" %} 
-        {{ govukCheckboxes({
+        {% if lawfulActivityChecked == "true" %}
+          {{ govukCheckboxes({
             idPrefix: "lawful-activity-statement",
             name: "lawfulActivityStatement",
             errorMessage: lawfulActivityStatementError,
@@ -136,9 +158,9 @@
                 }
               }
             ]
-          }) }} 
-          {% else %} 
-                  {{ govukCheckboxes({
+          }) }}
+        {% else %}
+          {{ govukCheckboxes({
             idPrefix: "lawful-activity-statement",
             name: "lawfulActivityStatement",
             errorMessage: lawfulActivityStatementError,
@@ -160,7 +182,7 @@
               }
             ]
           }) }}
-          {% endif %}
+        {% endif %}
 
       {% endif %}
 

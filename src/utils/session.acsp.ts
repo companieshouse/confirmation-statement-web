@@ -1,6 +1,7 @@
 import { Session } from "@companieshouse/node-session-handler";
 import { ACSP_SESSION_KEY } from "../utils/constants";
 import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services/sic-code";
+import { CsDateValue } from "./limited.partnership";
 
 export interface AcspSessionData {
   beforeYouFileCheck: boolean;
@@ -36,4 +37,15 @@ export function updateAcspSessionData(session: Session, updates: Partial<AcspSes
   const currentSessionData = getAcspSessionData(session) || createDefaultAcspSessionData();
   const updatedSessionData = { ...currentSessionData, ...updates };
   session.setExtraData(ACSP_SESSION_KEY, updatedSessionData);
+}
+
+
+export function getCsDateValueFromSession(acspSessionData: AcspSessionData): CsDateValue | undefined {
+  if (acspSessionData?.newConfirmationDate) {
+    return {
+      csDateYear: `${acspSessionData.newConfirmationDate.getFullYear()}`,
+      csDateMonth: `${acspSessionData.newConfirmationDate.getMonth() + 1}`,
+      csDateDay: `${acspSessionData.newConfirmationDate.getDate()}`
+    };
+  }
 }

@@ -17,6 +17,8 @@ import { isLimitedPartnershipCompanyType, getACSPBackPath } from '../utils/limit
 import { isPaymentDue, executePaymentJourney } from "../utils/payments";
 import { handleLimitedPartnershipConfirmationJourney } from "../utils/confirmation/limited.partnership.confirmation";
 import { handleNoChangeConfirmationJourney } from "../utils/confirmation/no.change.confirmation";
+import { getAcspSessionData, getCsDateValueFromSession } from "../utils/session.acsp";
+import moment from "moment";
 
 const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
 const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
@@ -55,6 +57,19 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         submissionId
       );
 
+
+      const acspSessionData = getAcspSessionData(session);
+      let csDateValue;
+
+      if (acspSessionData) {
+        csDateValue = getCsDateValueFromSession(acspSessionData);
+      }
+
+
+      const formattedCsDate = acspSessionData?.newConfirmationDate
+        ? moment(acspSessionData.newConfirmationDate).format("D MMMM YYYY")
+        : undefined;
+
       return res.render(Templates.REVIEW, {
         ...localeInfo,
         previousPage,
@@ -64,7 +79,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         ecctEnabled: true,
         confirmationChecked: confirmationStatementCheck,
         lawfulActivityChecked: lawfulActivityStatementCheck,
-        isLimitedPartnership: true
+        isLimitedPartnership: true,
+        csDateValue: formattedCsDate
       });
 
     }
@@ -136,7 +152,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
     const company: CompanyProfile = await getCompanyProfile(companyNumber);
     const csSubmission: ConfirmationStatementSubmission =
-    await getConfirmationStatement(session, transactionId, submissionId);
+      await getConfirmationStatement(session, transactionId, submissionId);
 
     const noChangeJourneyResponse = handleNoChangeConfirmationJourney(req, company, csSubmission);
 
