@@ -66,5 +66,5 @@ export const isPaymentDue = (transaction: Transaction, submissionId: string): bo
   if (!resourceKeyName) {
     return false;
   }
-  return transaction.resources[resourceKeyName].links?.[links.COSTS];
+  return !!transaction.resources[resourceKeyName].links?.[links.COSTS];
 };
