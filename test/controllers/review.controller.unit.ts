@@ -27,11 +27,15 @@ import { Session } from "@companieshouse/node-session-handler";
 import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
 import * as sessionAcspUtils from "../../src/utils/session.acsp";
 import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
+import { Jurisdiction } from "@companieshouse/api-sdk-node/dist/services/limited-partnerships";
+import { isPaymentDue } from "../../src/utils/payments";
 
 const PropertiesMock = jest.requireMock('../../src/utils/properties');
 jest.mock('../../src/utils/properties', () => ({
   ...jest.requireActual('../../src/utils/properties'),
 }));
+
+
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockGetTransaction = getTransaction as jest.Mock;
 const mockCloseTransaction = closeTransaction as jest.Mock;
@@ -61,14 +65,14 @@ const TRANSACTION_ID = "66454";
 const SUBMISSION_ID = "435435";
 const URL =
   urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REVIEW_PATH,
-                                                               COMPANY_NUMBER,
-                                                               TRANSACTION_ID,
-                                                               SUBMISSION_ID);
+    COMPANY_NUMBER,
+    TRANSACTION_ID,
+    SUBMISSION_ID);
 const CONFIRMATION_URL =
   urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(CONFIRMATION_PATH,
-                                                               COMPANY_NUMBER,
-                                                               TRANSACTION_ID,
-                                                               SUBMISSION_ID);
+    COMPANY_NUMBER,
+    TRANSACTION_ID,
+    SUBMISSION_ID);
 
 
 const dummyTransactionNoCosts = {
@@ -117,6 +121,33 @@ const dummyPaymentResponse = {
   resource: dummyPayment
 } as ApiResponse<Payment>;
 
+function setupLimitedPartnershipCompany() {
+  const mockLimitedPartnership = {
+    companyNumber: COMPANY_NUMBER,
+    type: "limited-partnership",
+    subtype: "limited-partnership",
+    jurisdiction: "england-wales",
+    companyName: "Test Company"
+  };
+
+  mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
+
+}
+
+function setupScottishLimitedPartnershipCompany() {
+  const mockScottishLimitedPartnership = {
+    companyNumber: COMPANY_NUMBER,
+    type: "limited-partnership",
+    subtype: "scottish-limited-partnership",
+    jurisdiction: "scotland",
+    companyName: "Test Company"
+  };
+
+  mockGetCompanyProfile.mockResolvedValueOnce(mockScottishLimitedPartnership);
+
+}
+
+
 jest.mock("../mocks/lp.company.profile.mock.ts", () => ({
   validCompanyProfile: {
     type: ""
@@ -129,6 +160,7 @@ describe("review controller tests", () => {
     jest.clearAllMocks();
     mockGetConfirmationStatement.mockReset();
     mockGetConfirmationStatement.mockResolvedValue(mockConfirmationStatementSubmission);
+
   });
 
   describe("get tests", () => {
@@ -233,6 +265,8 @@ describe("review controller tests", () => {
 
       setExtraDataOnSession("true", "true");
 
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+
       const response = await request(app).get(URL);
 
       expect(response.status).toBe(200);
@@ -247,6 +281,8 @@ describe("review controller tests", () => {
 
       setExtraDataOnSession("false", "false");
 
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+
       const response = await request(app).get(URL);
 
       expect(response.status).toBe(200);
@@ -259,6 +295,8 @@ describe("review controller tests", () => {
 
       setupLimitedPartnershipCompany();
 
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+
       const response = await request(app).get(URL);
 
       expect(response.status).toBe(200);
@@ -267,16 +305,60 @@ describe("review controller tests", () => {
       expect(response.text).toMatch(/govuk-checkboxes__input.*lawful-activity-statement(?!.*\bchecked\b)/);
     });
 
-    function setupLimitedPartnershipCompany() {
-      const mockLimitedPartnership = {
-        companyNumber: COMPANY_NUMBER,
-        type: "limited-partnership",
-        subtype: "limited-partnership",
-        companyName: "Test Company"
-      };
+    it("Should not show payment required text for Limited Partnership when payment is complete", async () => {
 
-      mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
-    }
+      setupLimitedPartnershipCompany();
+
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
+
+      const response = await request(app).get(URL);
+
+      expect(response.status).toBe(200);
+
+      expect(response.text).toContain("Confirm and submit");
+
+    });
+
+    it("Should show payment required text for Limited Partnership when payment is required", async () => {
+
+      setupLimitedPartnershipCompany();
+
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+
+      const response = await request(app).get(URL);
+
+      expect(response.status).toBe(200);
+
+      expect(response.text).toContain("Confirm and pay");
+    });
+
+    it("Should show scottish specific text and link for first checkbox", async () => {
+
+      setupScottishLimitedPartnershipCompany();
+
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+
+      const response = await request(app).get(URL);
+
+      expect(response.status).toBe(200);
+
+      expect(response.text).toMatch(/regulation 35\(1\)\(a\) of the Scottish Partnerships \(Register of People with Significant Control\) Regulations 2017/);
+    });
+
+
+    it("Should show eng, wale, ni specific text and link for first checkbox", async () => {
+
+      setupLimitedPartnershipCompany();
+
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+
+      const response = await request(app).get(URL);
+
+      expect(response.status).toBe(200);
+
+      expect(response.text).toMatch(/section 10D\(1\) and 10D\(2\) of the Limited Partnership Act 1907/);
+    });
+
 
     function setExtraDataOnSession(confirmationChecked: string, lawfulActivityChecked: string) {
       const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
@@ -371,6 +453,8 @@ describe("review controller tests", () => {
       jest.clearAllMocks();
       mockStartPaymentsSession.mockReset();
       mockStartPaymentsSession.mockResolvedValue(dummyPaymentResponse);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+
     });
 
     it("Should redirect to the payment journey url", async () => {
@@ -466,7 +550,7 @@ describe("review controller tests", () => {
       jest.spyOn(limitedPartnershipUtils, "isACSPJourney").mockReturnValue(true);
     });
 
-    it("should redirect to Check SIC Code page when back button clicked, IS a Limited Partnership and NOT a private fund type", async() => {
+    it("should redirect to Check SIC Code page when back button clicked, IS a Limited Partnership and NOT a private fund type", async () => {
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
         type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
@@ -486,13 +570,14 @@ describe("review controller tests", () => {
       expect(response.text).toContain(backPath);
     });
 
-    it("should redirect to Date page when back button clicked, IS a private fund Limited Partnership and NO date change", async() => {
+    it("should redirect to Date page when back button clicked, IS a private fund Limited Partnership and NO date change", async () => {
       jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
         changeConfirmationStatementDate: false,
         beforeYouFileCheck: true,
         newConfirmationDate: null,
         confirmAllInformationCheck: false,
-        confirmLawfulActionsCheck: false
+        confirmLawfulActionsCheck: false,
+        sicCodes: []
       });
 
       const mockLimitedPartnership = {
@@ -514,13 +599,14 @@ describe("review controller tests", () => {
       expect(response.text).toContain(backPath);
     });
 
-    it("should redirect to Check Your Answer page when back button clicked, IS a private fund Limited Partnership and HAS a date change", async() => {
+    it("should redirect to Check Your Answer page when back button clicked, IS a private fund Limited Partnership and HAS a date change", async () => {
       jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
         changeConfirmationStatementDate: true,
         beforeYouFileCheck: true,
         newConfirmationDate: null,
         confirmAllInformationCheck: false,
-        confirmLawfulActionsCheck: false
+        confirmLawfulActionsCheck: false,
+        sicCodes: []
       });
 
       const mockLimitedPartnership = {
@@ -530,6 +616,8 @@ describe("review controller tests", () => {
         companyName: "Test Company"
       };
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+
 
       const response = await request(app)
         .get(URL);
