@@ -27,8 +27,8 @@ import { Session } from "@companieshouse/node-session-handler";
 import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
 import * as sessionAcspUtils from "../../src/utils/session.acsp";
 import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
-import { Jurisdiction } from "@companieshouse/api-sdk-node/dist/services/limited-partnerships";
-import { isPaymentDue } from "../../src/utils/payments";
+// import { Jurisdiction } from "@companieshouse/api-sdk-node/dist/services/limited-partnerships";
+// import { isPaymentDue } from "../../src/utils/payments";
 
 const PropertiesMock = jest.requireMock('../../src/utils/properties');
 jest.mock('../../src/utils/properties', () => ({
@@ -63,17 +63,8 @@ const ERROR_HEADING = "There is a problem";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
 const SUBMISSION_ID = "435435";
-const URL =
-  urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REVIEW_PATH,
-    COMPANY_NUMBER,
-    TRANSACTION_ID,
-    SUBMISSION_ID);
-const CONFIRMATION_URL =
-  urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(CONFIRMATION_PATH,
-    COMPANY_NUMBER,
-    TRANSACTION_ID,
-    SUBMISSION_ID);
-
+const URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REVIEW_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
+const CONFIRMATION_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(CONFIRMATION_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 
 const dummyTransactionNoCosts = {
   id: TRANSACTION_ID
