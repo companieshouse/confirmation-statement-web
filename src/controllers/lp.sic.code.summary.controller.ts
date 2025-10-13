@@ -12,6 +12,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services/sic-code";
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { sendUpdate } from "../utils/update.confirmation.statement.submission";
+import { sendLimitedPartnershipTransactionUpdate } from "../utils/confirmation/limited.partnership.confirmation";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -45,7 +46,7 @@ export const saveAndContinue = async (req: Request, res: Response) => {
     req.session?.setExtraData(SIC_CODE_SESSION_KEY, unsavedCodeList);
   }
 
-  await sendUpdate(req, SECTIONS.SIC, SectionStatus.CONFIRMED);
+  await sendLimitedPartnershipTransactionUpdate(req, null, unsavedCodeList);
 
   return res.redirect(
     urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(

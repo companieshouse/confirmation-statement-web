@@ -95,7 +95,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
             } else {
               const csDateInput = new Date(Number(csDateValue.csDateYear), Number(csDateValue.csDateMonth) - 1, Number(csDateValue.csDateDay));
               saveCsDateIntoSession(acspSessionData, true, csDateInput);
-              await sendLimitedPartnershipTransactionUpdate(req, moment(csDateInput).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT));
+              await sendLimitedPartnershipTransactionUpdate(req, moment(csDateInput).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT), null);
 
               return res.redirect(urlUtils.getUrlToPath(`${urls.LP_CHECK_YOUR_ANSWER_PATH}?lang=${lang}`, req));
             }
@@ -104,7 +104,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
           case RADIO_BUTTON_VALUE.NO: {
             const date = returnTodayOnlyIfBeforeFileCsDate(company); // Saved the date value into session if user clicked no in early screen
             saveCsDateIntoSession(acspSessionData, false, date);
-            await sendLimitedPartnershipTransactionUpdate(req, convertDateToString(date, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT));
+            await sendLimitedPartnershipTransactionUpdate(req, convertDateToString(date, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT), null);
 
             const path = (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company))
               ? reviewPath
