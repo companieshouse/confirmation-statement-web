@@ -17,7 +17,7 @@ import { isLimitedPartnershipCompanyType, getACSPBackPath } from '../utils/limit
 import { isPaymentDue, executePaymentJourney } from "../utils/payments";
 import { handleLimitedPartnershipConfirmationJourney } from "../utils/confirmation/limited.partnership.confirmation";
 import { handleNoChangeConfirmationJourney } from "../utils/confirmation/no.change.confirmation";
-import { getAcspSessionData, getCsDateValueFromSession } from "../utils/session.acsp";
+import { getAcspSessionData } from "../utils/session.acsp";
 import moment from "moment";
 
 const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
@@ -59,12 +59,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 
       const acspSessionData = getAcspSessionData(session);
-      let csDateValue;
-
-      if (acspSessionData) {
-        csDateValue = getCsDateValueFromSession(acspSessionData);
-      }
-
 
       const formattedCsDate = acspSessionData?.newConfirmationDate
         ? moment(acspSessionData.newConfirmationDate).format("D MMMM YYYY")

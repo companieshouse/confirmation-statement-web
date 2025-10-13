@@ -72,7 +72,7 @@ describe("Active officers details controller tests", () => {
     });
 
     it("Should display non corporate director details", async () => {
-      
+
       mockIsSAILAddressFeatureEnabled.mockReturnValue(false);
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
 
@@ -83,14 +83,14 @@ describe("Active officers details controller tests", () => {
       expect(response.text).toContain("1 January 2012");
       expect(response.text).toContain("Diddly Squat Farm Shop, Chadlington, Thisshire, England, OX7 3PE");
       expect(response.text).toContain("Abc, 1, 10, 10 This Road, This, This Town, Thisshire, Thisland, TH1 1AB");
-      expect(response.text).toContain("Occupation"); 
+      expect(response.text).toContain("Occupation");
       expect(response.text).toContain("Singer");
       expect(response.text).toContain("British");
       expect(response.text).toContain("United Kingdom");
     });
 
     it("Should display non corporate director details, without occupation if FEATURE_FLAG_SAIL_ADDRESS true.", async () => {
-      
+
       mockIsSAILAddressFeatureEnabled.mockReturnValue(true);
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
 
