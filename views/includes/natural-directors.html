@@ -41,12 +41,14 @@
             <p>{{director.dateOfAppointment}}</p>
           </dd>
         </div>
+        {% if showDirectorOccupation %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Occupation</dt>
           <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
             <p>{{director.occupation}}</p>
           </dd>
         </div>
+        {% endif %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Correspondence address</dt>
           <dd class="govuk-summary-list__value govuk-!-padding-top-0 govuk-!-padding-bottom-0">
