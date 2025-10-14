@@ -6,12 +6,11 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { urlUtils } from "../utils/url";
 import { getCompanyProfileFromSession } from "../utils/session";
 import { getReviewPath, isACSPJourney } from '../utils/limited.partnership';
-import { SECTIONS, SIC_CODE_SESSION_KEY } from "../utils/constants";
+import { SIC_CODE_SESSION_KEY } from "../utils/constants";
 import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
 import { Session } from "@companieshouse/node-session-handler";
 import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services/sic-code";
 import { SectionStatus, SicCodeData } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
-import { sendUpdate } from "../utils/update.confirmation.statement.submission";
 import { sendLimitedPartnershipTransactionUpdate } from "../utils/confirmation/limited.partnership.confirmation";
 import { validateSicCodes } from "../services/sic.code.service";
 
@@ -60,15 +59,15 @@ export const saveAndContinue = async (req: Request, res: Response) => {
   for (const code of unsavedCodeList) {
     const macthed = allSicCodes.find(sc => sc.sic_code === code);
     sicCodeArray.push({
-        code: code,
-        description: macthed?.sic_description || "No Description Found."
+      code: code,
+      description: macthed?.sic_description || "No Description Found."
     });
   }
 
   const sicCodeList: SicCodeData = {
     sicCode: sicCodeArray,
     sectionStatus: SectionStatus.CONFIRMED
-  }
+  };
 
 
   await sendLimitedPartnershipTransactionUpdate(req, null, sicCodeList);
