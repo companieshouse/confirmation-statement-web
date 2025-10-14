@@ -10,7 +10,7 @@
     <div class="govuk-grid-column-two-thirds">
         {{ govukPanel({
             titleText: i18n.CSSBannerTitle,
-            html: i18n.CSSBannerText ~ "<br><strong>" ~ company.companyNumber ~ "</strong>"
+            html: i18n.CSSBannerText ~ "<br><strong>" ~ referenceNumber ~ "</strong>"
         }) }}
 
         <p class="govuk-body">{{ i18n.CSSSubmissionRecievedMessage1 }} {{ company.companyName + " " }} ({{company.companyNumber}})</p>
