@@ -24,6 +24,7 @@ import {
   getRadioButtonInvalidValueErrorMessage,
   isRadioButtonValueValid
 } from "../../validators/radio.button.validator";
+import { isSAILAddressFeatureEnabled } from "../../utils/feature.flag";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -39,7 +40,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       naturalSecretaryList: officerLists.naturalSecretaryList,
       corporateSecretaryList: officerLists.corporateSecretaryList,
       naturalDirectorList: officerLists.naturalDirectorList,
-      corporateDirectorList: officerLists.corporateDirectorList
+      corporateDirectorList: officerLists.corporateDirectorList,
+      showDirectorOccupation: !isSAILAddressFeatureEnabled()
     });
   } catch (e) {
     return next(e);
@@ -75,7 +77,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         naturalSecretaryList: officerLists.naturalSecretaryList,
         corporateSecretaryList: officerLists.corporateSecretaryList,
         naturalDirectorList: officerLists.naturalDirectorList,
-        corporateDirectorList: officerLists.corporateDirectorList
+        corporateDirectorList: officerLists.corporateDirectorList,
+        showDirectorOccupation: !isSAILAddressFeatureEnabled()
       });
     }
   } catch (e) {

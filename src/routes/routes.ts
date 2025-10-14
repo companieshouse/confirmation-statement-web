@@ -46,6 +46,7 @@ import * as lpMustBeAuthorisedAgent from "../controllers/lp.must.be.authorised.a
 
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
+import { isServiceWithdrawnFeatureEnabled } from "../utils/feature.flag";
 
 export const router: Router = Router();
 
@@ -58,126 +59,131 @@ const renderTemplate = (template: string) => (req: Request, res: Response) => {
   return res.render(template);
 };
 
-router.get("/", startRoute.get);
+if (isServiceWithdrawnFeatureEnabled()) {
+  // route all paths to start page except for healthcheck
+  router.get("*", startRoute.get);
+} else {
+  router.get("/", startRoute.get);
 
-router.get(urls.COMPANY_NUMBER, companyNumberRoute.get);
+  router.get(urls.COMPANY_NUMBER, companyNumberRoute.get);
 
-router.get(urls.ACCESSIBILITY_STATEMENT, renderTemplate(Templates.ACCESSIBILITY_STATEMENT));
+  router.get(urls.ACCESSIBILITY_STATEMENT, renderTemplate(Templates.ACCESSIBILITY_STATEMENT));
 
-router.get(urls.ACTIVE_OFFICERS, activeOfficers.get);
-router.post(urls.ACTIVE_OFFICERS, activeOfficers.post);
+  router.get(urls.ACTIVE_OFFICERS, activeOfficers.get);
+  router.post(urls.ACTIVE_OFFICERS, activeOfficers.post);
 
-router.get(urls.ACTIVE_OFFICERS_DETAILS, activeOfficersDetails.get);
-router.post(urls.ACTIVE_OFFICERS_DETAILS, activeOfficersDetails.post);
+  router.get(urls.ACTIVE_OFFICERS_DETAILS, activeOfficersDetails.get);
+  router.post(urls.ACTIVE_OFFICERS_DETAILS, activeOfficersDetails.post);
 
-router.get(urls.CONFIRM_COMPANY, confirmCompanyRoute.get);
-router.post(urls.CONFIRM_COMPANY, confirmCompanyRoute.post);
+  router.get(urls.CONFIRM_COMPANY, confirmCompanyRoute.get);
+  router.post(urls.CONFIRM_COMPANY, confirmCompanyRoute.post);
 
-router.get(urls.CREATE_TRANSACTION, createTransactionRoute.get);
+  router.get(urls.CREATE_TRANSACTION, createTransactionRoute.get);
 
-router.get(urls.SIC, sicRoute.get);
-router.post(urls.SIC, sicRoute.post);
+  router.get(urls.SIC, sicRoute.get);
+  router.post(urls.SIC, sicRoute.post);
 
-router.get(urls.SIGNOUT_PATH, signoutRoute.get);
-router.post(urls.SIGNOUT_PATH, signoutRoute.post);
+  router.get(urls.SIGNOUT_PATH, signoutRoute.get);
+  router.post(urls.SIGNOUT_PATH, signoutRoute.post);
 
-router.get(urls.TRADING_STATUS, tradingStatusRoute.get);
-router.post(urls.TRADING_STATUS, tradingStatusRoute.post);
+  router.get(urls.TRADING_STATUS, tradingStatusRoute.get);
+  router.post(urls.TRADING_STATUS, tradingStatusRoute.post);
 
-router.get(urls.TASK_LIST, taskListRoute.get);
-router.post(urls.TASK_LIST, taskListRoute.post);
+  router.get(urls.TASK_LIST, taskListRoute.get);
+  router.post(urls.TASK_LIST, taskListRoute.post);
 
-router.get(urls.RETURN_FROM_REA, returnFromReaRoute.get);
+  router.get(urls.RETURN_FROM_REA, returnFromReaRoute.get);
 
-router.get(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.get);
-router.post(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.post);
+  router.get(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.get);
+  router.post(urls.STATEMENT_OF_CAPITAL, statementOfCapitalRoute.post);
 
-router.get(urls.PEOPLE_WITH_SIGNIFICANT_CONTROL, peopleWithSignificantControlRoute.get);
-router.post(urls.PEOPLE_WITH_SIGNIFICANT_CONTROL, peopleWithSignificantControlRoute.post);
+  router.get(urls.PEOPLE_WITH_SIGNIFICANT_CONTROL, peopleWithSignificantControlRoute.get);
+  router.post(urls.PEOPLE_WITH_SIGNIFICANT_CONTROL, peopleWithSignificantControlRoute.post);
 
-router.get(urls.ACTIVE_PSC_DETAILS, activePscDetails.get);
-router.post(urls.ACTIVE_PSC_DETAILS, activePscDetails.post);
+  router.get(urls.ACTIVE_PSC_DETAILS, activePscDetails.get);
+  router.post(urls.ACTIVE_PSC_DETAILS, activePscDetails.post);
 
-router.get(urls.PSC_STATEMENT, pscStatementRoute.get);
-router.post(urls.PSC_STATEMENT, pscStatementRoute.post);
+  router.get(urls.PSC_STATEMENT, pscStatementRoute.get);
+  router.post(urls.PSC_STATEMENT, pscStatementRoute.post);
 
-router.get(urls.PROVIDE_EMAIL_ADDRESS, provideEmailAddressRoute.get);
-router.post(urls.PROVIDE_EMAIL_ADDRESS, provideEmailAddressRoute.post);
+  router.get(urls.PROVIDE_EMAIL_ADDRESS, provideEmailAddressRoute.get);
+  router.post(urls.PROVIDE_EMAIL_ADDRESS, provideEmailAddressRoute.post);
 
-router.get(urls.CHECK_EMAIL_ADDRESS, checkEmailAddressRoute.get);
-router.post(urls.CHECK_EMAIL_ADDRESS, checkEmailAddressRoute.post);
+  router.get(urls.CHECK_EMAIL_ADDRESS, checkEmailAddressRoute.get);
+  router.post(urls.CHECK_EMAIL_ADDRESS, checkEmailAddressRoute.post);
 
-router.get(urls.CONFIRM_EMAIL_ADDRESS, confirmEmailAddressRoute.get);
-router.post(urls.CONFIRM_EMAIL_ADDRESS, confirmEmailAddressRoute.post);
+  router.get(urls.CONFIRM_EMAIL_ADDRESS, confirmEmailAddressRoute.get);
+  router.post(urls.CONFIRM_EMAIL_ADDRESS, confirmEmailAddressRoute.post);
 
-router.get(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.get);
-router.post(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.post);
+  router.get(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.get);
+  router.post(urls.REGISTERED_OFFICE_ADDRESS, registeredOfficeAddressRoute.post);
 
-router.get(urls.SHAREHOLDERS, shareholders.get);
-router.post(urls.SHAREHOLDERS, shareholders.post);
+  router.get(urls.SHAREHOLDERS, shareholders.get);
+  router.post(urls.SHAREHOLDERS, shareholders.post);
 
-router.get(urls.REGISTER_LOCATIONS, registeredLocationsRoute.get);
-router.post(urls.REGISTER_LOCATIONS, registeredLocationsRoute.post);
+  router.get(urls.REGISTER_LOCATIONS, registeredLocationsRoute.get);
+  router.post(urls.REGISTER_LOCATIONS, registeredLocationsRoute.post);
 
-router.get(urls.REVIEW, reviewRoute.get);
-router.post(urls.REVIEW, reviewRoute.post);
+  router.get(urls.REVIEW, reviewRoute.get);
+  router.post(urls.REVIEW, reviewRoute.post);
 
-router.get(urls.CONFIRMATION, confirmationRoute.get);
+  router.get(urls.CONFIRMATION, confirmationRoute.get);
 
-router.get(urls.PAYMENT_CALLBACK, paymentCallbackRoute.get);
+  router.get(urls.PAYMENT_CALLBACK, paymentCallbackRoute.get);
 
-router.get(urls.INVALID_COMPANY_STATUS, invalidCompanyStatusRoute.get);
+  router.get(urls.INVALID_COMPANY_STATUS, invalidCompanyStatusRoute.get);
 
-router.get(urls.USE_PAPER, paperFilingRoute.get);
+  router.get(urls.USE_PAPER, paperFilingRoute.get);
 
-router.get(urls.USE_WEBFILING, useWebFilingRoute.get);
+  router.get(urls.USE_WEBFILING, useWebFilingRoute.get);
 
-router.get(urls.NO_FILING_REQUIRED, noFilingRequiredRoute.get);
+  router.get(urls.NO_FILING_REQUIRED, noFilingRequiredRoute.get);
 
-router.get(urls.TRADING_STOP, tradingStopRoute.get);
+  router.get(urls.TRADING_STOP, tradingStopRoute.get);
 
-router.get(urls.WRONG_SIC, wrongSicRoute.get);
+  router.get(urls.WRONG_SIC, wrongSicRoute.get);
 
-router.get(urls.WRONG_STATEMENT_OF_CAPITAL, wrongStatementOfCapitalRoute.get);
+  router.get(urls.WRONG_STATEMENT_OF_CAPITAL, wrongStatementOfCapitalRoute.get);
 
-router.get(urls.WRONG_SHAREHOLDERS, wrongShareholdersRoute.get);
+  router.get(urls.WRONG_SHAREHOLDERS, wrongShareholdersRoute.get);
 
-router.get(urls.WRONG_RO, wrongRegisteredOfficeAddressRoute.get);
-router.post(urls.WRONG_RO, wrongRegisteredOfficeAddressRoute.post);
+  router.get(urls.WRONG_RO, wrongRegisteredOfficeAddressRoute.get);
+  router.post(urls.WRONG_RO, wrongRegisteredOfficeAddressRoute.post);
 
-router.get(urls.WRONG_REGISTER_LOCATIONS, wrongRegisterLocationsRoute.get);
-router.post(urls.WRONG_REGISTER_LOCATIONS, wrongRegisterLocationsRoute.post);
+  router.get(urls.WRONG_REGISTER_LOCATIONS, wrongRegisterLocationsRoute.get);
+  router.post(urls.WRONG_REGISTER_LOCATIONS, wrongRegisterLocationsRoute.post);
 
-router.get(urls.WRONG_OFFICER_DETAILS, wrongOfficerDetailsRoute.get);
-router.post(urls.WRONG_OFFICER_DETAILS, wrongOfficerDetailsRoute.post);
+  router.get(urls.WRONG_OFFICER_DETAILS, wrongOfficerDetailsRoute.get);
+  router.post(urls.WRONG_OFFICER_DETAILS, wrongOfficerDetailsRoute.post);
 
-router.get(urls.WRONG_PSC_DETAILS, wrongPscDetailsRoute.get);
-router.post(urls.WRONG_PSC_DETAILS, wrongPscDetailsRoute.post);
+  router.get(urls.WRONG_PSC_DETAILS, wrongPscDetailsRoute.get);
+  router.post(urls.WRONG_PSC_DETAILS, wrongPscDetailsRoute.post);
 
-router.get(urls.WRONG_PSC_STATEMENT, wrongPscStatementRoute.get);
-router.post(urls.WRONG_PSC_STATEMENT, wrongPscStatementRoute.post);
+  router.get(urls.WRONG_PSC_STATEMENT, wrongPscStatementRoute.get);
+  router.post(urls.WRONG_PSC_STATEMENT, wrongPscStatementRoute.post);
 
-router.get(urls.ACSP_LIMITED_PARTNERSHIP, lpStartRoute.get);
-router.post(urls.ACSP_LIMITED_PARTNERSHIP, lpStartRoute.post);
+  router.get(urls.ACSP_LIMITED_PARTNERSHIP, lpStartRoute.get);
+  router.post(urls.ACSP_LIMITED_PARTNERSHIP, lpStartRoute.post);
 
-router.get(urls.LP_BEFORE_YOU_FILE, lpBeforeYouFileRoute.get);
-router.post(urls.LP_BEFORE_YOU_FILE, lpBeforeYouFileRoute.post);
+  router.get(urls.LP_BEFORE_YOU_FILE, lpBeforeYouFileRoute.get);
+  router.post(urls.LP_BEFORE_YOU_FILE, lpBeforeYouFileRoute.post);
 
-router.get(urls.LP_CHECK_YOUR_ANSWER, lpCheckYourAnswerRoute.get);
-router.post(urls.LP_CHECK_YOUR_ANSWER, lpCheckYourAnswerRoute.post);
+  router.get(urls.LP_CHECK_YOUR_ANSWER, lpCheckYourAnswerRoute.get);
+  router.post(urls.LP_CHECK_YOUR_ANSWER, lpCheckYourAnswerRoute.post);
 
-router.get(urls.LP_CS_DATE, lpCSDateRoute.get);
-router.post(urls.LP_CS_DATE, lpCSDateRoute.post);
+  router.get(urls.LP_CS_DATE, lpCSDateRoute.get);
+  router.post(urls.LP_CS_DATE, lpCSDateRoute.post);
 
-router.get(urls.LP_SIC_CODE_SUMMARY, lpSicCodeSummaryRoute.get);
-router.post(urls.LP_SIC_CODE_SUMMARY_SAVE, lpSicCodeSummaryRoute.saveAndContinue);
+  router.get(urls.LP_SIC_CODE_SUMMARY, lpSicCodeSummaryRoute.get);
+  router.post(urls.LP_SIC_CODE_SUMMARY_SAVE, lpSicCodeSummaryRoute.saveAndContinue);
 
-router.post(urls.LP_SIC_CODE_SUMMARY_REMOVE, lpSicCodeSummaryRoute.removeSicCode);
-router.post(urls.LP_SIC_CODE_SUMMARY_ADD, lpSicCodeSummaryRoute.addSicCode);
+  router.post(urls.LP_SIC_CODE_SUMMARY_REMOVE, lpSicCodeSummaryRoute.removeSicCode);
+  router.post(urls.LP_SIC_CODE_SUMMARY_ADD, lpSicCodeSummaryRoute.addSicCode);
 
-router.get(urls.LP_REVIEW, reviewRoute.get);
-router.post(urls.LP_REVIEW, reviewRoute.post);
+  router.get(urls.LP_REVIEW, reviewRoute.get);
+  router.post(urls.LP_REVIEW, reviewRoute.post);
 
-router.get(urls.LP_CONFIRMATION, confirmationRoute.get);
+  router.get(urls.LP_CONFIRMATION, confirmationRoute.get);
 
-router.get(urls.LP_MUST_BE_AUTHORISED_AGENT, lpMustBeAuthorisedAgent.get);
+  router.get(urls.LP_MUST_BE_AUTHORISED_AGENT, lpMustBeAuthorisedAgent.get);
+}

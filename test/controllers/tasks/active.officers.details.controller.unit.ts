@@ -3,6 +3,7 @@ jest.mock("../../../src/services/active.officers.details.service");
 jest.mock("../../../src/services/confirmation.statement.service");
 jest.mock("../../../src/utils/update.confirmation.statement.submission");
 jest.mock("../../../src/utils/api.enumerations");
+jest.mock("../../../src/utils/feature.flag");
 
 import mocks from "../../mocks/all.middleware.mock";
 import request from "supertest";
@@ -23,6 +24,7 @@ import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confir
 import { OFFICER_DETAILS_ERROR, SECTIONS } from "../../../src/utils/constants";
 import { urlUtils } from "../../../src/utils/url";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
+import { isSAILAddressFeatureEnabled } from "../../../src/utils/feature.flag";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
@@ -30,6 +32,7 @@ const mockGetActiveOfficerDetails = getActiveOfficersDetailsData as jest.Mock;
 mockGetActiveOfficerDetails.mockResolvedValue(mockActiveOfficersDetails);
 const mockLookupIdentificationType = lookupIdentificationType as jest.Mock;
 const mockSendUpdate = sendUpdate as jest.Mock;
+const mockIsSAILAddressFeatureEnabled = isSAILAddressFeatureEnabled as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
 const ACTIVE_OFFICER_DETAILS_URL = ACTIVE_OFFICERS_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
@@ -47,6 +50,7 @@ describe("Active officers details controller tests", () => {
     mockGetActiveOfficerDetails.mockClear();
     mockLookupIdentificationType.mockClear();
     mockSendUpdate.mockClear();
+    mockIsSAILAddressFeatureEnabled.mockClear();
   });
 
   describe("get tests", () => {
@@ -68,6 +72,8 @@ describe("Active officers details controller tests", () => {
     });
 
     it("Should display non corporate director details", async () => {
+
+      mockIsSAILAddressFeatureEnabled.mockReturnValue(false);
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
 
       expect(mockGetActiveOfficerDetails).toHaveBeenCalled();
@@ -77,7 +83,25 @@ describe("Active officers details controller tests", () => {
       expect(response.text).toContain("1 January 2012");
       expect(response.text).toContain("Diddly Squat Farm Shop, Chadlington, Thisshire, England, OX7 3PE");
       expect(response.text).toContain("Abc, 1, 10, 10 This Road, This, This Town, Thisshire, Thisland, TH1 1AB");
+      expect(response.text).toContain("Occupation");
       expect(response.text).toContain("Singer");
+      expect(response.text).toContain("British");
+      expect(response.text).toContain("United Kingdom");
+    });
+
+    it("Should display non corporate director details, without occupation if FEATURE_FLAG_SAIL_ADDRESS true.", async () => {
+
+      mockIsSAILAddressFeatureEnabled.mockReturnValue(true);
+      const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
+
+      expect(mockGetActiveOfficerDetails).toHaveBeenCalled();
+      expect(response.text).toContain("John");
+      expect(response.text).toContain("DOE");
+      expect(response.text).toContain("1 January 1965");
+      expect(response.text).toContain("1 January 2012");
+      expect(response.text).toContain("Diddly Squat Farm Shop, Chadlington, Thisshire, England, OX7 3PE");
+      expect(response.text).toContain("Abc, 1, 10, 10 This Road, This, This Town, Thisshire, Thisland, TH1 1AB");
+      expect(response.text).not.toContain("Occupation");
       expect(response.text).toContain("British");
       expect(response.text).toContain("United Kingdom");
     });

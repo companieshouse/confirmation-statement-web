@@ -37,6 +37,8 @@ export const API_URL = getEnvironmentVariable("API_URL");
 
 export const INTERNAL_API_URL = getEnvironmentVariable("INTERNAL_API_URL");
 
+export const FEATURE_FLAG_SERVICE_WITHDRAWN_02102025 = getEnvironmentVariable("FEATURE_FLAG_SERVICE_WITHDRAWN_02102025", "false");
+
 export const FEATURE_FLAG_PRIVATE_SDK_12052021 = getEnvironmentVariable("FEATURE_FLAG_PRIVATE_SDK_12052021");
 
 export const FEATURE_FLAG_ECCT_START_DATE_14082023 = getEnvironmentVariable("FEATURE_FLAG_ECCT_START_DATE_14082023", "9999-12-31");
@@ -50,6 +52,8 @@ export const FEATURE_FLAG_SLP_SUBTYPE_START_DATE = getEnvironmentVariable("FEATU
 export const FEATURE_FLAG_PFLP_SUBTYPE_START_DATE = getEnvironmentVariable("FEATURE_FLAG_PFLP_SUBTYPE_START_DATE", "2025-01-05");
 
 export const FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE = getEnvironmentVariable("FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE", "2025-01-07");
+
+export const FEATURE_FLAG_SAIL_ADDRESS = getEnvironmentVariable("FEATURE_FLAG_SAIL_ADDRESS", "2025-01-09");
 
 export const PIWIK_START_GOAL_ID = getEnvironmentVariable("PIWIK_START_GOAL_ID");
 

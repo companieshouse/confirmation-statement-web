@@ -1,6 +1,7 @@
 jest.mock("../../../src/middleware/company.authentication.middleware");
 jest.mock("../../../src/services/register.location.service");
 jest.mock("../../../src/utils/update.confirmation.statement.submission");
+jest.mock("../../../src/utils/feature.flag.ts");
 
 import request from "supertest";
 import mocks from "../../mocks/all.middleware.mock";
@@ -18,6 +19,7 @@ import { sendUpdate } from "../../../src/utils/update.confirmation.statement.sub
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getRegisterLocationData } from "../../../src/services/register.location.service";
 import { mockRegisterLocation, mockRegisterLocationNoReg, mockRegisterLocationNoRegNoSail } from "../../mocks/register.location.mock";
+import { isSAILAddressFeatureEnabled } from "../../../src/utils/feature.flag";
 
 const mockCompanyAuthenticationMiddleware = companyAuthenticationMiddleware as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next());
@@ -29,6 +31,8 @@ const SAIL_HEADING = "Single alternative inspection location (SAIL)";
 const NO_RECORDS_SAIL = "There are currently no records held at the SAIL addres";
 const ALL_RECORDS_MESSAGE = "All company records are kept at the registered office address, or on the public record.";
 const OTHER_RECORDS_MESSAGE = "Any other company records are kept at the registered office address, or on the public record.";
+const UPDATED_ALL_RECORDS_MESSAGE = "All company records are kept at the registered office address.";
+const UPDATED_OTHER_RECORDS_MESSAGE = "Any other company records are kept at the registered office address.";
 const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 
 const COMPANY_NUMBER = "12345678";
@@ -47,6 +51,20 @@ describe("Register locations controller tests", () => {
   });
 
   it("Should navigate to the Register locations page", async () => {
+    (isSAILAddressFeatureEnabled as jest.Mock).mockReturnValue(true);
+    mockGetRegisterLocation.mockResolvedValueOnce(mockRegisterLocation);
+    const response = await request(app).get(REGISTER_LOCATIONS_URL);
+    const registerLocation = mockRegisterLocation[0];
+    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain("Check where the company records are kept");
+    expect(response.text).toContain(SAIL_HEADING);
+    expect(response.text).toContain(registerLocation.registerTypeDesc);
+    expect(response.text).toContain(registerLocation.sailAddress?.addressLine1);
+    expect(response.text).toContain(UPDATED_OTHER_RECORDS_MESSAGE);
+  });
+
+  it("Should navigate to the Register locations page with FF turned off", async () => {
+    (isSAILAddressFeatureEnabled as jest.Mock).mockReturnValue(false);
     mockGetRegisterLocation.mockResolvedValueOnce(mockRegisterLocation);
     const response = await request(app).get(REGISTER_LOCATIONS_URL);
     const registerLocation = mockRegisterLocation[0];
@@ -59,6 +77,20 @@ describe("Register locations controller tests", () => {
   });
 
   it("Should display records kept elsewhere message if no registers at sail address", async () => {
+    (isSAILAddressFeatureEnabled as jest.Mock).mockReturnValue(true);
+    mockGetRegisterLocation.mockResolvedValueOnce(mockRegisterLocationNoReg);
+    const response = await request(app).get(REGISTER_LOCATIONS_URL);
+    const registerLocation = mockRegisterLocationNoReg[0];
+    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain("Check where the company records are kept");
+    expect(response.text).toContain(SAIL_HEADING);
+    expect(response.text).toContain(NO_RECORDS_SAIL);
+    expect(response.text).toContain(UPDATED_ALL_RECORDS_MESSAGE);
+    expect(response.text).toContain(registerLocation.sailAddress?.addressLine1);
+  });
+
+  it("Should display records kept elsewhere message if no registers at sail address and feature flag off", async () => {
+    (isSAILAddressFeatureEnabled as jest.Mock).mockReturnValue(false);
     mockGetRegisterLocation.mockResolvedValueOnce(mockRegisterLocationNoReg);
     const response = await request(app).get(REGISTER_LOCATIONS_URL);
     const registerLocation = mockRegisterLocationNoReg[0];
@@ -71,6 +103,17 @@ describe("Register locations controller tests", () => {
   });
 
   it("Should display no records if company has no sail address", async () => {
+    (isSAILAddressFeatureEnabled as jest.Mock).mockReturnValue(true);
+    mockGetRegisterLocation.mockResolvedValueOnce(mockRegisterLocationNoRegNoSail);
+    const response = await request(app).get(REGISTER_LOCATIONS_URL);
+    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain("Check where the company records are kept");
+    expect(response.text).toContain(UPDATED_ALL_RECORDS_MESSAGE);
+    expect(response.text).not.toContain(SAIL_HEADING);
+  });
+
+  it("Should display no records if company has no sail address and feature flag turned off", async () => {
+    (isSAILAddressFeatureEnabled as jest.Mock).mockReturnValue(false);
     mockGetRegisterLocation.mockResolvedValueOnce(mockRegisterLocationNoRegNoSail);
     const response = await request(app).get(REGISTER_LOCATIONS_URL);
     expect(response.text).toContain(PAGE_HEADING);

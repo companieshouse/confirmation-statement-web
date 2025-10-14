@@ -5,8 +5,7 @@
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
-
-{% set errors = pageProperties.errors %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% set title = i18n.SICCSPageTitle %}
 
@@ -42,16 +41,33 @@
     <div class="govuk-grid-row">
         <div class="govuk-width-container">
             <div class="govuk-grid-column-two-thirds">
-
                 <h1 class="govuk-heading-xl">
                     <span class="govuk-caption-l">{{company.companyName}} ({{company.companyNumber}})</span>
                     {{ i18n.SICCSPageTitle }}
                 </h1>
 
+                {% if maxError or duplicateError %}
+                  <div class="govuk-error-summary" role="alert" aria-labelledby="error-summary-title" tabindex="-1">
+                    <h2 class="govuk-error-summary__title" id="error-summary-title">
+                      There is a problem
+                    </h2>
+                    <div class="govuk-error-summary__body">
+                      <ul class="govuk-list govuk-error-summary__list">
+                        {% if maxError %}
+                          <li>{{ maxError }}</li>
+                        {% endif %}
+                        {% if duplicateError %}
+                          <li>{{ duplicateError }}</li>
+                        {% endif %}
+                      </ul>
+                    </div>
+                  </div>
+                {% endif %}
                 <p class="govuk-body">
                     {{ i18n.SICCSTableHeader }}
                 </p>    
 
+                {% if sicCodes.length > 0 %}
                 <div class="govuk-summary-list" role="list">
                     {% for sic in sicCodes %}
                         <div class="govuk-summary-list__row">
@@ -62,14 +78,28 @@
                             {% include "../../partials/csrf-token.njk" %}
                                 <button type="submit" class="govuk-link">{{ i18n.SICCSTableRemoveButton }}</button>
                                 {% if unsavedCodeList.length > 0 %}
-                                  <input type="hidden" name="unsavedCodeList" id="unsavedCodeList" value={{ unsavedCodeList }} />
+                                  <input type="hidden" name="unsavedCodeList" id="unsavedCodeList" value="{{ unsavedCodeList | join(',') }}" />
                                 {% endif %}
                             </form>
                         </div>
                         </div>
                     {% endfor %}
                 </div>
-                
+                {% else %}
+                  <div class="govuk-error-summary" role="alert" aria-labelledby="error-summary-title" tabindex="-1">
+                    <h2 class="govuk-error-summary__title" id="error-summary-title">
+                      There is a problem
+                    </h2>
+                    <div class="govuk-error-summary__body">
+                      <ul class="govuk-list govuk-error-summary__list">
+                        {% for error in errors %}
+                          <li>{{ error.text }}</li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                {% endif %}
+          
                 {% if isShowingAddSection %}
                   <form action="{{ addUrl }}" method="POST">
                     {% include "../../partials/csrf-token.njk" %}
@@ -81,7 +111,13 @@
                             <div id="sic-hint" class="govuk-hint">
                               {{ i18n.SICCSAddSICInsetInstructions }}
                             </div>
-
+                            <div class="govuk-form-group govuk-form-group--error">
+                              {% if errors %}
+                                <span class="govuk-error-message">
+                                  <span class="govuk-visually-hidden">Error:</span> {{ errors[0].text }}
+                                </span>
+                              </div>
+                              {% endif %}
                             <div id="sic-code-autocomplete"></div>
                             <input type="hidden" name="code" id="hidden-sic-code" />
                             {% if unsavedCodeList.length > 0 %}

@@ -29,8 +29,16 @@
     </div>
   </div>
 {% endif %}
-{% if registers.length %}
-  <p>Any other company records are kept at the registered office address, or on the public record.</p>
+{% if hasRegisters %}
+  {% if updateSailAddressText %}
+    <p>Any other company records are kept at the registered office address.</p>
+  {% else %}
+    <p>Any other company records are kept at the registered office address, or on the public record.</p>
+  {% endif %}  
 {% else %}
-  <p>All company records are kept at the registered office address, or on the public record.</p>
+  {% if updateSailAddressText %}
+    <p>All company records are kept at the registered office address.</p>
+  {% else %}
+    <p>All company records are kept at the registered office address, or on the public record.</p>
+  {% endif %}
 {% endif %}
