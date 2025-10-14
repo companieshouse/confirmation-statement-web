@@ -82,9 +82,7 @@ export async function sendLimitedPartnershipTransactionUpdate(req: Request, newC
 
   const currentCsSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
   currentCsSubmission.data.newConfirmationDate = newCsDate;
-  console.log("DAVE sent: ", JSON.stringify(newSicCodes, null, 2));
   currentCsSubmission.data.sicCodeData = newSicCodes ?? undefined;
-  console.log("DAVE update: ", JSON.stringify(currentCsSubmission.data.sicCodeData, null, 2));
 
   await updateConfirmationStatement(session, transactionId, submissionId, currentCsSubmission);
 }
