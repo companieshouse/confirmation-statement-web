@@ -70,6 +70,7 @@ describe("Confirmation controller tests", () => {
 
     expect(response.status).toBe(200);
     expect(response.text).toContain(LP_PAGE_HEADING);
+    expect(response.text).toContain("Your reference number <br><strong>" + TRANSACTION_ID + "</strong>");
     expect(response.text).toContain(TEST_EMAIL);
     expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
   });
