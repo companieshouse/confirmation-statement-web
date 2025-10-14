@@ -62,9 +62,9 @@ export const convertDateToString = (date: Date | null, resultDateFormat: string)
 };
 
 
+
 export function getFormattedConfirmationDate(newConfirmationDate?: Date | string | null, nextMadeUpTo?: string): string | undefined {
-  
-  if (newConfirmationDate != null) {
+  if (isDefined(newConfirmationDate)) {
     return moment(newConfirmationDate).format(DMMMMYYYY_DATE_FORMAT);
   }
 
@@ -73,5 +73,9 @@ export function getFormattedConfirmationDate(newConfirmationDate?: Date | string
   }
 
   return undefined;
+}
+
+function isDefined<T>(value: T | null | undefined): value is T {
+  return value !== null && value !== undefined;
 }
 
