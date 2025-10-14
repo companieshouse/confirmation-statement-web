@@ -34,7 +34,6 @@ export const get = (req: Request, res: Response) => {
 };
 
 export const saveAndContinue = async (req: Request, res: Response) => {
-export const saveAndContinue = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
   const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
