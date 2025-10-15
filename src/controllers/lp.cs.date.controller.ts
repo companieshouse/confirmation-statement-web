@@ -83,15 +83,16 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
             const errorMessage = validateDateSelectorValue(localInfo, csDateValue, company);
 
             if (errorMessage) {
-              reloadPageWithError(req,
-                                  res,
-                                  lang,
-                                  localInfo,
-                                  company,
-                                  acspSessionData,
-                                  errorMessage,
-                                  RADIO_BUTTON_VALUE.YES,
-                                  csDateValue);
+              reloadPageWithError({
+                req,
+                res,
+                lang,
+                localInfo,
+                company,
+                acspSessionData,
+                errorMessage,
+                csDateRadioValue: RADIO_BUTTON_VALUE.YES,
+                csDateValue });
             } else {
               const csDateInput = new Date(Number(csDateValue.csDateYear), Number(csDateValue.csDateMonth) - 1, Number(csDateValue.csDateDay));
               saveCsDateIntoSession(acspSessionData, true, csDateInput);
@@ -115,7 +116,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
             break;
           }
           default: {
-            reloadPageWithError(req, res, lang, localInfo, company, acspSessionData, localInfo.i18n.CDSErrorNoRadioSelected);
+            reloadPageWithError({ req, res, lang, localInfo, company, acspSessionData, errorMessage: localInfo.i18n.CDSErrorNoRadioSelected });
           }
       }
     }
@@ -128,15 +129,18 @@ function returnTodayOnlyIfBeforeFileCsDate(company: CompanyProfile): Date | null
   return isTodayBeforeFileCsDate(company) ? moment().startOf('day').toDate() : null;
 }
 
-function reloadPageWithError(req: Request,
-  res: Response,
-  lang: string,
-  localInfo: object,
-  company: CompanyProfile,
-  acspSessionData: AcspSessionData,
-  errorMessage: string,
-  csDateRadioValue?: string,
-  csDateValue?: CsDateValue) {
+function reloadPageWithError(options: ReloadPageOptions) {
+  const {
+    req,
+    res,
+    lang,
+    localInfo,
+    company,
+    acspSessionData,
+    errorMessage,
+    csDateRadioValue,
+    csDateValue
+  } = options;
 
   res.cookie('lang', lang, { httpOnly: true });
 
@@ -173,3 +177,14 @@ function getNewCsDateForEarlyScreen(acspSessionData: AcspSessionData): string {
   return newCsDateString;
 }
 
+interface ReloadPageOptions {
+  req: Request;
+  res: Response;
+  lang: string;
+  localInfo: object;
+  company: CompanyProfile;
+  acspSessionData: AcspSessionData;
+  errorMessage: string;
+  csDateRadioValue?: string;
+  csDateValue?: CsDateValue;
+}
