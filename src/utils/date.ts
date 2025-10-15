@@ -1,6 +1,7 @@
 import { DateTime } from "luxon";
 import { createAndLogError } from "./logger";
 import moment from 'moment';
+import { DMMMMYYYY_DATE_FORMAT } from "./constants";
 
 export const toReadableFormat = (dateToConvert: string): string => {
   if (!dateToConvert) {
@@ -37,7 +38,7 @@ export const toReadableFormatMonthYear = (monthNum: number, year: number): strin
 };
 
 export const isValidDate = (dateAsString: string): boolean => {
-  return  !isNaN(Date.parse(dateAsString));
+  return !isNaN(Date.parse(dateAsString));
 };
 
 export const formatDateString = (resultDateFormat: string, dateAsString: string): string => {
@@ -59,3 +60,22 @@ export const addDayToDateString = (resultDateFormat: string, dateAsString: strin
 export const convertDateToString = (date: Date | null, resultDateFormat: string): string | null => {
   return date ? moment(date).format(resultDateFormat) : null;
 };
+
+
+
+export function getFormattedConfirmationDate(newConfirmationDate?: Date | string | null, nextMadeUpTo?: string): string | undefined {
+  if (isDefined(newConfirmationDate)) {
+    return moment(newConfirmationDate).format(DMMMMYYYY_DATE_FORMAT);
+  }
+
+  if (nextMadeUpTo) {
+    return formatDateString(DMMMMYYYY_DATE_FORMAT, nextMadeUpTo);
+  }
+
+  return undefined;
+}
+
+function isDefined<T>(value: T | null | undefined): value is T {
+  return value !== null && value !== undefined;
+}
+

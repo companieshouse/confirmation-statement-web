@@ -24,9 +24,11 @@ import { mockConfirmationStatementSubmission } from "../mocks/confirmation.state
 import { getConfirmationStatement } from "../../src/services/confirmation.statement.service";
 import { Request, Response, NextFunction } from "express";
 import { Session } from "@companieshouse/node-session-handler";
-import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
+import { DMMMMYYYY_DATE_FORMAT, LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
 import * as sessionAcspUtils from "../../src/utils/session.acsp";
 import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
+import { getFormattedConfirmationDate } from "../../src/utils/date";
+import moment from "moment";
 // import { Jurisdiction } from "@companieshouse/api-sdk-node/dist/services/limited-partnerships";
 // import { isPaymentDue } from "../../src/utils/payments";
 
@@ -621,5 +623,33 @@ describe("review controller tests", () => {
       expect(response.text).toContain(backPath);
     });
 
+  });
+
+  describe("getFormattedConfirmationDate", () => {
+    it("formats newConfirmationDate when provided", () => {
+      const date = new Date("2025-10-14");
+      const result = getFormattedConfirmationDate(date, "2025-12-01");
+      expect(result).toBe(moment(date).format(DMMMMYYYY_DATE_FORMAT));
+    });
+
+    it("falls back to nextMadeUpTo when newConfirmationDate is null", () => {
+      const result = getFormattedConfirmationDate(null, "2025-12-01");
+      expect(result).toBe(moment("2025-12-01").format(DMMMMYYYY_DATE_FORMAT));
+    });
+
+    it("falls back to nextMadeUpTo when newConfirmationDate is undefined", () => {
+      const result = getFormattedConfirmationDate(undefined, "2025-12-01");
+      expect(result).toBe(moment("2025-12-01").format(DMMMMYYYY_DATE_FORMAT));
+    });
+
+    it("returns undefined when both dates are missing", () => {
+      const result = getFormattedConfirmationDate(undefined, undefined);
+      expect(result).toBeUndefined();
+    });
+
+    it("handles string input for newConfirmationDate", () => {
+      const result = getFormattedConfirmationDate("2025-10-14", "2025-12-01");
+      expect(result).toBe(moment("2025-10-14").format(DMMMMYYYY_DATE_FORMAT));
+    });
   });
 });
