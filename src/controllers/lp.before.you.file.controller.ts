@@ -12,6 +12,7 @@ import { getTransaction } from "../services/transaction.service";
 import { isPaymentDue } from "../utils/payments";
 import { getSicCodeCondensedList } from "../services/sic.code.service";
 import { logger } from "../utils/logger";
+import { LIMITED_PARTNERSHIP_LP_SUBTYPE, LIMITED_PARTNERSHIP_SLP_SUBTYPE } from "../utils/constants";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -38,7 +39,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       sicCodes: sicCodeList
     });
 
-
     return res.render(Templates.LP_BEFORE_YOU_FILE, {
       ...getLocaleInfo(locales, lang),
       htmlLang: lang,
@@ -46,7 +46,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       company,
       previousPageWithoutLang: `${urls.CONFIRM_COMPANY_PATH}?companyNumber=${urlUtils.getCompanyNumberFromRequestParams(req)}`,
       formData,
-      isPaymentDue: isPaymentDue(transaction, submissionId)
+      isPaymentDue: isPaymentDue(transaction, submissionId),
+      showSICCodeReference: showSICCodeReference(company)
     });
 
   } catch (e) {
@@ -96,6 +97,18 @@ function reloadPageWithError(req: Request, res: Response, lang: string, localInf
     },
     formData: {
       byfCheckbox
-    }
+    },
+    showSICCodeReference: showSICCodeReference(getCompanyProfileFromSession(req))
   });
+}
+
+function showSICCodeReference(company: CompanyProfile): boolean {
+
+  switch (company?.subtype) {
+      case LIMITED_PARTNERSHIP_LP_SUBTYPE:
+      case LIMITED_PARTNERSHIP_SLP_SUBTYPE:
+        return true;
+  }
+
+  return false;
 }
