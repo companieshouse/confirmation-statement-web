@@ -104,9 +104,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       session,
       transactionId
     );
+    let nextPage;
 
     if (isLimitedPartnershipCompanyType(companyProfile)) {
-
+      console.log("@@@@@@ review in limited partnership journey");
       const lpJourneyResponse = handleLimitedPartnershipConfirmationJourney(req, companyNumber, companyProfile, transactionId, submissionId, session);
 
       if ("renderData" in lpJourneyResponse && lpJourneyResponse.renderData) {
@@ -124,44 +125,41 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         });
       }
 
-      return res.redirect(
-        urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
-          lpJourneyResponse.nextPage,
-          companyNumber,
-          transactionId,
-          submissionId
-        )
-      );
-      // Payment journey need transaction id cannot be added
-      // await executePaymentJourney(
-      //   session,
-      //   res,
-      //   next,
-      //   companyNumber,
-      //   transactionId,
-      //   submissionId,
-      //   nextPage
-      // );
+      nextPage = lpJourneyResponse.nextPage;
+      if (!isPaymentDue(transaction, submissionId)) {
+        return res.redirect(
+          urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+            nextPage,
+            companyNumber,
+            transactionId,
+            submissionId
+          )
+        );
+      }
 
-    }
-    const company: CompanyProfile = await getCompanyProfile(companyNumber);
-    const csSubmission: ConfirmationStatementSubmission =
-      await getConfirmationStatement(session, transactionId, submissionId);
 
-    const noChangeJourneyResponse = handleNoChangeConfirmationJourney(req, company, csSubmission);
+    } else {
+      console.log("@@@@@@ review in no change journey");
+      const csSubmission: ConfirmationStatementSubmission =
+        await getConfirmationStatement(session, transactionId, submissionId);
 
-    if (noChangeJourneyResponse?.renderData && "renderData" in noChangeJourneyResponse) {
-      return res.render(Templates.REVIEW, {
-        backLinkUrl: noChangeJourneyResponse.renderData.backLinkUrl,
-        company: noChangeJourneyResponse.renderData.company,
-        NextMadeUpToDate: noChangeJourneyResponse.renderData.nextMadeUpToDate,
-        ecctEnabled: noChangeJourneyResponse.renderData.ecctEnabled,
-        confirmationStatementError: noChangeJourneyResponse.renderData.confirmationStatementError,
-        lawfulActivityStatementError: noChangeJourneyResponse.renderData.lawfulActivityStatementError,
-        isPaymentDue: isPaymentDue(transaction, submissionId)
-      });
+      const noChangeJourneyResponse = handleNoChangeConfirmationJourney(req, companyProfile, csSubmission);
+
+      if (noChangeJourneyResponse?.renderData && "renderData" in noChangeJourneyResponse) {
+        return res.render(Templates.REVIEW, {
+          backLinkUrl: noChangeJourneyResponse.renderData.backLinkUrl,
+          company: noChangeJourneyResponse.renderData.company,
+          NextMadeUpToDate: noChangeJourneyResponse.renderData.nextMadeUpToDate,
+          ecctEnabled: noChangeJourneyResponse.renderData.ecctEnabled,
+          confirmationStatementError: noChangeJourneyResponse.renderData.confirmationStatementError,
+          lawfulActivityStatementError: noChangeJourneyResponse.renderData.lawfulActivityStatementError,
+          isPaymentDue: isPaymentDue(transaction, submissionId)
+        });
+      }
+      nextPage = CONFIRMATION_PATH;
     }
 
+    console.log("@@@@@@ nextPage:", nextPage);
     await sendLawfulPurposeStatementUpdate(req, true);
 
     await executePaymentJourney(
@@ -171,7 +169,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       companyNumber,
       transactionId,
       submissionId,
-      CONFIRMATION_PATH
+      nextPage
     );
 
   } catch (e) {
