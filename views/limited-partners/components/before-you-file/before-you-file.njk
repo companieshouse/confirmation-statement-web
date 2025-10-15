@@ -32,10 +32,17 @@
                     {{i18n.BYFPageTitle}}
                 </h1>
 
-                {{ govukWarningText({
-                    text: i18n.BYFOnlyInfoChangedParagraph,
-                    iconFallbackText: "Warning"
-                }) }}
+                {% if showSICCodeReference %}
+                    {{ govukWarningText({
+                        text: i18n.BYFOnlyInfoChangedParagraph,
+                        iconFallbackText: "Warning"
+                    }) }}
+                {% else %}
+                    {{ govukWarningText({
+                        text: i18n.BYFAlternateTextPFLP,
+                        iconFallbackText: "Warning"
+                    }) }}
+                {% endif %}
 
                 <p class="govuk-body">
                     {{i18n.BYFFileUpdatesParagraphStart}}

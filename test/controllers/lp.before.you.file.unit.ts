@@ -2,13 +2,9 @@ import middlewareMocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
 import { LP_BEFORE_YOU_FILE_PATH, urlParams } from "../../src/types/page.urls";
-import { getCompanyProfile } from "../../src/services/company.profile.service";
 import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
 import { getTransaction } from "../../src/services/transaction.service";
-
-jest.mock("../../src/services/company.profile.service", () => ({
-  getCompanyProfile: jest.fn()
-}));
+import { getCompanyProfileFromSession } from "../../src/utils/session";
 
 jest.mock("../../src/services/transaction.service", () => ({
   getTransaction: jest.fn()
@@ -18,6 +14,9 @@ jest.mock("../../src/utils/payments", () => ({
   isPaymentDue: jest.fn()
 }));
 
+jest.mock("../../src/utils/session", () => ({
+  getCompanyProfileFromSession: jest.fn()
+}));
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -35,21 +34,56 @@ describe("start before you file controller tests", () => {
   });
 
   it("should return acsp / limited partnership before you file page page", async () => {
-    (getCompanyProfile as jest.Mock).mockResolvedValue({
-      companyNumber: COMPANY_NUMBER,
-      type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
-      subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
-      companyName: "Test Company"
+
+    const response = await doGetPageTest(LIMITED_PARTNERSHIP_SUBTYPES.LP);
+
+    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    expect(response.text).toContain("Before you file the confirmation statement");
+    expect(response.text).toContain("You will not be able to view or change limited partnership information (except for the SIC codes) as part of this filing.");
+  });
+
+  it("should return acsp / limited partnership before you file page page, for Scottish Limited Parntership", async () => {
+
+    const response = await doGetPageTest(LIMITED_PARTNERSHIP_SUBTYPES.SLP);
+
+    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    expect(response.text).toContain("Before you file the confirmation statement");
+    expect(response.text).toContain("You will not be able to view or change limited partnership information (except for the SIC codes) as part of this filing.");
+  });
+
+  it("should return acsp / limited partnership before you file page page, for Private Fund subtype", async () => {
+
+    const response = await doGetPageTest(LIMITED_PARTNERSHIP_SUBTYPES.PFLP);
+
+    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    expect(response.text).toContain("Before you file the confirmation statement");
+    expect(response.text).toContain("You will not be able to view or change limited partnership information as part of this filing.");
+  });
+
+  it("should return acsp / limited partnership before you file page page, for Scottish Scottish Private Fund subtype", async () => {
+
+    const response = await doGetPageTest(LIMITED_PARTNERSHIP_SUBTYPES.SPFLP);
+
+    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    expect(response.text).toContain("Before you file the confirmation statement");
+    expect(response.text).toContain("You will not be able to view or change limited partnership information as part of this filing.");
+  });
+
+  function doGetPageTest(subtype: string) {
+    (getCompanyProfileFromSession as jest.Mock).mockImplementation((_req) => {
+      return {
+        companyNumber: COMPANY_NUMBER,
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        subtype: subtype,
+        companyName: "Test Company"
+      };
     });
 
     (getTransaction as jest.Mock).mockResolvedValue({
       id: TRANSACTION_ID
     });
-    const response = await request(app).get(URL);
-
-    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
-    expect(response.text).toContain("Before you file the confirmation statement");
-  });
+    return request(app).get(URL);
+  }
 
   it("should forward to Confirmation Statement Date page", async () => {
     const response = await request(app)
