@@ -7,7 +7,7 @@ import { urlUtils } from "../utils/url";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../services/company.profile.service";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
-import { toReadableFormat } from "../utils/date";
+import { getFormattedConfirmationDate, toReadableFormat } from "../utils/date";
 import { ConfirmationStatementSubmission } from '@companieshouse/api-sdk-node/dist/services/confirmation-statement';
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
@@ -18,7 +18,6 @@ import { isPaymentDue, executePaymentJourney } from "../utils/payments";
 import { handleLimitedPartnershipConfirmationJourney } from "../utils/confirmation/limited.partnership.confirmation";
 import { handleNoChangeConfirmationJourney } from "../utils/confirmation/no.change.confirmation";
 import { getAcspSessionData } from "../utils/session.acsp";
-import moment from "moment";
 
 const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
 const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
@@ -40,7 +39,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const confirmationStatementCheck = session.getExtraData(CONFIRMATION_STATEMENT_SESSION_KEY) as string;
     const lawfulActivityStatementCheck = session.getExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY) as string;
 
-
     const transaction: Transaction = await getTransaction(session, transactionId);
     const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
     const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
@@ -57,12 +55,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         submissionId
       );
 
-
       const acspSessionData = getAcspSessionData(session);
 
-      const formattedCsDate = acspSessionData?.newConfirmationDate
-        ? moment(acspSessionData.newConfirmationDate).format("D MMMM YYYY")
-        : undefined;
+      const formattedCsDate = getFormattedConfirmationDate(acspSessionData?.newConfirmationDate, company.confirmationStatement?.nextMadeUpTo);
 
       return res.render(Templates.REVIEW, {
         ...localeInfo,
