@@ -167,7 +167,7 @@ function saveCsDateIntoSession(acspSessionData: AcspSessionData, isChangedConfir
 
 function getNewCsDateForEarlyScreen(acspSessionData: AcspSessionData): string {
   let newCsDateString = moment().format(DMMMMYYYY_DATE_FORMAT);
-  if (acspSessionData && acspSessionData.newConfirmationDate) {
+  if (acspSessionData?.newConfirmationDate) {
     newCsDateString = moment(acspSessionData.newConfirmationDate).format(DMMMMYYYY_DATE_FORMAT);
   }
   return newCsDateString;
