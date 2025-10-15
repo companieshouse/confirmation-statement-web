@@ -60,7 +60,7 @@ export const saveAndContinue = async (req: Request, res: Response) => {
     const macthed = allSicCodes.find(sc => sc.sic_code === code);
     sicCodeArray.push({
       code: code,
-      description: macthed?.sic_description || "No Description Found."
+      description: macthed?.sic_description ?? "No Description Found."
     });
   }
 
