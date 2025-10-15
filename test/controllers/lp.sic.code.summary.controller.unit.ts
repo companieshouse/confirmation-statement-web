@@ -20,6 +20,11 @@ jest.mock("../../src/services/company.profile.service", () => ({
   getCompanyProfile: jest.fn()
 }));
 
+jest.mock("../../src/utils/confirmation/limited.partnership.confirmation", () => ({
+  sendLimitedPartnershipTransactionUpdate: jest.fn().mockResolvedValue(undefined)
+}));
+
+
 middlewareMocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
   const session: Session = new Session();
   session.data = {

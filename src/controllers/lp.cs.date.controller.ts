@@ -83,19 +83,20 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
             const errorMessage = validateDateSelectorValue(localInfo, csDateValue, company);
 
             if (errorMessage) {
-              reloadPageWithError(req,
-                                  res,
-                                  lang,
-                                  localInfo,
-                                  company,
-                                  acspSessionData,
-                                  errorMessage,
-                                  RADIO_BUTTON_VALUE.YES,
-                                  csDateValue);
+              reloadPageWithError({
+                req,
+                res,
+                lang,
+                localInfo,
+                company,
+                acspSessionData,
+                errorMessage,
+                csDateRadioValue: RADIO_BUTTON_VALUE.YES,
+                csDateValue });
             } else {
               const csDateInput = new Date(Number(csDateValue.csDateYear), Number(csDateValue.csDateMonth) - 1, Number(csDateValue.csDateDay));
               saveCsDateIntoSession(acspSessionData, true, csDateInput);
-              await sendLimitedPartnershipTransactionUpdate(req, moment(csDateInput).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT));
+              await sendLimitedPartnershipTransactionUpdate(req, moment(csDateInput).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT), null);
 
               return res.redirect(urlUtils.getUrlToPath(`${urls.LP_CHECK_YOUR_ANSWER_PATH}?lang=${lang}`, req));
             }
@@ -104,7 +105,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
           case RADIO_BUTTON_VALUE.NO: {
             const date = returnTodayOnlyIfBeforeFileCsDate(company); // Saved the date value into session if user clicked no in early screen
             saveCsDateIntoSession(acspSessionData, false, date);
-            await sendLimitedPartnershipTransactionUpdate(req, convertDateToString(date, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT));
+            await sendLimitedPartnershipTransactionUpdate(req, convertDateToString(date, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT), null);
 
             const path = (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company))
               ? reviewPath
@@ -115,7 +116,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
             break;
           }
           default: {
-            reloadPageWithError(req, res, lang, localInfo, company, acspSessionData, localInfo.i18n.CDSErrorNoRadioSelected);
+            reloadPageWithError({ req, res, lang, localInfo, company, acspSessionData, errorMessage: localInfo.i18n.CDSErrorNoRadioSelected });
           }
       }
     }
@@ -128,15 +129,18 @@ function returnTodayOnlyIfBeforeFileCsDate(company: CompanyProfile): Date | null
   return isTodayBeforeFileCsDate(company) ? moment().startOf('day').toDate() : null;
 }
 
-function reloadPageWithError(req: Request,
-  res: Response,
-  lang: string,
-  localInfo: object,
-  company: CompanyProfile,
-  acspSessionData: AcspSessionData,
-  errorMessage: string,
-  csDateRadioValue?: string,
-  csDateValue?: CsDateValue) {
+function reloadPageWithError(options: ReloadPageOptions) {
+  const {
+    req,
+    res,
+    lang,
+    localInfo,
+    company,
+    acspSessionData,
+    errorMessage,
+    csDateRadioValue,
+    csDateValue
+  } = options;
 
   res.cookie('lang', lang, { httpOnly: true });
 
@@ -167,9 +171,20 @@ function saveCsDateIntoSession(acspSessionData: AcspSessionData, isChangedConfir
 
 function getNewCsDateForEarlyScreen(acspSessionData: AcspSessionData): string {
   let newCsDateString = moment().format(DMMMMYYYY_DATE_FORMAT);
-  if (acspSessionData && acspSessionData.newConfirmationDate) {
+  if (acspSessionData?.newConfirmationDate) {
     newCsDateString = moment(acspSessionData.newConfirmationDate).format(DMMMMYYYY_DATE_FORMAT);
   }
   return newCsDateString;
 }
 
+interface ReloadPageOptions {
+  req: Request;
+  res: Response;
+  lang: string;
+  localInfo: object;
+  company: CompanyProfile;
+  acspSessionData: AcspSessionData;
+  errorMessage: string;
+  csDateRadioValue?: string;
+  csDateValue?: CsDateValue;
+}
