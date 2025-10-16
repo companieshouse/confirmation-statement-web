@@ -102,7 +102,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     let nextPage;
 
     if (isLimitedPartnershipCompanyType(companyProfile)) {
-      console.log("@@@@@@ review in limited partnership journey");
       const lpJourneyResponse = handleLimitedPartnershipConfirmationJourney(req, companyNumber, companyProfile, transactionId, submissionId, session);
 
       if ("renderData" in lpJourneyResponse && lpJourneyResponse.renderData) {
@@ -132,12 +131,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         );
       }
 
-
     } else {
-      console.log("@@@@@@ review in no change journey");
-      const csSubmission: ConfirmationStatementSubmission =
-        await getConfirmationStatement(session, transactionId, submissionId);
-
+      const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
       const noChangeJourneyResponse = handleNoChangeConfirmationJourney(req, companyProfile, csSubmission);
 
       if (noChangeJourneyResponse?.renderData && "renderData" in noChangeJourneyResponse) {
@@ -154,7 +149,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       nextPage = CONFIRMATION_PATH;
     }
 
-    console.log("@@@@@@ nextPage:", nextPage);
     await sendLawfulPurposeStatementUpdate(req, true);
 
     await executePaymentJourney(
