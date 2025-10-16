@@ -10,6 +10,9 @@
   "SCSCheckboxLawfulActivities":"I confirm that the intended future activities of the limited partnership are lawful.",
   "SCSPaymentMessageRequiredStart":"You will need to pay a fee of ",
   "SCSPaymentMessageRequiredEnd":" to submit your confirmation statement.",
+  "SCSErrorTitle": "There is a problem",
+  "SCSConfirmationStatementError": "Confirm the confirmation statement",
+  "SCSLawfulActivityStatementError": "Confirm that the intended future activities of the limited partnership are lawful",
   "SCSContinueButtonPayment":"Confirm and pay",
   "SCSContinueButtonNoPayment":"Confirm and submit"
 }
