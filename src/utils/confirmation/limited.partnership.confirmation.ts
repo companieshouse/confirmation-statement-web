@@ -8,7 +8,7 @@ import { LP_CONFIRMATION_STATEMENT_ERROR, LP_LAWFUL_ACTIVITY_STATEMENT_ERROR } f
 import { getACSPBackPath, isACSPJourney, getConfirmationPath } from "../../utils/limited.partnership";
 import { selectLang, getLocalesService } from "../../utils/localise";
 import { urlUtils } from "../../utils/url";
-import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
+import { ConfirmationStatementSubmission, SicCodeData } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement, updateConfirmationStatement } from "../../services/confirmation.statement.service";
 import { getTransaction } from '../../services/transaction.service';
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
@@ -77,13 +77,14 @@ export function handleLimitedPartnershipConfirmationJourney (req: Request<Params
   return { nextPage };
 }
 
-export async function sendLimitedPartnershipTransactionUpdate(req: Request, newCsDate: string | null) {
+export async function sendLimitedPartnershipTransactionUpdate(req: Request, newCsDate: string | null, newSicCodes: SicCodeData | null) {
   const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
   const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
   const session = req.session as Session;
 
   const currentCsSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
   currentCsSubmission.data.newConfirmationDate = newCsDate;
+  currentCsSubmission.data.sicCodeData = newSicCodes ?? undefined;
 
   await updateConfirmationStatement(session, transactionId, submissionId, currentCsSubmission);
 }
