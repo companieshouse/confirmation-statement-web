@@ -24,7 +24,7 @@ const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK
 const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
-  
+
   try {
     const session = req.session as Session;
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
@@ -56,7 +56,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         transactionId,
         submissionId
       );
-      
+
       const acspSessionData = getAcspSessionData(session);
       const formattedCsDate = formatConfirmationDate(acspSessionData?.newConfirmationDate ?? confirmationDate);
 
@@ -90,7 +90,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
-  
+
   try {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const companyProfile: CompanyProfile = await getCompanyProfile(companyNumber);
@@ -101,7 +101,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       session,
       transactionId
     );
-    
+
+    let nextPage;
+
     const acspSessionData = getAcspSessionData(session);
     const confirmationDate = companyProfile.confirmationStatement?.nextMadeUpTo;
 
@@ -142,38 +144,40 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
       const noChangeJourneyResponse = handleNoChangeConfirmationJourney(req, companyProfile, csSubmission);
 
-    if (noChangeJourneyResponse?.renderData && "renderData" in noChangeJourneyResponse) {
-      return res.render(Templates.REVIEW, {
-        backLinkUrl: noChangeJourneyResponse.renderData.backLinkUrl,
-        company: noChangeJourneyResponse.renderData.company,
-        nextMadeUpToDate: noChangeJourneyResponse.renderData.nextMadeUpToDate,
-        ecctEnabled: noChangeJourneyResponse.renderData.ecctEnabled,
-        confirmationStatementError: noChangeJourneyResponse.renderData.confirmationStatementError,
-        lawfulActivityStatementError: noChangeJourneyResponse.renderData.lawfulActivityStatementError,
-        isPaymentDue: isPaymentDue(transaction, submissionId)
-      });
+      if (noChangeJourneyResponse?.renderData && "renderData" in noChangeJourneyResponse) {
+        return res.render(Templates.REVIEW, {
+          backLinkUrl: noChangeJourneyResponse.renderData.backLinkUrl,
+          company: noChangeJourneyResponse.renderData.company,
+          nextMadeUpToDate: noChangeJourneyResponse.renderData.nextMadeUpToDate,
+          ecctEnabled: noChangeJourneyResponse.renderData.ecctEnabled,
+          confirmationStatementError: noChangeJourneyResponse.renderData.confirmationStatementError,
+          lawfulActivityStatementError: noChangeJourneyResponse.renderData.lawfulActivityStatementError,
+          isPaymentDue: isPaymentDue(transaction, submissionId)
+        });
+      }
+
+      await sendLawfulPurposeStatementUpdate(req, true);
+
+      await executePaymentJourney(
+        session,
+        res,
+        next,
+        companyNumber,
+        transactionId,
+        submissionId,
+        nextPage
+      );
+
+
     }
-
-    await sendLawfulPurposeStatementUpdate(req, true);
-
-    await executePaymentJourney(
-      session,
-      res,
-      next,
-      companyNumber,
-      transactionId,
-      submissionId,
-      nextPage
-    );
-
   } catch (e) {
     return next(e);
   }
-};
-
-export function formatConfirmationDate(dateString?: string | Date | null): string | undefined {
-  if (!dateString) {
-    return undefined;
-  }
-  return moment(dateString).format("D MMMM YYYY");
 }
+
+  export function formatConfirmationDate(dateString?: string | Date | null): string | undefined {
+    if (!dateString) {
+      return undefined;
+    }
+    return moment(dateString).format("D MMMM YYYY");
+  }
