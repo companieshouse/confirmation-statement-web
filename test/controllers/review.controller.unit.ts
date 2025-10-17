@@ -11,7 +11,7 @@ import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transact
 import request from "supertest";
 import mocks from "../mocks/all.middleware.mock";
 import app from "../../src/app";
-import { CONFIRMATION_PATH, LP_CHECK_YOUR_ANSWER_PATH, LP_CS_DATE_PATH, LP_SIC_CODE_SUMMARY_PATH, REVIEW_PATH, urlParams } from '../../src/types/page.urls';
+import { CONFIRMATION_PATH, LP_CHECK_YOUR_ANSWER_PATH, LP_CONFIRMATION_PATH, LP_CS_DATE_PATH, LP_REVIEW_PATH, LP_SIC_CODE_SUMMARY_PATH, REVIEW_PATH, urlParams } from '../../src/types/page.urls';
 import { urlUtils } from "../../src/utils/url";
 import { validCompanyProfile } from "../mocks/company.profile.mock";
 import { getCompanyProfile } from "../../src/services/company.profile.service";
@@ -66,7 +66,9 @@ const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
 const SUBMISSION_ID = "435435";
 const URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REVIEW_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
+const LP_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(LP_REVIEW_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 const CONFIRMATION_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(CONFIRMATION_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
+const LP_CONFIRMATION_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(LP_CONFIRMATION_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 
 const dummyTransactionNoCosts = {
   id: TRANSACTION_ID
@@ -445,6 +447,48 @@ describe("review controller tests", () => {
       expect(response.text).not.toContain(CONFIRMATION_STATEMENT_ERROR);
     });
 
+    it("Should redirect to the LP confirmation url if the journey is LP and the payment is not due", async () => {
+      const mockLimitedPartnership = {
+        companyNumber: COMPANY_NUMBER,
+        type: "limited-partnership",
+        subtype: "limited-partnership",
+        companyName: "Test Company"
+      };
+      mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
+
+      const response = await request(app).post(LP_URL).send({
+        confirmationStatement: "true",
+        lawfulActivityStatement: "true"
+      });
+
+      expect(response.status).toBe(302);
+      expect(response.header.location).toEqual(LP_CONFIRMATION_URL);
+    });
+
+    it("Should redirect to the payment url if the journey is LP and the payment is due", async () => {
+      const mockLimitedPartnership = {
+        companyNumber: COMPANY_NUMBER,
+        type: "limited-partnership",
+        subtype: "limited-partnership",
+        companyName: "Test Company"
+      };
+      mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+      mockCloseTransaction.mockResolvedValueOnce(PAYMENT_URL);
+      mockGetConfirmationStatement.mockResolvedValue(mockConfirmationStatementSubmission);
+      mockStartPaymentsSession.mockResolvedValueOnce(dummyPaymentResponse);
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
+
+      const response = await request(app).post(LP_URL).send({
+        confirmationStatement: "true",
+        lawfulActivityStatement: "true"
+      });
+
+      expect(response.status).toBe(302);
+      expect(response.header.location).toEqual(PAYMENT_JOURNEY_URL);
+    });
   });
 
   describe("Payment journey tests", () => {
