@@ -24,6 +24,7 @@ const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK
 const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
+  
   try {
     const session = req.session as Session;
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
@@ -55,6 +56,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         transactionId,
         submissionId
       );
+      
       const acspSessionData = getAcspSessionData(session);
       const formattedCsDate = formatConfirmationDate(acspSessionData?.newConfirmationDate ?? confirmationDate);
 
@@ -88,6 +90,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
+  
   try {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const companyProfile: CompanyProfile = await getCompanyProfile(companyNumber);
@@ -98,6 +101,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       session,
       transactionId
     );
+    
     const acspSessionData = getAcspSessionData(session);
     const confirmationDate = companyProfile.confirmationStatement?.nextMadeUpTo;
 
@@ -122,31 +126,21 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         });
       }
 
-      return res.redirect(
-        urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
-          lpJourneyResponse.nextPage,
-          companyNumber,
-          transactionId,
-          submissionId
-        )
-      );
-      // Payment journey need transaction id cannot be added
-      // await executePaymentJourney(
-      //   session,
-      //   res,
-      //   next,
-      //   companyNumber,
-      //   transactionId,
-      //   submissionId,
-      //   nextPage
-      // );
+      nextPage = lpJourneyResponse.nextPage;
+      if (!isPaymentDue(transaction, submissionId)) {
+        return res.redirect(
+          urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+            nextPage,
+            companyNumber,
+            transactionId,
+            submissionId
+          )
+        );
+      }
 
-    }
-    const company: CompanyProfile = await getCompanyProfile(companyNumber);
-    const csSubmission: ConfirmationStatementSubmission =
-      await getConfirmationStatement(session, transactionId, submissionId);
-
-    const noChangeJourneyResponse = handleNoChangeConfirmationJourney(req, company, csSubmission);
+    } else {
+      const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
+      const noChangeJourneyResponse = handleNoChangeConfirmationJourney(req, companyProfile, csSubmission);
 
     if (noChangeJourneyResponse?.renderData && "renderData" in noChangeJourneyResponse) {
       return res.render(Templates.REVIEW, {
@@ -169,7 +163,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       companyNumber,
       transactionId,
       submissionId,
-      CONFIRMATION_PATH
+      nextPage
     );
 
   } catch (e) {
