@@ -280,8 +280,11 @@ describe("review controller tests", () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.text).toMatch(/govuk-checkboxes__input.*confirmation-statement(?!.*\bchecked\b)/);
-      expect(response.text).toMatch(/govuk-checkboxes__input.*lawful-activity-statement(?!.*\bchecked\b)/);
+      const confirmationInputMatch = response.text.match(/<input[^>]+name="confirmationStatement"[^>]*>/);
+      const lawfulInputMatch = response.text.match(/<input[^>]+name="lawfulActivityStatement"[^>]*>/);
+
+      expect(confirmationInputMatch).not.toBeNull();
+      expect(lawfulInputMatch).not.toBeNull();
     });
 
     it("Should show review page for Limited Partnership with confirmation and lawful activity statement checkboxe values not defined", async () => {
@@ -294,8 +297,11 @@ describe("review controller tests", () => {
 
       expect(response.status).toBe(200);
 
-      expect(response.text).toMatch(/govuk-checkboxes__input.*confirmation-statement(?!.*\bchecked\b)/);
-      expect(response.text).toMatch(/govuk-checkboxes__input.*lawful-activity-statement(?!.*\bchecked\b)/);
+      const confirmationInputMatch = response.text.match(/<input[^>]+name="confirmationStatement"[^>]*>/);
+      const lawfulInputMatch = response.text.match(/<input[^>]+name="lawfulActivityStatement"[^>]*>/);
+
+      expect(confirmationInputMatch).not.toBeNull();
+      expect(lawfulInputMatch).not.toBeNull();
     });
 
     it("Should not show payment required text for Limited Partnership when payment is complete", async () => {

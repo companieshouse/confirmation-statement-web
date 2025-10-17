@@ -10,7 +10,7 @@ import { getCompanyProfileFromSession } from "../utils/session";
 import { isPaymentDue } from '../utils/payments';
 import { getSicCodeCondensedList } from "../services/sic.code.service";
 import { fetchTransaction } from "../utils/confirmation/limited.partnership.confirmation";
-import { LIMITED_PARTNERSHIP_LP_SUBTYPE, LIMITED_PARTNERSHIP_SLP_SUBTYPE } from "utils/constants";
+import { LIMITED_PARTNERSHIP_LP_SUBTYPE, LIMITED_PARTNERSHIP_SLP_SUBTYPE } from "../utils/constants";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -72,9 +72,9 @@ export const post = async (req: Request, res: Response) => {
   });
 
   if (!byfCheckbox) {
-    return reloadPageWithError(req, res, { lang, localInfo, byfCheckbox, company, 
-      isPaymentDue: isPaymentDue(await transaction, submissionId), 
-      errorMessage: localInfo.i18n.BYFErrorMessageNotChecked 
+    return reloadPageWithError(req, res, { lang, localInfo, byfCheckbox, company,
+      isPaymentDue: isPaymentDue(await transaction, submissionId),
+      errorMessage: localInfo.i18n.BYFErrorMessageNotChecked
     });
   }
 

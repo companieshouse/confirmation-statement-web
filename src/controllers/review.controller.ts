@@ -178,6 +178,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export function formatConfirmationDate(dateString?: string | Date | null): string | undefined {
-  if (!dateString) return undefined;
+  if (!dateString) {
+    return undefined;
+  }
   return moment(dateString).format("D MMMM YYYY");
 }
