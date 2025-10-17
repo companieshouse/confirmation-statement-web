@@ -10,6 +10,8 @@ import { selectLang, getLocalesService } from "../../utils/localise";
 import { urlUtils } from "../../utils/url";
 import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement, updateConfirmationStatement } from "../../services/confirmation.statement.service";
+import { getTransaction } from '../../services/transaction.service';
+import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
 
 const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
 const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
@@ -84,4 +86,12 @@ export async function sendLimitedPartnershipTransactionUpdate(req: Request, newC
   currentCsSubmission.data.newConfirmationDate = newCsDate;
 
   await updateConfirmationStatement(session, transactionId, submissionId, currentCsSubmission);
+}
+
+export async function fetchTransaction(session: Session, req: Request): Promise<Transaction> {
+  const transactionId = req.params.transactionId || req.query.transactionId;
+  if (!transactionId || typeof transactionId !== "string") {
+    throw new Error("Missing or invalid transaction ID");
+  }
+  return await getTransaction(session, transactionId);
 }

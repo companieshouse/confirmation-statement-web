@@ -83,7 +83,7 @@
           {% endif %}
         {% endif %}
 
-        {% if confirmationChecked == "true" %}
+        {% if confirmationChecked %}
 
           {{ govukCheckboxes({
             idPrefix: "confirmation-statement",
@@ -135,7 +135,7 @@
 
         {% endif %}
 
-        {% if lawfulActivityChecked == "true" %}
+        {% if lawfulActivityChecked %}
           {{ govukCheckboxes({
             idPrefix: "lawful-activity-statement",
             name: "lawfulActivityStatement",
