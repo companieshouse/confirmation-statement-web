@@ -53,7 +53,7 @@
         {% if confirmationStatementError or lawfulActivityStatementError %}
 
           {{ govukErrorSummary({
-            titleText: "There is a problem",
+            titleText: i18n.SCSErrorTitle,
             errorList: [
             {
               text: confirmationStatementError,
@@ -68,7 +68,7 @@
 
           {% if confirmationStatementError %}
             {% set confirmationStatementError = {
-              text: "Select if all required information is either delivered or being delivered for the confirmation statement date"
+              text: i18n.SCSConfirmationStatementError
             } %}
           {% else %}
             {% set confirmationStatementError = false %}
@@ -76,14 +76,14 @@
 
           {% if lawfulActivityStatementError %}
             {% set lawfulActivityStatementError = {
-              text: "Select if intended future activities are lawful"
+              text: i18n.SCSLawfulActivityStatementError
             } %}
           {% else %}
             {% set lawfulActivityStatementError = false %}
           {% endif %}
         {% endif %}
 
-        {% if confirmationChecked == "true" %}
+        {% if confirmationChecked %}
 
           {{ govukCheckboxes({
             idPrefix: "confirmation-statement",
@@ -135,7 +135,7 @@
 
         {% endif %}
 
-        {% if lawfulActivityChecked == "true" %}
+        {% if lawfulActivityChecked %}
           {{ govukCheckboxes({
             idPrefix: "lawful-activity-statement",
             name: "lawfulActivityStatement",
