@@ -90,14 +90,15 @@ describe("start controller tests", () => {
     expect(response.text).toContain('govuk-back-link');
   });
 
-  it("limited partnership header should contain a language list", async () => {
-    const response = await request(app)
-      .get(URL);
+  // Removed since disabling welsh translation - CSE-881
+  // it("limited partnership header should contain a language list", async () => {
+  //   const response = await request(app)
+  //     .get(URL);
 
-    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
-    expect(response.text).toContain('English');
-    expect(response.text).toContain('Cymraeg');
-  });
+  //   expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+  //   expect(response.text).toContain('English');
+  //   expect(response.text).toContain('Cymraeg');
+  // });
 
   it("limited partnership start page should contain a footer", async () => {
     const response = await request(app)
