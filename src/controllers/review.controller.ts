@@ -119,7 +119,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
           confirmationChecked: lpJourneyResponse.renderData.confirmationChecked,
           lawfulActivityChecked: lpJourneyResponse.renderData.lawfulActivityChecked,
           isLimitedPartnership: true,
-          csDateValue: formattedCsDate
+          csDateValue: formattedCsDate,
+          isPaymentDue: isPaymentDue(transaction, submissionId)
         });
       }
 
