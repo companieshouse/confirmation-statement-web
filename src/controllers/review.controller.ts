@@ -7,7 +7,7 @@ import { urlUtils } from "../utils/url";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../services/company.profile.service";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
-import { getFormattedConfirmationDate, toReadableFormat } from "../utils/date";
+import { toReadableFormat } from "../utils/date";
 import { ConfirmationStatementSubmission } from '@companieshouse/api-sdk-node/dist/services/confirmation-statement';
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
@@ -18,11 +18,13 @@ import { isPaymentDue, executePaymentJourney } from "../utils/payments";
 import { handleLimitedPartnershipConfirmationJourney } from "../utils/confirmation/limited.partnership.confirmation";
 import { handleNoChangeConfirmationJourney } from "../utils/confirmation/no.change.confirmation";
 import { getAcspSessionData } from "../utils/session.acsp";
+import moment from "moment";
 
 const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
 const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
+
   try {
     const session = req.session as Session;
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
@@ -56,8 +58,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       );
 
       const acspSessionData = getAcspSessionData(session);
-
-      const formattedCsDate = getFormattedConfirmationDate(acspSessionData?.newConfirmationDate, company.confirmationStatement?.nextMadeUpTo);
+      const formattedCsDate = formatConfirmationDate(acspSessionData?.newConfirmationDate ?? confirmationDate);
 
       return res.render(Templates.REVIEW, {
         ...localeInfo,
@@ -89,6 +90,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
+
   try {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const companyProfile: CompanyProfile = await getCompanyProfile(companyNumber);
@@ -99,7 +101,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       session,
       transactionId
     );
+
     let nextPage;
+
+    const acspSessionData = getAcspSessionData(session);
+    const confirmationDate = companyProfile.confirmationStatement?.nextMadeUpTo;
+
+    const formattedCsDate = formatConfirmationDate(acspSessionData?.newConfirmationDate ?? confirmationDate);
 
     if (isLimitedPartnershipCompanyType(companyProfile)) {
       const lpJourneyResponse = handleLimitedPartnershipConfirmationJourney(req, companyNumber, companyProfile, transactionId, submissionId, session);
@@ -109,13 +117,14 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
           ...getLocaleInfo(lpJourneyResponse.renderData.locales, lpJourneyResponse.renderData.lang),
           htmlLang: lpJourneyResponse.renderData.lang,
           previousPage: lpJourneyResponse.renderData.previousPage,
-          companyProfile,
+          company: companyProfile,
           ecctEnabled: lpJourneyResponse.renderData.ecctEnabled,
           confirmationStatementError: lpJourneyResponse.renderData.confirmationStatementError,
           lawfulActivityStatementError: lpJourneyResponse.renderData.lawfulActivityStatementError,
           confirmationChecked: lpJourneyResponse.renderData.confirmationChecked,
           lawfulActivityChecked: lpJourneyResponse.renderData.lawfulActivityChecked,
-          isLimitedPartnership: true
+          isLimitedPartnership: true,
+          csDateValue: formattedCsDate
         });
       }
 
@@ -139,29 +148,36 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         return res.render(Templates.REVIEW, {
           backLinkUrl: noChangeJourneyResponse.renderData.backLinkUrl,
           company: noChangeJourneyResponse.renderData.company,
-          NextMadeUpToDate: noChangeJourneyResponse.renderData.nextMadeUpToDate,
+          nextMadeUpToDate: noChangeJourneyResponse.renderData.nextMadeUpToDate,
           ecctEnabled: noChangeJourneyResponse.renderData.ecctEnabled,
           confirmationStatementError: noChangeJourneyResponse.renderData.confirmationStatementError,
           lawfulActivityStatementError: noChangeJourneyResponse.renderData.lawfulActivityStatementError,
           isPaymentDue: isPaymentDue(transaction, submissionId)
         });
       }
-      nextPage = CONFIRMATION_PATH;
+
+      await sendLawfulPurposeStatementUpdate(req, true);
+
+      await executePaymentJourney(
+        session,
+        res,
+        next,
+        companyNumber,
+        transactionId,
+        submissionId,
+        nextPage
+      );
+
+
     }
-
-    await sendLawfulPurposeStatementUpdate(req, true);
-
-    await executePaymentJourney(
-      session,
-      res,
-      next,
-      companyNumber,
-      transactionId,
-      submissionId,
-      nextPage
-    );
-
   } catch (e) {
     return next(e);
   }
-};
+}
+
+  export function formatConfirmationDate(dateString?: string | Date | null): string | undefined {
+    if (!dateString) {
+      return undefined;
+    }
+    return moment(dateString).format("D MMMM YYYY");
+  }
