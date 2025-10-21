@@ -59,9 +59,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 function getSicCodeDetails (companyProfile: CompanyProfile): SicCode[] {
   const sicCodeList: SicCode[] = [];
 
-  companyProfile.sicCodes.forEach(code => {
+  for (const code of companyProfile.sicCodes) {
     sicCodeList.push({ code: code, description: lookupSicCodeDescription(code) } as SicCode);
-  });
+  }
 
   return sicCodeList;
 }
