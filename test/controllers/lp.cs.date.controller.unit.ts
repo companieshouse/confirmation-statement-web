@@ -200,13 +200,39 @@ describe("date controller validation tests", () => {
     (limitedPartnershipUtils.getReviewPath as jest.Mock).mockReturnValue("/confirmation-statement/company/12345678/transaction/66454/submission/435435/acsp/review");
   });
 
-  it("should show error when CS date contains non-numeric values", async () => {
+  it("should show error when CS day contains non-numeric values", async () => {
     const response = await request(app)
       .post(URL)
       .send({
         confirmationStatementDate: "yes",
         "csDate-day": "aa",
-        "csDate-month": "bb",
+        "csDate-month": "01",
+        "csDate-year": "2025"
+      });
+
+    expect(response.text).toContain("Confirmation statement date must be a real date");
+  });
+
+  it("should show error when CS month contains non-numeric values", async () => {
+    const response = await request(app)
+      .post(URL)
+      .send({
+        confirmationStatementDate: "yes",
+        "csDate-day": "01",
+        "csDate-month": "aa",
+        "csDate-year": "2025"
+      });
+
+    expect(response.text).toContain("Confirmation statement date must be a real date");
+  });
+
+  it("should show error when CS year contains non-numeric values", async () => {
+    const response = await request(app)
+      .post(URL)
+      .send({
+        confirmationStatementDate: "yes",
+        "csDate-day": "01",
+        "csDate-month": "01",
         "csDate-year": "cccc"
       });
 
