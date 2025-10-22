@@ -28,19 +28,34 @@
               name: "day",
               classes: "govuk-input--error govuk-input--width-2" if errors else "govuk-input--width-2",
               id: "csDate-day",
-              value: csDateValue.csDateDay
+              value: csDateValue.csDateDay,
+              attributes: {
+                pattern: "\\d{1,2}",
+                input: "numeric",
+                maxlength: "2"
+              }
             },
             {
               name: "month",
               classes: "govuk-input--error govuk-input--width-2" if errors else "govuk-input--width-2",
               id: "csDate-month",
-              value: csDateValue.csDateMonth
+              value: csDateValue.csDateMonth,
+              attributes: {
+                pattern: "\\d{1,2}",
+                input: "numeric",
+                maxlength: "2"
+              }
             },
             {
               name: "year",
               classes: "govuk-input--error govuk-input--width-4" if errors else "govuk-input--width-4",
               id: "csDate-year",
-              value: csDateValue.csDateYear
+              value: csDateValue.csDateYear,
+              attributes: {
+                pattern: "\\d{4}",
+                input: "numeric",
+                maxlength: "4"
+              }
             }
         ]
     }) }}

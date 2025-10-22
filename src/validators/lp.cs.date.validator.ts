@@ -8,6 +8,9 @@ export function isTodayBeforeFileCsDate(company: CompanyProfile): boolean {
   return moment().isBefore(moment(company.confirmationStatement?.nextMadeUpTo), "day");
 }
 
+export function isNumeric(input: string): boolean {
+  return /^\d+$/.test(input);
+}
 
 export function validateDateSelectorValue(localInfo: any, csDateValue: CsDateValue, company: CompanyProfile): string | undefined {
 
@@ -34,6 +37,11 @@ export function validateDateSelectorValue(localInfo: any, csDateValue: CsDateVal
     !DATE_YEAR_REGEX.test(csDateValue.csDateYear) ||
     !(moment(inputDateString, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT).isValid())
   ) {
+    return localInfo.i18n.CDSErrorDateWrong;
+  }
+
+  // validate that user enters non-numeric characters
+  if (!isNumeric(csDateValue.csDateDay) || !isNumeric(csDateValue.csDateMonth) || !isNumeric(csDateValue.csDateYear)) {
     return localInfo.i18n.CDSErrorDateWrong;
   }
 
