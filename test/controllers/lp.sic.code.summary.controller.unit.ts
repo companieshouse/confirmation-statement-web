@@ -63,7 +63,7 @@ describe("Controller tests", () => {
     const response = await request(app).get(URL);
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
-    expect(response.text).toContain("Check and confirm what the limited partnership will be doing");
+    expect(response.text).toContain("Check the SIC codes for this limited partnership");
     expect(response.text).toContain('<div class="govuk-summary-list__key">70001</div>');
     expect(response.text).toContain('<div class="govuk-summary-list__key">70002</div>');
     expect(response.text).toContain('<div class="govuk-summary-list__key">70003</div>');
