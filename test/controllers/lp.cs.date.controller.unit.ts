@@ -251,4 +251,4 @@ describe("date controller validation tests", () => {
     expect(response.status).toBe(302);
   });
 
-});  
+});
