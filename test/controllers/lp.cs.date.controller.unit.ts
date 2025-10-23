@@ -181,3 +181,100 @@ describe("date controller post tests", () => {
   });
 
 });
+
+
+describe("date controller validation tests", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    (getCompanyProfileFromSession as jest.Mock).mockResolvedValue({
+      companyNumber: COMPANY_NUMBER,
+      type: "limited-partnership",
+      subtype: "limited-partnership",
+      companyName: "Test Company"
+    });
+
+    (limitedPartnershipUtils.isACSPJourney as jest.Mock).mockReturnValue(true);
+    (limitedPartnershipUtils.isPflpLimitedPartnershipCompanyType as jest.Mock).mockReturnValue(false);
+    (limitedPartnershipUtils.isSpflpLimitedPartnershipCompanyType as jest.Mock).mockReturnValue(false);
+    (limitedPartnershipUtils.getReviewPath as jest.Mock).mockReturnValue("/confirmation-statement/company/12345678/transaction/66454/submission/435435/acsp/review");
+  });
+
+  it("should show error when CS day contains non-numeric values", async () => {
+    const response = await request(app)
+      .post(URL)
+      .send({
+        confirmationStatementDate: "yes",
+        "csDate-day": "aa",
+        "csDate-month": "01",
+        "csDate-year": "2025"
+      });
+
+    expect(response.text).toContain("Confirmation statement date must be a real date");
+  });
+
+  it("should show error when CS month contains non-numeric values", async () => {
+    const response = await request(app)
+      .post(URL)
+      .send({
+        confirmationStatementDate: "yes",
+        "csDate-day": "01",
+        "csDate-month": "aa",
+        "csDate-year": "2025"
+      });
+
+    expect(response.text).toContain("Confirmation statement date must be a real date");
+  });
+
+  it("should show error when CS year contains non-numeric values", async () => {
+    const response = await request(app)
+      .post(URL)
+      .send({
+        confirmationStatementDate: "yes",
+        "csDate-day": "01",
+        "csDate-month": "01",
+        "csDate-year": "cccc"
+      });
+
+    expect(response.text).toContain("Confirmation statement date must be a real date");
+  });
+
+  it("should show error when CS date is missing day and month", async () => {
+    const response = await request(app)
+      .post(URL)
+      .send({
+        confirmationStatementDate: "yes",
+        "csDate-year": "2025"
+      });
+
+    expect(response.text).toContain("Confirmation statement date must include a day");
+  });
+
+  it("should show error for invalid leap year date", async () => {
+    const response = await request(app)
+      .post(URL)
+      .send({
+        confirmationStatementDate: "yes",
+        "csDate-day": "29",
+        "csDate-month": "02",
+        "csDate-year": "2023"
+      });
+
+    expect(response.text).toContain("Confirmation statement date must be a real date");
+  });
+
+  it("should accept valid leap year date", async () => {
+    const response = await request(app)
+      .post(URL)
+      .send({
+        confirmationStatementDate: "yes",
+        "csDate-day": "29",
+        "csDate-month": "02",
+        "csDate-year": "2024"
+      });
+
+    expect(mockSendLimitedPartnershipTransactionUpdate.mock.calls[0][1]).toBe("2024-02-29");
+    expect(response.status).toBe(302);
+  });
+
+});

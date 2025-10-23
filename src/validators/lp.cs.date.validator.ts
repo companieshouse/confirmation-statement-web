@@ -8,6 +8,9 @@ export function isTodayBeforeFileCsDate(company: CompanyProfile): boolean {
   return moment().isBefore(moment(company.confirmationStatement?.nextMadeUpTo), "day");
 }
 
+export function isNumeric(input: string): boolean {
+  return /^\d+$/.test(input);
+}
 
 export function validateDateSelectorValue(localInfo: any, csDateValue: CsDateValue, company: CompanyProfile): string | undefined {
 
@@ -17,23 +20,18 @@ export function validateDateSelectorValue(localInfo: any, csDateValue: CsDateVal
   }
 
   // validate that user enters incomplete date
-  if (!csDateValue.csDateYear || !csDateValue.csDateMonth || !csDateValue.csDateDay) {
-    if (!csDateValue.csDateDay) {
-      return localInfo.i18n.CDSErrorDateNoDay;
-    } else if (!csDateValue.csDateMonth) {
-      return localInfo.i18n.CDSErrorDateNoMonth;
-    } else if (!csDateValue.csDateYear) {
-      return localInfo.i18n.CDSErrorDateNoYear;
-    }
+  const incompleteError = getIncompleteDateError(csDateValue, localInfo);
+  if (incompleteError) {
+    return incompleteError;
   }
 
   // validate that user enters an invalid date
-  const inputDateString = `${csDateValue.csDateYear}-${csDateValue.csDateMonth}-${csDateValue.csDateDay}`;
-  if (!DATE_DAY_REGEX.test(csDateValue.csDateDay) ||
-    !DATE_MONTH_REGEX.test(csDateValue.csDateMonth) ||
-    !DATE_YEAR_REGEX.test(csDateValue.csDateYear) ||
-    !(moment(inputDateString, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT).isValid())
-  ) {
+  if (!isDateValid(csDateValue)) {
+    return localInfo.i18n.CDSErrorDateWrong;
+  }
+
+  // validate that user enters non-numeric characters
+  if (!isDateNumeric(csDateValue)) {
     return localInfo.i18n.CDSErrorDateWrong;
   }
 
@@ -57,4 +55,37 @@ export function validateDateSelectorValue(localInfo: any, csDateValue: CsDateVal
   }
 
   return undefined;
+}
+
+function getIncompleteDateError(date: CsDateValue, localInfo: any): string | undefined {
+  if (!date.csDateYear || !date.csDateMonth || !date.csDateDay) {
+    if (!date.csDateDay) {
+      return localInfo.i18n.CDSErrorDateNoDay;
+    }
+    if (!date.csDateMonth) {
+      return localInfo.i18n.CDSErrorDateNoMonth;
+    }
+    if (!date.csDateYear) {
+      return localInfo.i18n.CDSErrorDateNoYear;
+    }
+  }
+  return undefined;
+}
+
+function isDateValid(date: CsDateValue): boolean {
+  const inputDateString = `${date.csDateYear}-${date.csDateMonth}-${date.csDateDay}`;
+  return (
+    DATE_DAY_REGEX.test(date.csDateDay) &&
+    DATE_MONTH_REGEX.test(date.csDateMonth) &&
+    DATE_YEAR_REGEX.test(date.csDateYear) &&
+    moment(inputDateString, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT).isValid()
+  );
+}
+
+function isDateNumeric(date: CsDateValue): boolean {
+  return (
+    isNumeric(date.csDateDay) &&
+    isNumeric(date.csDateMonth) &&
+    isNumeric(date.csDateYear)
+  );
 }
