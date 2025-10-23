@@ -49,7 +49,9 @@ export function handleNoChangeConfirmationJourney(req: Request<ParamsDictionary,
           ),
           ecctEnabled,
           confirmationStatementError,
-          lawfulActivityStatementError
+          lawfulActivityStatementError,
+          confirmationChecked: confirmationCheckboxValue,
+          lawfulActivityChecked: lawfulActivityCheckboxValue
         }
       };
 

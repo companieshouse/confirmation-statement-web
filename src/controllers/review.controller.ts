@@ -148,6 +148,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
           ecctEnabled: noChangeJourneyResponse.renderData.ecctEnabled,
           confirmationStatementError: noChangeJourneyResponse.renderData.confirmationStatementError,
           lawfulActivityStatementError: noChangeJourneyResponse.renderData.lawfulActivityStatementError,
+          confirmationChecked: noChangeJourneyResponse.renderData.confirmationChecked,
+          lawfulActivityChecked: noChangeJourneyResponse.renderData.lawfulActivityChecked,
           isPaymentDue: isPaymentDue(transaction, submissionId)
         });
       }
