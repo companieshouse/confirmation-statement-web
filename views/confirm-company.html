@@ -1,10 +1,14 @@
 {% extends "layout.html" %}
 
-{% if company.type == 'private limited company' %}
+
+{% set companyType = company.type | lower %}
+
+{% if companyType == 'private limited company' or companyType == 'limited' or companyType == 'ltd' %}
   {% set creationDateLabel = "Incorporation date" %}
 {% else %}
   {% set creationDateLabel = "Registration date" %}
 {% endif %}
+
 
 {% block pageTitle %}
   Confirm the company
