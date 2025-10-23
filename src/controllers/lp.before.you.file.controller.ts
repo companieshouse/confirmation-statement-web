@@ -34,7 +34,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       sicCodes: sicCodeList
     });
 
-
     return res.render(Templates.LP_BEFORE_YOU_FILE, {
       ...getLocaleInfo(locales, lang),
       htmlLang: lang,
@@ -103,7 +102,8 @@ function reloadPageWithError(req: Request, res: Response, options: ReloadPageOpt
     formData: {
       byfCheckbox
     },
-    showSICCodeReference: showSICCodeReference(getCompanyProfileFromSession(req))
+    showSICCodeReference: showSICCodeReference(getCompanyProfileFromSession(req)),
+    previousPageWithoutLang: `${urls.CONFIRM_COMPANY_PATH}?companyNumber=${urlUtils.getCompanyNumberFromRequestParams(req)}`
   });
 }
 
