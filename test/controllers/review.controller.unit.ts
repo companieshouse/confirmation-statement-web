@@ -29,8 +29,6 @@ import * as sessionAcspUtils from "../../src/utils/session.acsp";
 import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
 import { getFormattedConfirmationDate } from "../../src/utils/date";
 import moment from "moment";
-// import { Jurisdiction } from "@companieshouse/api-sdk-node/dist/services/limited-partnerships";
-// import { isPaymentDue } from "../../src/utils/payments";
 
 const PropertiesMock = jest.requireMock('../../src/utils/properties');
 jest.mock('../../src/utils/properties', () => ({
@@ -61,6 +59,8 @@ const CONFIRMATION_STATEMENT_TEXT = "By continuing, you confirm that all informa
 const CONFIRMATION_STATEMENT_ECCT_TEXT = "confirm that all information required to be delivered by the company pursuant to";
 const CONFIRMATION_STATEMENT_ERROR = "Select if all required information is either delivered or being delivered for the confirmation statement date";
 const LAWFUL_ACTIVITY_STATEMENT_ERROR = "Select if intended future activities are lawful";
+const NO_CHANGE_CONFIRMATION_STATEMENT_ERROR = "You need to accept the confirmation statement";
+const NO_CHANGE_LAWFUL_ACTIVITY_STATEMENT_ERROR = "You need to accept the statement on the intended future activities of the company";
 const ERROR_HEADING = "There is a problem";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -244,7 +244,6 @@ describe("review controller tests", () => {
         });
       expect(response.status).toBe(200);
       expect(response.text).toContain(CONFIRMATION_STATEMENT_ECCT_TEXT);
-      // expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_TEXT);
     });
 
     it("Should redirect to an error page when error is returned", async () => {
@@ -359,23 +358,6 @@ describe("review controller tests", () => {
 
       expect(response.text).toMatch(/section 10D\(1\) and 10D\(2\) of the Limited Partnership Act 1907/);
     });
-
-
-    function setExtraDataOnSession(confirmationChecked: string, lawfulActivityChecked: string) {
-      const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
-      const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
-
-      mocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
-
-        if (!req.session) {
-          req.session = new Session();
-        }
-        req.session.setExtraData(CONFIRMATION_STATEMENT_SESSION_KEY, confirmationChecked);
-        req.session.setExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, lawfulActivityChecked);
-
-        return next();
-      });
-    }
   });
 
   describe("post tests", () => {
@@ -411,6 +393,8 @@ describe("review controller tests", () => {
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
       expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).not.toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
+      expect(response.text).not.toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
     });
 
     it("Should reload the review page with an error message when confirmation statement checkbox not ticked", async () => {
@@ -428,6 +412,8 @@ describe("review controller tests", () => {
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
       expect(response.text).not.toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).not.toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
+      expect(response.text).toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
     });
 
     it("Should reload the review page with an error message when lawful activity statement checkbox not ticked", async () => {
@@ -445,6 +431,8 @@ describe("review controller tests", () => {
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
       expect(response.text).not.toContain(CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
+      expect(response.text).not.toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
     });
 
     it("Should redirect to the LP confirmation url if the journey is LP and the payment is not due", async () => {
@@ -488,6 +476,57 @@ describe("review controller tests", () => {
 
       expect(response.status).toBe(302);
       expect(response.header.location).toEqual(PAYMENT_JOURNEY_URL);
+    });
+
+    it("Should reload the review page with error messages when both confirmation & lawful activity statement checkboxes not ticked No Change Journey", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
+
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
+      const response = await request(app).post(URL).send();
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(ERROR_HEADING);
+      expect(response.text).toContain(NO_CHANGE_CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).toContain(NO_CHANGE_LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).not.toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
+      expect(response.text).not.toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
+    });
+
+    it("Should reload the review page with error messages when only confirmation statement checkbox not ticked No Change Journey", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
+
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
+      const response = await request(app)
+        .post(URL)
+        .send({ confirmationStatement: "true" });
+
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(ERROR_HEADING);
+      expect(response.text).not.toContain(NO_CHANGE_CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).toContain(NO_CHANGE_LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
+      expect(response.text).not.toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
+    });
+
+    it("Should reload the review page with error messages when only lawful activity statement checkbox not ticked No Change Journey", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
+
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
+      const response = await request(app)
+        .post(URL)
+        .send({ lawfulActivityStatement: "true" });
+
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(ERROR_HEADING);
+      expect(response.text).toContain(NO_CHANGE_CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).not.toContain(NO_CHANGE_LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).not.toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
+      expect(response.text).toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
     });
   });
 
@@ -703,3 +742,19 @@ describe("review controller tests", () => {
     });
   });
 });
+
+function setExtraDataOnSession(confirmationChecked: string, lawfulActivityChecked: string) {
+  const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
+  const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
+
+  mocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
+
+    if (!req.session) {
+      req.session = new Session();
+    }
+    req.session.setExtraData(CONFIRMATION_STATEMENT_SESSION_KEY, confirmationChecked);
+    req.session.setExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, lawfulActivityChecked);
+
+    return next();
+  });
+}
