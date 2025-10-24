@@ -6,13 +6,14 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { urlUtils } from "../utils/url";
 import { getCompanyProfileFromSession } from "../utils/session";
 import { getReviewPath, isACSPJourney } from '../utils/limited.partnership';
-import { SIC_CODE_SESSION_KEY } from "../utils/constants";
+import { SIC_CODE_SESSION_KEY, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT } from "../utils/constants";
 import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
 import { Session } from "@companieshouse/node-session-handler";
 import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services/sic-code";
 import { SectionStatus, SicCodeData } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { sendLimitedPartnershipTransactionUpdate } from "../utils/confirmation/limited.partnership.confirmation";
 import { validateSicCodes } from "../services/sic.code.service";
+import moment from "moment";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -69,8 +70,8 @@ export const saveAndContinue = async (req: Request, res: Response) => {
     sectionStatus: SectionStatus.CONFIRMED
   };
 
-
-  await sendLimitedPartnershipTransactionUpdate(req, null, sicCodeList);
+  req.session?.setExtraData(SIC_CODE_SESSION_KEY, sicCodeList);
+  await sendLimitedPartnershipTransactionUpdate(req, moment(sessionData?.newConfirmationDate).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT), sicCodeList);
 
   return res.redirect(
     urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(

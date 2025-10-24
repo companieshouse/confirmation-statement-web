@@ -8,17 +8,18 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { getCompanyProfile } from "../services/company.profile.service";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
 import { toReadableFormat } from "../utils/date";
-import { ConfirmationStatementSubmission } from '@companieshouse/api-sdk-node/dist/services/confirmation-statement';
+import { ConfirmationStatementSubmission, SicCodeData } from '@companieshouse/api-sdk-node/dist/services/confirmation-statement';
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
 import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import { isLimitedPartnershipCompanyType, getACSPBackPath } from '../utils/limited.partnership';
 import { isPaymentDue, executePaymentJourney } from "../utils/payments";
-import { handleLimitedPartnershipConfirmationJourney } from "../utils/confirmation/limited.partnership.confirmation";
+import { handleLimitedPartnershipConfirmationJourney, sendLimitedPartnershipTransactionUpdate } from "../utils/confirmation/limited.partnership.confirmation";
 import { handleNoChangeConfirmationJourney } from "../utils/confirmation/no.change.confirmation";
 import { getAcspSessionData } from "../utils/session.acsp";
 import moment from "moment";
+import { SIC_CODE_SESSION_KEY, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT } from "../utils/constants";
 
 const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
 const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
@@ -107,6 +108,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (isLimitedPartnershipCompanyType(companyProfile)) {
       const lpJourneyResponse = handleLimitedPartnershipConfirmationJourney(req, companyNumber, companyProfile, transactionId, submissionId, session);
 
+      const savedSicCodeData = req.session?.getExtraData(SIC_CODE_SESSION_KEY) as SicCodeData;
+      await sendLimitedPartnershipTransactionUpdate(req, moment(acspSessionData?.newConfirmationDate).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT), savedSicCodeData);
+
       if ("renderData" in lpJourneyResponse && lpJourneyResponse.renderData) {
         return res.render(Templates.REVIEW, {
           ...getLocaleInfo(lpJourneyResponse.renderData.locales, lpJourneyResponse.renderData.lang),
@@ -154,9 +158,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         });
       }
       nextPage = CONFIRMATION_PATH;
+      await sendLawfulPurposeStatementUpdate(req, true);
     }
-
-    await sendLawfulPurposeStatementUpdate(req, true);
 
     await executePaymentJourney(
       session,
