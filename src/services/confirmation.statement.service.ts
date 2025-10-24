@@ -50,9 +50,6 @@ export const updateConfirmationStatement = async (session: Session,
   const encodedSubmitId = encodeURIComponent(submitId);
   const encodedTransactionId = encodeURIComponent(transactionId);
 
-  console.log("Final CS submission payload:", JSON.stringify(csSubmission));
-
-
   if (response.httpStatusCode !== 200) {
     const castedResponse: ApiErrorResponse = response;
     throw new Error(`Transaction Id ${encodedTransactionId}, Submit Id ${encodedSubmitId}, Something went wrong updating confirmation statement ${JSON.stringify(castedResponse)}`);

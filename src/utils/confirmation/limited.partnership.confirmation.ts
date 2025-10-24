@@ -86,8 +86,6 @@ export async function sendLimitedPartnershipTransactionUpdate(req: Request, newC
   currentCsSubmission.data.newConfirmationDate = newCsDate;
   currentCsSubmission.data.sicCodeData = newSicCodes ?? undefined;
 
-  console.log("SIC code data being sent:", JSON.stringify(newSicCodes));
-
   await updateConfirmationStatement(session, transactionId, submissionId, currentCsSubmission);
 }
 
