@@ -7,7 +7,7 @@ import { urlUtils } from "../utils/url";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../services/company.profile.service";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
-import { toReadableFormat } from "../utils/date";
+import { convertDateToString, toReadableFormat } from "../utils/date";
 import { ConfirmationStatementSubmission, SicCodeData } from '@companieshouse/api-sdk-node/dist/services/confirmation-statement';
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
@@ -15,11 +15,13 @@ import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
 import { isLimitedPartnershipCompanyType, getACSPBackPath } from '../utils/limited.partnership';
 import { isPaymentDue, executePaymentJourney } from "../utils/payments";
-import { handleLimitedPartnershipConfirmationJourney, sendLimitedPartnershipTransactionUpdate } from "../utils/confirmation/limited.partnership.confirmation";
+import { handleLimitedPartnershipConfirmationJourney } from "../utils/confirmation/limited.partnership.confirmation";
 import { handleNoChangeConfirmationJourney } from "../utils/confirmation/no.change.confirmation";
 import { getAcspSessionData } from "../utils/session.acsp";
 import moment from "moment";
 import { SIC_CODE_SESSION_KEY, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT } from "../utils/constants";
+import { getCompanyProfileFromSession } from "../utils/session";
+import { isTodayBeforeFileCsDate } from "../validators/lp.cs.date.validator";
 
 const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
 const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
@@ -105,11 +107,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const formattedCsDate = formatConfirmationDate(acspSessionData?.newConfirmationDate ?? confirmationDate);
     let nextPage;
 
+    const savedSicCodeData = req.session?.getExtraData(SIC_CODE_SESSION_KEY) as SicCodeData;
+
     if (isLimitedPartnershipCompanyType(companyProfile)) {
       const lpJourneyResponse = handleLimitedPartnershipConfirmationJourney(req, companyNumber, companyProfile, transactionId, submissionId, session);
-
-      const savedSicCodeData = req.session?.getExtraData(SIC_CODE_SESSION_KEY) as SicCodeData;
-      await sendLimitedPartnershipTransactionUpdate(req, moment(acspSessionData?.newConfirmationDate).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT), savedSicCodeData);
 
       if ("renderData" in lpJourneyResponse && lpJourneyResponse.renderData) {
         return res.render(Templates.REVIEW, {
@@ -158,8 +159,17 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         });
       }
       nextPage = CONFIRMATION_PATH;
-      await sendLawfulPurposeStatementUpdate(req, true);
     }
+
+    let submitDate;
+    if (acspSessionData?.newConfirmationDate) {
+      submitDate = moment(acspSessionData.newConfirmationDate).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT);
+    } else {
+      const date = isTodayBeforeFileCsDate(getCompanyProfileFromSession(req)) ? moment().startOf('day').toDate() : null;
+      submitDate = convertDateToString(date, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT);
+    }
+
+    await sendLawfulPurposeStatementUpdate(req, true, submitDate, savedSicCodeData);
 
     await executePaymentJourney(
       session,

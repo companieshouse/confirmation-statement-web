@@ -110,6 +110,14 @@ const dummyHeaders = {
   header1: "45435435"
 };
 
+const dummySicCodeData = {
+  sicCode: [
+    { code: "12345", description: "Consulting" },
+    { code: "67890", description: "Logging" }
+  ],
+  sectionStatus: "CONFIRMED"
+};
+
 const dummyPaymentResponse = {
   headers: dummyHeaders,
   httpStatusCode: 200,
@@ -142,12 +150,23 @@ function setupScottishLimitedPartnershipCompany() {
 
 }
 
-
 jest.mock("../mocks/lp.company.profile.mock.ts", () => ({
   validCompanyProfile: {
     type: ""
   }
 }));
+
+jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+  newConfirmationDate: new Date("2025-10-24"),
+  sicCodes: [
+    { sic_code: "12345", sic_description: "Test 1" },
+    { sic_code: "67890", sic_description: "Test 2" }
+  ],
+  beforeYouFileCheck: true,
+  changeConfirmationStatementDate: false,
+  confirmAllInformationCheck: true,
+  confirmLawfulActionsCheck: true
+});
 
 describe("review controller tests", () => {
 
@@ -536,6 +555,17 @@ describe("review controller tests", () => {
       mockStartPaymentsSession.mockReset();
       mockStartPaymentsSession.mockResolvedValue(dummyPaymentResponse);
       mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+      jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+        newConfirmationDate: new Date("2025-10-24"),
+        sicCodes: [
+          { sic_code: "12345", sic_description: "Test 1" },
+          { sic_code: "67890", sic_description: "Test 2" }
+        ],
+        beforeYouFileCheck: true,
+        changeConfirmationStatementDate: false,
+        confirmAllInformationCheck: true,
+        confirmLawfulActionsCheck: true
+      });
 
     });
 
@@ -615,6 +645,7 @@ describe("review controller tests", () => {
       mockCloseTransaction.mockResolvedValueOnce(PAYMENT_URL);
       mockStartPaymentsSession.mockResolvedValueOnce(dummyPaymentResponse);
 
+      setExtraDataOnSession("true", "true");
       const response = await request(app)
         .post(URL)
         .send({ confirmationStatement: "true", lawfulActivityStatement: "true" });
@@ -746,15 +777,24 @@ describe("review controller tests", () => {
 function setExtraDataOnSession(confirmationChecked: string, lawfulActivityChecked: string) {
   const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
   const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
+  const SIC_CODE_SESSION_KEY = "SIC_CODE_SESSION_KEY";
 
   mocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
+    const session = new Session();
+    const extraDataMap = new Map<string, unknown>();
+    extraDataMap.set(CONFIRMATION_STATEMENT_SESSION_KEY, confirmationChecked);
+    extraDataMap.set(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, lawfulActivityChecked);
+    extraDataMap.set(SIC_CODE_SESSION_KEY, dummySicCodeData);
 
-    if (!req.session) {
-      req.session = new Session();
-    }
-    req.session.setExtraData(CONFIRMATION_STATEMENT_SESSION_KEY, confirmationChecked);
-    req.session.setExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, lawfulActivityChecked);
+    session.getExtraData = <T>(key: string): T | undefined => {
+      return extraDataMap.get(key) as T;
+    };
 
+    session.setExtraData = (key: string, value: unknown): void => {
+      extraDataMap.set(key, value);
+    };
+
+    req.session = session;
     return next();
   });
 }

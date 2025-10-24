@@ -14,6 +14,8 @@ import { SectionStatus, SicCodeData } from "@companieshouse/api-sdk-node/dist/se
 import { sendLimitedPartnershipTransactionUpdate } from "../utils/confirmation/limited.partnership.confirmation";
 import { validateSicCodes } from "../services/sic.code.service";
 import moment from "moment";
+import { isTodayBeforeFileCsDate } from "../validators/lp.cs.date.validator";
+import { convertDateToString } from "../utils/date";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -71,7 +73,16 @@ export const saveAndContinue = async (req: Request, res: Response) => {
   };
 
   req.session?.setExtraData(SIC_CODE_SESSION_KEY, sicCodeList);
-  await sendLimitedPartnershipTransactionUpdate(req, moment(sessionData?.newConfirmationDate).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT), sicCodeList);
+
+  let submitDate;
+  if (sessionData.newConfirmationDate) {
+    submitDate = moment(sessionData.newConfirmationDate).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT);
+  } else {
+    const date = isTodayBeforeFileCsDate(getCompanyProfileFromSession(req)) ? moment().startOf('day').toDate() : null;
+    submitDate = convertDateToString(date, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT);
+  }
+
+  await sendLimitedPartnershipTransactionUpdate(req, submitDate, sicCodeList);
 
   return res.redirect(
     urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
