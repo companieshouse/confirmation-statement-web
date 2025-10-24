@@ -24,11 +24,13 @@ import { mockConfirmationStatementSubmission } from "../mocks/confirmation.state
 import { getConfirmationStatement } from "../../src/services/confirmation.statement.service";
 import { Request, Response, NextFunction } from "express";
 import { Session } from "@companieshouse/node-session-handler";
-import { DMMMMYYYY_DATE_FORMAT, LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
+import { DMMMMYYYY_DATE_FORMAT, LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT } from "../../src/utils/constants";
 import * as sessionAcspUtils from "../../src/utils/session.acsp";
 import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
 import { getFormattedConfirmationDate } from "../../src/utils/date";
 import moment from "moment";
+import * as updateUtils from "../../src/utils/update.confirmation.statement.submission";
+
 
 const PropertiesMock = jest.requireMock('../../src/utils/properties');
 jest.mock('../../src/utils/properties', () => ({
@@ -112,8 +114,8 @@ const dummyHeaders = {
 
 const dummySicCodeData = {
   sicCode: [
-    { code: "12345", description: "Consulting" },
-    { code: "67890", description: "Logging" }
+    { code: "12345", description: "Test 1" },
+    { code: "67890", description: "Test 2" }
   ],
   sectionStatus: "CONFIRMED"
 };
@@ -266,7 +268,7 @@ describe("review controller tests", () => {
     });
 
     it("Should redirect to an error page when error is returned", async () => {
-      mockGetConfirmationStatement.mockRejectedValueOnce(new Error());
+      mockGetConfirmationStatement.mockRejectedValueOnce(new Error("ERROR"));
       const response = await request(app)
         .get(URL);
       expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
@@ -547,6 +549,65 @@ describe("review controller tests", () => {
       expect(response.text).not.toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
       expect(response.text).toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
     });
+
+    it("should use session data newConfirmationDate for submitDate", async () => {
+      const mockDate = new Date("2025-10-24");
+
+      jest.spyOn(updateUtils, "sendLawfulPurposeStatementUpdate").mockResolvedValue(undefined);
+
+      jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+        newConfirmationDate: mockDate,
+        sicCodes: [],
+        beforeYouFileCheck: true,
+        changeConfirmationStatementDate: false,
+        confirmAllInformationCheck: true,
+        confirmLawfulActionsCheck: true
+      });
+
+      const expectedSubmitDate = moment(mockDate).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT);
+
+      setExtraDataOnSession("true", "true");
+
+      const response = await request(app)
+        .post(URL)
+        .send({ confirmationStatement: "true", lawfulActivityStatement: "true" });
+
+      expect(updateUtils.sendLawfulPurposeStatementUpdate).toHaveBeenCalledWith(
+        expect.any(Object),
+        true,
+        expectedSubmitDate,
+        expect.any(Object)
+      );
+
+      expect(response.status).toBe(302);
+    });
+
+    it("should pass correct SicCodeData to sendLawfulPurposeStatementUpdate", async () => {
+      jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+        newConfirmationDate: new Date("2025-10-24"),
+        sicCodes: [],
+        beforeYouFileCheck: true,
+        changeConfirmationStatementDate: false,
+        confirmAllInformationCheck: true,
+        confirmLawfulActionsCheck: true
+      });
+
+      setExtraDataOnSession("true", "true");
+
+      const response = await request(app)
+        .post(URL)
+        .send({ confirmationStatement: "true", lawfulActivityStatement: "true" });
+
+      expect(updateUtils.sendLawfulPurposeStatementUpdate).toHaveBeenCalledWith(
+        expect.any(Object),
+        true,
+        expect.any(String),
+        dummySicCodeData
+      );
+
+      expect(response.status).toBe(302);
+    });
+
   });
 
   describe("Payment journey tests", () => {
@@ -777,7 +838,7 @@ describe("review controller tests", () => {
 function setExtraDataOnSession(confirmationChecked: string, lawfulActivityChecked: string) {
   const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
   const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
-  const SIC_CODE_SESSION_KEY = "SIC_CODE_SESSION_KEY";
+  const SIC_CODE_SESSION_KEY = "sic_code_session";
 
   mocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
     const session = new Session();
