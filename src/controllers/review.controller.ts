@@ -18,9 +18,8 @@ import { isPaymentDue, executePaymentJourney } from "../utils/payments";
 import { handleLimitedPartnershipConfirmationJourney } from "../utils/confirmation/limited.partnership.confirmation";
 import { handleNoChangeConfirmationJourney } from "../utils/confirmation/no.change.confirmation";
 import { getAcspSessionData } from "../utils/session.acsp";
-import { CONFIRMATION_STATEMENT_SESSION_KEY, LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY } from "../utils/constants";
+import { CONFIRMATION_STATEMENT_SESSION_KEY, LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, SIC_CODE_SESSION_KEY } from "../utils/constants";
 import moment from "moment";
-import { SIC_CODE_SESSION_KEY } from "../utils/constants";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
