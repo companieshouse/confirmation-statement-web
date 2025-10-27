@@ -5,6 +5,7 @@ import { LP_BEFORE_YOU_FILE_PATH, urlParams } from "../../src/types/page.urls";
 import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
 import { getTransaction } from "../../src/services/transaction.service";
 import { getCompanyProfileFromSession } from "../../src/utils/session";
+import * as urls from "../../src/types/page.urls";
 
 jest.mock("../../src/services/transaction.service", () => ({
   getTransaction: jest.fn()
@@ -69,22 +70,6 @@ describe("start before you file controller tests", () => {
     expect(response.text).toContain("You will not be able to view or change limited partnership information as part of this filing.");
   });
 
-  function doGetPageTest(subtype: string) {
-    (getCompanyProfileFromSession as jest.Mock).mockImplementation((_req) => {
-      return {
-        companyNumber: COMPANY_NUMBER,
-        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
-        subtype: subtype,
-        companyName: "Test Company"
-      };
-    });
-
-    (getTransaction as jest.Mock).mockResolvedValue({
-      id: TRANSACTION_ID
-    });
-    return request(app).get(URL);
-  }
-
   it("should forward to Confirmation Statement Date page", async () => {
     const response = await request(app)
       .post(URL).set('Content-Type', 'application/json')
@@ -97,4 +82,47 @@ describe("start before you file controller tests", () => {
     expect(response.status).toBe(302); // Expecting a redirect response
     expect(response.headers.location).toBe("/confirmation-statement/company/12345678/transaction/66454/submission/435435/acsp/confirmation-statement-date?lang=en");
   });
+
+  it("should reload page with error when checkbox is not selected", async () => {
+    (getCompanyProfileFromSession as jest.Mock).mockImplementation((_req) => {
+      return {
+        companyNumber: COMPANY_NUMBER,
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
+        companyName: "Test Company"
+      };
+    });
+
+    (getTransaction as jest.Mock).mockResolvedValue({
+      id: TRANSACTION_ID
+    });
+
+    const response = await request(app)
+      .post(URL).set('Content-Type', 'application/json')
+      .send({
+        "limitedPartnershipSubtype": LIMITED_PARTNERSHIP_SUBTYPES.LP
+      });
+
+    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    expect(response.status).toBe(200);
+    expect(response.text).toContain("Before you file the confirmation statement");
+    expect(response.text).toContain("Confirm that you&#39;ve checked the limited partnership information and submitted any updates");
+    expect(response.text).toContain(`${urls.CONFIRM_COMPANY_PATH}?companyNumber=${COMPANY_NUMBER}`);
+  });
 });
+
+function doGetPageTest(subtype: string) {
+  (getCompanyProfileFromSession as jest.Mock).mockImplementation((_req) => {
+    return {
+      companyNumber: COMPANY_NUMBER,
+      type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+      subtype: subtype,
+      companyName: "Test Company"
+    };
+  });
+
+  (getTransaction as jest.Mock).mockResolvedValue({
+    id: TRANSACTION_ID
+  });
+  return request(app).get(URL);
+}

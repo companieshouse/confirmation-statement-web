@@ -1,9 +1,22 @@
 jest.mock("../../src/utils/logger");
 
-import { addDayToDateString, convertDateToString, formatDateString, isInFuture, isValidDate, toReadableFormat, toReadableFormatMonthYear } from "../../src/utils/date";
+import { addDayToDateString, convertDateToString, formatDateString, getDateSubmission, isInFuture, isValidDate, toReadableFormat, toReadableFormatMonthYear } from "../../src/utils/date";
 import { createAndLogError } from "../../src/utils/logger";
 import { Settings as luxonSettings } from "luxon";
 import { DMMMMYYYY_DATE_FORMAT, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT } from "../../src/utils/constants";
+import moment from "moment";
+import { getCompanyProfileFromSession } from "../../src/utils/session";
+import { isTodayBeforeFileCsDate } from "../../src/validators/lp.cs.date.validator";
+import { Request } from "express";
+import * as dateUtils from '../../src/utils/date';
+
+jest.mock("../../src/utils/session", () => ({
+  getCompanyProfileFromSession: jest.fn(),
+}));
+
+jest.mock('../../src/validators/lp.cs.date.validator', () => ({
+  isTodayBeforeFileCsDate: jest.fn(),
+}));
 
 const mockCreateAndLogError = createAndLogError as jest.Mock;
 mockCreateAndLogError.mockReturnValue(new Error());
@@ -180,6 +193,43 @@ describe("Date tests", () => {
     it("Should return date string if the date value is valid", () => {
       const validity = convertDateToString(new Date("2025/09/30"), YYYYMMDD_WITH_HYPHEN_DATE_FORMAT);
       expect(validity).toEqual("2025-09-30");
+    });
+  });
+
+  describe('getDateSubmission', () => {
+    const mockReq = {} as Request;
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should format and return newConfirmationDate when provided', () => {
+      const date = new Date('2023-10-01');
+      const result = getDateSubmission(date, mockReq);
+      expect(result).toBe(moment(date).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT));
+    });
+
+    it('should return formatted current date when newConfirmationDate is null and today is before file CS date', () => {
+      (isTodayBeforeFileCsDate as jest.Mock).mockReturnValue(true);
+      const todayStart = moment().startOf('day').toDate();
+      jest.spyOn(dateUtils, 'convertDateToString').mockReturnValue('2023-10-01');
+
+      const result = getDateSubmission(null, mockReq);
+      expect(getCompanyProfileFromSession).toHaveBeenCalledWith(mockReq);
+      expect(isTodayBeforeFileCsDate).toHaveBeenCalled();
+      expect(convertDateToString).toHaveBeenCalledWith(todayStart, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT);
+      expect(result).toBe('2023-10-01');
+    });
+
+    it('should return null formatted when newConfirmationDate is null and today is not before file CS date', () => {
+      (isTodayBeforeFileCsDate as jest.Mock).mockReturnValue(false);
+      jest.spyOn(dateUtils, 'convertDateToString').mockReturnValue(null);
+
+      const result = getDateSubmission(null, mockReq);
+      expect(getCompanyProfileFromSession).toHaveBeenCalledWith(mockReq);
+      expect(isTodayBeforeFileCsDate).toHaveBeenCalled();
+      expect(convertDateToString).toHaveBeenCalledWith(null, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT);
+      expect(result).toBe(null);
     });
   });
 });

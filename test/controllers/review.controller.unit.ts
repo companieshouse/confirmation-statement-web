@@ -24,13 +24,13 @@ import { mockConfirmationStatementSubmission } from "../mocks/confirmation.state
 import { getConfirmationStatement } from "../../src/services/confirmation.statement.service";
 import { Request, Response, NextFunction } from "express";
 import { Session } from "@companieshouse/node-session-handler";
-import { DMMMMYYYY_DATE_FORMAT, LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES, CONFIRMATION_STATEMENT_SESSION_KEY, LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY } from "../../src/utils/constants";
+import { DMMMMYYYY_DATE_FORMAT, LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT, CONFIRMATION_STATEMENT_SESSION_KEY, LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY } from "../../src/utils/constants";
 import * as sessionAcspUtils from "../../src/utils/session.acsp";
 import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
 import { getFormattedConfirmationDate } from "../../src/utils/date";
 import moment from "moment";
-// import { Jurisdiction } from "@companieshouse/api-sdk-node/dist/services/limited-partnerships";
-// import { isPaymentDue } from "../../src/utils/payments";
+import * as updateUtils from "../../src/utils/update.confirmation.statement.submission";
+
 
 const PropertiesMock = jest.requireMock('../../src/utils/properties');
 jest.mock('../../src/utils/properties', () => ({
@@ -61,6 +61,8 @@ const CONFIRMATION_STATEMENT_TEXT = "By continuing, you confirm that all informa
 const CONFIRMATION_STATEMENT_ECCT_TEXT = "confirm that all information required to be delivered by the company pursuant to";
 const CONFIRMATION_STATEMENT_ERROR = "Select if all required information is either delivered or being delivered for the confirmation statement date";
 const LAWFUL_ACTIVITY_STATEMENT_ERROR = "Select if intended future activities are lawful";
+const NO_CHANGE_CONFIRMATION_STATEMENT_ERROR = "You need to accept the confirmation statement";
+const NO_CHANGE_LAWFUL_ACTIVITY_STATEMENT_ERROR = "You need to accept the statement on the intended future activities of the company";
 const ERROR_HEADING = "There is a problem";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -110,6 +112,14 @@ const dummyHeaders = {
   header1: "45435435"
 };
 
+const dummySicCodeData = {
+  sicCode: [
+    { code: "12345", description: "Test 1" },
+    { code: "67890", description: "Test 2" }
+  ],
+  sectionStatus: "CONFIRMED"
+};
+
 const dummyPaymentResponse = {
   headers: dummyHeaders,
   httpStatusCode: 200,
@@ -142,12 +152,23 @@ function setupScottishLimitedPartnershipCompany() {
 
 }
 
-
 jest.mock("../mocks/lp.company.profile.mock.ts", () => ({
   validCompanyProfile: {
     type: ""
   }
 }));
+
+jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+  newConfirmationDate: new Date("2025-10-24"),
+  sicCodes: [
+    { sic_code: "12345", sic_description: "Test 1" },
+    { sic_code: "67890", sic_description: "Test 2" }
+  ],
+  beforeYouFileCheck: true,
+  changeConfirmationStatementDate: false,
+  confirmAllInformationCheck: true,
+  confirmLawfulActionsCheck: true
+});
 
 describe("review controller tests", () => {
 
@@ -244,11 +265,10 @@ describe("review controller tests", () => {
         });
       expect(response.status).toBe(200);
       expect(response.text).toContain(CONFIRMATION_STATEMENT_ECCT_TEXT);
-      // expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_TEXT);
     });
 
     it("Should redirect to an error page when error is returned", async () => {
-      mockGetConfirmationStatement.mockRejectedValueOnce(new Error());
+      mockGetConfirmationStatement.mockRejectedValueOnce(new Error("ERROR"));
       const response = await request(app)
         .get(URL);
       expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
@@ -360,7 +380,6 @@ describe("review controller tests", () => {
       expect(response.text).toMatch(/section 10D\(1\) and 10D\(2\) of the Limited Partnership Act 1907/);
     });
 
-
     function setExtraDataOnSession(confirmationChecked: string, lawfulActivityChecked: string) {
 
       mocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
@@ -374,6 +393,7 @@ describe("review controller tests", () => {
         return next();
       });
     }
+    
   });
 
   describe("post tests", () => {
@@ -409,6 +429,8 @@ describe("review controller tests", () => {
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
       expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).not.toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
+      expect(response.text).not.toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
     });
 
     it("Should reload the review page with an error message when confirmation statement checkbox not ticked", async () => {
@@ -426,6 +448,8 @@ describe("review controller tests", () => {
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
       expect(response.text).not.toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).not.toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
+      expect(response.text).toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
     });
 
     it("Should reload the review page with an error message when lawful activity statement checkbox not ticked", async () => {
@@ -443,6 +467,8 @@ describe("review controller tests", () => {
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
       expect(response.text).not.toContain(CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
+      expect(response.text).not.toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
     });
 
     it("Should redirect to the LP confirmation url if the journey is LP and the payment is not due", async () => {
@@ -487,6 +513,116 @@ describe("review controller tests", () => {
       expect(response.status).toBe(302);
       expect(response.header.location).toEqual(PAYMENT_JOURNEY_URL);
     });
+
+    it("Should reload the review page with error messages when both confirmation & lawful activity statement checkboxes not ticked No Change Journey", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
+
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
+      const response = await request(app).post(URL).send();
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(ERROR_HEADING);
+      expect(response.text).toContain(NO_CHANGE_CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).toContain(NO_CHANGE_LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).not.toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
+      expect(response.text).not.toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
+    });
+
+    it("Should reload the review page with error messages when only confirmation statement checkbox not ticked No Change Journey", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
+
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
+      const response = await request(app)
+        .post(URL)
+        .send({ confirmationStatement: "true" });
+
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(ERROR_HEADING);
+      expect(response.text).not.toContain(NO_CHANGE_CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).toContain(NO_CHANGE_LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
+      expect(response.text).not.toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
+    });
+
+    it("Should reload the review page with error messages when only lawful activity statement checkbox not ticked No Change Journey", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+      mockGetConfirmationStatement.mockResolvedValueOnce(mockConfirmationStatementSubmission);
+
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
+      const response = await request(app)
+        .post(URL)
+        .send({ lawfulActivityStatement: "true" });
+
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(ERROR_HEADING);
+      expect(response.text).toContain(NO_CHANGE_CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).not.toContain(NO_CHANGE_LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).not.toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
+      expect(response.text).toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
+    });
+
+    it("should use session data newConfirmationDate for submitDate", async () => {
+      const mockDate = new Date("2025-10-24");
+
+      jest.spyOn(updateUtils, "sendLawfulPurposeStatementUpdate").mockResolvedValue(undefined);
+
+      jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+        newConfirmationDate: mockDate,
+        sicCodes: [],
+        beforeYouFileCheck: true,
+        changeConfirmationStatementDate: false,
+        confirmAllInformationCheck: true,
+        confirmLawfulActionsCheck: true
+      });
+
+      const expectedSubmitDate = moment(mockDate).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT);
+
+      setExtraDataOnSession("true", "true");
+
+      const response = await request(app)
+        .post(URL)
+        .send({ confirmationStatement: "true", lawfulActivityStatement: "true" });
+
+      expect(updateUtils.sendLawfulPurposeStatementUpdate).toHaveBeenCalledWith(
+        expect.any(Object),
+        true,
+        expectedSubmitDate,
+        expect.any(Object)
+      );
+
+      expect(response.status).toBe(302);
+    });
+
+    it("should pass correct SicCodeData to sendLawfulPurposeStatementUpdate", async () => {
+      jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+        newConfirmationDate: new Date("2025-10-24"),
+        sicCodes: [],
+        beforeYouFileCheck: true,
+        changeConfirmationStatementDate: false,
+        confirmAllInformationCheck: true,
+        confirmLawfulActionsCheck: true
+      });
+
+      setExtraDataOnSession("true", "true");
+
+      const response = await request(app)
+        .post(URL)
+        .send({ confirmationStatement: "true", lawfulActivityStatement: "true" });
+
+      expect(updateUtils.sendLawfulPurposeStatementUpdate).toHaveBeenCalledWith(
+        expect.any(Object),
+        true,
+        expect.any(String),
+        dummySicCodeData
+      );
+
+      expect(response.status).toBe(302);
+    });
+
   });
 
   describe("Payment journey tests", () => {
@@ -495,6 +631,17 @@ describe("review controller tests", () => {
       mockStartPaymentsSession.mockReset();
       mockStartPaymentsSession.mockResolvedValue(dummyPaymentResponse);
       mockGetTransaction.mockResolvedValueOnce(dummyTransactionWithCosts);
+      jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+        newConfirmationDate: new Date("2025-10-24"),
+        sicCodes: [
+          { sic_code: "12345", sic_description: "Test 1" },
+          { sic_code: "67890", sic_description: "Test 2" }
+        ],
+        beforeYouFileCheck: true,
+        changeConfirmationStatementDate: false,
+        confirmAllInformationCheck: true,
+        confirmLawfulActionsCheck: true
+      });
 
     });
 
@@ -574,6 +721,7 @@ describe("review controller tests", () => {
       mockCloseTransaction.mockResolvedValueOnce(PAYMENT_URL);
       mockStartPaymentsSession.mockResolvedValueOnce(dummyPaymentResponse);
 
+      setExtraDataOnSession("true", "true");
       const response = await request(app)
         .post(URL)
         .send({ confirmationStatement: "true", lawfulActivityStatement: "true" });
@@ -701,3 +849,28 @@ describe("review controller tests", () => {
     });
   });
 });
+
+function setExtraDataOnSession(confirmationChecked: string, lawfulActivityChecked: string) {
+  const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
+  const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
+  const SIC_CODE_SESSION_KEY = "sic_code_session";
+
+  mocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
+    const session = new Session();
+    const extraDataMap = new Map<string, unknown>();
+    extraDataMap.set(CONFIRMATION_STATEMENT_SESSION_KEY, confirmationChecked);
+    extraDataMap.set(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, lawfulActivityChecked);
+    extraDataMap.set(SIC_CODE_SESSION_KEY, dummySicCodeData);
+
+    session.getExtraData = <T>(key: string): T | undefined => {
+      return extraDataMap.get(key) as T;
+    };
+
+    session.setExtraData = (key: string, value: unknown): void => {
+      extraDataMap.set(key, value);
+    };
+
+    req.session = session;
+    return next();
+  });
+}

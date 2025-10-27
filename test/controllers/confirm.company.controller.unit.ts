@@ -425,4 +425,38 @@ describe("Confirm company controller tests", () => {
     expect(shouldRedirectToPaperFilingForInvalidLp(validLimitedPartnershipProfile)).toBeTruthy();
   });
 
+  it("Should display 'Incorporation date' when company type is 'limited'", async () => {
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    mockFormatForDisplay.mockReturnValueOnce(validCompanyProfile);
+    mockGetNextMadeUpToDate.mockResolvedValueOnce({
+      currentNextMadeUpToDate: validCompanyProfile.confirmationStatement?.nextMadeUpTo,
+      isDue: false,
+      newNextMadeUpToDate: today
+    } as NextMadeUpToDate);
+
+    validCompanyProfile.type = "ltd";
+
+    const response = await request(app)
+      .get(CONFIRM_COMPANY_PATH);
+
+    expect(response.text).toContain("Incorporation date");
+  });
+
+  it("Should display 'Registration date' when company type is 'limited-partnership'", async () => {
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    mockFormatForDisplay.mockReturnValueOnce(validCompanyProfile);
+    mockGetNextMadeUpToDate.mockResolvedValueOnce({
+      currentNextMadeUpToDate: validCompanyProfile.confirmationStatement?.nextMadeUpTo,
+      isDue: false,
+      newNextMadeUpToDate: today
+    } as NextMadeUpToDate);
+
+    validCompanyProfile.type = "limited-partnership";
+
+    const response = await request(app)
+      .get(CONFIRM_COMPANY_PATH);
+
+    expect(response.text).toContain("Registration date");
+  });
+
 });

@@ -7,8 +7,8 @@ import { urlUtils } from "../utils/url";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../services/company.profile.service";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
-import { toReadableFormat } from "../utils/date";
-import { ConfirmationStatementSubmission } from '@companieshouse/api-sdk-node/dist/services/confirmation-statement';
+import { getDateSubmission, toReadableFormat } from "../utils/date";
+import { ConfirmationStatementSubmission, SicCodeData } from '@companieshouse/api-sdk-node/dist/services/confirmation-statement';
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
 import { ecctDayOneEnabled } from "../utils/feature.flag";
@@ -20,6 +20,7 @@ import { handleNoChangeConfirmationJourney } from "../utils/confirmation/no.chan
 import { getAcspSessionData } from "../utils/session.acsp";
 import { CONFIRMATION_STATEMENT_SESSION_KEY, LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY } from "../utils/constants";
 import moment from "moment";
+import { SIC_CODE_SESSION_KEY } from "../utils/constants";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -102,6 +103,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const formattedCsDate = formatConfirmationDate(acspSessionData?.newConfirmationDate ?? confirmationDate);
     let nextPage;
 
+    const savedSicCodeData = req.session?.getExtraData(SIC_CODE_SESSION_KEY) as SicCodeData;
+
     if (isLimitedPartnershipCompanyType(companyProfile)) {
       const lpJourneyResponse = handleLimitedPartnershipConfirmationJourney(req, companyNumber, companyProfile, transactionId, submissionId, session);
 
@@ -146,13 +149,17 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
           ecctEnabled: noChangeJourneyResponse.renderData.ecctEnabled,
           confirmationStatementError: noChangeJourneyResponse.renderData.confirmationStatementError,
           lawfulActivityStatementError: noChangeJourneyResponse.renderData.lawfulActivityStatementError,
+          confirmationChecked: noChangeJourneyResponse.renderData.confirmationChecked,
+          lawfulActivityChecked: noChangeJourneyResponse.renderData.lawfulActivityChecked,
           isPaymentDue: isPaymentDue(transaction, submissionId)
         });
       }
       nextPage = CONFIRMATION_PATH;
     }
 
-    await sendLawfulPurposeStatementUpdate(req, true);
+    const submitDate = getDateSubmission(acspSessionData?.newConfirmationDate, req);
+
+    await sendLawfulPurposeStatementUpdate(req, true, submitDate, savedSicCodeData);
 
     await executePaymentJourney(
       session,
