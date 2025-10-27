@@ -6,16 +6,15 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { urlUtils } from "../utils/url";
 import { getCompanyProfileFromSession } from "../utils/session";
 import { getReviewPath, isACSPJourney } from '../utils/limited.partnership';
-import { SIC_CODE_SESSION_KEY, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT } from "../utils/constants";
+import { SIC_CODE_SESSION_KEY } from "../utils/constants";
 import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
 import { Session } from "@companieshouse/node-session-handler";
 import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services/sic-code";
 import { SectionStatus, SicCodeData } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { sendLimitedPartnershipTransactionUpdate } from "../utils/confirmation/limited.partnership.confirmation";
 import { validateSicCodes } from "../services/sic.code.service";
-import moment from "moment";
-import { isTodayBeforeFileCsDate } from "../validators/lp.cs.date.validator";
-import { convertDateToString } from "../utils/date";
+import { getDateSubmission } from "../utils/date";
+
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -74,13 +73,7 @@ export const saveAndContinue = async (req: Request, res: Response) => {
 
   req.session?.setExtraData(SIC_CODE_SESSION_KEY, sicCodeList);
 
-  let submitDate;
-  if (sessionData.newConfirmationDate) {
-    submitDate = moment(sessionData.newConfirmationDate).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT);
-  } else {
-    const date = isTodayBeforeFileCsDate(getCompanyProfileFromSession(req)) ? moment().startOf('day').toDate() : null;
-    submitDate = convertDateToString(date, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT);
-  }
+  const submitDate = getDateSubmission(sessionData?.newConfirmationDate, req);
 
   await sendLimitedPartnershipTransactionUpdate(req, submitDate, sicCodeList);
 
