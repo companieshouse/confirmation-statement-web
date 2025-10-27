@@ -50,6 +50,9 @@ export const LIMITED_PARTNERSHIP_SUBTYPES = {
 export const COMPANY_PROFILE_SESSION_KEY = "company_profile";
 export const ACSP_SESSION_KEY = "acsp_session";
 export const SIC_CODE_SESSION_KEY = "sic_code_session";
+export const PAYMENT_NONCE_SESSION_KEY = "payment-nonce";
+export const CONFIRMATION_STATEMENT_SESSION_KEY = 'confirmation-statement-check';
+export const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY = 'lawful-activity-statement-check';
 export const VALID_EMAIL_REGEX_PATTERN = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~\\-]+@([^.@][^@\\s]+)$";
 export const HOSTNAME_REGEX = "^(xn|[a-z0-9]+)(-?-[a-z0-9]+)*$";
 export const TLD_PART_REGEX = "^(?:[a-z]{2,63}|xn--[a-z0-9]+(?:-[a-z0-9]+){1,4})(?:$|[^-])";

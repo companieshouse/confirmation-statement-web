@@ -4,7 +4,7 @@ import { Request } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
 import { isCheckboxTicked } from "../components/check.box";
-import { LP_CONFIRMATION_STATEMENT_ERROR, LP_LAWFUL_ACTIVITY_STATEMENT_ERROR } from "../../utils/constants";
+import { LP_CONFIRMATION_STATEMENT_ERROR, LP_LAWFUL_ACTIVITY_STATEMENT_ERROR, CONFIRMATION_STATEMENT_SESSION_KEY, LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY } from "../../utils/constants";
 import { getACSPBackPath, isACSPJourney, getConfirmationPath } from "../../utils/limited.partnership";
 import { selectLang, getLocalesService } from "../../utils/localise";
 import { urlUtils } from "../../utils/url";
@@ -12,9 +12,6 @@ import { ConfirmationStatementSubmission, SicCodeData } from "@companieshouse/ap
 import { getConfirmationStatement, updateConfirmationStatement } from "../../services/confirmation.statement.service";
 import { getTransaction } from '../../services/transaction.service';
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
-
-const CONFIRMATION_STATEMENT_SESSION_KEY: string = 'CONFIRMATION_STATEMENT_CHECK_KEY';
-const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY: string = 'LAWFUL_ACTIVITY_STATEMENT_CHECK_KEY';
 
 export function handleLimitedPartnershipConfirmationJourney (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
   companyNumber: string, companyProfile: CompanyProfile, transactionId: string, submissionId: string, session: Session) {

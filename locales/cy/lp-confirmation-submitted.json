@@ -9,5 +9,7 @@
     "CSSWhatHappensNextBody3" : "CY-If it's rejected, we'll explain why and tell you what to do next.",
     "CSSWhatDoYouNextTitle" : "CY-What do you want to do next?",
     "CSSWhatDoYouNextFile" : "CY-File for a different limited partnership",
-    "CSSWhatDoYouNextReturn" : "CY-Return to the overview screen for this limited partnership"
+    "CSSWhatDoYouNextReturn" : "CY-Return to the overview screen for this limited partnership",
+    "CSSWhatDoYouNextSurveyLink" : "CY-What did you think of this service?",
+    "CSSWhatDoYouNextSurveyText" : "CY-(takes 30 seconds)"
 }

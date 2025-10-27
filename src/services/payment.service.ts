@@ -7,6 +7,7 @@ import { createAndLogError, logger } from "../utils/logger";
 import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { API_URL, CHS_URL } from "../utils/properties";
 import { PAYMENT_CALLBACK_PATH } from "../types/page.urls";
+import { PAYMENT_NONCE_SESSION_KEY } from "../utils/constants";
 import { urlUtils } from "../utils/url";
 
 export const startPaymentsSession = async (session: Session, paymentSessionUrl: string,
@@ -20,7 +21,7 @@ export const startPaymentsSession = async (session: Session, paymentSessionUrl: 
 
   const state = uuidv4();
 
-  session.setExtraData("payment-nonce", state);
+  session.setExtraData(PAYMENT_NONCE_SESSION_KEY, state);
 
   const createPaymentRequest: CreatePaymentRequest = {
     redirectUri: redirectUri,
