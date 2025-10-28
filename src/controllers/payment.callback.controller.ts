@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { PAYMENT_NONCE_SESSION_KEY } from "../utils/constants";
 import { urlUtils } from "../utils/url";
 import { createAndLogError, logger } from "../utils/logger";
 import { CONFIRMATION_PATH, REVIEW_PATH } from "../types/page.urls";
@@ -10,7 +11,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const paymentStatus = req.query.status;
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const returnedState = req.query.state;
-    const savedState = session.getExtraData("payment-nonce");
+    const savedState = session.getExtraData(PAYMENT_NONCE_SESSION_KEY);
 
     logger.debug(`Returned state: ${returnedState}, saved state: ${savedState}`);
 

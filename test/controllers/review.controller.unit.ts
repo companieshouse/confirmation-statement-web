@@ -24,7 +24,7 @@ import { mockConfirmationStatementSubmission } from "../mocks/confirmation.state
 import { getConfirmationStatement } from "../../src/services/confirmation.statement.service";
 import { Request, Response, NextFunction } from "express";
 import { Session } from "@companieshouse/node-session-handler";
-import { DMMMMYYYY_DATE_FORMAT, LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT } from "../../src/utils/constants";
+import { DMMMMYYYY_DATE_FORMAT, LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT, CONFIRMATION_STATEMENT_SESSION_KEY, LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY } from "../../src/utils/constants";
 import * as sessionAcspUtils from "../../src/utils/session.acsp";
 import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
 import { getFormattedConfirmationDate } from "../../src/utils/date";
@@ -379,6 +379,20 @@ describe("review controller tests", () => {
 
       expect(response.text).toMatch(/section 10D\(1\) and 10D\(2\) of the Limited Partnership Act 1907/);
     });
+
+    function setExtraDataOnSession(confirmationChecked: string, lawfulActivityChecked: string) {
+
+      mocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
+
+        if (!req.session) {
+          req.session = new Session();
+        }
+        req.session.setExtraData(CONFIRMATION_STATEMENT_SESSION_KEY, confirmationChecked);
+        req.session.setExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, lawfulActivityChecked);
+
+        return next();
+      });
+    }
   });
 
   describe("post tests", () => {
