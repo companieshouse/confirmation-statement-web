@@ -41,6 +41,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       company,
       previousPageWithoutLang: `${urls.CONFIRM_COMPANY_PATH}?companyNumber=${urlUtils.getCompanyNumberFromRequestParams(req)}`,
       formData,
+      showSICCodeReference: showSICCodeReference(company),
       isPaymentDue: isPaymentDue(await transaction, submissionId)
     });
 
