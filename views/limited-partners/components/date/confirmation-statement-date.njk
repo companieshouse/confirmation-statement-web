@@ -2,6 +2,7 @@
 {% from "govuk/components/button/macro.njk"     import govukButton %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/radios/macro.njk"     import govukRadios %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% set errors = pageProperties.errors %}
 
@@ -73,6 +74,15 @@
                         <span class="govuk-caption-l">{{company.companyName}} ({{company.companyNumber}})</span>
                         {{i18n.CDSTitle}}
                     </h1>
+
+                    {% if errorMessage %}
+                        {{ govukErrorSummary({
+                            titleText: "There is a problem",
+                            errorList: [
+                                { text: errorMessage.text, href: "#confirmationStatementDate" }
+                            ]
+                        }) }}
+                    {% endif %}
 
                     {% if isTodayBeforeFileCsDate %}
                         <p class="govuk-body">{{i18n.CDSNotDueToFileEarly}}</p>
