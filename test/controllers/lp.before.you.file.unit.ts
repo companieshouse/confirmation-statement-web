@@ -40,7 +40,7 @@ describe("start before you file controller tests", () => {
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.text).toContain("Before you file the confirmation statement");
-    expect(response.text).toContain("You will not be able to view or change limited partnership information as part of this filing.");
+    expect(response.text).toContain("You will not be able to view or change limited partnership information (except for the SIC codes) as part of this filing.");
   });
 
   it("should return acsp / limited partnership before you file page page, for Scottish Limited Parntership", async () => {
@@ -49,7 +49,7 @@ describe("start before you file controller tests", () => {
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.text).toContain("Before you file the confirmation statement");
-    expect(response.text).toContain("You will not be able to view or change limited partnership information as part of this filing.");
+    expect(response.text).toContain("You will not be able to view or change limited partnership information (except for the SIC codes) as part of this filing.");
   });
 
   it("should return acsp / limited partnership before you file page page, for Private Fund subtype", async () => {
