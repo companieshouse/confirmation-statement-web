@@ -43,57 +43,38 @@
                     {{ i18n.SICCSPageTitle }}
                 </h1>
 
-                {% if maxError or duplicateError %}
-                  <div class="govuk-error-summary" role="alert" aria-labelledby="error-summary-title" tabindex="-1">
-                    <h2 class="govuk-error-summary__title" id="error-summary-title">
-                      There is a problem
-                    </h2>
-                    <div class="govuk-error-summary__body">
-                      <ul class="govuk-list govuk-error-summary__list">
-                        {% if maxError %}
-                          <li>{{ maxError }}</li>
-                        {% endif %}
-                        {% if duplicateError %}
-                          <li>{{ duplicateError }}</li>
-                        {% endif %}
-                      </ul>
-                    </div>
-                  </div>
+                {% if errors | length > 0 %}
+                  {{ govukErrorSummary({
+                    titleText: i18n.SCSErrorTitle,
+                    errorList: [
+                        { text: errors[0].text, 
+                          href: "#sic-code-autocomplete" 
+                        }
+                    ]
+                  }) }}
                 {% endif %}
+
                 <p class="govuk-body">
                     {{ i18n.SICCSTableHeader }}
                 </p>    
 
                 {% if sicCodes.length > 0 %}
-                <div class="govuk-summary-list" role="list">
-                    {% for sic in sicCodes %}
-                        <div class="govuk-summary-list__row">
-                        <div class="govuk-summary-list__key">{{ sic.sicCode.code }}</div>
-                        <div class="govuk-summary-list__value">{{ sic.sicCode.description }}</div>
-                        <div class="govuk-summary-list__actions">
-                            <form action="{{ sic.removeUrl }}" method="POST">
-                            {% include "../../partials/csrf-token.njk" %}
-                                <button type="submit" class="govuk-link">{{ i18n.SICCSTableRemoveButton }}</button>
-                                {% if unsavedCodeList.length > 0 %}
-                                  <input type="hidden" name="unsavedCodeList" id="unsavedCodeList" value="{{ unsavedCodeList | join(',') }}" />
-                                {% endif %}
-                            </form>
-                        </div>
-                        </div>
-                    {% endfor %}
-                </div>
-                {% else %}
-                  <div class="govuk-error-summary" role="alert" aria-labelledby="error-summary-title" tabindex="-1">
-                    <h2 class="govuk-error-summary__title" id="error-summary-title">
-                      There is a problem
-                    </h2>
-                    <div class="govuk-error-summary__body">
-                      <ul class="govuk-list govuk-error-summary__list">
-                        {% for error in errors %}
-                          <li>{{ error.text }}</li>
-                        {% endfor %}
-                      </ul>
-                    </div>
+                  <div class="govuk-summary-list" role="list">
+                      {% for sic in sicCodes %}
+                          <div class="govuk-summary-list__row">
+                          <div class="govuk-summary-list__key">{{ sic.sicCode.code }}</div>
+                          <div class="govuk-summary-list__value">{{ sic.sicCode.description }}</div>
+                          <div class="govuk-summary-list__actions">
+                              <form action="{{ sic.removeUrl }}" method="POST">
+                              {% include "../../partials/csrf-token.njk" %}
+                                  <button type="submit" class="govuk-link">{{ i18n.SICCSTableRemoveButton }}</button>
+                                  {% if unsavedCodeList.length > 0 %}
+                                    <input type="hidden" name="unsavedCodeList" id="unsavedCodeList" value="{{ unsavedCodeList | join(',') }}" />
+                                  {% endif %}
+                              </form>
+                          </div>
+                          </div>
+                      {% endfor %}
                   </div>
                 {% endif %}
           
