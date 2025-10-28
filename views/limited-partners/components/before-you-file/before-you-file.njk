@@ -44,6 +44,18 @@
                     }) }}
                 {% endif %}
 
+                {% if errors and pageProperties.isPost %}
+                  {{ govukErrorSummary({
+                        titleText: "There is a problem",
+                        errorList: [
+                            {
+                                text: i18n.BYFErrorMessageNotChecked,
+                                href: "#byfCheckbox"
+                            }
+                        ]
+                    }) }}
+                {% endif %}
+
                 <p class="govuk-body">
                     {{i18n.BYFFileUpdatesParagraphStart}}
                     {% if company.companyNumber %}

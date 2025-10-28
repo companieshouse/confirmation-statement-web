@@ -52,19 +52,29 @@
       {% if ecctEnabled %}
         {% if confirmationStatementError or lawfulActivityStatementError %}
 
-          {{ govukErrorSummary({
-            titleText: i18n.SCSErrorTitle,
-            errorList: [
-            {
-              text: confirmationStatementError,
+          {% set errorList = [] %}
+
+          {% if confirmationStatementError %}
+            {% set errorList = errorList.concat([{
+              text: i18n.SCSConfirmationStatementError,
               href: "#confirmation-statement"
-            },
-            {
-              text: lawfulActivityStatementError,
+            }]) %}
+          {% endif %}
+
+          {% if lawfulActivityStatementError %}
+            {% set errorList = errorList.concat([{
+              text: i18n.SCSLawfulActivityStatementError,
               href: "#lawful-activity-statement"
-            }
-          ]
-          }) }}
+            }]) %}
+          {% endif %}
+
+          {% if errorList | length > 0 %}
+            {{ govukErrorSummary({
+              titleText: i18n.SCSErrorTitle,
+              errorList: errorList
+            }) }}
+          {% endif %}
+
 
           {% if confirmationStatementError %}
             {% set confirmationStatementError = {

@@ -59,8 +59,10 @@ const ERROR_PAGE_HEADING = "Service offline - File a confirmation statement";
 const COSTS_TEXT = "You will need to pay a fee of &pound;34";
 const CONFIRMATION_STATEMENT_TEXT = "By continuing, you confirm that all information required to be delivered by the company pursuant to";
 const CONFIRMATION_STATEMENT_ECCT_TEXT = "confirm that all information required to be delivered by the company pursuant to";
-const CONFIRMATION_STATEMENT_ERROR = "Select if all required information is either delivered or being delivered for the confirmation statement date";
-const LAWFUL_ACTIVITY_STATEMENT_ERROR = "Select if intended future activities are lawful";
+const CONFIRMATION_STATEMENT_ERROR = "You need to accept the confirmation statement";
+const LAWFUL_ACTIVITY_STATEMENT_ERROR = "You need to accept the statement on the intended future activities of the company";
+const LP_CONFIRMATION_STATEMENT_ERROR = "Confirm the confirmation statement";
+const LP_LAWFUL_ACTIVITY_STATEMENT_ERROR = "Confirm that the intended future activities of the limited partnership are lawful";
 const NO_CHANGE_CONFIRMATION_STATEMENT_ERROR = "You need to accept the confirmation statement";
 const NO_CHANGE_LAWFUL_ACTIVITY_STATEMENT_ERROR = "You need to accept the statement on the intended future activities of the company";
 const ERROR_HEADING = "There is a problem";
@@ -413,7 +415,46 @@ describe("review controller tests", () => {
       expect(response.header.location).toEqual(CONFIRMATION_URL);
     });
 
-    it("Should reload the review page with error messages when both confirmation & lawful activity statement checkboxes not ticked", async () => {
+    it("Should reload the No Change review page with error messages when both confirmation & lawful activity statement checkboxes not ticked", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
+      const response = await request(app).post(URL).send();
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(ERROR_HEADING);
+      expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).not.toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
+      expect(response.text).not.toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
+    });
+
+    it("Should reload the No Change review page with an error message when confirmation statement checkbox not ticked", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
+      const response = await request(app).post(URL).send({ lawfulActivityStatement: "true" });
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(ERROR_HEADING);
+      expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).not.toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).not.toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
+      expect(response.text).toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
+    });
+
+    it("Should reload the No Change review page with an error message when lawful activity statement checkbox not ticked", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
+      PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
+      const response = await request(app).post(URL).send({ confirmationStatement: "true" });
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(ERROR_HEADING);
+      expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).not.toContain(CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
+      expect(response.text).not.toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
+    });
+
+    it("Should reload the LP review page with error messages when both confirmation & lawful activity statement checkboxes not ticked", async () => {
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
         type: "limited-partnership",
@@ -426,13 +467,13 @@ describe("review controller tests", () => {
       const response = await request(app).post(URL).send();
       expect(response.status).toEqual(200);
       expect(response.text).toContain(ERROR_HEADING);
-      expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
-      expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).toContain(LP_CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).toContain(LP_LAWFUL_ACTIVITY_STATEMENT_ERROR);
       expect(response.text).not.toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
       expect(response.text).not.toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
     });
 
-    it("Should reload the review page with an error message when confirmation statement checkbox not ticked", async () => {
+    it("Should reload the LP review page with an error message when confirmation statement checkbox not ticked", async () => {
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
         type: "limited-partnership",
@@ -445,13 +486,13 @@ describe("review controller tests", () => {
       const response = await request(app).post(URL).send({ lawfulActivityStatement: "true" });
       expect(response.status).toEqual(200);
       expect(response.text).toContain(ERROR_HEADING);
-      expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
-      expect(response.text).not.toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).toContain(LP_CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).not.toContain(LP_LAWFUL_ACTIVITY_STATEMENT_ERROR);
       expect(response.text).not.toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
       expect(response.text).toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
     });
 
-    it("Should reload the review page with an error message when lawful activity statement checkbox not ticked", async () => {
+    it("Should reload the LP review page with an error message when lawful activity statement checkbox not ticked", async () => {
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
         type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
@@ -464,8 +505,8 @@ describe("review controller tests", () => {
       const response = await request(app).post(URL).send({ confirmationStatement: "true" });
       expect(response.status).toEqual(200);
       expect(response.text).toContain(ERROR_HEADING);
-      expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
-      expect(response.text).not.toContain(CONFIRMATION_STATEMENT_ERROR);
+      expect(response.text).toContain(LP_LAWFUL_ACTIVITY_STATEMENT_ERROR);
+      expect(response.text).not.toContain(LP_CONFIRMATION_STATEMENT_ERROR);
       expect(response.text).toMatch(/<input[^>]*name="confirmationStatement"[^>]*checked/);
       expect(response.text).not.toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
     });
