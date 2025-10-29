@@ -12,11 +12,11 @@
             {% include "limited-partners/partials/nav/signout-link.njk" %}
         {% endblock %}
 
-        {% block back %}
         {% if not confirmationScreen %}
+        {% block back %}
             {% include "limited-partners/partials/nav/back-link.njk" %}
-        {% endif %}    
         {% endblock %}
+        {% endif %}
 
         {% block lang %}
             {% include "limited-partners/partials/nav/language-selection.njk" %}
