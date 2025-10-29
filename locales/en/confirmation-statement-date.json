@@ -27,5 +27,6 @@
   "CDSRadioButtonYesExplainerExample":"For example, 30 9 2025. You cannot enter a date in the future.",
   "CDSRadioButtonYesDateComponent":"Day Month Year",
   "CDSRadioButtonNo":"No",
-  "CDSContinueButton":"Save & Continue"
+  "CDSContinueButton":"Save & Continue",
+  "CDSErrorPageTitle":"Error: "
 }

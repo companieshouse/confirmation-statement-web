@@ -11,5 +11,6 @@
     "SICCSWhatIsDetailExpanderParagraph3Start" : "The ",
     "SICCSWhatIsDetailExpanderParagraph3Link" : "SIC codes list (opens in a new tab)",
     "SICCSWhatIsDetailExpanderParagraph3End" : " may help you find a suitable business activity.",
-    "SICCSSaveContinueButton" : "Save and continue"
+    "SICCSSaveContinueButton" : "Save and continue",
+    "SICCSErrorPageTitle" : "Error: "
 }

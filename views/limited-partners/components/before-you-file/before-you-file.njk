@@ -18,7 +18,11 @@
 
 {% set errors = pageProperties.errors %}
 
-{% set title = i18n.BYFPageTitle %}
+{% if errors and pageProperties.isPost  %}
+    {% set title = i18n.BYFErrorPageTitle + i18n.BYFPageTitle %}
+{% else %}
+    {% set title = i18n.BYFPageTitle %}
+{% endif %}
 
 {% block content %}
     <div class="govuk-grid-row">

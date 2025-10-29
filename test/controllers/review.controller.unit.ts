@@ -65,6 +65,7 @@ const LP_CONFIRMATION_STATEMENT_ERROR = "Confirm the confirmation statement";
 const LP_LAWFUL_ACTIVITY_STATEMENT_ERROR = "Confirm that the intended future activities of the limited partnership are lawful";
 const NO_CHANGE_CONFIRMATION_STATEMENT_ERROR = "You need to accept the confirmation statement";
 const NO_CHANGE_LAWFUL_ACTIVITY_STATEMENT_ERROR = "You need to accept the statement on the intended future activities of the company";
+const LP_PAGE_TITLE_ERROR = "Error: Submit the confirmation statement";
 const ERROR_HEADING = "There is a problem";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -466,6 +467,7 @@ describe("review controller tests", () => {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
       const response = await request(app).post(URL).send();
       expect(response.status).toEqual(200);
+      expect(response.text).toContain(LP_PAGE_TITLE_ERROR);
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(LP_CONFIRMATION_STATEMENT_ERROR);
       expect(response.text).toContain(LP_LAWFUL_ACTIVITY_STATEMENT_ERROR);
@@ -485,6 +487,7 @@ describe("review controller tests", () => {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
       const response = await request(app).post(URL).send({ lawfulActivityStatement: "true" });
       expect(response.status).toEqual(200);
+      expect(response.text).toContain(LP_PAGE_TITLE_ERROR);
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(LP_CONFIRMATION_STATEMENT_ERROR);
       expect(response.text).not.toContain(LP_LAWFUL_ACTIVITY_STATEMENT_ERROR);
@@ -504,6 +507,7 @@ describe("review controller tests", () => {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
       const response = await request(app).post(URL).send({ confirmationStatement: "true" });
       expect(response.status).toEqual(200);
+      expect(response.text).toContain(LP_PAGE_TITLE_ERROR);
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(LP_LAWFUL_ACTIVITY_STATEMENT_ERROR);
       expect(response.text).not.toContain(LP_CONFIRMATION_STATEMENT_ERROR);
