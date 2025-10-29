@@ -192,7 +192,11 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
     ? [{ text: "Add a SIC code. A limited partnership must have at least one SIC code." }]
     : undefined;
 
-  const combinedErrors = [...(errors || []), ...(validationErrors || [])];
+  const combinedErrors = [...(errors || []),
+    ...(validationErrors || []),
+    ...(maxError ? [{ text: maxError }] : []),
+    ...(duplicateError ? [{ text: duplicateError }] : [])
+  ];
 
   return res.render(Templates.LP_SIC_CODE_SUMMARY, {
     ...getLocaleInfo(locales, lang),
