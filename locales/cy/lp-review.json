@@ -14,5 +14,6 @@
   "SCSPaymentMessageRequiredStart":"CY-You will need to pay a fee of ",
   "SCSPaymentMessageRequiredEnd":" to submit your confirmation statement.",
   "SCSContinueButtonPayment":"CY-Confirm and pay",
-  "SCSContinueButtonNoPayment":"CY-Confirm and submit"
+  "SCSContinueButtonNoPayment":"CY-Confirm and submit",
+  "SCSErrorPageTitle" : "CY-Error: "
 }

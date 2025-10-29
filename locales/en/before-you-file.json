@@ -11,5 +11,6 @@
     "BYFFeeInfoParagraph1" : "You will need to pay a fee of <strong>£X</strong> to submit your confirmation statement.",
     "BYFFeeInfoParagraph2" : "You can pay by debit or credit card. You cannot pay with a Companies House payment account.",
     "BYFContinueBotton" : "Continue",
-    "BYFErrorMessageNotChecked" : "Confirm that you've checked the limited partnership information and submitted any updates"
+    "BYFErrorMessageNotChecked" : "Confirm that you've checked the limited partnership information and submitted any updates",
+    "BYFErrorPageTitle": "Error: "
 }

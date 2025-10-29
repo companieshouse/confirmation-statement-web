@@ -106,6 +106,7 @@ describe("start before you file controller tests", () => {
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.status).toBe(200);
     expect(response.text).toContain("Before you file the confirmation statement");
+    expect(response.text).toContain("Error: Before you file the confirmation statement");
     expect(response.text).toContain("Confirm that you&#39;ve checked the limited partnership information and submitted any updates");
     expect(response.text).toContain(`${urls.CONFIRM_COMPANY_PATH}?companyNumber=${COMPANY_NUMBER}`);
   });

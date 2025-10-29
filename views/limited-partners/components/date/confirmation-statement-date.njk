@@ -6,7 +6,11 @@
 
 {% set errors = pageProperties.errors %}
 
-{% set title = i18n.CDSTitle %}
+{% if errorMessage %}
+    {% set title = i18n.CDSErrorPageTitle + i18n.CDSTitle %}
+{% else %}
+    {% set title = i18n.CDSTitle %}
+{% endif %}
 
 {% set dateSelector -%}
 

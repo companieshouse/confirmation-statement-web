@@ -15,6 +15,7 @@ const URL = LP_CS_DATE_PATH
   .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
   .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
   .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
+const PAGE_TITLE_ERROR = "Error: Confirmation statement date";
 
 jest.mock("../../src/utils/session.acsp");
 jest.mock("../../src/utils/session");
@@ -66,6 +67,7 @@ describe("start confirmation statement date controller tests", () => {
         "confirmationStatementDate": "yes"
       });
 
+    expect(response.text).toContain(PAGE_TITLE_ERROR);
     expect(response.text).toContain("Enter the new confirmation statement date");
   });
 
@@ -78,6 +80,7 @@ describe("start confirmation statement date controller tests", () => {
         "csDate-day": "01"
       });
 
+    expect(response.text).toContain(PAGE_TITLE_ERROR);
     expect(response.text).toContain("Confirmation statement date must include a year");
   });
 
@@ -91,6 +94,7 @@ describe("start confirmation statement date controller tests", () => {
         "csDate-day": "31"
       });
 
+    expect(response.text).toContain(PAGE_TITLE_ERROR);
     expect(response.text).toContain("Confirmation statement date must be a real date");
   });
 
@@ -210,6 +214,7 @@ describe("date controller validation tests", () => {
         "csDate-year": "2025"
       });
 
+    expect(response.text).toContain(PAGE_TITLE_ERROR);
     expect(response.text).toContain("Confirmation statement date must be a real date");
   });
 
@@ -223,6 +228,7 @@ describe("date controller validation tests", () => {
         "csDate-year": "2025"
       });
 
+    expect(response.text).toContain(PAGE_TITLE_ERROR);
     expect(response.text).toContain("Confirmation statement date must be a real date");
   });
 
@@ -236,6 +242,7 @@ describe("date controller validation tests", () => {
         "csDate-year": "cccc"
       });
 
+    expect(response.text).toContain(PAGE_TITLE_ERROR);
     expect(response.text).toContain("Confirmation statement date must be a real date");
   });
 
@@ -247,6 +254,7 @@ describe("date controller validation tests", () => {
         "csDate-year": "2025"
       });
 
+    expect(response.text).toContain(PAGE_TITLE_ERROR);
     expect(response.text).toContain("Confirmation statement date must include a day");
   });
 
@@ -260,6 +268,7 @@ describe("date controller validation tests", () => {
         "csDate-year": "2023"
       });
 
+    expect(response.text).toContain(PAGE_TITLE_ERROR);
     expect(response.text).toContain("Confirmation statement date must be a real date");
   });
 

@@ -2,7 +2,11 @@
 
 {% block pageTitle %}
   {% if isLimitedPartnership %}
-    {{ i18n.SCSTitle }}
+    {% if confirmationStatementError or lawfulActivityStatementError %}
+      {{ i18n.SCSErrorPageTitle + i18n.SCSTitle }}
+    {% else %}
+      {{ i18n.SCSTitle }}
+    {% endif %}
   {% elseif confirmationStatementError or lawfulActivityStatementError %}
     Error:
   {% endif %}

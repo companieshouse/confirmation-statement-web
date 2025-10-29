@@ -88,6 +88,7 @@ describe("Controller tests", () => {
 
     const matches = response.text.match(/<div class="govuk-summary-list__key">70005<\/div>/g);
 
+    expect(response.text).toContain('Error: Check the SIC codes for this limited partnership');
     expect(response.text).toContain('<div class="govuk-summary-list__key">70005</div>');
     expect(matches?.length).toBe(1);
   });

@@ -11,5 +11,6 @@
     "SICCSWhatIsDetailExpanderParagraph3Start" : "CY-The ",
     "SICCSWhatIsDetailExpanderParagraph3Link" : "CY-SIC codes list (opens in a new tab)",
     "SICCSWhatIsDetailExpanderParagraph3End" : " CY-may help you find a suitable business activity.",
-    "SICCSSaveContinueButton" : "CY-Save and continue"
+    "SICCSSaveContinueButton" : "CY-Save and continue",
+    "SICCSErrorPageTitle" : "CY-Error: "
 }
