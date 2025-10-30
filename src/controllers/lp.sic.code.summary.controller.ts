@@ -37,6 +37,7 @@ export const get = (req: Request, res: Response) => {
 export const saveAndContinue = async (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+  const company = getCompanyProfileFromSession(req);
   const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
   const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
   const isAcspJourney = isACSPJourney(req.originalUrl);
@@ -45,15 +46,12 @@ export const saveAndContinue = async (req: Request, res: Response) => {
   const unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
   const sicCodeSummaryList = getSicCodeSummaryList(req, lang, unsavedCodeList);
 
-  const { formErrors, maxError, duplicateError } = validateSicCodes(unsavedCodeList);
+  const { formErrors, maxError, duplicateError } = validateSicCodes(unsavedCodeList, company?.sicCodes?.length);
 
   if (formErrors || maxError || duplicateError) {
     return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, formErrors, maxError, duplicateError);
   }
 
-  if (unsavedCodeList) {
-    req.session?.setExtraData(SIC_CODE_SESSION_KEY, unsavedCodeList);
-  }
   const sessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
   const allSicCodes: CondensedSicCodeData[] = sessionData?.sicCodes || [];
   const sicCodeArray: SicCode[] = [];
@@ -71,7 +69,7 @@ export const saveAndContinue = async (req: Request, res: Response) => {
     sectionStatus: SectionStatus.CONFIRMED
   };
 
-  req.session?.setExtraData(SIC_CODE_SESSION_KEY, sicCodeList);
+  req.session?.setExtraData(SIC_CODE_SESSION_KEY, unsavedCodeList);
 
   const submitDate = getDateSubmission(sessionData?.newConfirmationDate, req);
 
@@ -109,7 +107,7 @@ export const addSicCode = (req: Request, res: Response) => {
   const unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
   const duplicate = unsavedCodeList.includes(code);
 
-  let errors;
+  let errors: { text: string; }[] | undefined;
   if (duplicate) {
     errors = [{ text: `This SIC code already exists for the limited partnership. Enter a different SIC code` }];
   } else if (unsavedCodeList.length >= 4) {
@@ -129,7 +127,7 @@ export const removeSicCode = (req: Request, res: Response) => {
   const unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
 
   if (removeSicCode) {
-    const index = unsavedCodeList.findIndex(sicCode => sicCode === removeSicCode);
+    const index = unsavedCodeList.findIndex((sicCode: string) => sicCode === removeSicCode);
 
     if (index !== -1) {
       unsavedCodeList.splice(index, 1);
@@ -159,15 +157,17 @@ export function getSicCodeSummaryList(req: Request, lang: string, sicCodesList: 
     return [];
   }
 
-  for (const code of sicCodesList) {
-    const macthed = allSicCodes.find(sc => sc.sic_code === code);
-    sicCodeSummaryList.push({
-      sicCode: {
-        code: code,
-        description: macthed?.sic_description || "No Description Found."
-      },
-      removeUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}/${code}/remove?lang=${lang}`, req)
-    });
+  if (sicCodesList.length > 0) {
+    for (const code of sicCodesList) {
+      const macthed = allSicCodes.find(sc => sc.sic_code === code);
+      sicCodeSummaryList.push({
+        sicCode: {
+          code: code,
+          description: macthed?.sic_description || "No Description Found."
+        },
+        removeUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}/${code}/remove?lang=${lang}`, req)
+      });
+    }
   }
 
   return sicCodeSummaryList;
@@ -187,10 +187,12 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
   const sessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
 
   const sessionSicCodes = getSicCodeSummaryList(req, lang, unsavedCodeList);
+  const initSicCodeCount = company?.sicCodes?.length || 0;
 
-  const validationErrors = sessionSicCodes.length === 0
-    ? [{ text: "Add a SIC code. A limited partnership must have at least one SIC code." }]
-    : undefined;
+  let validationErrors: { text: string; }[] | undefined;
+  if (initSicCodeCount > 0 && sessionSicCodes.length === 0) {
+    validationErrors = [{ text: "Add a SIC code. A limited partnership must have at least one SIC code." }];
+  }
 
   const combinedErrors = [...(errors || []),
     ...(validationErrors || []),
