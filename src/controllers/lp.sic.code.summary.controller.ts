@@ -52,9 +52,6 @@ export const saveAndContinue = async (req: Request, res: Response) => {
     return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, formErrors, maxError, duplicateError);
   }
 
-  if (unsavedCodeList) {
-    req.session?.setExtraData(SIC_CODE_SESSION_KEY, unsavedCodeList);
-  }
   const sessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
   const allSicCodes: CondensedSicCodeData[] = sessionData?.sicCodes || [];
   const sicCodeArray: SicCode[] = [];
@@ -72,7 +69,7 @@ export const saveAndContinue = async (req: Request, res: Response) => {
     sectionStatus: SectionStatus.CONFIRMED
   };
 
-  req.session?.setExtraData(SIC_CODE_SESSION_KEY, sicCodeList);
+  req.session?.setExtraData(SIC_CODE_SESSION_KEY, unsavedCodeList);
 
   const submitDate = getDateSubmission(sessionData?.newConfirmationDate, req);
 
