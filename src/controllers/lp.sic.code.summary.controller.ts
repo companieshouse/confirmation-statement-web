@@ -6,7 +6,7 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { urlUtils } from "../utils/url";
 import { getCompanyProfileFromSession } from "../utils/session";
 import { getReviewPath, isACSPJourney } from '../utils/limited.partnership';
-import { INITIAL_SIC_CODE_COUNT, SIC_CODE_SESSION_KEY } from "../utils/constants";
+import { SIC_CODE_SESSION_KEY } from "../utils/constants";
 import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
 import { Session } from "@companieshouse/node-session-handler";
 import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services/sic-code";
@@ -29,10 +29,6 @@ export const get = (req: Request, res: Response) => {
     req.session?.setExtraData(SIC_CODE_SESSION_KEY, sicCodesList);
   }
 
-  if (!req.session?.getExtraData(INITIAL_SIC_CODE_COUNT)) {
-    req.session?.setExtraData(INITIAL_SIC_CODE_COUNT, company?.sicCodes?.length || 0);
-  }
-
   const sicCodeSummaryList = getSicCodeSummaryList(req, lang, sicCodesList);
 
   return renderPage(req, res, sicCodeSummaryList, sicCodesList);
@@ -41,6 +37,7 @@ export const get = (req: Request, res: Response) => {
 export const saveAndContinue = async (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+  const company = getCompanyProfileFromSession(req);
   const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
   const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
   const isAcspJourney = isACSPJourney(req.originalUrl);
@@ -48,9 +45,8 @@ export const saveAndContinue = async (req: Request, res: Response) => {
 
   const unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
   const sicCodeSummaryList = getSicCodeSummaryList(req, lang, unsavedCodeList);
-  const initialSicCodeCount = Number(req.session?.getExtraData(INITIAL_SIC_CODE_COUNT) ?? 0);
 
-  const { formErrors, maxError, duplicateError } = validateSicCodes(unsavedCodeList, initialSicCodeCount);
+  const { formErrors, maxError, duplicateError } = validateSicCodes(unsavedCodeList, company?.sicCodes?.length);
 
   if (formErrors || maxError || duplicateError) {
     return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, formErrors, maxError, duplicateError);
@@ -81,8 +77,6 @@ export const saveAndContinue = async (req: Request, res: Response) => {
   const submitDate = getDateSubmission(sessionData?.newConfirmationDate, req);
 
   await sendLimitedPartnershipTransactionUpdate(req, submitDate, sicCodeList);
-
-  req.session?.setExtraData(INITIAL_SIC_CODE_COUNT, undefined);
 
   return res.redirect(
     urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
@@ -196,11 +190,10 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
   const sessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
 
   const sessionSicCodes = getSicCodeSummaryList(req, lang, unsavedCodeList);
-
-  const initialSicCodeCount = Number(req.session?.getExtraData(INITIAL_SIC_CODE_COUNT) ?? 0);
+  const initSicCodeCount = company?.sicCodes?.length || 0; 
 
   let validationErrors: { text: string; }[] | undefined;
-  if (initialSicCodeCount > 0 && sessionSicCodes.length === 0) {
+  if (initSicCodeCount > 0 && sessionSicCodes.length === 0) {
     validationErrors = [{ text: "Add a SIC code. A limited partnership must have at least one SIC code." }];
   }
 
