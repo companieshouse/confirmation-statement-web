@@ -190,7 +190,7 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
   const sessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
 
   const sessionSicCodes = getSicCodeSummaryList(req, lang, unsavedCodeList);
-  const initSicCodeCount = company?.sicCodes?.length || 0; 
+  const initSicCodeCount = company?.sicCodes?.length || 0;
 
   let validationErrors: { text: string; }[] | undefined;
   if (initSicCodeCount > 0 && sessionSicCodes.length === 0) {
