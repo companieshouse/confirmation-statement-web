@@ -81,6 +81,15 @@
                           </div>
                       {% endfor %}
                   </div>
+                {% else %}  
+                  <div>
+                    <p class="govuk-body">
+                      <strong>{{ i18n.SICCSNoSICCodeParagraph1 }}</strong>
+                    </p>
+                    <p class="govuk-body">
+                      <strong>{{ i18n.SICCSNoSICCodeParagraph2 }}</strong>
+                    </p>
+                  </div>
                 {% endif %}
           
                 {% if isShowingAddSection %}

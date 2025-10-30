@@ -1,8 +1,8 @@
 {
-    "SICCSPageTitle" : "Check the SIC codes for this limited partnership",
-    "SICCSTableHeader" : "Check the SIC codes and update any that have changed.",
+    "SICCSPageTitle" : "Check the partnership's nature of business",
+    "SICCSTableHeader" : "Update the nature of business if it has changed. You can do this by adding or removing SIC codes.",
     "SICCSTableRemoveButton" : "Remove",
-    "SICCSAddSICInsetTitle" : "Add a new SIC code",
+    "SICCSAddSICInsetTitle" : "Add a new nature of business",
     "SICCSAddSICInsetInstructions" : "Start typing a keyword to see a list of business activities. For example, 'finance'. Or, enter the SIC code if you know it.",
     "SICCSAddSICAddCodeButton" : "Add SIC code",
     "SICCSWhatIsDetailExpanderTitle" : "What are SIC codes?",
@@ -12,5 +12,7 @@
     "SICCSWhatIsDetailExpanderParagraph3Link" : "SIC codes list (opens in a new tab)",
     "SICCSWhatIsDetailExpanderParagraph3End" : " may help you find a suitable business activity.",
     "SICCSSaveContinueButton" : "Save and continue",
-    "SICCSErrorPageTitle" : "Error: "
+    "SICCSErrorPageTitle" : "Error: ",
+    "SICCSNoSICCodeParagraph1" : "There are no SIC codes registered for this limited partnership.",
+    "SICCSNoSICCodeParagraph2" : "You only need to provide SIC codes if the nature of business has changed."
 }

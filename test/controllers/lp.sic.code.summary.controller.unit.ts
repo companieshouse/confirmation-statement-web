@@ -7,6 +7,7 @@ import * as sessionAcspUtils from "../../src/utils/session.acsp";
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 import { validateSicCodes } from "../../src/services/sic.code.service";
+import { getCompanyProfileFromSession } from "../../src/utils/session";
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -23,6 +24,9 @@ jest.mock("../../src/services/company.profile.service", () => ({
 jest.mock("../../src/utils/confirmation/limited.partnership.confirmation", () => ({
   sendLimitedPartnershipTransactionUpdate: jest.fn().mockResolvedValue(undefined)
 }));
+
+jest.mock("../../src/utils/session");
+const mockGetCompanyProfileFromSession = getCompanyProfileFromSession as jest.Mock;
 
 
 middlewareMocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
@@ -53,8 +57,19 @@ describe("Controller tests", () => {
       sicCodes: [
         { sic_code: "70001", sic_description: "Description 1" },
         { sic_code: "70002", sic_description: "Description 2" },
-        { sic_code: "70003", sic_description: "Description 3" },
-        { sic_code: "70005", sic_description: "Description 5" }
+        { sic_code: "70003", sic_description: "Description 3" }
+      ]
+    });
+    mockGetCompanyProfileFromSession.mockReturnValue({
+      companyName: "Test Limited Partnership",
+      companyNumber: "LP123456",
+      confirmationStatement: {
+        nextMadeUpTo: "2999-09-01",
+      },
+      sicCodes: [
+        "70001",
+        "70002",
+        "70003"
       ]
     });
   });
@@ -63,11 +78,41 @@ describe("Controller tests", () => {
     const response = await request(app).get(URL);
 
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
-    expect(response.text).toContain("Check the SIC codes for this limited partnership");
+    expect(response.text).toContain("Check the partnership&#39;s nature of business");
     expect(response.text).toContain('<div class="govuk-summary-list__key">70001</div>');
     expect(response.text).toContain('<div class="govuk-summary-list__key">70002</div>');
     expect(response.text).toContain('<div class="govuk-summary-list__key">70003</div>');
-    expect(response.text).toContain('Add a new SIC code');
+    expect(response.text).toContain('Add a new nature of business');
+  });
+
+  it("should return SIC Code Check and Confirm page with 0 Sic Codes associated", async () => {
+    jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+      changeConfirmationStatementDate: false,
+      beforeYouFileCheck: true,
+      newConfirmationDate: null,
+      confirmAllInformationCheck: false,
+      confirmLawfulActionsCheck: false,
+      sicCodes: []
+    });
+
+    mockGetCompanyProfileFromSession.mockReturnValue({
+      companyName: "Test Limited Partnership",
+      companyNumber: "LP123456",
+      confirmationStatement: {
+        nextMadeUpTo: "2999-09-01",
+      },
+      sicCodes: []
+    });
+
+    const response = await request(app).get(URL);
+
+    expect(response.status).toBe(200);
+    expect(response.text).toContain("Check the partnership&#39;s nature of business");
+    expect(response.text).toContain("There are no SIC codes registered for this limited partnership.");
+    expect(response.text).toContain("You only need to provide SIC codes if the nature of business has changed.");
+    expect(response.text).not.toContain('<div class="govuk-summary-list__key">');
+    expect(response.text).toContain("Add a new nature of business");
+    expect(response.text).not.toContain("Add a SIC code. A limited partnership must have at least one SIC code.");
   });
 
   it("should add a valid SIC code", async () => {
@@ -88,13 +133,12 @@ describe("Controller tests", () => {
 
     const matches = response.text.match(/<div class="govuk-summary-list__key">70005<\/div>/g);
 
-    expect(response.text).toContain('Error: Check the SIC codes for this limited partnership');
+    expect(response.text).toContain('Check the partnership&#39;s nature of business');
     expect(response.text).toContain('<div class="govuk-summary-list__key">70005</div>');
     expect(matches?.length).toBe(1);
   });
 
   it("should not add more than 4 SIC codes", async () => {
-
     const response = await request(app)
       .post(`${URL}/add`)
       .send({ code: "70006", unsavedCodeList: "70001,70002,70003,70005" });
@@ -129,12 +173,40 @@ describe("SIC code summary post tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(limitedPartnershipUtils, "isACSPJourney").mockReturnValue(true);
+    jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+      changeConfirmationStatementDate: true,
+      beforeYouFileCheck: true,
+      newConfirmationDate: null,
+      confirmAllInformationCheck: false,
+      confirmLawfulActionsCheck: false,
+      sicCodes: []
+    });
+
+    mockGetCompanyProfileFromSession.mockReturnValue({
+      companyName: "Test LP",
+      companyNumber: COMPANY_NUMBER,
+      sicCodes: []
+    });
   });
 
   it("should redirect to review page when valid SIC codes present", async () => {
     const response = await request(app)
       .post(`${URL}/save`)
       .send({ unsavedCodeList: "70001,70002,70003,70005" });
+
+    const reviewPath = LP_REVIEW_PATH
+      .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
+      .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
+      .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe(reviewPath);
+  });
+
+  it("should redirect to review page when valid SIC codes 0 present", async () => {
+    const response = await request(app)
+      .post(`${URL}/save`)
+      .send({ unsavedCodeList: "" });
 
     const reviewPath = LP_REVIEW_PATH
       .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
@@ -206,31 +278,39 @@ describe("SIC code summary post tests", () => {
 
 describe("validateSicCodes", () => {
   it("should return error for empty list", () => {
-    const result = validateSicCodes([]);
+    const result = validateSicCodes([], 1);
     expect(result.formErrors).toContainEqual({
       text: "Add a SIC code. A limited partnership must have at least one SIC code."
     });
   });
 
+  it("should allow when company has 0 SIC codes associated and empty list", () => {
+    const result = validateSicCodes([], 0);
+
+    expect(result.formErrors).toBeUndefined();
+    expect(result.maxError).toBeUndefined();
+    expect(result.duplicateError).toBeUndefined();
+  });
+
   it("should return error for more than 4 codes", () => {
-    const result = validateSicCodes(["10001", "10002", "10003", "10004", "10005"]);
+    const result = validateSicCodes(["10001", "10002", "10003", "10004", "10005"], 5);
     expect(result.maxError).toBe("Remove SIC code(s). A limited partnership can only have a maximum of 4 SIC codes.");
   });
 
   it("should return error for duplicate codes", () => {
-    const result = validateSicCodes(["10001", "10002", "10001"]);
+    const result = validateSicCodes(["10001", "10002", "10001"], 3);
     expect(result.duplicateError).toBe("Remove duplicate SIC codes. A limited partnership can not have duplicate SIC codes.");
   });
 
   it("should return multiple errors if multiple rules are violated", () => {
-    const result = validateSicCodes(["10001", "10001", "10002", "10003", "10004", "10005"]);
+    const result = validateSicCodes(["10001", "10001", "10002", "10003", "10004", "10005"], 5);
     expect(result.formErrors).toBeUndefined();
     expect(result.maxError).toBe("Remove SIC code(s). A limited partnership can only have a maximum of 4 SIC codes.");
     expect(result.duplicateError).toBe("Remove duplicate SIC codes. A limited partnership can not have duplicate SIC codes.");
   });
 
   it("should return no errors for valid input", () => {
-    const result = validateSicCodes(["10001", "10002", "10003"]);
+    const result = validateSicCodes(["10001", "10002", "10003"], 3);
     expect(result.formErrors).toBeUndefined();
     expect(result.maxError).toBeUndefined();
     expect(result.duplicateError).toBeUndefined();

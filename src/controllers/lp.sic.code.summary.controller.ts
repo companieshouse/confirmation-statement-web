@@ -6,7 +6,7 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { urlUtils } from "../utils/url";
 import { getCompanyProfileFromSession } from "../utils/session";
 import { getReviewPath, isACSPJourney } from '../utils/limited.partnership';
-import { SIC_CODE_SESSION_KEY } from "../utils/constants";
+import { INITIAL_SIC_CODE_COUNT, SIC_CODE_SESSION_KEY } from "../utils/constants";
 import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
 import { Session } from "@companieshouse/node-session-handler";
 import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services/sic-code";
@@ -29,6 +29,10 @@ export const get = (req: Request, res: Response) => {
     req.session?.setExtraData(SIC_CODE_SESSION_KEY, sicCodesList);
   }
 
+  if (!req.session?.getExtraData(INITIAL_SIC_CODE_COUNT)) {
+    req.session?.setExtraData(INITIAL_SIC_CODE_COUNT, company?.sicCodes?.length || 0);
+  }
+
   const sicCodeSummaryList = getSicCodeSummaryList(req, lang, sicCodesList);
 
   return renderPage(req, res, sicCodeSummaryList, sicCodesList);
@@ -44,8 +48,9 @@ export const saveAndContinue = async (req: Request, res: Response) => {
 
   const unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
   const sicCodeSummaryList = getSicCodeSummaryList(req, lang, unsavedCodeList);
+  const initialSicCodeCount = Number(req.session?.getExtraData(INITIAL_SIC_CODE_COUNT) ?? 0);
 
-  const { formErrors, maxError, duplicateError } = validateSicCodes(unsavedCodeList);
+  const { formErrors, maxError, duplicateError } = validateSicCodes(unsavedCodeList, initialSicCodeCount);
 
   if (formErrors || maxError || duplicateError) {
     return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, formErrors, maxError, duplicateError);
@@ -76,6 +81,8 @@ export const saveAndContinue = async (req: Request, res: Response) => {
   const submitDate = getDateSubmission(sessionData?.newConfirmationDate, req);
 
   await sendLimitedPartnershipTransactionUpdate(req, submitDate, sicCodeList);
+
+  req.session?.setExtraData(INITIAL_SIC_CODE_COUNT, undefined);
 
   return res.redirect(
     urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
@@ -109,7 +116,7 @@ export const addSicCode = (req: Request, res: Response) => {
   const unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
   const duplicate = unsavedCodeList.includes(code);
 
-  let errors;
+  let errors: { text: string; }[] | undefined;
   if (duplicate) {
     errors = [{ text: `This SIC code already exists for the limited partnership. Enter a different SIC code` }];
   } else if (unsavedCodeList.length >= 4) {
@@ -129,7 +136,7 @@ export const removeSicCode = (req: Request, res: Response) => {
   const unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
 
   if (removeSicCode) {
-    const index = unsavedCodeList.findIndex(sicCode => sicCode === removeSicCode);
+    const index = unsavedCodeList.findIndex((sicCode: string) => sicCode === removeSicCode);
 
     if (index !== -1) {
       unsavedCodeList.splice(index, 1);
@@ -159,15 +166,17 @@ export function getSicCodeSummaryList(req: Request, lang: string, sicCodesList: 
     return [];
   }
 
-  for (const code of sicCodesList) {
-    const macthed = allSicCodes.find(sc => sc.sic_code === code);
-    sicCodeSummaryList.push({
-      sicCode: {
-        code: code,
-        description: macthed?.sic_description || "No Description Found."
-      },
-      removeUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}/${code}/remove?lang=${lang}`, req)
-    });
+  if (sicCodesList.length > 0) {
+    for (const code of sicCodesList) {
+      const macthed = allSicCodes.find(sc => sc.sic_code === code);
+      sicCodeSummaryList.push({
+        sicCode: {
+          code: code,
+          description: macthed?.sic_description || "No Description Found."
+        },
+        removeUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}/${code}/remove?lang=${lang}`, req)
+      });
+    }
   }
 
   return sicCodeSummaryList;
@@ -188,9 +197,12 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
 
   const sessionSicCodes = getSicCodeSummaryList(req, lang, unsavedCodeList);
 
-  const validationErrors = sessionSicCodes.length === 0
-    ? [{ text: "Add a SIC code. A limited partnership must have at least one SIC code." }]
-    : undefined;
+  const initialSicCodeCount = Number(req.session?.getExtraData(INITIAL_SIC_CODE_COUNT) ?? 0);
+
+  let validationErrors: { text: string; }[] | undefined;
+  if (initialSicCodeCount > 0 && sessionSicCodes.length === 0) {
+    validationErrors = [{ text: "Add a SIC code. A limited partnership must have at least one SIC code." }];
+  }
 
   const combinedErrors = [...(errors || []),
     ...(validationErrors || []),

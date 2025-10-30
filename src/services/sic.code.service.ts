@@ -16,7 +16,7 @@ export const getSicCodeCondensedList = async (): Promise<CondensedSicCodeData[]>
   return sicCodeList || [];
 };
 
-export function validateSicCodes(sicCodes: string[]): SicCodeValidationResult {
+export function validateSicCodes(sicCodes: string[], initSicCodes: number): SicCodeValidationResult {
   const result: SicCodeValidationResult = {};
 
   const duplicateSicCodes = new Map<string, number>();
@@ -34,7 +34,7 @@ export function validateSicCodes(sicCodes: string[]): SicCodeValidationResult {
     result.duplicateError = "Remove duplicate SIC codes. A limited partnership can not have duplicate SIC codes.";
   }
 
-  if (sicCodes.length === 0) {
+  if (initSicCodes > 0 && sicCodes.length === 0) {
     result.formErrors = [{ text: "Add a SIC code. A limited partnership must have at least one SIC code." }];
   }
 
