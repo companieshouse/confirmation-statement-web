@@ -24,7 +24,7 @@ import { mockConfirmationStatementSubmission } from "../mocks/confirmation.state
 import { getConfirmationStatement } from "../../src/services/confirmation.statement.service";
 import { Request, Response, NextFunction } from "express";
 import { Session } from "@companieshouse/node-session-handler";
-import { DMMMMYYYY_DATE_FORMAT, LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT, CONFIRMATION_STATEMENT_SESSION_KEY, LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY } from "../../src/utils/constants";
+import { DMMMMYYYY_DATE_FORMAT, LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES, CONFIRMATION_STATEMENT_SESSION_KEY, LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY } from "../../src/utils/constants";
 import * as sessionAcspUtils from "../../src/utils/session.acsp";
 import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
 import { getFormattedConfirmationDate } from "../../src/utils/date";
@@ -65,7 +65,7 @@ const LP_CONFIRMATION_STATEMENT_ERROR = "Confirm the confirmation statement";
 const LP_LAWFUL_ACTIVITY_STATEMENT_ERROR = "Confirm that the intended future activities of the limited partnership are lawful";
 const NO_CHANGE_CONFIRMATION_STATEMENT_ERROR = "You need to accept the confirmation statement";
 const NO_CHANGE_LAWFUL_ACTIVITY_STATEMENT_ERROR = "You need to accept the statement on the intended future activities of the company";
-const LP_PAGE_TITLE_ERROR = "Error: Submit the confirmation statement";
+const PAGE_TITLE_ERROR = "Error: Submit the confirmation statement";
 const ERROR_HEADING = "There is a problem";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -422,6 +422,7 @@ describe("review controller tests", () => {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
       const response = await request(app).post(URL).send();
       expect(response.status).toEqual(200);
+      expect(response.text).toContain(PAGE_TITLE_ERROR);
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
       expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
@@ -435,6 +436,7 @@ describe("review controller tests", () => {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
       const response = await request(app).post(URL).send({ lawfulActivityStatement: "true" });
       expect(response.status).toEqual(200);
+      expect(response.text).toContain(PAGE_TITLE_ERROR);
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(CONFIRMATION_STATEMENT_ERROR);
       expect(response.text).not.toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
@@ -448,6 +450,7 @@ describe("review controller tests", () => {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
       const response = await request(app).post(URL).send({ confirmationStatement: "true" });
       expect(response.status).toEqual(200);
+      expect(response.text).toContain(PAGE_TITLE_ERROR);
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(LAWFUL_ACTIVITY_STATEMENT_ERROR);
       expect(response.text).not.toContain(CONFIRMATION_STATEMENT_ERROR);
@@ -467,7 +470,7 @@ describe("review controller tests", () => {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
       const response = await request(app).post(URL).send();
       expect(response.status).toEqual(200);
-      expect(response.text).toContain(LP_PAGE_TITLE_ERROR);
+      expect(response.text).toContain(PAGE_TITLE_ERROR);
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(LP_CONFIRMATION_STATEMENT_ERROR);
       expect(response.text).toContain(LP_LAWFUL_ACTIVITY_STATEMENT_ERROR);
@@ -487,7 +490,7 @@ describe("review controller tests", () => {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
       const response = await request(app).post(URL).send({ lawfulActivityStatement: "true" });
       expect(response.status).toEqual(200);
-      expect(response.text).toContain(LP_PAGE_TITLE_ERROR);
+      expect(response.text).toContain(PAGE_TITLE_ERROR);
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(LP_CONFIRMATION_STATEMENT_ERROR);
       expect(response.text).not.toContain(LP_LAWFUL_ACTIVITY_STATEMENT_ERROR);
@@ -507,7 +510,7 @@ describe("review controller tests", () => {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
       const response = await request(app).post(URL).send({ confirmationStatement: "true" });
       expect(response.status).toEqual(200);
-      expect(response.text).toContain(LP_PAGE_TITLE_ERROR);
+      expect(response.text).toContain(PAGE_TITLE_ERROR);
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(LP_LAWFUL_ACTIVITY_STATEMENT_ERROR);
       expect(response.text).not.toContain(LP_CONFIRMATION_STATEMENT_ERROR);
@@ -566,6 +569,7 @@ describe("review controller tests", () => {
       PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
       const response = await request(app).post(URL).send();
       expect(response.status).toEqual(200);
+      expect(response.text).toContain(PAGE_TITLE_ERROR);
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(NO_CHANGE_CONFIRMATION_STATEMENT_ERROR);
       expect(response.text).toContain(NO_CHANGE_LAWFUL_ACTIVITY_STATEMENT_ERROR);
@@ -584,6 +588,7 @@ describe("review controller tests", () => {
         .send({ confirmationStatement: "true" });
 
       expect(response.status).toEqual(200);
+      expect(response.text).toContain(PAGE_TITLE_ERROR);
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).not.toContain(NO_CHANGE_CONFIRMATION_STATEMENT_ERROR);
       expect(response.text).toContain(NO_CHANGE_LAWFUL_ACTIVITY_STATEMENT_ERROR);
@@ -602,6 +607,7 @@ describe("review controller tests", () => {
         .send({ lawfulActivityStatement: "true" });
 
       expect(response.status).toEqual(200);
+      expect(response.text).toContain(PAGE_TITLE_ERROR);
       expect(response.text).toContain(ERROR_HEADING);
       expect(response.text).toContain(NO_CHANGE_CONFIRMATION_STATEMENT_ERROR);
       expect(response.text).not.toContain(NO_CHANGE_LAWFUL_ACTIVITY_STATEMENT_ERROR);
@@ -609,7 +615,7 @@ describe("review controller tests", () => {
       expect(response.text).toMatch(/<input[^>]*name="lawfulActivityStatement"[^>]*checked/);
     });
 
-    it("should use session data newConfirmationDate for submitDate", async () => {
+    it("should true to sendLawfulPurposeStatementUpdate", async () => {
       const mockDate = new Date("2025-10-24");
 
       jest.spyOn(updateUtils, "sendLawfulPurposeStatementUpdate").mockResolvedValue(undefined);
@@ -623,8 +629,6 @@ describe("review controller tests", () => {
         confirmLawfulActionsCheck: true
       });
 
-      const expectedSubmitDate = moment(mockDate).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT);
-
       setExtraDataOnSession("true", "true");
 
       const response = await request(app)
@@ -633,40 +637,11 @@ describe("review controller tests", () => {
 
       expect(updateUtils.sendLawfulPurposeStatementUpdate).toHaveBeenCalledWith(
         expect.any(Object),
-        true,
-        expectedSubmitDate,
-        expect.any(Object)
+        true
       );
 
       expect(response.status).toBe(302);
     });
-
-    it("should pass correct SicCodeData to sendLawfulPurposeStatementUpdate", async () => {
-      jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
-        newConfirmationDate: new Date("2025-10-24"),
-        sicCodes: [],
-        beforeYouFileCheck: true,
-        changeConfirmationStatementDate: false,
-        confirmAllInformationCheck: true,
-        confirmLawfulActionsCheck: true
-      });
-
-      setExtraDataOnSession("true", "true");
-
-      const response = await request(app)
-        .post(URL)
-        .send({ confirmationStatement: "true", lawfulActivityStatement: "true" });
-
-      expect(updateUtils.sendLawfulPurposeStatementUpdate).toHaveBeenCalledWith(
-        expect.any(Object),
-        true,
-        expect.any(String),
-        dummySicCodeData
-      );
-
-      expect(response.status).toBe(302);
-    });
-
   });
 
   describe("Payment journey tests", () => {
