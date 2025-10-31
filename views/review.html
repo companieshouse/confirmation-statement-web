@@ -8,7 +8,9 @@
       {{ i18n.SCSTitle }}
     {% endif %}
   {% elseif confirmationStatementError or lawfulActivityStatementError %}
-    Error:
+    Error: Submit the confirmation statement
+  {% else %}
+    Submit the confirmation statement
   {% endif %}
 {% endblock %}
 
