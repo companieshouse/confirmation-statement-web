@@ -27,9 +27,11 @@ import { Settings as luxonSettings } from "luxon";
 import { urlUtils } from "../../src/utils/url";
 import { setCompanyTypeAndAcspNumberInSession } from "../mocks/session.mock";
 import { isLimitedPartnershipFeatureEnabled } from "../../src/utils/feature.flag";
-import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
+import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES, SIC_CODE_SESSION_KEY } from "../../src/utils/constants";
 import { shouldRedirectToPaperFilingForInvalidLp } from "../../src/controllers/confirm.company.controller";
 import { resetAcspSession } from "../../src/utils/session.acsp";
+import { NextFunction, Request, Response } from "express";
+import { Session } from "@companieshouse/node-session-handler";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockFormatForDisplay = formatForDisplay as jest.Mock;
@@ -40,6 +42,7 @@ const mockToReadableFormat = toReadableFormat as jest.Mock;
 const mockGetNextMadeUpToDate = getNextMadeUpToDate as jest.Mock;
 const mockResetAcspSession = resetAcspSession as jest.Mock;
 
+const session = new Session();
 const companyNumber = "12345678";
 const lpCompanyNumber: string = "LP123456";
 const today = "2020-04-25";
@@ -54,6 +57,11 @@ describe("Confirm company controller tests", () => {
     jest.clearAllMocks();
     mockEligibilityStatusCode.mockReset();
     luxonSettings.now = () => new Date(today).valueOf();
+    mocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
+      req.session = session;
+      req.session.data.extra_data[SIC_CODE_SESSION_KEY] = ["70229", "71122", "74909"];
+      next();
+    });
   });
 
   it("Should navigate to confirm company page", async () => {
@@ -88,7 +96,6 @@ describe("Confirm company controller tests", () => {
     expect(response.text).toContain(validCompanyProfile.companyName);
   });
 
-
   it("Should populate the template with CompanyProfile data for Limited Partnership", async () => {
     mockGetCompanyProfile.mockResolvedValueOnce(validLimitedPartnershipProfile);
     mockFormatForDisplay.mockReturnValueOnce(validLimitedPartnershipProfile);
@@ -104,6 +111,7 @@ describe("Confirm company controller tests", () => {
     expect(response.text).toContain(validLimitedPartnershipProfile.companyNumber);
     expect(response.text).toContain(validLimitedPartnershipProfile.companyName);
     expect(mockResetAcspSession).toHaveBeenCalled();
+    expect(session.getExtraData(SIC_CODE_SESSION_KEY)).toBeUndefined();
   });
 
   it("Should return error page if error is thrown when getting Company Profile", async () => {
