@@ -21,7 +21,7 @@ import {
 } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { toReadableFormat } from "../utils/date";
-import { COMPANY_PROFILE_SESSION_KEY, LIMITED_PARTNERSHIP_COMPANY_TYPE } from "../utils/constants";
+import { COMPANY_PROFILE_SESSION_KEY, LIMITED_PARTNERSHIP_COMPANY_TYPE, SIC_CODE_SESSION_KEY } from "../utils/constants";
 import { isLimitedPartnershipCompanyType, isLimitedPartnershipSubtypeFeatureFlagEnabled } from "../utils/limited.partnership";
 import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
 import { resetAcspSession } from "../utils/session.acsp";
@@ -118,6 +118,7 @@ export function shouldRedirectToPaperFilingForInvalidLp(companyProfile: CompanyP
 function clearSessionData(companyProfile: CompanyProfile, session: Session) {
   if (isLimitedPartnershipCompanyType(companyProfile)) {
     resetAcspSession(session);
+    session.deleteExtraData(SIC_CODE_SESSION_KEY);
   }
 }
 
