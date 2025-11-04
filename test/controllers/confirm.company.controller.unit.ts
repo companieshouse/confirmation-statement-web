@@ -3,6 +3,7 @@ jest.mock("../../src/services/eligibility.service");
 jest.mock("../../src/services/confirmation.statement.service");
 jest.mock("../../src/utils/feature.flag");
 jest.mock("../../src/utils/date");
+jest.mock("../../src/utils/session.acsp");
 
 import { EligibilityStatusCode, NextMadeUpToDate } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { checkEligibility } from "../../src/services/eligibility.service";
@@ -28,6 +29,7 @@ import { setCompanyTypeAndAcspNumberInSession } from "../mocks/session.mock";
 import { isLimitedPartnershipFeatureEnabled } from "../../src/utils/feature.flag";
 import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
 import { shouldRedirectToPaperFilingForInvalidLp } from "../../src/controllers/confirm.company.controller";
+import { resetAcspSession } from "../../src/utils/session.acsp";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockFormatForDisplay = formatForDisplay as jest.Mock;
@@ -36,6 +38,7 @@ const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockEligibilityStatusCode = checkEligibility as jest.Mock;
 const mockToReadableFormat = toReadableFormat as jest.Mock;
 const mockGetNextMadeUpToDate = getNextMadeUpToDate as jest.Mock;
+const mockResetAcspSession = resetAcspSession as jest.Mock;
 
 const companyNumber = "12345678";
 const lpCompanyNumber: string = "LP123456";
@@ -83,6 +86,24 @@ describe("Confirm company controller tests", () => {
 
     expect(response.text).toContain(validCompanyProfile.companyNumber);
     expect(response.text).toContain(validCompanyProfile.companyName);
+  });
+
+
+  it("Should populate the template with CompanyProfile data for Limited Partnership", async () => {
+    mockGetCompanyProfile.mockResolvedValueOnce(validLimitedPartnershipProfile);
+    mockFormatForDisplay.mockReturnValueOnce(validLimitedPartnershipProfile);
+    mockGetNextMadeUpToDate.mockResolvedValueOnce({
+      currentNextMadeUpToDate: validLimitedPartnershipProfile.confirmationStatement?.nextMadeUpTo,
+      isDue: false,
+      newNextMadeUpToDate: today
+    } as NextMadeUpToDate);
+
+    const response = await request(app)
+      .get(CONFIRM_COMPANY_PATH);
+
+    expect(response.text).toContain(validLimitedPartnershipProfile.companyNumber);
+    expect(response.text).toContain(validLimitedPartnershipProfile.companyName);
+    expect(mockResetAcspSession).toHaveBeenCalled();
   });
 
   it("Should return error page if error is thrown when getting Company Profile", async () => {

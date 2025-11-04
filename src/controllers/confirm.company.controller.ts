@@ -24,11 +24,15 @@ import { toReadableFormat } from "../utils/date";
 import { COMPANY_PROFILE_SESSION_KEY, LIMITED_PARTNERSHIP_COMPANY_TYPE } from "../utils/constants";
 import { isLimitedPartnershipCompanyType, isLimitedPartnershipSubtypeFeatureFlagEnabled } from "../utils/limited.partnership";
 import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
+import { resetAcspSession } from "../utils/session.acsp";
 
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const companyProfile: CompanyProfile = await getCompanyProfile(req.query.companyNumber as string);
+
+    clearSessionData(companyProfile, req.session as Session);
+
     return res.render(Templates.CONFIRM_COMPANY, await buildPageOptions(req.session as Session, companyProfile));
   } catch (e) {
     return next(e);
@@ -111,7 +115,11 @@ export function shouldRedirectToPaperFilingForInvalidLp(companyProfile: CompanyP
   return false;
 }
 
-
+function clearSessionData(companyProfile: CompanyProfile, session: Session) {
+  if (isLimitedPartnershipCompanyType(companyProfile)) {
+    resetAcspSession(session);
+  }
+}
 
 const stopPagesPathMap = {
   [EligibilityStatusCode.INVALID_COMPANY_STATUS]: INVALID_COMPANY_STATUS_PATH,
