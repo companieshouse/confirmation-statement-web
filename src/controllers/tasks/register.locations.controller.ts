@@ -61,12 +61,14 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const registerLocations: RegisterLocation[] = await getRegisterLocationData(session, transactionId, submissionId);
     const sailAddress = formatSailForDisplay(registerLocations);
     const registers = formatRegisterForDisplay(registerLocations);
+    const updateSailAddressText = isSAILAddressFeatureEnabled();
+    const hasRegisters = registers.length > 0;
 
     return res.render(Templates.REGISTER_LOCATIONS, {
       backLinkUrl: urlUtils.getUrlToPath(TASK_LIST_PATH, req),
       registerLocationsErrorMsg: REGISTER_LOCATIONS_ERROR,
       templateName: Templates.REGISTER_LOCATIONS,
-      registers, sailAddress
+      registers, sailAddress, updateSailAddressText, hasRegisters
     });
   } catch (e) {
     return next(e);
