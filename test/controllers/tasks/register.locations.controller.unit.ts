@@ -173,6 +173,28 @@ describe("Register locations controller tests", () => {
     expect(response.text).toContain(REGISTER_LOCATIONS_ERROR);
   });
 
+  it("Should display error message on register locations page when radio button is not selected with SAIL address no registered location", async () => {
+    (isSAILAddressFeatureEnabled as jest.Mock).mockReturnValue(true);
+    mockGetRegisterLocation.mockResolvedValueOnce(mockRegisterLocationNoRegNoSail);
+    const response = await request(app).post(REGISTER_LOCATIONS_URL);
+
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain(REGISTER_LOCATIONS_ERROR);
+    expect(response.text).toContain(UPDATED_ALL_RECORDS_MESSAGE);
+  });
+
+  it("Should display error message on register locations page when radio button is not selected with SAIL address with registered location", async () => {
+    (isSAILAddressFeatureEnabled as jest.Mock).mockReturnValue(true);
+    mockGetRegisterLocation.mockResolvedValueOnce(mockRegisterLocation);
+    const response = await request(app).post(REGISTER_LOCATIONS_URL);
+
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain(REGISTER_LOCATIONS_ERROR);
+    expect(response.text).toContain(UPDATED_OTHER_RECORDS_MESSAGE);
+  });
+
   it("Should return error page when radio button id is not valid", async () => {
     const response = await request(app)
       .post(REGISTER_LOCATIONS_URL)
