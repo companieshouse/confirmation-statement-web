@@ -3,7 +3,7 @@ import request from "supertest";
 import app from "../../src/app";
 
 const EXPECTED_TEXT = "File a confirmation statement";
-const EXPECTED_FEE = "£34";
+const EXPECTED_FEE = "£50";
 
 describe("start controller tests", () => {
 

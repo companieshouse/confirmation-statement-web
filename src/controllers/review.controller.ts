@@ -20,6 +20,7 @@ import { handleNoChangeConfirmationJourney } from "../utils/confirmation/no.chan
 import { getAcspSessionData } from "../utils/session.acsp";
 import { CONFIRMATION_STATEMENT_SESSION_KEY, LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY } from "../utils/constants";
 import moment from "moment";
+import { CS01_COST } from "../utils/properties";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -60,6 +61,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         ...localeInfo,
         previousPage,
         company,
+        CS01_COST,
         nextMadeUpToDate: confirmationDate,
         isPaymentDue: isPaymentDue(transaction, submissionId),
         ecctEnabled: true,
@@ -75,6 +77,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       ...localeInfo,
       backLinkUrl,
       company,
+      CS01_COST,
       nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
       isPaymentDue: isPaymentDue(transaction, submissionId),
       ecctEnabled
