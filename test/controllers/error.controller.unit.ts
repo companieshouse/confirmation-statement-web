@@ -11,6 +11,7 @@ const mockLoggerErrorRequest = logger.errorRequest as jest.Mock;
 
 const EXPECTED_TEXT = "Page not found - File a confirmation statement";
 const INCORRECT_URL = "/confirmation-statement/company-numberr";
+const PAPER_FEE = "£110";
 
 describe("Error controller test", () => {
 
@@ -36,6 +37,7 @@ describe("Error controller test", () => {
 
     expect(response.status).toEqual(500);
     expect(response.text).toContain("Sorry, there is a problem with the service");
+    expect(response.text).toContain(PAPER_FEE);
     expect(mockLoggerErrorRequest.mock.calls[0][1]).toContain(message);
   });
 });

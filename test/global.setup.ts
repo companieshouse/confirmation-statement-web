@@ -18,4 +18,6 @@ export default () => {
   process.env.URL_PARAM_MAX_LENGTH = "50";
   process.env.RADIO_BUTTON_VALUE_LOG_LENGTH = "50";
   process.env.EWF_URL = "https://ewf.companieshouse.gov.uk/";
+  process.env.CS01_COST = "50";
+  process.env.CS01_PAPER_FEE = "110";
 };
