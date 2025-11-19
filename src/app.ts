@@ -46,6 +46,9 @@ nunjucksEnv.addGlobal("PIWIK_URL", process.env.PIWIK_URL);
 nunjucksEnv.addGlobal("PIWIK_SITE_ID", process.env.PIWIK_SITE_ID);
 nunjucksEnv.addGlobal('govukRebrand', true);
 
+// Required because it is used on error pages that might occur at any point during the user journey.
+nunjucksEnv.addGlobal("CS01_PAPER_FEE", process.env.CS01_PAPER_FEE);
+
 app.enable("trust proxy");
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
