@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
-import { CHS_URL, PIWIK_START_GOAL_ID, FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021, EWF_URL, FEATURE_FLAG_SERVICE_WITHDRAWN_02102025 } from "../utils/properties";
+import { CHS_URL, CS01_COST, PIWIK_START_GOAL_ID, FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021, EWF_URL, FEATURE_FLAG_SERVICE_WITHDRAWN_02102025 } from "../utils/properties";
 import { Templates } from "../types/template.paths";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
-import { CS01_COST } from "../utils/properties";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
