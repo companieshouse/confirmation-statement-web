@@ -114,6 +114,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
           htmlLang: lpJourneyResponse.renderData.lang,
           previousPage: lpJourneyResponse.renderData.previousPage,
           company: companyProfile,
+          CS01_COST,
           ecctEnabled: lpJourneyResponse.renderData.ecctEnabled,
           confirmationStatementError: lpJourneyResponse.renderData.confirmationStatementError,
           lawfulActivityStatementError: lpJourneyResponse.renderData.lawfulActivityStatementError,
@@ -145,6 +146,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         return res.render(Templates.REVIEW, {
           backLinkUrl: noChangeJourneyResponse.renderData.backLinkUrl,
           company: noChangeJourneyResponse.renderData.company,
+          CS01_COST,
           nextMadeUpToDate: noChangeJourneyResponse.renderData.nextMadeUpToDate,
           ecctEnabled: noChangeJourneyResponse.renderData.ecctEnabled,
           confirmationStatementError: noChangeJourneyResponse.renderData.confirmationStatementError,
