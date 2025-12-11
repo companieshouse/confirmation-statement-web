@@ -31,8 +31,12 @@ test: test-unit
 test-unit:
 	npm run coverage
 
-.PHONY: dependency-check
+.PHONY: security-check
 security-check:
+	npm audit
+
+.PHONY: dependency-check
+dependency-check:
 	npm audit
 
 .PHONY: package

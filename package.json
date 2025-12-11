@@ -45,7 +45,7 @@
     "js-yaml": "^4.1.0",
     "luxon": "^3.5.0",
     "nunjucks": "^3.2.3",
-    "private-api-sdk-node": "github:companieshouse/private-api-sdk-node#0.1.98",
+    "private-api-sdk-node": "github:companieshouse/private-api-sdk-node#1.0.98",
     "sass": "^1.89.2",
     "uuid": "^10.0.0",
     "yargs": "^17.7.2"
