@@ -1,13 +1,13 @@
 {% for shareholder in shareholders %}
   <div class="govuk-summary-card govuk-!-margin-bottom-4">
     <div class="govuk-summary-card_heading govuk-!-padding-top-4 govuk-!-padding-bottom-4 govuk-!-padding-right-3 govuk-!-padding-left-3" style="display: flex; justify-content: space-between; align-items: center">
-      <p class="govuk-!-font-weight-bold govuk-!-margin-0">
+      <h3 class="govuk-fieldset__legend--s govuk-!-font-weight-bold govuk-!-margin-0">
         {{shareholder.surname}},
           {{shareholder.foreName1}}
         {% if shareholder.foreName2 %}
           {{shareholder.foreName2}}
         {% endif %}
-      </p>
+      </h3>
     </div>
     <div style="display: flex" class="govuk-!-padding-1">
       <dl style="display: block" class="govuk-summary-list govuk-!-margin-3">
