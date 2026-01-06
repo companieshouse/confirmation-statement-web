@@ -40,6 +40,11 @@
 
       {{
         govukInput({
+          label: {
+            text: "What is the registered email address?",
+            classes: "govuk-label--m",
+            isPageHeading: true
+          },
           errorMessage: emailErrorMsg,
           classes: "govuk-input",
           id: "registered-email-address",
@@ -47,7 +52,7 @@
           value: data.registeredEmailAddress,
           attributes: {
             "data-event-id": "provide-email-address-input",
-            "aria-level": 2
+            "autocomplete": "email"
           }
         })
       }}
