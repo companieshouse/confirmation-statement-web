@@ -5,6 +5,7 @@ import * as urls from "../types/page.urls";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { Session } from "@companieshouse/node-session-handler";
 import { getAcspSessionData, resetAcspSession, updateAcspSessionData } from "../utils/session.acsp";
+import { CS01_COST } from "../utils/properties";
 import { urlUtils } from "../utils/url";
 import { getCompanyProfileFromSession } from "../utils/session";
 import { isPaymentDue } from '../utils/payments';
@@ -39,6 +40,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       htmlLang: lang,
       urls,
       company,
+      CS01_COST,
       previousPageWithoutLang: `${urls.CONFIRM_COMPANY_PATH}?companyNumber=${urlUtils.getCompanyNumberFromRequestParams(req)}`,
       formData,
       showSICCodeReference: showSICCodeReference(company),
@@ -89,6 +91,7 @@ function reloadPageWithError(req: Request, res: Response, options: ReloadPageOpt
     htmlLang: lang,
     company: company,
     urls,
+    CS01_COST,
     previousPage: urls.ACSP_LIMITED_PARTNERSHIP,
     isPaymentDue: isPaymentDue,
     pageProperties: {
