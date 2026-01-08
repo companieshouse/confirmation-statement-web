@@ -46,10 +46,14 @@
 {% block header %}
   {{ govukHeader({
     homepageUrl: "https://www.gov.uk",
-    serviceName: "File a confirmation statement",
-    serviceUrl: "/confirmation-statement",
     containerClasses: "govuk-width-container"})
   }}
+  {% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
+
+  {{ govukServiceNavigation({
+  serviceName: "File a confirmation statement",
+  serviceUrl: "/confirmation-statement"
+  }) }}
 {% endblock %}
 
 {% block beforeContent %}
