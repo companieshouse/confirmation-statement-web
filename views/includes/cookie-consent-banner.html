@@ -23,12 +23,12 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-cookie-banner__content">
-        <p>You've accepted analytics cookies. You can <a class="govuk-link" href="{{ CHS_URL }}/help/cookies">change your cookie settings</a> at any time.</p>
+        <p id="accepted-cookies-desc">You've accepted analytics cookies. You can <a class="govuk-link" href="{{ CHS_URL }}/help/cookies">change your cookie settings</a> at any time.</p>
       </div>
     </div>
   </div>
   <div class="govuk-button-group">
-    <button id="hide-accepted-message-button" class="govuk-button" data-module="govuk-button">
+    <button id="hide-accepted-message-button" class="govuk-button" data-module="govuk-button" aria-controls="accepted-cookies-message" aria-describedby="accepted-cookies-desc" aria-label="Hide cookie message: you have accepted analytics cookies">
       Hide cookie message
     </button>
   </div>
@@ -37,12 +37,12 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-cookie-banner__content">
-        <p>You've rejected analytics cookies. You can <a class="govuk-link" href="{{ CHS_URL }}/help/cookies">change your cookie settings</a> at any time.</p>
+        <p id="rejected-cookies-desc">You've rejected analytics cookies. You can <a class="govuk-link" href="{{ CHS_URL }}/help/cookies">change your cookie settings</a> at any time.</p>
       </div>
     </div>
   </div>
   <div class="govuk-button-group">
-    <button id="hide-rejected-message-button" class="govuk-button" data-module="govuk-button">
+    <button id="hide-rejected-message-button" class="govuk-button" data-module="govuk-button" aria-controls="rejected-cookies-message" aria-describedby="rejected-cookies-desc" aria-label="Hide cookie message: you have rejected analytics cookies">
       Hide cookie message
     </button>
   </div>
