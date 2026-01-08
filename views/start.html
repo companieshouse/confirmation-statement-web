@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
 
 {% block pageTitle %}
   File a confirmation statement - Companies House
@@ -12,6 +13,10 @@
     homepageUrl: "https://www.gov.uk",
     containerClasses: "govuk-width-container"})
   }}
+  {{ govukServiceNavigation({
+  serviceName: "File a confirmation statement",
+  serviceUrl: "/confirmation-statement"
+  }) }}
 {% endblock %}
 
 {% block signoutBar %}
