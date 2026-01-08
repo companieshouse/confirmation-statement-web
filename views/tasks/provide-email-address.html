@@ -38,10 +38,8 @@
 
       {{
         govukInput({
-          label: {
-            text: "What is the registered email address?",
-            classes: "govuk-label--m",
-            isPageHeading: true
+          legend: {
+            html: '<h2 class="govuk-fieldset__legend govuk-fieldset__legend--m">What is the registered email address?</h2>'
           },
           errorMessage: emailErrorMsg,
           classes: "govuk-input",
