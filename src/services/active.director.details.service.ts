@@ -13,6 +13,7 @@ export const getActiveOfficerDetailsData = async (session: Session, transactionI
   const response: Resource<ActiveOfficerDetails> | ApiErrorResponse = await csService.getActiveOfficerDetails(transactionId, submissionId);
   const status = response.httpStatusCode as number;
 
+
   if (status >= 400) {
     const errorResponse = response as ApiErrorResponse;
     throw new Error(`Error retrieving active director details: ${JSON.stringify(errorResponse)}`);
