@@ -5,6 +5,7 @@ import { LP_BEFORE_YOU_FILE_PATH, urlParams } from "../../src/types/page.urls";
 import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
 import { getTransaction } from "../../src/services/transaction.service";
 import { getCompanyProfileFromSession } from "../../src/utils/session";
+import { isPaymentDue } from "../../src/utils/payments";
 import * as urls from "../../src/types/page.urls";
 
 jest.mock("../../src/services/transaction.service", () => ({
@@ -41,6 +42,14 @@ describe("start before you file controller tests", () => {
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.text).toContain("Before you file the confirmation statement");
     expect(response.text).toContain("You will not be able to view or change limited partnership information (except for the SIC codes) as part of this filing.");
+  });
+
+  it("should return CS01 cost in the fee paragraph", async () => {
+    (isPaymentDue as jest.Mock).mockReturnValue(true);
+    const response = await doGetPageTest(LIMITED_PARTNERSHIP_SUBTYPES.LP);
+
+    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    expect(response.text).toContain("<strong>&pound;50</strong>");
   });
 
   it("should return acsp / limited partnership before you file page page, for Scottish Limited Parntership", async () => {
@@ -84,6 +93,7 @@ describe("start before you file controller tests", () => {
   });
 
   it("should reload page with error when checkbox is not selected", async () => {
+    (isPaymentDue as jest.Mock).mockReturnValue(true);
     (getCompanyProfileFromSession as jest.Mock).mockImplementation((_req) => {
       return {
         companyNumber: COMPANY_NUMBER,
@@ -109,6 +119,7 @@ describe("start before you file controller tests", () => {
     expect(response.text).toContain("Error: Before you file the confirmation statement");
     expect(response.text).toContain("Confirm that you&#39;ve checked the limited partnership information and submitted any updates");
     expect(response.text).toContain(`${urls.CONFIRM_COMPANY_PATH}?companyNumber=${COMPANY_NUMBER}`);
+    expect(response.text).toContain("<strong>&pound;50</strong>");
   });
 });
 
