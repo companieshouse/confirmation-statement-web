@@ -5,14 +5,17 @@
 {% endblock %}
 
 {% block head %}
+    {{super()}}
     {% include "limited-partners/partials/meta_header.njk" %}
 {% endblock %}
 
 {% block header %}
+    {{super()}}
     {% include "limited-partners/partials/header.njk" %}
 {% endblock %}
 
 {% block footer %}
+    {{super()}}
     {% include "limited-partners/partials/footer.njk" %}
 {% endblock %}
 
