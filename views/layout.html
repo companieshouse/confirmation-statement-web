@@ -18,19 +18,13 @@
 
 
 {% block head %}
-
-  <link href="{{assetPath}}/stylesheets/services/confirmation-statement/application.css" rel="stylesheet" />
+  {{ super() }}
+  <link href="{{assetPath}}/stylesheets/services/confirmation-statement/application.css" rel="stylesheet" media="all"/>
 
   <link href="{{assetPath}}/stylesheets/session-timeout.css" rel="stylesheet" />
-  <!--[if !IE 8]><!-->
-  <link href="{{assetPath}}/stylesheets/govuk-frontend/v5.10.2/govuk-frontend-5.10.2.min.css" rel="stylesheet" />
-  <!--<![endif]-->
 
-  {# For Internet Explorer 8, you need to compile specific stylesheet #}
-  {# see https://github.com/alphagov/govuk-frontend/blob/master/docs/installation/supporting-internet-explorer-8.md #}
-  <!--[if IE 8]>
-  <link href="{{assetPath}}/stylesheets/govuk-frontend/v4.10.1/govuk-frontend-ie8-4.10.1.min.css" rel="stylesheet" />
-  <![endif]-->
+  <link href="{{assetPath}}/stylesheets/govuk-frontend/v5.13.0/govuk-frontend-5.13.0.min.css" rel="stylesheet" />
+
 
   <script src="https://code.jquery.com/jquery-3.6.0.js"
           integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
