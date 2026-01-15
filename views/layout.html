@@ -1,4 +1,4 @@
-{% extends "govuk/template.njk" %}
+{% extends "ch-node-utils/templates/layouts/template.njk" %}
 
 {% from "govuk/components/back-link/macro.njk"           import govukBackLink %}
 {% from "govuk/components/button/macro.njk"              import govukButton %}
@@ -16,6 +16,7 @@
 {% from "govuk/components/checkboxes/macro.njk"          import govukCheckboxes %}
 {% from "govuk/components/service-navigation/macro.njk"  import govukServiceNavigation %}
 {% from "govuk/components/footer/macro.njk"              import govukFooter %}
+{% from "govuk/components/header/macro.njk"              import govukHeader %}
 
 
 {% block head %}
@@ -23,9 +24,6 @@
   <link href="{{assetPath}}/stylesheets/services/confirmation-statement/application.css" rel="stylesheet" media="all"/>
 
   <link href="{{assetPath}}/stylesheets/session-timeout.css" rel="stylesheet" />
-
-  <link href="{{assetPath}}/stylesheets/govuk-frontend/v5.13.0/govuk-frontend-5.13.0.min.css" rel="stylesheet" />
-
 
   <script src="https://code.jquery.com/jquery-3.6.0.js"
           integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
@@ -42,12 +40,11 @@
 
 {% block header %}
   {{ govukHeader({
-    homepageUrl: "https://www.gov.uk",
-    containerClasses: "govuk-width-container"})
-  }}
-{{ govukServiceNavigation({
-  serviceName: "File a confirmation statement",
-  serviceUrl: "/confirmation-statement"
+    homepageUrl: "https://www.gov.uk"
+  })}}
+  {{ govukServiceNavigation({
+    serviceName: "File a confirmation statement",
+    serviceUrl: "/confirmation-statement"
   }) }}
 {% endblock %}
 
