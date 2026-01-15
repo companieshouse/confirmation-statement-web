@@ -28,7 +28,6 @@ app.disable("x-powered-by");
 //  view engine setup
 const nunjucksEnv = nunjucks.configure([
   "views",
-  "node_modules/govuk-frontend/",
   "node_modules/govuk-frontend/dist/",
   "node_modules/govuk-frontend/dist/govuk",
   "node_modules/govuk-frontend/components/",
