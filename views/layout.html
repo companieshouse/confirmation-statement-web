@@ -1,6 +1,7 @@
-{% extends "govuk/template.njk" %}
+{% extends "ch-node-utils/templates/layouts/template.njk" %}
 
 {% from "govuk/components/back-link/macro.njk"           import govukBackLink %}
+{% from "govuk/components/cookie-banner/macro.njk" import govukCookieBanner %}
 {% from "govuk/components/button/macro.njk"              import govukButton %}
 {% from "govuk/components/details/macro.njk"             import govukDetails %}
 {% from "govuk/components/error-summary/macro.njk"       import govukErrorSummary %}
@@ -14,21 +15,15 @@
 {% from "govuk/components/tag/macro.njk"                 import govukTag %}
 {% from "govuk/components/input/macro.njk"               import govukInput %}
 {% from "govuk/components/checkboxes/macro.njk"          import govukCheckboxes %}
+{% from "govuk/components/service-navigation/macro.njk"  import govukServiceNavigation %}
+{% from "govuk/components/footer/macro.njk"              import govukFooter %}
+{% from "govuk/components/header/macro.njk"              import govukHeader %}
 
 {% block head %}
-
-  <link href="{{assetPath}}/stylesheets/services/confirmation-statement/application.css" rel="stylesheet" />
+  {{ super() }}
+  <link href="{{assetPath}}/stylesheets/services/confirmation-statement/application.css" rel="stylesheet" media="all"/>
 
   <link href="{{assetPath}}/stylesheets/session-timeout.css" rel="stylesheet" />
-  <!--[if !IE 8]><!-->
-  <link href="{{assetPath}}/stylesheets/govuk-frontend/v3.11.0/govuk-frontend-3.11.0.min.css" rel="stylesheet" />
-  <!--<![endif]-->
-
-  {# For Internet Explorer 8, you need to compile specific stylesheet #}
-  {# see https://github.com/alphagov/govuk-frontend/blob/master/docs/installation/supporting-internet-explorer-8.md #}
-  <!--[if IE 8]>
-  <link href="{{assetPath}}/stylesheets/govuk-frontend/v3.11.0/govuk-frontend-ie8-3.11.0.min.css" rel="stylesheet" />
-  <![endif]-->
 
   <script src="https://code.jquery.com/jquery-3.6.0.js"
           integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
@@ -45,11 +40,12 @@
 
 {% block header %}
   {{ govukHeader({
-    homepageUrl: "https://www.gov.uk",
+    homepageUrl: "https://www.gov.uk"
+  })}}
+  {{ govukServiceNavigation({
     serviceName: "File a confirmation statement",
-    serviceUrl: "/confirmation-statement",
-    containerClasses: "govuk-width-container"})
-  }}
+    serviceUrl: "/confirmation-statement"
+  }) }}
 {% endblock %}
 
 {% block beforeContent %}
@@ -72,6 +68,7 @@
 
 {% block footer %}
   {{ govukFooter({
+    classes: "app-footer",
     meta: {
       items: [
         {
@@ -94,14 +91,13 @@
           href: "/confirmation-statement/accessibility-statement",
           text: "Accessibility statement"
         }
-      ]
+      ],
+      html: 'Built by <a class="govuk-footer__link" href="https://www.gov.uk/government/organisations/companies-house">Companies House</a>'
     }
   }) }}
 {% endblock %}
 
 {% block bodyEnd %}
-  {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
-  <script src="{{assetPath}}/javascripts/govuk-frontend/v3.11.0/govuk-frontend-3.11.0.min.js"></script>
-  <script>window.GOVUKFrontend.initAll()</script>
+  {{ super() }}
   {% include "includes/piwik-scripts.html" %}
 {% endblock %}

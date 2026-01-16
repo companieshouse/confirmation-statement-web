@@ -28,8 +28,8 @@ app.disable("x-powered-by");
 //  view engine setup
 const nunjucksEnv = nunjucks.configure([
   "views",
-  "node_modules/govuk-frontend/",
   "node_modules/govuk-frontend/dist/",
+  "node_modules/govuk-frontend/dist/govuk",
   "node_modules/govuk-frontend/components/",
   "node_modules/@companieshouse/ch-node-utils/templates/",
   "node_modules/@companieshouse",
@@ -54,7 +54,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // view engine setup
-app.set("views", path.join(__dirname, "views"));
+app.set("views", [
+    path.join(__dirname, "views"),
+  "node_modules/govuk-frontend/dist",
+  "node_modules/@companieshouse"
+]);
 app.set("view engine", "html");
 
 // support view in njk and html
