@@ -19,17 +19,11 @@
 {% from "govuk/components/footer/macro.njk"              import govukFooter %}
 {% from "govuk/components/header/macro.njk"              import govukHeader %}
 
-{% block headIcons %}
-  {{ super() }}
-{% endblock %}
-
 {% block head %}
   {{ super() }}
   <link href="{{assetPath}}/stylesheets/services/confirmation-statement/application.css" rel="stylesheet" media="all"/>
 
   <link href="{{assetPath}}/stylesheets/session-timeout.css" rel="stylesheet" />
-
-  <link rel="shortcut icon" href="{{assetPath}}/images/govuk-frontend/v5.13.0/rebrand/favicon.ico" type="image/x-icon">
 
   <script src="https://code.jquery.com/jquery-3.6.0.js"
           integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
