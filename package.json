@@ -41,7 +41,7 @@
     "accessible-autocomplete": "^3.0.1",
     "cookie-parser": "^1.4.6",
     "express": "^4.17.1",
-    "govuk-frontend": "5.13.0",
+    "govuk-frontend": "5.14.0",
     "js-yaml": "^4.1.0",
     "luxon": "^3.5.0",
     "nunjucks": "^3.2.3",
