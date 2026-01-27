@@ -471,6 +471,23 @@ describe("Confirm company controller tests", () => {
     expect(response.text).toContain("Incorporation date");
   });
 
+  it("Should display 'Incorporation date' when company type is 'llp'", async () => {
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    mockFormatForDisplay.mockReturnValueOnce(validCompanyProfile);
+    mockGetNextMadeUpToDate.mockResolvedValueOnce({
+      currentNextMadeUpToDate: validCompanyProfile.confirmationStatement?.nextMadeUpTo,
+      isDue: false,
+      newNextMadeUpToDate: today
+    } as NextMadeUpToDate);
+
+    validCompanyProfile.type = "llp";
+
+    const response = await request(app)
+      .get(CONFIRM_COMPANY_PATH);
+
+    expect(response.text).toContain("Incorporation date");
+  });
+
   it("Should display 'Registration date' when company type is 'limited-partnership'", async () => {
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockFormatForDisplay.mockReturnValueOnce(validCompanyProfile);

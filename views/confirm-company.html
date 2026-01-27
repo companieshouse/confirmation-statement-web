@@ -3,11 +3,21 @@
 
 {% set companyType = company.type | lower %}
 
-{% if companyType == 'private limited company' or companyType == 'limited' or companyType == 'ltd' %}
+
+{% set incorporationTypes = [
+  'private limited company',
+  'limited',
+  'ltd',
+  'llp',
+  'limited liability partnership'
+] %}
+
+{% if companyType in incorporationTypes %}
   {% set creationDateLabel = "Incorporation date" %}
 {% else %}
   {% set creationDateLabel = "Registration date" %}
 {% endif %}
+
 
 
 {% block pageTitle %}
