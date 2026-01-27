@@ -471,7 +471,7 @@ describe("Confirm company controller tests", () => {
     expect(response.text).toContain("Incorporation date");
   });
 
-  it("Should display 'Registration date' when company type is 'limited-partnership'", async () => {
+  it("Should display 'Incorporation date' when company type is 'limited-partnership'", async () => {
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     mockFormatForDisplay.mockReturnValueOnce(validCompanyProfile);
     mockGetNextMadeUpToDate.mockResolvedValueOnce({
@@ -485,7 +485,7 @@ describe("Confirm company controller tests", () => {
     const response = await request(app)
       .get(CONFIRM_COMPANY_PATH);
 
-    expect(response.text).toContain("Registration date");
+    expect(response.text).toContain("Incorporation date");
   });
 
 });
