@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  Incorrect SIC
+  You cannot use this service to update the SIC codes - File a confirmation statement - GOV.UK
 {% endblock %}
 {% block backLink %}
   {% include "includes/back-link.html" %}
@@ -12,7 +12,7 @@
       <form action="" method="post">
         {% include "includes/csrf_token.html" %}
         <h1 class="govuk-heading-xl">
-          You cannot use this service
+          You cannot use this service to update the SIC codes
         </h1>
         <p>You must update this information by filing a confirmation statement through our 
           <a target="_blank" rel="noopener noreferrer" href="{{EWF_URL}}" data-event-id="webfiling-service-link">WebFiling service (opens in a new tab)</a>. You will need to sign in to or create a WebFiling account to do this.

@@ -55,7 +55,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // view engine setup
 app.set("views", [
-    path.join(__dirname, "views"),
+  path.join(__dirname, "views"),
   "node_modules/govuk-frontend/dist",
   "node_modules/@companieshouse"
 ]);

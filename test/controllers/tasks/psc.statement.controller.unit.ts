@@ -29,7 +29,7 @@ import { sendUpdate } from "../../../src/utils/update.confirmation.statement.sub
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 
-const PAGE_TITLE = "Review the people with significant control";
+const PAGE_TITLE = "Check the PSC statement - File a confirmation statement - GOV.UK";
 const PAGE_HEADING = "Is the PSC statement correct?";
 const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 const COMPANY_NUMBER = "12345678";

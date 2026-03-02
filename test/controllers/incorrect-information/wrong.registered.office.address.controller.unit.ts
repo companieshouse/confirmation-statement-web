@@ -10,19 +10,18 @@ import {
   WRONG_RO_PATH
 } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
-// import * as updateConfirmationStatement from "../../../src/utils/update.confirmation.statement.submission";
 import { RADIO_BUTTON_VALUE, SECTIONS } from "../../../src/utils/constants";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
-const STOP_PAGE_TEXT = "You need to update the company details";
+const STOP_PAGE_TEXT = "You need to update the registered office address";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "12345-12345";
 const SUBMISSION_ID = "86dfssfds";
 const populatedWrongRegisteredOfficeAddressPath = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(WRONG_RO_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 const TASK_LIST_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 const WRONG_ROA_ERROR = "Select yes if you have updated the registered office address";
-const WRONG_ROA_PAGE_HEADING = "Incorrect registered office address - File a confirmation statement";
+const WRONG_ROA_PAGE_TITLE = "You need to update the registered office address - File a confirmation statement - GOV.UK";
 const ERROR_PAGE_TEXT = "Sorry, there is a problem with the service";
 
 const mockSendUpdate = sendUpdate as jest.Mock;
@@ -44,7 +43,7 @@ describe("Wrong registered office address stop controller tests", () => {
       const response = await request(app).get(populatedWrongRegisteredOfficeAddressPath);
 
       expect(response.text).toContain(STOP_PAGE_TEXT);
-      expect(response.text).toContain(WRONG_ROA_PAGE_HEADING);
+      expect(response.text).toContain(WRONG_ROA_PAGE_TITLE);
       expect(response.text).toContain(backLinkUrl);
       expect(response.text).toContain(changeRoaUrl);
     });
@@ -58,7 +57,7 @@ describe("Wrong registered office address stop controller tests", () => {
       const response = await request(app).post(populatedWrongRegisteredOfficeAddressPath);
 
       expect(response.status).toEqual(200);
-      expect(response.text).toContain(WRONG_ROA_PAGE_HEADING);
+      expect(response.text).toContain(WRONG_ROA_PAGE_TITLE);
       expect(response.text).toContain(WRONG_ROA_ERROR);
       expect(response.text).toContain(STOP_PAGE_TEXT);
       expect(response.text).toContain(backLinkUrl);

@@ -28,7 +28,7 @@ import {
 const COMPANY_NUMBER = "12345678";
 const ACTIVE_PSC_DETAILS_URL = ACTIVE_PSC_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const PSC_STATEMENT_URL = PSC_STATEMENT_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
-const PAGE_HEADING = "Review the people with significant control";
+const PAGE_TITLE = "Check the people with significant control (PSC) details - File a confirmation statement - GOV.UK";
 const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 const WRONG_PSC_DETAILS_URL = WRONG_PSC_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
@@ -50,7 +50,7 @@ describe("Active psc details controller tests", () => {
     it("Should navigate to psc page and display individual psc details", async () => {
       mockGetPscs.mockResolvedValueOnce(mockPscList);
       const response = await request(app).get(ACTIVE_PSC_DETAILS_URL);
-      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain("Joe");
       expect(response.text).toContain("Bloggs");
       expect(response.text).toContain("British");
@@ -66,7 +66,7 @@ describe("Active psc details controller tests", () => {
     it("Should navigate to psc page and display individual relevant legal entity details", async () => {
       mockGetPscs.mockResolvedValueOnce(mockPscList);
       const response = await request(app).get(ACTIVE_PSC_DETAILS_URL);
-      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain("THE LEGAL EAGLE");
       expect(response.text).toContain("1 January 2013");
       expect(response.text).toContain("10 That Road, The Tall City, Thatregion, Neverland, TA1 1TA");
@@ -82,7 +82,7 @@ describe("Active psc details controller tests", () => {
     it("Should navigate to psc page and display other registrable person details", async () => {
       mockGetPscs.mockResolvedValueOnce(mockPscList);
       const response = await request(app).get(ACTIVE_PSC_DETAILS_URL);
-      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain("THE LEGAL EAGLE");
       expect(response.text).toContain("1 January 2014");
       expect(response.text).toContain("10 That Road, The Tall City, Thatregion, Neverland, TA1 1TA");
@@ -94,7 +94,7 @@ describe("Active psc details controller tests", () => {
     it("Should show correct count of officers", async () => {
       mockGetPscs.mockResolvedValueOnce(mockMultiPscList);
       const response = await request(app).get(ACTIVE_PSC_DETAILS_URL);
-      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain("1 individual person");
       expect(response.text).toContain("2 relevant legal entities");
       expect(response.text).toContain("2 other registrable people");
@@ -171,7 +171,7 @@ describe("Active psc details controller tests", () => {
       mockGetPscs.mockResolvedValueOnce(mockPscList);
       const response = await request(app).post(ACTIVE_PSC_DETAILS_URL);
       expect(response.status).toEqual(200);
-      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain(PEOPLE_WITH_SIGNIFICANT_CONTROL_ERROR);
     });
 

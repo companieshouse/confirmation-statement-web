@@ -18,7 +18,7 @@ import {
 const mockGetStatementOfCapitalData = getStatementOfCapitalData as jest.Mock;
 const mockValidateTotalNumberOfShares = validateTotalNumberOfShares as jest.Mock;
 
-const STOP_PAGE_HEADING = "Incorrect SOC";
+const STOP_PAGE_TITLE = "You need to update the statement of capital - File a confirmation statement - GOV.UK";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "12345-12345";
 const SUBMISSION_ID = "86dfssfds";
@@ -45,7 +45,7 @@ describe("Wrong statement of capital stop controller tests", () => {
       mockValidateTotalNumberOfShares.mockReturnValueOnce(false);
       const response = await request(app).get(populatedWrongStatementOfCapitalPath);
 
-      expect(response.text).toContain(STOP_PAGE_HEADING);
+      expect(response.text).toContain(STOP_PAGE_TITLE);
       expect(response.text).toContain("The company's share capital does not match the shares held by its shareholders.");
       expect(response.text).toContain(backLinkUrl);
     });
@@ -56,7 +56,7 @@ describe("Wrong statement of capital stop controller tests", () => {
       mockValidateTotalNumberOfShares.mockReturnValueOnce(true);
       const response = await request(app).get(populatedWrongStatementOfCapitalPath);
 
-      expect(response.text).toContain(STOP_PAGE_HEADING);
+      expect(response.text).toContain(STOP_PAGE_TITLE);
       expect(response.text).toContain("The total amount unpaid for all shares is missing on this company’s statement of capital.");
       expect(response.text).toContain(backLinkUrl);
     });
@@ -67,7 +67,7 @@ describe("Wrong statement of capital stop controller tests", () => {
       mockValidateTotalNumberOfShares.mockReturnValueOnce(false);
       const response = await request(app).get(populatedWrongStatementOfCapitalPath);
 
-      expect(response.text).toContain(STOP_PAGE_HEADING);
+      expect(response.text).toContain(STOP_PAGE_TITLE);
       expect(response.text).toContain("The company's share capital does not match the shares held by its shareholders.");
       expect(response.text).toContain("The total amount unpaid for all shares is missing on this company’s statement of capital.");
       expect(response.text).toContain(backLinkUrl);

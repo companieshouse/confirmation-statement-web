@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  Incorrect Shareholder Details
+  You must use our WebFiling service to update shareholder details - File a confirmation statement - GOV.UK
 {% endblock %}
 {% block backLink %}
   {% include "includes/back-link.html" %}
@@ -12,7 +12,7 @@
       <form action="" method="post">
         {% include "includes/csrf_token.html" %}
         <h1 class="govuk-heading-xl">
-          You cannot use this service
+          You must use our WebFiling service to update shareholder details
         </h1>
         <p>Currently, changes to shareholder details can only be made by filing a confirmation statement through
           <a target="_blank" rel="noopener noreferrer" href="{{EWF_URL}}">our WebFiling service (opens in a new tab)</a>. You will need to sign in to or create a WebFiling account to do this.

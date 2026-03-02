@@ -13,8 +13,8 @@ import { RADIO_BUTTON_VALUE, SECTIONS } from "../../../src/utils/constants";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
-const STOP_PAGE_TEXT = "You need to update the company details";
-const WRONG_REGISTER_PAGE_HEADING = "Incorrect register - File a confirmation statement";
+const STOP_PAGE_TEXT = "You need to update where the company records are kept";
+const WRONG_REGISTER_PAGE_TITLE = "You need to update where the company records are kept - File a confirmation statement - GOV.UK";
 const WRONG_REGISTER_ERROR = "Select yes if you have updated where the company records are kept";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "12345-12345";
@@ -41,7 +41,7 @@ describe("Wrong register locations stop controller tests", () => {
       const response = await request(app).get(populatedWrongRegisterLocationsAddressPath);
 
       expect(response.text).toContain(STOP_PAGE_TEXT);
-      expect(response.text).toContain(WRONG_REGISTER_PAGE_HEADING);
+      expect(response.text).toContain(WRONG_REGISTER_PAGE_TITLE);
       expect(response.text).toContain(backLinkUrl);
     });
   });
@@ -53,7 +53,7 @@ describe("Wrong register locations stop controller tests", () => {
       const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REGISTER_LOCATIONS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 
       expect(response.status).toEqual(200);
-      expect(response.text).toContain(WRONG_REGISTER_PAGE_HEADING);
+      expect(response.text).toContain(WRONG_REGISTER_PAGE_TITLE);
       expect(response.text).toContain(WRONG_REGISTER_ERROR);
       expect(response.text).toContain(STOP_PAGE_TEXT);
       expect(response.text).toContain(backLinkUrl);

@@ -38,7 +38,7 @@ const COMPANY_NUMBER = "12345678";
 const ACTIVE_OFFICER_DETAILS_URL = ACTIVE_OFFICERS_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
-const PAGE_HEADING = "Check the officers' details";
+const PAGE_TITLE = "Check the officer details - File a confirmation statement - GOV.UK";
 const WRONG_DETAILS_URL = WRONG_OFFICER_DETAILS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
 describe("Active officers details controller tests", () => {
@@ -58,7 +58,7 @@ describe("Active officers details controller tests", () => {
     it("Should navigate to active officers details page", async () => {
       const response = await request(app).get(ACTIVE_OFFICER_DETAILS_URL);
 
-      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain(PAGE_TITLE);
     });
 
     it("Should display non corporate secretary details", async () => {
@@ -197,7 +197,7 @@ describe("Active officers details controller tests", () => {
     it("Should redisplay active officers details page with error when radio button is not selected", async () => {
       const response = await request(app).post(ACTIVE_OFFICER_DETAILS_URL);
       expect(response.status).toEqual(200);
-      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain(OFFICER_DETAILS_ERROR);
     });
 

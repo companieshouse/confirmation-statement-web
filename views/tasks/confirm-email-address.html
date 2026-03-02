@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  Confirm the email address
+  Confirm the registered email address - File a confirmation statement - GOV.UK
 {% endblock %}
 
 {% block backLink %}
@@ -14,7 +14,7 @@
 <div class="govuk-grid-column">
     <form action="" method="post">
       {% include "includes/csrf_token.html" %}
-      <h1 class="govuk-heading-l">Check the email address</h1>
+      <h1 class="govuk-heading-l">Confirm the registered email address</h1>
         <dl>
           <dt class="govuk-summary-list__key">Email address</dt>
           <dd class="govuk-summary-list__value"> {{ confirmEmailAddress }} </dd>

@@ -20,7 +20,7 @@ const mockGetShareholders = getShareholders as jest.Mock;
 const mockSendUpdate = sendUpdate as jest.Mock;
 
 const COMPANY_NUMBER = "12345678";
-const PAGE_HEADING = "Review the shareholders";
+const PAGE_TITLE = "Check the shareholder details - File a confirmation statement - GOV.UK";
 const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 const SHAREHOLDERS_URL = SHAREHOLDERS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
@@ -82,7 +82,7 @@ describe("Shareholders controller tests", () => {
     const response = await request(app).post(SHAREHOLDERS_URL);
 
     expect(response.status).toEqual(200);
-    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain(PAGE_TITLE);
     expect(response.text).toContain(SHAREHOLDERS_ERROR);
     expect(response.text).toContain("Check the shareholder detail");
   });

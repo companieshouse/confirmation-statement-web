@@ -26,7 +26,7 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next(
 const mockGetRegisterLocation = getRegisterLocationData as jest.Mock;
 const mockSendUpdate = sendUpdate as jest.Mock;
 
-const PAGE_HEADING = "Review where the company records are held";
+const PAGE_TITLE = "Check where the company records are kept - File a confirmation statement - GOV.UK";
 const SAIL_HEADING = "Single alternative inspection location (SAIL)";
 const NO_RECORDS_SAIL = "There are currently no records held at the SAIL addres";
 const ALL_RECORDS_MESSAGE = "All company records are kept at the registered office address, or on the public record.";
@@ -55,7 +55,7 @@ describe("Register locations controller tests", () => {
     mockGetRegisterLocation.mockResolvedValueOnce(mockRegisterLocation);
     const response = await request(app).get(REGISTER_LOCATIONS_URL);
     const registerLocation = mockRegisterLocation[0];
-    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain(PAGE_TITLE);
     expect(response.text).toContain("Check where the company records are kept");
     expect(response.text).toContain(SAIL_HEADING);
     expect(response.text).toContain(registerLocation.registerTypeDesc);
@@ -68,7 +68,7 @@ describe("Register locations controller tests", () => {
     mockGetRegisterLocation.mockResolvedValueOnce(mockRegisterLocation);
     const response = await request(app).get(REGISTER_LOCATIONS_URL);
     const registerLocation = mockRegisterLocation[0];
-    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain(PAGE_TITLE);
     expect(response.text).toContain("Check where the company records are kept");
     expect(response.text).toContain(SAIL_HEADING);
     expect(response.text).toContain(registerLocation.registerTypeDesc);
@@ -81,7 +81,7 @@ describe("Register locations controller tests", () => {
     mockGetRegisterLocation.mockResolvedValueOnce(mockRegisterLocationNoReg);
     const response = await request(app).get(REGISTER_LOCATIONS_URL);
     const registerLocation = mockRegisterLocationNoReg[0];
-    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain(PAGE_TITLE);
     expect(response.text).toContain("Check where the company records are kept");
     expect(response.text).toContain(SAIL_HEADING);
     expect(response.text).toContain(NO_RECORDS_SAIL);
@@ -94,7 +94,7 @@ describe("Register locations controller tests", () => {
     mockGetRegisterLocation.mockResolvedValueOnce(mockRegisterLocationNoReg);
     const response = await request(app).get(REGISTER_LOCATIONS_URL);
     const registerLocation = mockRegisterLocationNoReg[0];
-    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain(PAGE_TITLE);
     expect(response.text).toContain("Check where the company records are kept");
     expect(response.text).toContain(SAIL_HEADING);
     expect(response.text).toContain(NO_RECORDS_SAIL);
@@ -106,7 +106,7 @@ describe("Register locations controller tests", () => {
     (isSAILAddressFeatureEnabled as jest.Mock).mockReturnValue(true);
     mockGetRegisterLocation.mockResolvedValueOnce(mockRegisterLocationNoRegNoSail);
     const response = await request(app).get(REGISTER_LOCATIONS_URL);
-    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain(PAGE_TITLE);
     expect(response.text).toContain("Check where the company records are kept");
     expect(response.text).toContain(UPDATED_ALL_RECORDS_MESSAGE);
     expect(response.text).not.toContain(SAIL_HEADING);
@@ -116,7 +116,7 @@ describe("Register locations controller tests", () => {
     (isSAILAddressFeatureEnabled as jest.Mock).mockReturnValue(false);
     mockGetRegisterLocation.mockResolvedValueOnce(mockRegisterLocationNoRegNoSail);
     const response = await request(app).get(REGISTER_LOCATIONS_URL);
-    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain(PAGE_TITLE);
     expect(response.text).toContain("Check where the company records are kept");
     expect(response.text).toContain(ALL_RECORDS_MESSAGE);
     expect(response.text).not.toContain(SAIL_HEADING);
@@ -169,7 +169,7 @@ describe("Register locations controller tests", () => {
     const response = await request(app).post(REGISTER_LOCATIONS_URL);
 
     expect(response.status).toEqual(200);
-    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain(PAGE_TITLE);
     expect(response.text).toContain(REGISTER_LOCATIONS_ERROR);
   });
 
@@ -179,7 +179,7 @@ describe("Register locations controller tests", () => {
     const response = await request(app).post(REGISTER_LOCATIONS_URL);
 
     expect(response.status).toEqual(200);
-    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain(PAGE_TITLE);
     expect(response.text).toContain(REGISTER_LOCATIONS_ERROR);
     expect(response.text).toContain(UPDATED_ALL_RECORDS_MESSAGE);
   });
@@ -190,7 +190,7 @@ describe("Register locations controller tests", () => {
     const response = await request(app).post(REGISTER_LOCATIONS_URL);
 
     expect(response.status).toEqual(200);
-    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain(PAGE_TITLE);
     expect(response.text).toContain(REGISTER_LOCATIONS_ERROR);
     expect(response.text).toContain(UPDATED_OTHER_RECORDS_MESSAGE);
   });

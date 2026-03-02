@@ -13,9 +13,9 @@ import { RADIO_BUTTON_VALUE, SECTIONS } from "../../../src/utils/constants";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
-const WRONG_OFFICER_PAGE_HEADING = "Update officers - File a confirmation statement";
+const WRONG_OFFICER_PAGE_TITLE = "You need to update the officer details - File a confirmation statement - GOV.UK";
 const RADIO_LEGEND = "Have you updated the officer details?";
-const STOP_PAGE_TEXT = "You need to update the company details";
+const STOP_PAGE_TEXT = "You need to update the officer details";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "12345-12345";
 const SUBMISSION_ID = "86dfssfds";
@@ -41,7 +41,7 @@ describe("Wrong officer details stop controller tests", () => {
       const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(ACTIVE_OFFICERS_DETAILS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
       const response = await request(app).get(populatedWrongOfficerDetailsPath);
 
-      expect(response.text).toContain(WRONG_OFFICER_PAGE_HEADING);
+      expect(response.text).toContain(WRONG_OFFICER_PAGE_TITLE);
       expect(response.text).toContain(RADIO_LEGEND);
       expect(response.text).toContain(STOP_PAGE_TEXT);
       expect(response.text).toContain(backLinkUrl);
@@ -55,7 +55,7 @@ describe("Wrong officer details stop controller tests", () => {
       const response = await request(app).post(populatedWrongOfficerDetailsPath);
 
       expect(response.status).toEqual(200);
-      expect(response.text).toContain(WRONG_OFFICER_PAGE_HEADING);
+      expect(response.text).toContain(WRONG_OFFICER_PAGE_TITLE);
       expect(response.text).toContain(RADIO_LEGEND);
       expect(response.text).toContain(WRONG_OFFICER_ERROR);
       expect(response.text).toContain(STOP_PAGE_TEXT);

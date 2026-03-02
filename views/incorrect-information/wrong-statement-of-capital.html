@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  Incorrect SOC
+  You need to update the statement of capital - File a confirmation statement - GOV.UK
 {% endblock %}
 
 {% block backLink %}
@@ -14,7 +14,7 @@
       <form action="" method="post">
         {% include "includes/csrf_token.html" %}
         <h1 class="govuk-heading-xl">
-          You cannot use this service
+          You need to update the statement of capital
         </h1>
 
         {% if totalAmountUnpaidValidation === false or sharesValidation === false %}
