@@ -3,7 +3,7 @@ import { TRADING_STOP_PATH } from "../../src/types/page.urls";
 import request from "supertest";
 import app from "../../src/app";
 
-const TRADING_STOP_PAGE_TITLE = "You cannot use this service - Company Trading Status";
+const TRADING_STOP_PAGE_TITLE = "You must use our WebFiling service to update the trading status - File a confirmation statement - GOV.UK";
 
 describe("Trading stop controller tests", () => {
 

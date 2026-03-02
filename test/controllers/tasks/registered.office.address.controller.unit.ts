@@ -19,7 +19,7 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next(
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockSendUpdate = sendUpdate as jest.Mock;
 
-const PAGE_HEADING = "Review the registered office address";
+const PAGE_TITLE = "Check the registered office address - File a confirmation statement - GOV.UK";
 const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 const COMPANY_NUMBER = "12345678";
 
@@ -41,7 +41,7 @@ describe("Registered Office Address controller tests", () => {
     mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
     const response = await request(app).get(REGISTERED_OFFICE_ADDRESS_URL);
 
-    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain(PAGE_TITLE);
     expect(response.text).toContain("Check the registered office address");
     expect(response.text).toContain(validCompanyProfile.registeredOfficeAddress.addressLineOne);
     expect(response.text).toContain(validCompanyProfile.registeredOfficeAddress.addressLineTwo);
@@ -93,7 +93,7 @@ describe("Registered Office Address controller tests", () => {
     const response = await request(app).post(REGISTERED_OFFICE_ADDRESS_URL);
 
     expect(response.status).toEqual(200);
-    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain(PAGE_TITLE);
     expect(response.text).toContain(REGISTERED_OFFICE_ADDRESS_ERROR);
     expect(response.text).toContain("Check the registered office address");
   });

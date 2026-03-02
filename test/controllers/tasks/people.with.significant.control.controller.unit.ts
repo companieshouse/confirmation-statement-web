@@ -19,9 +19,9 @@ import { createAndLogError } from "../../../src/utils/logger";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
 import { PersonOfSignificantControl, SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
-const PAGE_TITLE = "Review the people with significant control";
+const PAGE_TITLE = "Review the people with significant control - File a confirmation statement - GOV.UK";
 const PAGE_HEADING = "Check the people with significant control (PSCs)";
-const STOP_PAGE_TITLE = "Incorrect people with significant control - File a confirmation statement";
+const STOP_PAGE_TITLE = "You need to update the PSC details - File a confirmation statement - GOV.UK";
 const RADIO_LEGEND = "Have you updated the PSC details?";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66544";

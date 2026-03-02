@@ -4,6 +4,7 @@ import app from "../../../src/app";
 import { SHAREHOLDERS_PATH, WRONG_SHAREHOLDERS_PATH } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
 
+const PAGE_TITLE = "You must use our WebFiling service to update shareholder details - File a confirmation statement - GOV.UK";
 const STOP_PAGE_TEXT = "Currently, changes to shareholder details can only be made by filing a confirmation statement";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "12345-12345";
@@ -25,7 +26,7 @@ describe("Wrong shareholders stop controller tests", () => {
       const response = await request(app).get(populatedWrongShareholdersPath);
 
       expect(response.text).toContain(STOP_PAGE_TEXT);
-      expect(response.text).toContain("Incorrect Shareholder Details");
+      expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain(backLinkUrl);
     });
   });

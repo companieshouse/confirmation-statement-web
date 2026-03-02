@@ -37,7 +37,7 @@ const mockValidateTotalNumberOfShares = validateTotalNumberOfShares as jest.Mock
 
 const mockSendUpdate = sendUpdate as jest.Mock;
 
-const PAGE_HEADING = "Review the statement of capital";
+const PAGE_TITLE = "Check the statement of capital - File a confirmation statement - GOV.UK";
 const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 const SHARES_TOTALS_INVALID_WARNING = "The company's share capital does not match the number of shares held by its shareholders.";
 const UNPAID_AMOUNT_NULL_WARNING = "The total amount unpaid for all shares is missing on this company’s statement of capital.";
@@ -71,7 +71,7 @@ describe("Statement of Capital controller tests", () => {
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
 
       expect(mockValidateTotalNumberOfShares).toBeCalledTimes(1);
-      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain("Check the statement of capital");
       expect(response.text).toContain(UNPAID_AMOUNT_NULL_WARNING);
       expect(response.text).toContain(SHARES_TOTALS_INVALID_WARNING);
@@ -87,7 +87,7 @@ describe("Statement of Capital controller tests", () => {
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
 
       expect(mockValidateTotalNumberOfShares).toBeCalledTimes(1);
-      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain("Check the statement of capital");
       expect(response.text).toContain(UNPAID_AMOUNT_NULL_WARNING);
       expect(response.text).not.toContain(SHARES_TOTALS_INVALID_WARNING);
@@ -103,7 +103,7 @@ describe("Statement of Capital controller tests", () => {
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
 
       expect(mockValidateTotalNumberOfShares).toBeCalledTimes(1);
-      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain("Check the statement of capital");
       expect(response.text).toContain(UNPAID_AMOUNT_NULL_WARNING);
       expect(response.text).not.toContain(SHARES_TOTALS_INVALID_WARNING);
@@ -115,7 +115,7 @@ describe("Statement of Capital controller tests", () => {
       mockValidateTotalNumberOfShares.mockReturnValueOnce(false);
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
       expect(mockValidateTotalNumberOfShares).toBeCalledTimes(1);
-      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain("Check the statement of capital");
       expect(response.text).toContain(SHARES_TOTALS_INVALID_WARNING);
       expect(response.text).not.toContain(UNPAID_AMOUNT_NULL_WARNING);
@@ -127,7 +127,7 @@ describe("Statement of Capital controller tests", () => {
       mockValidateTotalNumberOfShares.mockReturnValueOnce(true);
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
       expect(mockValidateTotalNumberOfShares).toBeCalledTimes(1);
-      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain("Check the statement of capital");
       expect(response.text).toContain("Is the statement of capital correct?");
       expect(response.text).not.toContain(SHARES_TOTALS_INVALID_WARNING);
@@ -157,7 +157,7 @@ describe("Statement of Capital controller tests", () => {
         aggregateNominalValue: "2"
       });
       const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
-      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain("Check the statement of capital");
       expect(response.text).toContain("220");
     });
@@ -250,7 +250,7 @@ describe("Statement of Capital controller tests", () => {
         .send({ totalAmountUnpaidValidation: 'true' });
 
       expect(response.status).toEqual(200);
-      expect(response.text).toContain(PAGE_HEADING);
+      expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain(STATEMENT_OF_CAPITAL_ERROR);
       expect(response.text).toContain("Check the statement of capital");
     });

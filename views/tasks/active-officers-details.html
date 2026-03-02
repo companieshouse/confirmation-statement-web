@@ -4,7 +4,7 @@
   {% if errorList.length > 0 %}
     Error:
   {% endif %}
-  Review the officers
+  Check the officer details - File a confirmation statement - GOV.UK
 {% endblock %}
 
 {% block backLink %}
@@ -33,7 +33,7 @@
     {% endif %}
     <form action="" method="post">
       {% include "includes/csrf_token.html" %}
-      <h1 class="govuk-heading-l">Check the officers' details</h1>
+      <h1 class="govuk-heading-l">Check the officer details</h1>
 
       {% set naturalSecretaryHTML %}
         {% include "includes/natural-secretaries.html" %}

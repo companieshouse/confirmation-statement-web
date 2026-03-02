@@ -13,9 +13,9 @@ import { RADIO_BUTTON_VALUE, SECTIONS } from "../../../src/utils/constants";
 import { sendUpdate } from "../../../src/utils/update.confirmation.statement.submission";
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
-const WRONG_PSC_PAGE_HEADING = "Incorrect people with significant control - File a confirmation statement";
+const WRONG_PSC_PAGE_TITLE = "You need to update the PSC details - File a confirmation statement - GOV.UK";
 const RADIO_LEGEND = "Have you updated the PSC details?";
-const STOP_PAGE_TEXT = "You need to update the company details";
+const STOP_PAGE_TEXT = "You need to update the PSC details";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "12345-12345";
 const SUBMISSION_ID = "86dfssfds";
@@ -41,7 +41,7 @@ describe("Wrong psc details stop controller tests", () => {
       const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(ACTIVE_PSC_DETAILS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
       const response = await request(app).get(populatedWrongPscDetailsPath);
 
-      expect(response.text).toContain(WRONG_PSC_PAGE_HEADING);
+      expect(response.text).toContain(WRONG_PSC_PAGE_TITLE);
       expect(response.text).toContain(RADIO_LEGEND);
       expect(response.text).toContain(STOP_PAGE_TEXT);
       expect(response.text).toContain(backLinkUrl);
@@ -55,7 +55,7 @@ describe("Wrong psc details stop controller tests", () => {
       const response = await request(app).post(populatedWrongPscDetailsPath);
 
       expect(response.status).toEqual(200);
-      expect(response.text).toContain(WRONG_PSC_PAGE_HEADING);
+      expect(response.text).toContain(WRONG_PSC_PAGE_TITLE);
       expect(response.text).toContain(RADIO_LEGEND);
       expect(response.text).toContain(WRONG_PSC_ERROR);
       expect(response.text).toContain(STOP_PAGE_TEXT);

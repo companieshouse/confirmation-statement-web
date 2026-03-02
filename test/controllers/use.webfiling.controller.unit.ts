@@ -14,7 +14,7 @@ const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockIsCompanyNumberValid = isCompanyNumberValid as jest.Mock;
 mockIsCompanyNumberValid.mockReturnValue(true);
 
-const STOP_PAGE_TITLE_USE_WEBFILING = "You cannot use this service - Company Details";
+const STOP_PAGE_TITLE_USE_WEBFILING = "You must use our WebFiling service to file for this company - File a confirmation statement - GOV.UK";
 const SERVICE_UNAVAILABLE_TEXT = "Sorry, there is a problem with the service";
 
 describe("Use Webfiling controller tests", () => {

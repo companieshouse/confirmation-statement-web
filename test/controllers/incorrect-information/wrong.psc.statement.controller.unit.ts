@@ -19,9 +19,9 @@ import { getPscs } from "../../../src/services/psc.service";
 import { SectionStatus } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { mockPscList } from "../../mocks/active.psc.details.controller.mock";
 
-const WRONG_PSC_PAGE_HEADING = "Incorrect people with significant control - File a confirmation statement";
+const WRONG_PSC_PAGE_TITLE = "You need to update the PSC details - File a confirmation statement - GOV.UK";
 const RADIO_LEGEND = "Have you updated the PSC details?";
-const STOP_PAGE_TEXT = "You need to update the company details";
+const STOP_PAGE_TEXT = "You need to update the PSC details";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "12345-12345";
 const SUBMISSION_ID = "86dfssfds";
@@ -54,7 +54,7 @@ describe("Wrong psc statement stop controller tests", () => {
 
       expect(mockGetPscs).toBeCalledTimes(1);
       expect(mockGetPscs.mock.calls[0][1]).toBe(TRANSACTION_ID);
-      expect(response.text).toContain(WRONG_PSC_PAGE_HEADING);
+      expect(response.text).toContain(WRONG_PSC_PAGE_TITLE);
       expect(response.text).toContain(RADIO_LEGEND);
       expect(response.text).toContain(STOP_PAGE_TEXT);
       expect(response.text).toContain(backLinkUrlTrue);
@@ -66,7 +66,7 @@ describe("Wrong psc statement stop controller tests", () => {
 
       expect(mockGetPscs).toBeCalledTimes(1);
       expect(mockGetPscs.mock.calls[0][1]).toBe(TRANSACTION_ID);
-      expect(response.text).toContain(WRONG_PSC_PAGE_HEADING);
+      expect(response.text).toContain(WRONG_PSC_PAGE_TITLE);
       expect(response.text).toContain(RADIO_LEGEND);
       expect(response.text).toContain(STOP_PAGE_TEXT);
       expect(response.text).toContain(backLinkUrlFalse);
@@ -78,7 +78,7 @@ describe("Wrong psc statement stop controller tests", () => {
 
       expect(mockGetPscs).toBeCalledTimes(1);
       expect(mockGetPscs.mock.calls[0][1]).toBe(TRANSACTION_ID);
-      expect(response.text).toContain(WRONG_PSC_PAGE_HEADING);
+      expect(response.text).toContain(WRONG_PSC_PAGE_TITLE);
       expect(response.text).toContain(RADIO_LEGEND);
       expect(response.text).toContain(STOP_PAGE_TEXT);
       expect(response.text).toContain(backLinkUrlFalse);
@@ -106,7 +106,7 @@ describe("Wrong psc statement stop controller tests", () => {
       expect(response.status).toEqual(200);
       expect(mockGetPscs).toBeCalledTimes(1);
       expect(mockGetPscs.mock.calls[0][1]).toBe(TRANSACTION_ID);
-      expect(response.text).toContain(WRONG_PSC_PAGE_HEADING);
+      expect(response.text).toContain(WRONG_PSC_PAGE_TITLE);
       expect(response.text).toContain(RADIO_LEGEND);
       expect(response.text).toContain(WRONG_PSC_ERROR);
       expect(response.text).toContain(STOP_PAGE_TEXT);
@@ -120,7 +120,7 @@ describe("Wrong psc statement stop controller tests", () => {
       expect(response.status).toEqual(200);
       expect(mockGetPscs).toBeCalledTimes(1);
       expect(mockGetPscs.mock.calls[0][1]).toBe(TRANSACTION_ID);
-      expect(response.text).toContain(WRONG_PSC_PAGE_HEADING);
+      expect(response.text).toContain(WRONG_PSC_PAGE_TITLE);
       expect(response.text).toContain(RADIO_LEGEND);
       expect(response.text).toContain(WRONG_PSC_ERROR);
       expect(response.text).toContain(STOP_PAGE_TEXT);
@@ -134,7 +134,7 @@ describe("Wrong psc statement stop controller tests", () => {
       expect(response.status).toEqual(200);
       expect(mockGetPscs).toBeCalledTimes(1);
       expect(mockGetPscs.mock.calls[0][1]).toBe(TRANSACTION_ID);
-      expect(response.text).toContain(WRONG_PSC_PAGE_HEADING);
+      expect(response.text).toContain(WRONG_PSC_PAGE_TITLE);
       expect(response.text).toContain(RADIO_LEGEND);
       expect(response.text).toContain(WRONG_PSC_ERROR);
       expect(response.text).toContain(STOP_PAGE_TEXT);
