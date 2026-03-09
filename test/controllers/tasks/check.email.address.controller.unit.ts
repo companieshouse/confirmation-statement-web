@@ -19,7 +19,7 @@ const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockGetRegisteredEmailAddress = getRegisteredEmailAddress as jest.Mock;
 const mockSendUpdate = sendUpdate as jest.Mock;
 
-const PAGE_HEADING = "Check registered email address";
+const PAGE_TITLE = "Confirm the registered email address - File a confirmation statement - GOV.UK";
 const PAGE_CONTENT_SAMPLE = "Is the registered email address correct?";
 const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 const EXPECTED_EMAIL = "test@email.com";
@@ -41,7 +41,7 @@ describe("Check registered email address controller GET tests", () => {
     mockGetRegisteredEmailAddress.mockResolvedValueOnce(EXPECTED_EMAIL);
 
     const response = await request(app).get(CHECK_EMAIL_ADDRESS_URL);
-    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain(PAGE_TITLE);
     expect(response.text).toContain(PAGE_CONTENT_SAMPLE);
     expect(response.text).toContain(EXPECTED_EMAIL);
   });
@@ -104,7 +104,7 @@ describe("Check registered email address controller POST tests", () => {
     const response = await request(app).post(CHECK_EMAIL_ADDRESS_URL);
 
     expect(response.status).toEqual(200);
-    expect(response.text).toContain(PAGE_HEADING);
+    expect(response.text).toContain(PAGE_TITLE);
     expect(response.text).toContain(CHECK_EMAIL_ADDRESS_ERROR);
     expect(response.text).toContain(PAGE_CONTENT_SAMPLE);
   });
