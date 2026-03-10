@@ -77,7 +77,7 @@ app.use(isPscQueryParameterValidationMiddleware);
 app.use(`*${urls.ACTIVE_SUBMISSION_BASE}`, transactionIdValidationMiddleware);
 app.use(`*${urls.ACTIVE_SUBMISSION_BASE}`, submissionIdValidationMiddleware);
 
-app.use(urls.middlewarePaths, sessionMiddleware);
+app.use(sessionMiddleware);
 
 const userAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
 app.use(userAuthRegex, authenticationMiddleware);

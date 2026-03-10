@@ -98,10 +98,19 @@ export const getPreviousPagePath = (req: Request) => {
 
 export const addSicCode = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
-  const { code } = req.body;
+  const rawCode = req.body.code;
+  const code = rawCode.split(" - ")[0];
 
   if (!code) {
-    return res.status(400).send('Missing SIC code');
+    const errors = [{ text: "Missing SIC code" }];
+
+    const unsavedCodeList = req.body.unsavedCodeList
+      ? req.body.unsavedCodeList.split(",")
+      : [];
+
+    const sicCodeSummaryList = getSicCodeSummaryList(req, lang, unsavedCodeList);
+
+    return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, errors);
   }
 
   const unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
