@@ -3,7 +3,6 @@ import { LIMITED_PARTNERSHIP_COMPANY_TYPE,
   LIMITED_PARTNERSHIP_SUBTYPES } from "./constants";
 import { CONFIRMATION_PATH, LP_CHECK_YOUR_ANSWER_PATH, LP_CONFIRMATION_PATH, LP_CS_DATE_PATH, LP_REVIEW_PATH, LP_SIC_CODE_SUMMARY_PATH, REVIEW_PATH } from "../types/page.urls";
 import { Session } from "@companieshouse/node-session-handler";
-import { isLimitedPartnershipFeatureEnabled, isScottishLimitedPartnershipFeatureEnabled, isPrivateFundLimitedPartnershipFeatureEnabled, isScottishPrivateFundLimitedPartnershipFeatureEnabled } from "./feature.flag";
 import { getAcspSessionData } from "./session.acsp";
 
 export interface CsDateValue {
@@ -72,20 +71,4 @@ export function getACSPBackPath(session: Session, company: CompanyProfile): stri
   }
 
   return LP_SIC_CODE_SUMMARY_PATH;
-}
-
-export function isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile: CompanyProfile): boolean {
-  if (isLimitedPartnershipCompanyType(companyProfile)) {
-    switch (companyProfile.subtype) {
-        case LIMITED_PARTNERSHIP_SUBTYPES.LP:
-          return isLimitedPartnershipFeatureEnabled();
-        case LIMITED_PARTNERSHIP_SUBTYPES.SLP:
-          return isScottishLimitedPartnershipFeatureEnabled();
-        case LIMITED_PARTNERSHIP_SUBTYPES.PFLP:
-          return isPrivateFundLimitedPartnershipFeatureEnabled();
-        case LIMITED_PARTNERSHIP_SUBTYPES.SPFLP:
-          return isScottishPrivateFundLimitedPartnershipFeatureEnabled();
-    }
-  }
-  return false;
 }

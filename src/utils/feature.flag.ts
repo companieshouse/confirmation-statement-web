@@ -1,8 +1,5 @@
 import { FEATURE_FLAG_ECCT_START_DATE_14082023,
-  FEATURE_FLAG_LP_SUBTYPE_START_DATE,
-  FEATURE_FLAG_SLP_SUBTYPE_START_DATE,
-  FEATURE_FLAG_PFLP_SUBTYPE_START_DATE,
-  FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE,
+  FEATURE_FLAG_LP_REFORM_DATE,
   FEATURE_FLAG_SERVICE_WITHDRAWN_02102025,
   FEATURE_FLAG_SAIL_ADDRESS } from "./properties";
 import { isValidDate } from "./date";
@@ -40,20 +37,8 @@ export const ecctDayOneEnabled = (dateToCompare: Date): boolean => {
   return isDateFeatureFlagEnabled("FEATURE_FLAG_ECCT_START_DATE_14082023", FEATURE_FLAG_ECCT_START_DATE_14082023, dateToCompare);
 };
 
-export const isLimitedPartnershipFeatureEnabled = (): boolean => {
-  return isDateFeatureFlagEnabled("FEATURE_FLAG_LP_SUBTYPE_START_DATE", FEATURE_FLAG_LP_SUBTYPE_START_DATE, new Date());
-};
-
-export const isScottishLimitedPartnershipFeatureEnabled = (): boolean => {
-  return isDateFeatureFlagEnabled("FEATURE_FLAG_SLP_SUBTYPE_START_DATE", FEATURE_FLAG_SLP_SUBTYPE_START_DATE, new Date());
-};
-
-export const isPrivateFundLimitedPartnershipFeatureEnabled = (): boolean => {
-  return isDateFeatureFlagEnabled("FEATURE_FLAG_PFLP_SUBTYPE_START_DATE", FEATURE_FLAG_PFLP_SUBTYPE_START_DATE, new Date());
-};
-
-export const isScottishPrivateFundLimitedPartnershipFeatureEnabled = (): boolean => {
-  return isDateFeatureFlagEnabled("FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE", FEATURE_FLAG_SPFLP_SUBTYPE_START_DATE, new Date());
+export const isLimitedPartnershipFeatureFlagEnabled = (): boolean => {
+  return isDateFeatureFlagEnabled("FEATURE_FLAG_LP_REFORM_DATE", FEATURE_FLAG_LP_REFORM_DATE, new Date());
 };
 
 export const isServiceWithdrawnFeatureEnabled = (): boolean => {
