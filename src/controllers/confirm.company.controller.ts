@@ -5,7 +5,7 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { createConfirmationStatement, getNextMadeUpToDate } from "../services/confirmation.statement.service";
 import { Session } from "@companieshouse/node-session-handler";
 import { FEATURE_FLAG_PRIVATE_SDK_12052021 } from "../utils/properties";
-import { isActiveFeature } from "../utils/feature.flag";
+import { isActiveFeature, isLimitedPartnershipFeatureFlagEnabled } from "../utils/feature.flag";
 import { checkEligibility } from "../services/eligibility.service";
 import {
   EligibilityStatusCode, NextMadeUpToDate
@@ -22,7 +22,7 @@ import {
 import { urlUtils } from "../utils/url";
 import { toReadableFormat } from "../utils/date";
 import { COMPANY_PROFILE_SESSION_KEY, LIMITED_PARTNERSHIP_COMPANY_TYPE, SIC_CODE_SESSION_KEY } from "../utils/constants";
-import { isLimitedPartnershipCompanyType, isLimitedPartnershipSubtypeFeatureFlagEnabled } from "../utils/limited.partnership";
+import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
 import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
 import { resetAcspSession } from "../utils/session.acsp";
 
@@ -105,10 +105,10 @@ const createNewConfirmationStatement = async (session: Session) => {
 
 export function shouldRedirectToPaperFilingForInvalidLp(companyProfile: CompanyProfile): boolean {
   const isLimitedPartnershipTypeWithValidSubtype = isLimitedPartnershipCompanyType(companyProfile);
-  const isFeatureFlagEnabled = isLimitedPartnershipSubtypeFeatureFlagEnabled(companyProfile);
+  const isLpFeatureFlagEnabled = isLimitedPartnershipFeatureFlagEnabled();
 
   if (companyProfile?.type === LIMITED_PARTNERSHIP_COMPANY_TYPE) {
-    if (!isLimitedPartnershipTypeWithValidSubtype || !isFeatureFlagEnabled) {
+    if (!isLimitedPartnershipTypeWithValidSubtype || !isLpFeatureFlagEnabled) {
       return true;
     }
   }
