@@ -98,8 +98,8 @@ export const getPreviousPagePath = (req: Request) => {
 
 export const addSicCode = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
-  const rawCode = req.body.code;
-  const code = rawCode.split(" - ")[0];
+  const enteredCode = req.body.code;
+  const code = enteredCode.split(" - ")[0];
 
   if (!code) {
     const errors = [{ text: "Missing SIC code" }];
