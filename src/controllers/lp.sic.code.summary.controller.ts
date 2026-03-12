@@ -98,8 +98,7 @@ export const getPreviousPagePath = (req: Request) => {
 
 export const addSicCode = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
-  const enteredCode = req.body.code;
-  const code = enteredCode.split(" - ")[0];
+  const { code } = req.body;
 
   if (!code) {
     const errors = [{ text: "Missing SIC code" }];
@@ -218,7 +217,10 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
     isShowingAddSection: (sicCodeSummaryList.length < 4),
     addUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_ADD_PATH}?lang=${lang}`, req),
     saveUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_SAVE_PATH}?lang=${lang}`, req),
-    searchSicCodes: sessionData.sicCodes,
+    searchSicCodes: sessionData.sicCodes.map(sic => ({
+      ...sic,
+      sic_description: sic.sic_description.trim()
+    })),
     company: company,
     unsavedCodeList: unsavedCodeList,
     errors: combinedErrors,
