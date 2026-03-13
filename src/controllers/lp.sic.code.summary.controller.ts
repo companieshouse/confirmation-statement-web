@@ -101,7 +101,15 @@ export const addSicCode = (req: Request, res: Response) => {
   const { code } = req.body;
 
   if (!code) {
-    return res.status(400).send('Missing SIC code');
+    const errors = [{ text: "Missing SIC code" }];
+
+    const unsavedCodeList = req.body.unsavedCodeList
+      ? req.body.unsavedCodeList.split(",")
+      : [];
+
+    const sicCodeSummaryList = getSicCodeSummaryList(req, lang, unsavedCodeList);
+
+    return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, errors);
   }
 
   const unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
@@ -209,7 +217,10 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
     isShowingAddSection: (sicCodeSummaryList.length < 4),
     addUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_ADD_PATH}?lang=${lang}`, req),
     saveUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_SAVE_PATH}?lang=${lang}`, req),
-    searchSicCodes: sessionData.sicCodes,
+    searchSicCodes: sessionData.sicCodes.map(sic => ({
+      ...sic,
+      sic_description: sic.sic_description.trim()
+    })),
     company: company,
     unsavedCodeList: unsavedCodeList,
     errors: combinedErrors,

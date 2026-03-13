@@ -111,18 +111,39 @@
                               </div>
                               {% endif %}
                             <div id="sic-code-autocomplete"></div>
-                            <input type="hidden" name="code" id="hidden-sic-code" />
+
+                            <input
+                              class="govuk-input govuk-!-width-full"
+                              id="sic-code-input"
+                              placeholder="Search by SIC code or description"
+                              name="code"
+                              type="text"
+                              list="sic-codes"
+                              aria-describedby="sic-hint"
+                            />
+
+                            <datalist id="sic-codes">
+                              {% for sic in searchSicCodes %}
+                                <option value="{{ sic.sic_code }}" label="{{ sic.sic_description }}"></option>
+                              {% endfor %}
+                            </datalist>
+
                             {% if unsavedCodeList.length > 0 %}
-                              <input type="hidden" name="unsavedCodeList" id="unsavedCodeList" value={{ unsavedCodeList }} />
+                              <input
+                                type="hidden"
+                                name="unsavedCodeList"
+                                id="unsavedCodeList"
+                                value="{{ unsavedCodeList | join(',') }}"
+                              />
                             {% endif %}
+
                         </div>    
                         {{ govukButton({
                           text: i18n.SICCSAddSICAddCodeButton,
                           classes: "govuk-button--secondary", 
                           attributes: {
                             id: "add-sic-code-button",
-                            type: "submit",
-                            disabled: "disabled"
+                            type: "submit"
                           }
                         }) }}
                     </div>
@@ -148,11 +169,4 @@
             </div>
         </div>
     </div>
-
-<script>
-  window.searchSicCodes = {{ searchSicCodes | dump | safe }};
-</script>
-<link rel="stylesheet" href="{{assetPath}}/stylesheets/accessible-autocomplete/autocomplete.min.css" />
-<script type="text/javascript" src="{{assetPath}}/javascripts/app/accessible-autocomplete.min.js"></script>
-{% include "../../../includes/scripts/sic.code.autocomplete.js" %}
 {% endblock %}
