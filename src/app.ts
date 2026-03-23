@@ -44,6 +44,7 @@ nunjucksEnv.addGlobal("cdnHost", process.env.CDN_HOST);
 nunjucksEnv.addGlobal("govukFrontendVersion", getGOVUKFrontendVersion());
 nunjucksEnv.addGlobal("PIWIK_URL", process.env.PIWIK_URL);
 nunjucksEnv.addGlobal("PIWIK_SITE_ID", process.env.PIWIK_SITE_ID);
+nunjucksEnv.addGlobal('CONTACT_US_URL', process.env.CONTACT_US_URL);
 nunjucksEnv.addGlobal('govukRebrand', true);
 
 // Required because it is used on error pages that might occur at any point during the user journey.
