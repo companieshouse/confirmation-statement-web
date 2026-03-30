@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/companieshouse/confirmation-statement-web#readme",
   "dependencies": {
-    "@companieshouse/api-sdk-node": "2.0.329",
+    "@companieshouse/api-sdk-node": "github:companieshouse/api-sdk-node#feature/director-identity-verification-eligibility-status",
     "@companieshouse/ch-node-utils": "^2.1.13",
     "@companieshouse/node-session-handler": "~5.2.10",
     "@companieshouse/structured-logging-node": "^2.0.9",

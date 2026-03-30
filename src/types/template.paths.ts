@@ -21,6 +21,7 @@ export enum Templates {
   USE_PAPER = "paper-filing",
   USE_WEBFILING = "use-webfiling",
   TRADING_STOP = "trading-stop",
+  DIRS_NOT_VERIFIED = "directors-not-verified",
   NO_FILING_REQUIRED = "no-filing-required",
   WRONG_OFFICERS = "incorrect-information/wrong-officers",
   WRONG_PSC_DETAILS = "incorrect-information/wrong-psc-details",

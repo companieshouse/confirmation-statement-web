@@ -29,6 +29,7 @@ import * as paperFilingRoute from "../controllers/paper.filing.controller";
 import * as useWebFilingRoute from "../controllers/use.webfiling.controller";
 import * as noFilingRequiredRoute from "../controllers/no.filing.required.controller";
 import * as tradingStopRoute from "../controllers/trading.stop.controller";
+import * as dirsNotVerifiedRoute from "../controllers/dirs.not.verified.controller";
 import * as wrongSicRoute from "../controllers/incorrect-information/wrong.sic.controller";
 import * as wrongStatementOfCapitalRoute from "../controllers/incorrect-information/wrong.statement.of.capital.controller";
 import * as wrongShareholdersRoute from "../controllers/incorrect-information/wrong.shareholders.controller";
@@ -140,6 +141,8 @@ if (isServiceWithdrawnFeatureEnabled()) {
   router.get(urls.NO_FILING_REQUIRED, noFilingRequiredRoute.get);
 
   router.get(urls.TRADING_STOP, tradingStopRoute.get);
+
+  router.get(urls.DIRS_NOT_VERIFIED, dirsNotVerifiedRoute.get);
 
   router.get(urls.WRONG_SIC, wrongSicRoute.get);
 
