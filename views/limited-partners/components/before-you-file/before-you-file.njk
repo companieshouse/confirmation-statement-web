@@ -117,7 +117,12 @@
                     {{ govukButton({
                         id: 'continue',
                         text: i18n.BYFContinueBotton,
-                        type: "submit"
+                        type: "submit",
+                        attributes: {
+                            id: "continue",
+                            "data-event-id": "continue-button",
+                            "onclick": "_paq.push(['trackGoal', PIWIK_BEFORE_YOU_FILE_GOAL_ID])"
+                        }
                     }) }}
                 </form>
             </div>
