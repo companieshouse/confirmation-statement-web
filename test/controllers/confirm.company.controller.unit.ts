@@ -401,7 +401,7 @@ describe("Confirm company controller tests", () => {
   it("shouldRedirectToPaperFilingForInvalidLp should return false if the company type and subtype are LP", () => {
     (isLimitedPartnershipFeatureFlagEnabled as jest.Mock).mockReturnValue(true);
     validLimitedPartnershipProfile.type = "limited-partnership";
-    validLimitedPartnershipProfile.subtype = "limited-partnership";
+    validLimitedPartnershipProfile.subtype = LIMITED_PARTNERSHIP_SUBTYPES.LP;
 
     expect(shouldRedirectToPaperFilingForInvalidLp(validLimitedPartnershipProfile)).toBeFalsy();
   });
@@ -409,7 +409,7 @@ describe("Confirm company controller tests", () => {
   it("shouldRedirectToPaperFilingForInvalidLp should return true if the company type, subtype are LP and feature flag is not enabled", () => {
     (isLimitedPartnershipFeatureFlagEnabled as jest.Mock).mockReturnValue(false);
     validLimitedPartnershipProfile.type = "limited-partnership";
-    validLimitedPartnershipProfile.subtype = "limited-partnership";
+    validLimitedPartnershipProfile.subtype = LIMITED_PARTNERSHIP_SUBTYPES.LP;
 
     expect(shouldRedirectToPaperFilingForInvalidLp(validLimitedPartnershipProfile)).toBeTruthy();
   });
@@ -417,7 +417,7 @@ describe("Confirm company controller tests", () => {
   it("shouldRedirectToPaperFilingForInvalidLp should return false if the company type is not LP and subtype is LP", () => {
     (isLimitedPartnershipFeatureFlagEnabled as jest.Mock).mockReturnValue(true);
     validLimitedPartnershipProfile.type = "otherType";
-    validLimitedPartnershipProfile.subtype = "limited-partnership";
+    validLimitedPartnershipProfile.subtype = LIMITED_PARTNERSHIP_SUBTYPES.LP;
 
     expect(shouldRedirectToPaperFilingForInvalidLp(validLimitedPartnershipProfile)).toBeFalsy();
   });
@@ -433,7 +433,7 @@ describe("Confirm company controller tests", () => {
   it("shouldRedirectToPaperFilingForInvalidLp should return false if the company type is LP and subtype is SPFLP", () => {
     (isLimitedPartnershipFeatureFlagEnabled as jest.Mock).mockReturnValue(true);
     validLimitedPartnershipProfile.type = "limited-partnership";
-    validLimitedPartnershipProfile.subtype = "scottish-private-fund-limited-partnership";
+    validLimitedPartnershipProfile.subtype = LIMITED_PARTNERSHIP_SUBTYPES.SPFLP;
 
     expect(shouldRedirectToPaperFilingForInvalidLp(validLimitedPartnershipProfile)).toBeFalsy();
   });
@@ -441,7 +441,7 @@ describe("Confirm company controller tests", () => {
   it("shouldRedirectToPaperFilingForInvalidLp should return true if the company type is LP, subtype is SPFLP and LP feature flag is not enabled", () => {
     (isLimitedPartnershipFeatureFlagEnabled as jest.Mock).mockReturnValue(false);
     validLimitedPartnershipProfile.type = "limited-partnership";
-    validLimitedPartnershipProfile.subtype = "scottish-private-fund-limited-partnership";
+    validLimitedPartnershipProfile.subtype = LIMITED_PARTNERSHIP_SUBTYPES.SPFLP;
 
     expect(shouldRedirectToPaperFilingForInvalidLp(validLimitedPartnershipProfile)).toBeTruthy();
   });
