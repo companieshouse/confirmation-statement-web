@@ -61,6 +61,10 @@ export const YYYYMMDD_WITH_HYPHEN_DATE_FORMAT = "YYYY-MM-DD";
 export const DATE_DAY_REGEX: RegExp = /^(0?[1-9]|[12][0-9]|3[01])$/;
 export const DATE_MONTH_REGEX: RegExp = /^(0?[1-9]|1[0-2])$/;
 export const DATE_YEAR_REGEX: RegExp = /^\d{4}$/;
+export const MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME = {
+  LP_CS_DATE_ON_TIME: "confirmation-statement-date-dash-on-time",
+  LP_CS_DATE_EARLY: "confirmation-statement-date-dash-early"
+};
 
 export enum RADIO_BUTTON_VALUE {
   NO = "no",

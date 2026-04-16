@@ -1,7 +1,7 @@
 {% extends "../../layouts/layout.njk" %}
-{% from "govuk/components/button/macro.njk"     import govukButton %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
-{% from "govuk/components/radios/macro.njk"     import govukRadios %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% set errors = pageProperties.errors %}
@@ -14,7 +14,7 @@
 
 {% set dateSelector -%}
 
-    {{ govukDateInput({
+{{ govukDateInput({
         id: "csDate",
         namePrefix: "csDate",
         fieldset: {
@@ -84,21 +84,31 @@
                             titleText: "There is a problem",
                             errorList: [
                                 { text: errorMessage.text, href: "#confirmationStatementDate" }
-                            ]
+                            ],
+                            attributes: {
+                                "data-event-id": "save-and-continue-button"
+                            }
                         }) }}
                     {% endif %}
 
                     {% if isTodayBeforeFileCsDate %}
                         <p class="govuk-body">{{i18n.CDSNotDueToFileEarly}}</p>
-                        <p class="govuk-body">{{i18n.CDSExpectedFileDateTextEarly}} <b>{{cdsCurrentDate}}</b></p>
-                        <p class="govuk-body">{{i18n.CDSDateChangeExplainerStartEarly}} <b>{{newCsDate}}</b>{{i18n.CDSDateChangeExplainerEndEarly}}</p>
+                        <p class="govuk-body">{{i18n.CDSExpectedFileDateTextEarly}}
+                            <b>{{cdsCurrentDate}}</b>
+                        </p>
+                        <p class="govuk-body">{{i18n.CDSDateChangeExplainerStartEarly}}
+                            <b>{{newCsDate}}</b>{{i18n.CDSDateChangeExplainerEndEarly}}</p>
                         <p class="govuk-body">{{i18n.CDSDateChangeExplainer2Early}}</p>
                         {% set noRadioButtonText = i18n.CDSRadioButtonNoTextEarly + dateOfToday %}
 
                     {% else %}
-                        <p class="govuk-body">{{i18n.CDSCurrentDateText}} <b>{{cdsCurrentDate}}</b></p>
-                        <p class="govuk-body">{{i18n.CDSMustFileByDateText}}<b>{{cdsMustFileByDate}}</b></p>
-                        <details class="govuk-details">
+                        <p class="govuk-body">{{i18n.CDSCurrentDateText}}
+                            <b>{{cdsCurrentDate}}</b>
+                        </p>
+                        <p class="govuk-body">{{i18n.CDSMustFileByDateText}}
+                            <b>{{cdsMustFileByDate}}</b>
+                        </p>
+                        <details class="govuk-details" data-event-id="select-what-is-the-confirmation-statement-date-info">
                             <summary class="govuk-details__summary">
                                 <span class="govuk-details__summary-text">
                                     {{i18n.CDSWhatIsDetailExpanderTitle}}
@@ -130,18 +140,27 @@
                                 text: i18n.CDSRadioButtonYes,
                                 conditional: {
                                     html: dateSelector
+                                },
+                                attributes: {
+                                    "data-event-id": "change-cs-date-yes"
                                 }
                             },
                             {
                                 value: "no",
-                                text: noRadioButtonText
+                                text: noRadioButtonText,
+                                attributes: {
+                                    "data-event-id": "change-cs-date-no"
+                                }
                             }
                         ],
                         errorMessage: errorMessage
                     })}}
 
                     {{ govukButton({
-                        text: i18n.CDSContinueButton
+                        text: i18n.CDSContinueButton,
+                        attributes: {
+                            "data-event-id": "save-and-continue-button"
+                        }
                     }) }}
                 </form>
             </div>
