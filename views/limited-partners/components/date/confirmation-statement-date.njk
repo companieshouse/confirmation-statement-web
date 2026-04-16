@@ -93,21 +93,14 @@
 
                     {% if isTodayBeforeFileCsDate %}
                         <p class="govuk-body">{{i18n.CDSNotDueToFileEarly}}</p>
-                        <p class="govuk-body">{{i18n.CDSExpectedFileDateTextEarly}}
-                            <b>{{cdsCurrentDate}}</b>
-                        </p>
-                        <p class="govuk-body">{{i18n.CDSDateChangeExplainerStartEarly}}
-                            <b>{{newCsDate}}</b>{{i18n.CDSDateChangeExplainerEndEarly}}</p>
+                        <p class="govuk-body">{{i18n.CDSExpectedFileDateTextEarly}} <b>{{cdsCurrentDate}}</b></p>
+                        <p class="govuk-body">{{i18n.CDSDateChangeExplainerStartEarly}} <b>{{newCsDate}}</b>{{i18n.CDSDateChangeExplainerEndEarly}}</p>
                         <p class="govuk-body">{{i18n.CDSDateChangeExplainer2Early}}</p>
                         {% set noRadioButtonText = i18n.CDSRadioButtonNoTextEarly + dateOfToday %}
 
                     {% else %}
-                        <p class="govuk-body">{{i18n.CDSCurrentDateText}}
-                            <b>{{cdsCurrentDate}}</b>
-                        </p>
-                        <p class="govuk-body">{{i18n.CDSMustFileByDateText}}
-                            <b>{{cdsMustFileByDate}}</b>
-                        </p>
+                        <p class="govuk-body">{{i18n.CDSCurrentDateText}} <b>{{cdsCurrentDate}}</b></p>
+                        <p class="govuk-body">{{i18n.CDSMustFileByDateText}}<b>{{cdsMustFileByDate}}</b></p>
                         <details class="govuk-details" data-event-id="select-what-is-the-confirmation-statement-date-info">
                             <summary class="govuk-details__summary">
                                 <span class="govuk-details__summary-text">
