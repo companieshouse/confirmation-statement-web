@@ -37,10 +37,10 @@ export const LP_CONFIRMATION_STATEMENT_ERROR: string = "Select if all required i
 export const LP_LAWFUL_ACTIVITY_STATEMENT_ERROR: string = "Select if intended future activities are lawful";
 export const ACCEPT_LAWFUL_PURPOSE_STATEMENT = "acceptLawfulPurposeStatement";
 export const LIMITED_PARTNERSHIP_COMPANY_TYPE = "limited-partnership";
-export const LIMITED_PARTNERSHIP_LP_SUBTYPE = "limited-partnership";
-export const LIMITED_PARTNERSHIP_SLP_SUBTYPE = "scottish-limited-partnership";
-export const LIMITED_PARTNERSHIP_PFLP_SUBTYPE = "private-fund-limited-partnership";
-export const LIMITED_PARTNERSHIP_SPFLP_SUBTYPE = "scottish-private-fund-limited-partnership";
+export const LIMITED_PARTNERSHIP_LP_SUBTYPE = "lp";
+export const LIMITED_PARTNERSHIP_SLP_SUBTYPE = "slp";
+export const LIMITED_PARTNERSHIP_PFLP_SUBTYPE = "pflp";
+export const LIMITED_PARTNERSHIP_SPFLP_SUBTYPE = "spflp";
 export const LIMITED_PARTNERSHIP_SUBTYPES = {
   LP: LIMITED_PARTNERSHIP_LP_SUBTYPE,
   SLP: LIMITED_PARTNERSHIP_SLP_SUBTYPE,
