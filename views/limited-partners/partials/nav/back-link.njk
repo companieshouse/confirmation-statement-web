@@ -9,7 +9,10 @@
 {{ govukBackLink({
     href: backHref,
     text: i18n.HEADBackText,
-    classes: "govuk-!-margin-bottom-0 govuk-!-margin-top-0"
+    classes: "govuk-!-margin-bottom-0 govuk-!-margin-top-0",
+    attributes: {
+      "data-event-id": "back-link"
+    }
 }) }}
 
 <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
