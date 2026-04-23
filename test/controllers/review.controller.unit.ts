@@ -133,7 +133,7 @@ function setupLimitedPartnershipCompany() {
   const mockLimitedPartnership = {
     companyNumber: COMPANY_NUMBER,
     type: "limited-partnership",
-    subtype: "limited-partnership",
+    subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
     jurisdiction: "england-wales",
     companyName: "Test Company"
   };
@@ -146,7 +146,7 @@ function setupScottishLimitedPartnershipCompany() {
   const mockScottishLimitedPartnership = {
     companyNumber: COMPANY_NUMBER,
     type: "limited-partnership",
-    subtype: "scottish-limited-partnership",
+    subtype: LIMITED_PARTNERSHIP_SUBTYPES.SLP,
     jurisdiction: "scotland",
     companyName: "Test Company"
   };
@@ -462,7 +462,7 @@ describe("review controller tests", () => {
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
         type: "limited-partnership",
-        subtype: "limited-partnership",
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
         companyName: "Test Company"
       };
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
@@ -482,7 +482,7 @@ describe("review controller tests", () => {
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
         type: "limited-partnership",
-        subtype: "limited-partnership",
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
         companyName: "Test Company"
       };
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
@@ -522,7 +522,7 @@ describe("review controller tests", () => {
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
         type: "limited-partnership",
-        subtype: "limited-partnership",
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
         companyName: "Test Company"
       };
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
@@ -542,7 +542,7 @@ describe("review controller tests", () => {
       const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
         type: "limited-partnership",
-        subtype: "limited-partnership",
+        subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
         companyName: "Test Company"
       };
       mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);

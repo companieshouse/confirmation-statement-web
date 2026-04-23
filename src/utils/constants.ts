@@ -37,10 +37,10 @@ export const LP_CONFIRMATION_STATEMENT_ERROR: string = "Select if all required i
 export const LP_LAWFUL_ACTIVITY_STATEMENT_ERROR: string = "Select if intended future activities are lawful";
 export const ACCEPT_LAWFUL_PURPOSE_STATEMENT = "acceptLawfulPurposeStatement";
 export const LIMITED_PARTNERSHIP_COMPANY_TYPE = "limited-partnership";
-export const LIMITED_PARTNERSHIP_LP_SUBTYPE = "limited-partnership";
-export const LIMITED_PARTNERSHIP_SLP_SUBTYPE = "scottish-limited-partnership";
-export const LIMITED_PARTNERSHIP_PFLP_SUBTYPE = "private-fund-limited-partnership";
-export const LIMITED_PARTNERSHIP_SPFLP_SUBTYPE = "scottish-private-fund-limited-partnership";
+export const LIMITED_PARTNERSHIP_LP_SUBTYPE = "lp";
+export const LIMITED_PARTNERSHIP_SLP_SUBTYPE = "slp";
+export const LIMITED_PARTNERSHIP_PFLP_SUBTYPE = "pflp";
+export const LIMITED_PARTNERSHIP_SPFLP_SUBTYPE = "spflp";
 export const LIMITED_PARTNERSHIP_SUBTYPES = {
   LP: LIMITED_PARTNERSHIP_LP_SUBTYPE,
   SLP: LIMITED_PARTNERSHIP_SLP_SUBTYPE,
@@ -61,6 +61,10 @@ export const YYYYMMDD_WITH_HYPHEN_DATE_FORMAT = "YYYY-MM-DD";
 export const DATE_DAY_REGEX: RegExp = /^(0?[1-9]|[12][0-9]|3[01])$/;
 export const DATE_MONTH_REGEX: RegExp = /^(0?[1-9]|1[0-2])$/;
 export const DATE_YEAR_REGEX: RegExp = /^\d{4}$/;
+export const MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME = {
+  LP_CS_DATE_ON_TIME: "confirmation-statement-date-on-time",
+  LP_CS_DATE_EARLY: "confirmation-statement-date-early"
+};
 
 export enum RADIO_BUTTON_VALUE {
   NO = "no",

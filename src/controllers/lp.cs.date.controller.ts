@@ -8,7 +8,7 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { getCompanyProfileFromSession } from "../utils/session";
 import { Session } from "@companieshouse/node-session-handler";
 import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
-import { DMMMMYYYY_DATE_FORMAT, RADIO_BUTTON_VALUE, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT } from "../utils/constants";
+import { DMMMMYYYY_DATE_FORMAT, RADIO_BUTTON_VALUE, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT, MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME } from "../utils/constants";
 import { getReviewPath, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType, isACSPJourney, CsDateValue } from "../utils/limited.partnership";
 import { convertDateToString, formatDateString } from "../utils/date";
 import { isTodayBeforeFileCsDate, validateDateSelectorValue } from "../validators/lp.cs.date.validator";
@@ -57,7 +57,8 @@ export const get = (req: Request, res: Response) => {
     newCsDate: getNewCsDateForEarlyScreen(acspSessionData),
     csDateRadioValue,
     csDateValue,
-    errorMessage: null
+    errorMessage: null,
+    templateName: isTodayBeforeFileCsDate(company) ? MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_DATE_EARLY : MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_DATE_ON_TIME
   });
 };
 
@@ -158,7 +159,8 @@ function reloadPageWithError(options: ReloadPageOptions) {
     csDateValue,
     errorMessage: {
       text: errorMessage
-    }
+    },
+    templateName: isTodayBeforeFileCsDate(company) ? MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_DATE_EARLY : MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_DATE_ON_TIME
   });
 }
 
