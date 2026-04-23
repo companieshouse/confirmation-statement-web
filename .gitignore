@@ -3,7 +3,6 @@ node_modules/
 *.zip
 .idea/
 .settings/
-.vscode/
 *.code-workspace
 .DS_Store
 coverage
