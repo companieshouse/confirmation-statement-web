@@ -13,6 +13,7 @@ export default () => {
   process.env.FEATURE_FLAG_PRIVATE_SDK_12052021 = "true";
   process.env.FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 = "false";
   process.env.CHS_URL = "http://chs.local";
+  process.env.PIWIK_BEFORE_YOU_FILE_GOAL_ID = "101"; //Pending actual value
   process.env.PIWIK_START_GOAL_ID = "3";
   process.env.URL_LOG_MAX_LENGTH = "400";
   process.env.URL_PARAM_MAX_LENGTH = "50";

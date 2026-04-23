@@ -63,7 +63,8 @@
                 <p class="govuk-body">
                     {{i18n.BYFFileUpdatesParagraphStart}}
                     {% if company.companyNumber %}
-                        <a href="https://find-and-update.company-information.service.gov.uk/company/{{company.companyNumber}}" target="_blank">
+                        <a href="https://find-and-update.company-information.service.gov.uk/company/{{company.companyNumber}}" target="_blank"
+                        data-event-id="check-company-info-link">
                             {{i18n.BYFFileUpdatesParagraphLink}}
                         </a>
                     {% else %}
@@ -97,7 +98,10 @@
                                     hint: {}, 
                                     checked: formData and formData.byfCheckbox
                                 }
-                            ]
+                            ],
+                            attributes: {
+                                "data-event-id": "checked-company-information-checkbox"
+                            }
                         }) }}
 
                     {% if isPaymentDue %}
@@ -117,7 +121,11 @@
                     {{ govukButton({
                         id: 'continue',
                         text: i18n.BYFContinueBotton,
-                        type: "submit"
+                        type: "submit",
+                        attributes: {
+                            id: "continue",
+                            "data-event-id": "continue-button"
+                        }
                     }) }}
                 </form>
             </div>
