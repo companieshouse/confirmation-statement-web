@@ -11,7 +11,7 @@ import { getCompanyProfileFromSession } from "../utils/session";
 import { isPaymentDue } from '../utils/payments';
 import { getSicCodeCondensedList } from "../services/sic.code.service";
 import { fetchTransaction } from "../utils/confirmation/limited.partnership.confirmation";
-import { LIMITED_PARTNERSHIP_LP_SUBTYPE, LIMITED_PARTNERSHIP_SLP_SUBTYPE } from "../utils/constants";
+import { LIMITED_PARTNERSHIP_LP_SUBTYPE, LIMITED_PARTNERSHIP_SLP_SUBTYPE, MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME } from "../utils/constants";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -45,7 +45,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       formData,
       showSICCodeReference: showSICCodeReference(company),
       isPaymentDue: isPaymentDue(await transaction, submissionId),
-      PIWIK_BEFORE_YOU_FILE_GOAL_ID
+      templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_BEFORE_YOU_FILE
     });
 
   } catch (e) {
@@ -109,7 +109,7 @@ function reloadPageWithError(req: Request, res: Response, options: ReloadPageOpt
     },
     showSICCodeReference: showSICCodeReference(getCompanyProfileFromSession(req)),
     previousPageWithoutLang: `${urls.CONFIRM_COMPANY_PATH}?companyNumber=${urlUtils.getCompanyNumberFromRequestParams(req)}`,
-    PIWIK_BEFORE_YOU_FILE_GOAL_ID
+    templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_BEFORE_YOU_FILE
   });
 }
 
