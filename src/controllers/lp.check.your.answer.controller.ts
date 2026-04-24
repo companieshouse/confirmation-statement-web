@@ -41,7 +41,8 @@ export const get = (req: Request, res: Response) => {
     company,
     csDate: csDateString,
     csDatePageUrl,
-    nextPage
+    nextPage,
+    templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_DATE_CYA
   });
 };
 

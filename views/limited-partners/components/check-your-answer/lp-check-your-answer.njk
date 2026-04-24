@@ -31,7 +31,11 @@
                                             {
                                                 href: csDatePageUrl,
                                                 text: i18n.CDCYACheckAnswersChange,
-                                                visuallyHiddenText: i18n.CDCYACheckAnswersChange + " " + i18n.CDCYACheckAnswersStart
+                                                visuallyHiddenText: i18n.CDCYACheckAnswersChange + " " + i18n.CDCYACheckAnswersStart,              
+                                                attributes: {
+                                                        "data-event-id": "change-cs-date"
+                                                    }
+
                                             }    
                                     ]
                                 }
@@ -43,7 +47,10 @@
                     {{ govukButton({
                         text: i18n.CDCYAContinueButton,
                         type: "submit",
-                        id: "continue-button-id"
+                        id: "continue-button-id",
+                        attributes: {
+                                "data-event-id": "change-cs-date"
+                            }
                     })}}
 
                     </form>
