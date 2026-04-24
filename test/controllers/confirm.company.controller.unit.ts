@@ -17,7 +17,8 @@ import {
   URL_QUERY_PARAM,
   USE_PAPER_PATH,
   USE_WEBFILING_PATH,
-  LP_MUST_BE_AUTHORISED_AGENT_PATH
+  LP_MUST_BE_AUTHORISED_AGENT_PATH,
+  DIRS_NOT_VERIFIED_PATH
 } from "../../src/types/page.urls";
 import { getCompanyProfile, formatForDisplay } from "../../src/services/company.profile.service";
 import { validCompanyProfile, validLimitedPartnershipProfile } from "../mocks/company.profile.mock";
@@ -299,6 +300,16 @@ describe("Confirm company controller tests", () => {
     expect(response.status).toEqual(302);
     expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
     expect(response.text).toContain(useWebFilingRedirectPath);
+  });
+
+  it("Should redirect to Directors Not All Verified stop screen when the eligibility status code is INVALID_DIRECTORS_NOT_ALL_IDENTITY_VERIFIED", async () => {
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+    mockEligibilityStatusCode.mockResolvedValueOnce(EligibilityStatusCode.INVALID_DIRECTORS_NOT_ALL_IDENTITY_VERIFIED);
+    const response = await request(app).post(CONFIRM_COMPANY_PATH);
+    expect(response.status).toEqual(302);
+    expect(mockCreateConfirmationStatement).not.toHaveBeenCalled();
+    expect(response.header.location).toEqual(DIRS_NOT_VERIFIED_PATH);
   });
 
   it("Should display a warning if filing is not due", async () => {

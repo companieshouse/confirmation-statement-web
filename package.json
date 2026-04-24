@@ -30,10 +30,10 @@
   },
   "homepage": "https://github.com/companieshouse/confirmation-statement-web#readme",
   "dependencies": {
-    "@companieshouse/api-sdk-node": "2.0.329",
+    "@companieshouse/api-sdk-node": "2.0.340",
     "@companieshouse/ch-node-utils": "^2.1.13",
     "@companieshouse/node-session-handler": "~5.2.10",
-    "@companieshouse/structured-logging-node": "^2.0.9",
+    "@companieshouse/structured-logging-node": "^2.0.11",
     "@companieshouse/web-security-node": "^4.4.15",
     "@opentelemetry/exporter-logs-otlp-http": "^0.213.0",
     "@opentelemetry/otlp-exporter-base": "^0.213.0",
@@ -45,7 +45,7 @@
     "js-yaml": "^4.1.1",
     "luxon": "^3.7.2",
     "nunjucks": "^3.2.4",
-    "private-api-sdk-node": "github:companieshouse/private-api-sdk-node#1.0.114",
+    "private-api-sdk-node": "github:companieshouse/private-api-sdk-node#1.0.121",
     "sass": "^1.98.0",
     "uuid": "^10.0.0",
     "yargs": "^17.7.2"
@@ -68,7 +68,7 @@
     "npm-force-resolutions": "^0.0.10",
     "sonarqube-scanner": "^3.5.0",
     "supertest": "^7.2.2",
-    "ts-jest": "^29.4.6",
+    "ts-jest": "^29.4.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }

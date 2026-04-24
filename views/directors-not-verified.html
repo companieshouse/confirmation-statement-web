@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  You need to use WebFiling to file this confirmation statement
+{% endblock %}
+{% block signOut %}{% endblock %}
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">
+        You need to use WebFiling service to file this confirmation statement
+      </h1>
+
+      <p>As part of your next confirmation statement, you must provide each director's 
+        <a href="https://www.gov.uk/guidance/companies-house-personal-codes-for-identity-verification">Companies House personal code</a>. 
+        This confirms they've verified their identity for Companies House.</p>
+      <p>To do this, you need to file your confirmation statement using our WebFiling service.</p>
+
+      <button onclick="window.location.href='{{EWF_URL}}'; _paq.push(['trackGoal', '{{PIWIK_START_GOAL_ID}}'])" draggable="false"
+        class="govuk-button govuk-button--start govuk-!-margin-top-2 govuk-!-margin-bottom-8" data-module="govuk-button">
+          Go to WebFiling
+      </button>
+    </div>
+</div>
+{% endblock %}
