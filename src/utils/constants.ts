@@ -64,7 +64,8 @@ export const DATE_YEAR_REGEX: RegExp = /^\d{4}$/;
 export const MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME = {
   LP_CS_DATE_ON_TIME: "confirmation-statement-date-on-time",
   LP_CS_DATE_EARLY: "confirmation-statement-date-early",
-  LP_CS_BEFORE_YOU_FILE: "confirmation-statement-before-you-file"
+  LP_CS_BEFORE_YOU_FILE: "confirmation-statement-before-you-file",
+  LP_CS_DATE_CYA: "confirmation-statement-date-check-your-answer"
 };
 
 export enum RADIO_BUTTON_VALUE {
