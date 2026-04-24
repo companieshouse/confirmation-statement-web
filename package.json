@@ -34,7 +34,7 @@
     "@companieshouse/ch-node-utils": "^2.1.13",
     "@companieshouse/node-session-handler": "~5.2.10",
     "@companieshouse/structured-logging-node": "^2.0.11",
-    "@companieshouse/web-security-node": "^4.4.15",
+    "@companieshouse/web-security-node": "^4.4.18",
     "@opentelemetry/exporter-logs-otlp-http": "^0.213.0",
     "@opentelemetry/otlp-exporter-base": "^0.213.0",
     "@opentelemetry/sdk-node": "^0.213.0",
@@ -47,7 +47,7 @@
     "nunjucks": "^3.2.4",
     "private-api-sdk-node": "github:companieshouse/private-api-sdk-node#1.0.121",
     "sass": "^1.98.0",
-    "uuid": "^10.0.0",
+    "uuid": "^14.0.0",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
