@@ -25,8 +25,8 @@ import { EWF_URL } from "../../utils/properties";
 export const get = async(req: Request, res: Response, next: NextFunction) => {
   try {
     const companyNumber = getCompanyNumber(req);
-    const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID];
-    const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID];
+    const transactionId = req.params[urlParams.PARAM_TRANSACTION_ID] as string;
+    const submissionId = req.params[urlParams.PARAM_SUBMISSION_ID] as string;
     const session: Session = req.session as Session;
     const statementOfCapital: StatementOfCapital = await getStatementOfCapitalData(session, transactionId, submissionId);
     const sharesValidation = await validateTotalNumberOfShares(session, transactionId, submissionId, +statementOfCapital.totalNumberOfShares);
@@ -92,4 +92,4 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];
+const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER] as string;

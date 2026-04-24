@@ -8,7 +8,7 @@ import { Templates } from "../types/template.paths";
 export const transactionIdValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
   logger.debug("Execute URL transaction id validation middleware checks");
 
-  const transactionId: string = req.params[urlParams.PARAM_TRANSACTION_ID];
+  const transactionId: string = req.params[urlParams.PARAM_TRANSACTION_ID] as string;
 
   logger.debug("Check transaction id");
   if (!isUrlIdValid(transactionId)) {

@@ -2,10 +2,11 @@
   "compilerOptions": {
     "allowJs": true,
     "moduleResolution": "node",
+    "ignoreDeprecations": "6.0",
     "pretty": true,
     "sourceMap": true,
+    "rootDir" : "./src",
     "outDir": "./dist",
-    "baseUrl": "./src",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "strictNullChecks": true,
