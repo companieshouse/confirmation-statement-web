@@ -14,7 +14,7 @@ import { getCompanyProfileFromSession } from "../utils/session";
 
 export const companyAuthenticationMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
-  const companyNumber: string = req.params[urlParams.PARAM_COMPANY_NUMBER] as string;
+  const companyNumber: string = req.params[urlParams.PARAM_COMPANY_NUMBER];
 
   if (!isCompanyNumberValid(companyNumber)) {
     urlUtils.sanitiseReqUrls(req);

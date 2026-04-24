@@ -47,6 +47,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER] as string;
+const getCompanyNumber = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];
 
 const getConfirmCompanyUrl = (companyNumber: string): string => `${CONFIRM_COMPANY_PATH}?companyNumber=${companyNumber}`;

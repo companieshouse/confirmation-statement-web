@@ -8,7 +8,7 @@ import { Templates } from "../types/template.paths";
 export const submissionIdValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
   logger.debug("Execute URL submission id validation middleware checks");
 
-  const submissionId: string = req.params[urlParams.PARAM_SUBMISSION_ID] as string;
+  const submissionId: string = req.params[urlParams.PARAM_SUBMISSION_ID];
 
   logger.debug("Check submission id");
   if (!isUrlIdValid(submissionId)) {

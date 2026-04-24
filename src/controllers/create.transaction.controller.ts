@@ -16,7 +16,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const session = req.session as Session;
-    const companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER] as string;
+    const companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER];
     const transaction: Transaction = await postTransaction(session, companyNumber, DESCRIPTION, REFERENCE);
     const transactionId = transaction.id as string;
     const submissionResponse = await createConfirmationStatement(session, transactionId);

@@ -22,9 +22,9 @@ const getUrlToPath = (pathToPage: string, req: Request): string => {
   );
 };
 
-const getCompanyNumberFromRequestParams = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER] as string;
-const getTransactionIdFromRequestParams = (req: Request): string => req.params[urlParams.PARAM_TRANSACTION_ID] as string;
-const getSubmissionIdFromRequestParams = (req: Request): string => req.params[urlParams.PARAM_SUBMISSION_ID] as string;
+const getCompanyNumberFromRequestParams = (req: Request): string => req.params[urlParams.PARAM_COMPANY_NUMBER];
+const getTransactionIdFromRequestParams = (req: Request): string => req.params[urlParams.PARAM_TRANSACTION_ID];
+const getSubmissionIdFromRequestParams = (req: Request): string => req.params[urlParams.PARAM_SUBMISSION_ID];
 
 const setQueryParam = (url: string, paramName: URL_QUERY_PARAM, value: string) =>
   url.replace(`{${paramName}}`, value);
@@ -75,7 +75,7 @@ const sanitiseReqUrls = (req: Request) => {
   // loop through the urlParams enum (contains known url param names) and see if they are present in the url.
   // if they are present and they are longer than allowed length, truncate them.
   for (const urlParamName of Object.values(urlParams)) {
-    const urlParamValue = req.params[urlParamName] as string;
+    const urlParamValue = req.params[urlParamName];
     sanitiseParam(req, urlParamName, urlParamValue);
   }
   // loop through the names of the query params in the url and get their values
