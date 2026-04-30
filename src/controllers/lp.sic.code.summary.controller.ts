@@ -6,7 +6,7 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { urlUtils } from "../utils/url";
 import { getCompanyProfileFromSession } from "../utils/session";
 import { getReviewPath, isACSPJourney } from '../utils/limited.partnership';
-import { SIC_CODE_SESSION_KEY } from "../utils/constants";
+import { SIC_CODE_SESSION_KEY, MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME } from "../utils/constants";
 import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
 import { Session } from "@companieshouse/node-session-handler";
 import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services/sic-code";
@@ -225,6 +225,7 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
     unsavedCodeList: unsavedCodeList,
     errors: combinedErrors,
     maxError: maxError,
-    duplicateError: duplicateError
+    duplicateError: duplicateError,
+    templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_SIC_CODE
   });
 }
