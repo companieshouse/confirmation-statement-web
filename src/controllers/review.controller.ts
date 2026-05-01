@@ -18,7 +18,7 @@ import { isPaymentDue, executePaymentJourney } from "../utils/payments";
 import { handleLimitedPartnershipConfirmationJourney } from "../utils/confirmation/limited.partnership.confirmation";
 import { handleNoChangeConfirmationJourney } from "../utils/confirmation/no.change.confirmation";
 import { getAcspSessionData } from "../utils/session.acsp";
-import { CONFIRMATION_STATEMENT_SESSION_KEY, LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY } from "../utils/constants";
+import { CONFIRMATION_STATEMENT_SESSION_KEY, LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME } from "../utils/constants";
 import moment from "moment";
 import { CS01_COST } from "../utils/properties";
 
@@ -68,7 +68,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         confirmationChecked: confirmationStatementCheck,
         lawfulActivityChecked: lawfulActivityStatementCheck,
         isLimitedPartnership: true,
-        csDateValue: formattedCsDate
+        csDateValue: formattedCsDate,
+        templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_SUBMIT_CONFIRMATION_STATEMENT
       });
 
     }
@@ -122,7 +123,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
           lawfulActivityChecked: lpJourneyResponse.renderData.lawfulActivityChecked,
           isLimitedPartnership: true,
           csDateValue: formattedCsDate,
-          isPaymentDue: isPaymentDue(transaction, submissionId)
+          isPaymentDue: isPaymentDue(transaction, submissionId),
+          templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_SUBMIT_CONFIRMATION_STATEMENT
         });
       }
 
