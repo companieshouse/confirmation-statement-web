@@ -66,6 +66,7 @@ export const MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME = {
   LP_CS_DATE_EARLY: "confirmation-statement-date-early",
   LP_CS_BEFORE_YOU_FILE: "confirmation-statement-before-you-file",
   LP_CS_DATE_CYA: "confirmation-statement-date-check-your-answer",
+  LP_SUBMIT_CONFIRMATION_STATEMENT: "confirmation-statement-submit-confirmation-statement",
   LP_CS_SIC_CODE: "check-sic-code"
 };
 
