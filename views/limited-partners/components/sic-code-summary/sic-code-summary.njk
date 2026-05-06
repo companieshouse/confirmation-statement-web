@@ -19,7 +19,7 @@
   <p class="govuk-body">{{ i18n.SICCSWhatIsDetailExpanderParagraph2 }}</p>
   <p class="govuk-body">
     {{ i18n.SICCSWhatIsDetailExpanderParagraph3Start }}
-    <a class="govuk-link" href="https://resources.companieshouse.gov.uk/sic/" target="_blank">{{ i18n.SICCSWhatIsDetailExpanderParagraph3Link }}</a>
+    <a class="govuk-link" href="https://resources.companieshouse.gov.uk/sic/" target="_blank" data-event-id="select-sic-codes-list-link">{{ i18n.SICCSWhatIsDetailExpanderParagraph3Link }}</a>
     {{ i18n.SICCSWhatIsDetailExpanderParagraph3End }}
   </p>
 {% endset %}
@@ -72,7 +72,7 @@
                           <div class="govuk-summary-list__actions">
                               <form action="{{ sic.removeUrl }}" method="POST">
                               {% include "../../partials/csrf-token.njk" %}
-                                  <button type="submit" class="govuk-link">{{ i18n.SICCSTableRemoveButton }}</button>
+                                  <button type="submit" class="govuk-link" data-event-id="remove-link">{{ i18n.SICCSTableRemoveButton }}</button>
                                   {% if unsavedCodeList.length > 0 %}
                                     <input type="hidden" name="unsavedCodeList" id="unsavedCodeList" value="{{ unsavedCodeList | join(',') }}" />
                                   {% endif %}
@@ -143,7 +143,8 @@
                           classes: "govuk-button--secondary", 
                           attributes: {
                             id: "add-sic-code-button",
-                            type: "submit"
+                            type: "submit",
+                            "data-event-id": "add-sic-code-button"
                           }
                         }) }}
                     </div>
@@ -152,7 +153,10 @@
 
                 {{ govukDetails({
                     summaryText: i18n.SICCSWhatIsDetailExpanderTitle,
-                    html: summaryDetail
+                    html: summaryDetail,
+                    attributes: {
+                      "data-event-id": "select-what-are-sic-codes-info"
+                    }
                 }) }}
 
                 <form action="{{ saveUrl }}" method="POST">
@@ -160,7 +164,10 @@
                     {{ govukButton({
                         id: 'continue',
                         text: i18n.SICCSSaveContinueButton,
-                        type: "submit"
+                        type: "submit",
+                        attributes: {
+                          "data-event-id": "save-and-continue-button"
+                        }
                     }) }}
                     {% if unsavedCodeList.length > 0 %}
                       <input type="hidden" name="unsavedCodeList" id="unsavedCodeList" value={{ unsavedCodeList }} />
