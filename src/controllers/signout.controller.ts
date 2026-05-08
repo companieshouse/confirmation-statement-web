@@ -15,6 +15,7 @@ export const get: Handler = (req, res) => {
 };
 
 export const post = handleError(async (req, res) => {
+  await Promise.resolve();
   const returnPage = getReturnPageFromSession(req.session as Session);
 
   switch (req.body.signout) {

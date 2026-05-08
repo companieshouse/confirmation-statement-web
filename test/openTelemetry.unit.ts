@@ -2,7 +2,7 @@ jest.mock("@opentelemetry/sdk-node", () => {
   const start = jest.fn().mockResolvedValue(undefined);
   const shutdown = jest.fn().mockResolvedValue(undefined);
   const NodeSDK = jest.fn().mockImplementation(() => ({ start, shutdown }));
-  return { NodeSDK, __esModule: true, _mocks: { start, shutdown, NodeSDK } };
+  return { NodeSDK, __esModule: true, mocks: { start, shutdown, NodeSDK } };
 });
 
 describe("OpenTelemetry setup and shutdown", () => {
@@ -26,9 +26,9 @@ describe("OpenTelemetry setup and shutdown", () => {
     delete process.env.OTEL_EXPORTER_OTLP_ENDPOINT;
   });
 
-  it("starts OpenTelemetry when enabled", async () => {
+  it("starts OpenTelemetry when enabled", () => {
     require("../../src/openTelemetry");
-    const sdkMocks = (require("@opentelemetry/sdk-node")._mocks);
+    const sdkMocks = (require("@opentelemetry/sdk-node").mocks);
     expect(consoleInfoSpy).toHaveBeenCalledWith(
       expect.stringContaining("Starting OpenTelemetry for test-service...")
     );
@@ -38,8 +38,8 @@ describe("OpenTelemetry setup and shutdown", () => {
     );
   });
 
-  it("logs error if OpenTelemetry fails to start", async () => {
-    const sdkMocks = (require("@opentelemetry/sdk-node")._mocks);
+  it("logs error if OpenTelemetry fails to start", () => {
+    const sdkMocks = (require("@opentelemetry/sdk-node").mocks);
     sdkMocks.start.mockImplementationOnce(() => { throw new Error("fail"); });
     require("../../src/openTelemetry");
     expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -48,7 +48,7 @@ describe("OpenTelemetry setup and shutdown", () => {
     );
   });
 
-  it("logs when OpenTelemetry is disabled", async () => {
+  it("logs when OpenTelemetry is disabled", () => {
     process.env.OTEL_LOG_ENABLED = "false";
     require("../../src/openTelemetry");
     expect(consoleInfoSpy).toHaveBeenCalledWith(
@@ -58,7 +58,7 @@ describe("OpenTelemetry setup and shutdown", () => {
 
   it("shuts down OpenTelemetry if started", async () => {
     const { shutdownOpenTelemetry } = require("../../src/openTelemetry");
-    const sdkMocks = (require("@opentelemetry/sdk-node")._mocks);
+    const sdkMocks = (require("@opentelemetry/sdk-node").mocks);
     (global as any).openTelemetry = new (require("@opentelemetry/sdk-node").NodeSDK)({} as any);
     await shutdownOpenTelemetry();
     expect(sdkMocks.shutdown).toHaveBeenCalled();
@@ -68,7 +68,7 @@ describe("OpenTelemetry setup and shutdown", () => {
   });
 
   it("logs error if shutdown fails", async () => {
-    const sdkMocks = (require("@opentelemetry/sdk-node")._mocks);
+    const sdkMocks = (require("@opentelemetry/sdk-node").mocks);
     sdkMocks.shutdown.mockRejectedValueOnce(new Error("shutdown error"));
     const { shutdownOpenTelemetry } = require("../../src/openTelemetry");
     (global as any).openTelemetry = new (require("@opentelemetry/sdk-node").NodeSDK)({} as any);

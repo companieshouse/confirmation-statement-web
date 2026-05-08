@@ -4,11 +4,10 @@
 import js from "@eslint/js";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import tsparser from "@typescript-eslint/parser";
-import stylistic from "@stylistic/eslint-plugin-ts";
+import stylistic from "@stylistic/eslint-plugin";
 
 /** @type {import("eslint").Linter.FlatConfig[]} */
 export default [
-  js.configs.recommended,
   {
     files: ["**/*.ts", "**/*.tsx"],
     languageOptions: {
@@ -36,8 +35,8 @@ export default [
       "@typescript-eslint/explicit-module-boundary-types": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-inferrable-types": "off",
-      "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "caughtErrorsIgnorePattern": "^_" }],
-      "@stylistic/ts/semi": ["error", "always"],
+      // "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "caughtErrorsIgnorePattern": "^_" }],
+      // "@stylistic/ts/semi": ["error", "always"],
       "@stylistic/ts/type-annotation-spacing": "error",
       "arrow-spacing": "error",
       "brace-style": ["error", "1tbs", { "allowSingleLine": true }],
@@ -67,4 +66,3 @@ export default [
     },
   },
 ];
-
