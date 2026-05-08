@@ -16,10 +16,8 @@ module.exports = {
   testEnvironment: "node",
   verbose: true,
   testMatch: ["**/test/**/*.unit.[jt]s"],
-  globals: {
-    "ts-jest": {
-      diagnostics: false,
-    }
+  transform: {
+    '^.+\\.ts$': ['ts-jest', { diagnostics: false }],
   },
   globalSetup: "./test/global.setup.ts",
   moduleNameMapper: {
