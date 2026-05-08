@@ -24,5 +24,7 @@ module.exports = {
   globalSetup: "./test/global.setup.ts",
   moduleNameMapper: {
     '^axios$': require.resolve('axios'),
+    '^../../src/open-telemetry/openTelemetry.config$': '<rootDir>/src/open-telemetry/openTelemetry.config.ts',
+    '^../../src/openTelemetry$': '<rootDir>/src/openTelemetry.ts',
   }
 };
