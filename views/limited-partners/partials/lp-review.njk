@@ -1,11 +1,19 @@
 {% set checkboxHtml %}
 {{ i18n.SCSCheckboxActComplianceStart }}
 {% if company.jurisdiction == "scotland" %}
-  <a class="govuk-link" target="_blank" href="https://www.legislation.gov.uk/uksi/2017/694/regulation/35/">
+  <a class="govuk-link" 
+  target="_blank" 
+  href="https://www.legislation.gov.uk/uksi/2017/694/regulation/35/"
+  data-event-id="view-scottish-lp-legislation-link"
+>
     {{ i18n.SCSCheckboxActComplianceLinkScotland }}
   </a>
 {% else %}
-  <a class="govuk-link" target="_blank" href="https://www.legislation.gov.uk/ukpga/Edw7/7/24/section/10D">
+  <a class="govuk-link" 
+  target="_blank" 
+  href="https://www.legislation.gov.uk/ukpga/Edw7/7/24/section/10D"
+  data-event-id="view-lp-legislation-link"
+>
     {{ i18n.SCSCheckboxActComplianceLinkEWNI }}
   </a>
 {% endif %}
@@ -71,14 +79,20 @@
           {% if errorList | length > 0 %}
             {{ govukErrorSummary({
               titleText: i18n.SCSErrorTitle,
-              errorList: errorList
+              errorList: errorList,
+              attributes: {
+                  "data-event-id": "error-summary"
+                }
             }) }}
           {% endif %}
 
 
           {% if confirmationStatementError %}
             {% set confirmationStatementError = {
-              text: i18n.SCSConfirmationStatementError
+              text: i18n.SCSConfirmationStatementError,
+              attributes: {
+                  "data-event-id": "confirm-statement-error"
+                }
             } %}
           {% else %}
             {% set confirmationStatementError = false %}
@@ -86,7 +100,10 @@
 
           {% if lawfulActivityStatementError %}
             {% set lawfulActivityStatementError = {
-              text: i18n.SCSLawfulActivityStatementError
+              text: i18n.SCSLawfulActivityStatementError,
+              attributes: {
+                  "data-event-id": "lawful-activity-error"
+                }
             } %}
           {% else %}
             {% set lawfulActivityStatementError = false %}
@@ -113,7 +130,7 @@
                 checked: confirmationChecked,
                 value: "true",
                 attributes: {
-                  "data-event-id": "confirmation-statement-checkbox-clicked"
+                  "data-event-id": "confirm-required-information-checkbox"
                 }
               }
             ]
@@ -137,7 +154,7 @@
                 name: "confirmationStatement",
                 value: "true",
                 attributes: {
-                  "data-event-id": "confirmation-statement-checkbox-clicked"
+                  "data-event-id": "confirm-required-information-checkbox"
                 }
               }
             ]
@@ -164,7 +181,7 @@
                 checked: lawfulActivityChecked,
                 value: "true",
                 attributes: {
-                  "data-event-id": "lawful-activity-statement-checkbox-clicked"
+                  "data-event-id": "confirm-lawful-activity-checkbox"
                 }
               }
             ]
@@ -187,7 +204,7 @@
                 name: "lawfulActivityStatement",
                 value: "true",
                 attributes: {
-                  "data-event-id": "lawful-activity-statement-checkbox-clicked"
+                  "data-event-id": "confirm-lawful-activity-checkbox"
                 }
               }
             ]
@@ -207,7 +224,7 @@
           text: i18n.SCSContinueButtonPayment,
           attributes: {
             id: "confirm-and-pay",
-            "data-event-id": "confirm-and-pay-button",
+            "data-event-id": "submit-confirmation-statement-and-pay",
             "onclick": "_paq.push(['trackGoal', 4])"
           }
         }) }}
@@ -216,7 +233,7 @@
           text: i18n.SCSContinueButtonNoPayment,
           attributes: {
             id: "confirm-and-submit",
-            "data-event-id": "confirm-and-submit-button",
+            "data-event-id": "submit-confirmation-statement",
             "onclick": "_paq.push(['trackGoal', 5])"
           }
         }) }}
