@@ -7,7 +7,7 @@
 {% endif %}
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-two-thirds" data-event-id="confirmation-submission-loaded">
         {{ govukPanel({
             titleText: i18n.CSSBannerTitle,
             html: i18n.CSSBannerText ~ "<br><strong>" ~ referenceNumber ~ "</strong>"
@@ -28,11 +28,11 @@
         <h2 class="govuk-heading-m">{{ i18n.CSSWhatDoYouNextTitle }}</h2>
         
         <p class="govuk-body">
-            <a href="{{ hrefDifferentLimitedPartnership }}" class="govuk-link">{{ i18n.CSSWhatDoYouNextFile }}</a>
+            <a href="{{ hrefDifferentLimitedPartnership }}" data-event-id="file-another-link" class="govuk-link">{{ i18n.CSSWhatDoYouNextFile }}</a>
         </p>
 
         <p class="govuk-body">
-            <a href="{{ hrefLimitedPartnershipOverview }}" class="govuk-link">{{ i18n.CSSWhatDoYouNextReturn }}</a>
+            <a href="{{ hrefLimitedPartnershipOverview }}" data-event-id="return-overview-link" class="govuk-link">{{ i18n.CSSWhatDoYouNextReturn }}</a>
         </p>
 
         <p class="govuk-body">

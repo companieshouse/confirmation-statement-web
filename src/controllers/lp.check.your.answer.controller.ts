@@ -9,7 +9,7 @@ import { urlUtils } from "../utils/url";
 import { Session } from "@companieshouse/node-session-handler";
 import moment from 'moment';
 import { getReviewPath, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType, isACSPJourney } from '../utils/limited.partnership';
-
+import { MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME } from "../utils/constants";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -41,7 +41,8 @@ export const get = (req: Request, res: Response) => {
     company,
     csDate: csDateString,
     csDatePageUrl,
-    nextPage
+    nextPage,
+    templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_DATE_CYA
   });
 };
 

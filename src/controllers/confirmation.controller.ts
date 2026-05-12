@@ -8,7 +8,7 @@ import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise"
 import { resetAcspSession } from "../utils/session.acsp";
 import { getCompanyProfile } from "../services/company.profile.service";
 import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
-import { COMPANY_PROFILE_SESSION_KEY, CONFIRMATION_STATEMENT_SESSION_KEY, LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, PAYMENT_NONCE_SESSION_KEY, SIC_CODE_SESSION_KEY } from "../utils/constants";
+import { COMPANY_PROFILE_SESSION_KEY, CONFIRMATION_STATEMENT_SESSION_KEY, LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, PAYMENT_NONCE_SESSION_KEY, SIC_CODE_SESSION_KEY, MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME } from "../utils/constants";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   const lang = selectLang(req.query.lang);
@@ -44,7 +44,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       confirmationScreen: true,
       isLimitedPartnership,
       hrefDifferentLimitedPartnership,
-      hrefLimitedPartnershipOverview
+      hrefLimitedPartnershipOverview,
+      templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_SUBMITTED
     });
   } catch (e) {
     return next(e);
