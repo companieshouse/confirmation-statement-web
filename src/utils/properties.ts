@@ -49,8 +49,6 @@ export const FEATURE_FLAG_LP_REFORM_DATE = getEnvironmentVariable("FEATURE_FLAG_
 
 export const FEATURE_FLAG_SAIL_ADDRESS = getEnvironmentVariable("FEATURE_FLAG_SAIL_ADDRESS", "2025-01-09");
 
-export const PIWIK_BEFORE_YOU_FILE_GOAL_ID = getEnvironmentVariable("PIWIK_BEFORE_YOU_FILE_GOAL_ID");
-
 export const PIWIK_START_GOAL_ID = getEnvironmentVariable("PIWIK_START_GOAL_ID");
 
 export const PSC_STATEMENTS_API_PAGE_SIZE = getEnvironmentVariable("PSC_STATEMENTS_API_PAGE_SIZE", "100");
