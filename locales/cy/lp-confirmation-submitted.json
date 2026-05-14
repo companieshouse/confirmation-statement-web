@@ -1,7 +1,7 @@
 {
     "CSSBannerTitle" : "CY-Confirmation statement submitted",
     "CSSBannerText" : "CY-Your reference number ",
-    "CSSSubmissionRecievedMessage1" : "CY-We've recieved your confirmation statement for ",
+    "CSSSubmissionRecievedMessage1" : "CY-We've received your confirmation statement for ",
     "CSSSubmissionRecievedMessage2" : "CY-We've sent a confirmation email to ",
     "CSSWhatHappensNextTitle" : "CY-What happens next",
     "CSSWhatHappensNextBody1" : "CY-We'll process your filing within 5 working days, and email to let you know if it's been accepted or rejected.",
@@ -10,6 +10,5 @@
     "CSSWhatDoYouNextTitle" : "CY-What do you want to do next?",
     "CSSWhatDoYouNextFile" : "CY-File for a different limited partnership",
     "CSSWhatDoYouNextReturn" : "CY-Return to the overview screen for this limited partnership",
-    "CSSWhatDoYouNextSurveyLink" : "CY-What did you think of this service?",
-    "CSSWhatDoYouNextSurveyText" : "CY-(takes 30 seconds)"
+    "CSSWhatDoYouNextSurveyLink" : "CY-Tell us what you thought of this service"
 }
