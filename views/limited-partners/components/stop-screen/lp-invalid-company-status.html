@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  You cannot use this service - Limited Partnership Status
+{% endblock %}
+{% block signOut %}{% endblock %}
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            You cannot file a confirmation statement
+        </h1>
+        <p>A confirmation statement cannot be filed for {{ company.companyName }} because this limited partnership:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>has been dissolved and struck off the register</li>
+            <li>is in the process of being dissolved and struck off the register</li>
+        </ul>
+        <p>If you believe this is incorrect, <a data-event-id="contact-information-wrong" href="https://www.gov.uk/government/organisations/companies-house/about/access-and-opening">contact Companies House</a>.</p>
+        <p>For information about restoring a limited partnership, see the <a data-event-id="restoration-guide" href="https://www.gov.uk/guidance/company-restoration-guide">Company Restoration Guide</a>.</p>
+        <p>If this is the wrong partnership, you can <a data-event-id="start-again" href="/confirmation-statement">start the service again</a>.</p>
+        <p>
+            <a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-cannotfiledissolvedorliquidated/">What did you think of this service?</a>
+            (takes 2 minutes)
+        </p>
+    </div>
+</div>
+{% endblock %}

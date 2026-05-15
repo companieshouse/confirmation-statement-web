@@ -47,6 +47,25 @@ export const LIMITED_PARTNERSHIP_SUBTYPES = {
   PFLP: LIMITED_PARTNERSHIP_PFLP_SUBTYPE,
   SPFLP: LIMITED_PARTNERSHIP_SPFLP_SUBTYPE
 };
+
+export const COMPANY_STATUS = {
+  ACTIVE: "active",
+  DISSOLVED: "dissolved",
+  LIQUIDATION: "liquidation",
+  RECEIVERSHIP: "receivership",
+  CONVERTED_CLOSED: "converted-closed",
+  VOLUNTARY_ARRANGEMENT: "voluntary-arrangement",
+  INSOLVENCY_PROCEEDINGS: "insolvency-proceedings",
+  ADMINISTRATION: "administration",
+  OPEN: "open",
+  CLOSED: "closed",
+  REGISTERED: "registered",
+  REMOVED: "removed"
+} as const;
+
+export type COMPANY_STATUS_TYPE = typeof COMPANY_STATUS[keyof typeof COMPANY_STATUS];
+
+export const CLOSED_STATUSES: COMPANY_STATUS_TYPE[] = [COMPANY_STATUS.DISSOLVED, COMPANY_STATUS.CLOSED];
 export const COMPANY_PROFILE_SESSION_KEY = "company_profile";
 export const ACSP_SESSION_KEY = "acsp_session";
 export const SIC_CODE_SESSION_KEY = "sic_code_session";
@@ -66,9 +85,7 @@ export const MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME = {
   LP_CS_DATE_EARLY: "confirmation-statement-date-early",
   LP_CS_BEFORE_YOU_FILE: "confirmation-statement-before-you-file",
   LP_CS_DATE_CYA: "confirmation-statement-date-check-your-answer",
-  LP_SUBMIT_CONFIRMATION_STATEMENT: "confirmation-statement-submit-confirmation-statement",
-  LP_CS_SIC_CODE: "check-sic-code",
-  LP_CS_SUBMITTED: "submission-confirmation"
+  LP_SUBMIT_CONFIRMATION_STATEMENT: "confirmation-statement-submit-confirmation-statement"
 };
 
 export enum RADIO_BUTTON_VALUE {
