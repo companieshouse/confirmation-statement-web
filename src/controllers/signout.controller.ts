@@ -14,7 +14,8 @@ export const get: Handler = (req, res) => {
   });
 };
 
-export const post = handleError(async (req, res) => { // eslint-disable-line
+export const post = handleError(async (req, res) => {
+  await Promise.resolve();
   const returnPage = getReturnPageFromSession(req.session as Session);
 
   switch (req.body.signout) {
@@ -52,7 +53,7 @@ function showMustSelectButtonError(res: Response, returnPage: string) {
 }
 
 function saveReturnPageInSession(req: Request): string {
-  const returnPageUrl = req.headers.referer!; // eslint-disable-line
+  const returnPageUrl = req.headers.referer!;
   req.session?.setExtraData(SIGNOUT_RETURN_URL_SESSION_KEY, returnPageUrl);
   return returnPageUrl;
 }
