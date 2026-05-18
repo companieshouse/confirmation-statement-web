@@ -86,7 +86,7 @@
                                 { text: errorMessage.text, href: "#confirmationStatementDate" }
                             ],
                             attributes: {
-                                "data-event-id": "save-and-continue-button"
+                                "data-event-id": "error-link"
                             }
                         }) }}
                     {% endif %}
@@ -152,7 +152,7 @@
                     {{ govukButton({
                         text: i18n.CDSContinueButton,
                         attributes: {
-                            "data-event-id": "save-and-continue-button"
+                            "data-event-id": "continue-button"
                         }
                     }) }}
                 </form>
