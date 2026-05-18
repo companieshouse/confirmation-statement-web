@@ -14,17 +14,15 @@ import {
   CREATE_TRANSACTION_PATH,
   INVALID_COMPANY_STATUS_PATH,
   LP_MUST_BE_AUTHORISED_AGENT_PATH,
-  LP_STOP_SCREEN,
   LP_STOP_SCREEN_PATH,
   NO_FILING_REQUIRED_PATH,
   URL_QUERY_PARAM,
   USE_PAPER_PATH,
-  USE_WEBFILING_PATH,
-  DIRS_NOT_VERIFIED_PATH
+  USE_WEBFILING_PATH
 } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { toReadableFormat } from "../utils/date";
-import { COMPANY_PROFILE_SESSION_KEY, LIMITED_PARTNERSHIP_COMPANY_TYPE, SIC_CODE_SESSION_KEY, COMPANY_STATUS, COMPANY_STATUS_TYPE, CLOSED_STATUSES } from "../utils/constants";
+import { COMPANY_PROFILE_SESSION_KEY, LIMITED_PARTNERSHIP_COMPANY_TYPE, SIC_CODE_SESSION_KEY, COMPANY_STATUS, COMPANY_STATUS_TYPE, CLOSED_COMPANY_STATUSES } from "../utils/constants";
 import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
 import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
 import { resetAcspSession } from "../utils/session.acsp";
@@ -68,10 +66,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = company.companyNumber;
     const eligibilityStatusCode: EligibilityStatusCode = await checkEligibility(session, companyNumber);
 
-    if (
+   if (
       isLimitedPartnershipCompanyType(company) &&
       company.companyStatus &&
-      CLOSED_STATUSES.includes(company.companyStatus as COMPANY_STATUS_TYPE)
+      CLOSED_COMPANY_STATUSES.includes(company.companyStatus as COMPANY_STATUS_TYPE)
     ) {
       return res.redirect(urlUtils.setQueryParam(LP_STOP_SCREEN_PATH, URL_QUERY_PARAM.COMPANY_NUM, company.companyNumber));
     }
@@ -142,6 +140,5 @@ const stopPagesPathMap = {
   [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_PSC]: USE_WEBFILING_PATH,
   [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_FIVE_PSCS]: USE_WEBFILING_PATH,
   [EligibilityStatusCode.INVALID_COMPANY_APPOINTMENTS_MORE_THAN_ONE_SHAREHOLDER]: USE_WEBFILING_PATH,
-  [EligibilityStatusCode.INVALID_DIRECTORS_NOT_ALL_IDENTITY_VERIFIED]: DIRS_NOT_VERIFIED_PATH,
   [EligibilityStatusCode.INVALID_COMPANY_TYPE_CS01_FILING_NOT_REQUIRED]: NO_FILING_REQUIRED_PATH
 };
