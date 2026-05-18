@@ -72,7 +72,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       company.companyStatus &&
       CLOSED_COMPANY_STATUSES.includes(company.companyStatus as COMPANY_STATUS_TYPE)
     ) {
-      return res.redirect(urlUtils.setQueryParam(LP_STOP_SCREEN_PATH, URL_QUERY_PARAM.COMPANY_NUM, company.companyNumber));
+        session.setExtraData(COMPANY_PROFILE_SESSION_KEY, company);
+        return res.redirect(LP_STOP_SCREEN_PATH);
     }
 
     if (!isCompanyValidForService(eligibilityStatusCode)) {
