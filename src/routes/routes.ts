@@ -1,5 +1,5 @@
 
-import { NextFunction, Request, Response, Router } from "express";
+import { Request, Response, Router } from "express";
 import * as activeOfficers from "../controllers/tasks/active.officers.controller";
 import * as activeOfficersDetails from "../controllers/tasks/active.officers.details.controller";
 import * as activePscDetails from "../controllers/tasks/active.psc.details.controller";

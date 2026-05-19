@@ -6,11 +6,11 @@ import { Templates } from "../types/template.paths";
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const sessionCompany = getCompanyProfileFromSession(req);
-    if (!sessionCompany || !sessionCompany.companyNumber) {
+    const companyNumber = sessionCompany?.companyNumber;
+    if (!companyNumber) {
       return next(new Error(`Invalid company number for LP stop screen`));
     }
-    const company: CompanyProfile = sessionCompany;
-    const companyNumber = company.companyNumber;
+    const company: CompanyProfile = sessionCompany as CompanyProfile;
     return res.render(Templates.LP_STOP_SCREEN, {
       company,
       templateName: Templates.LP_STOP_SCREEN,
