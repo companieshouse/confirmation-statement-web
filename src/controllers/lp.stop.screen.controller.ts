@@ -10,7 +10,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     if (!companyNumber) {
       return next(new Error(`Invalid company number for LP stop screen`));
     }
-    const company: CompanyProfile = sessionCompany as CompanyProfile;
+    const company: CompanyProfile = sessionCompany;
     return res.render(Templates.LP_STOP_SCREEN, {
       company,
       templateName: Templates.LP_STOP_SCREEN,
