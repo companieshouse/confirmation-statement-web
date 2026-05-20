@@ -121,3 +121,22 @@ export enum OFFICER_ROLE {
   SECRETARY = "SECRETARY",
   DIRECTOR = "DIRECTOR"
 }
+
+export const COMPANY_STATUS = {
+  ACTIVE: "active",
+  DISSOLVED: "dissolved",
+  LIQUIDATION: "liquidation",
+  RECEIVERSHIP: "receivership",
+  CONVERTED_CLOSED: "converted-closed",
+  VOLUNTARY_ARRANGEMENT: "voluntary-arrangement",
+  INSOLVENCY_PROCEEDINGS: "insolvency-proceedings",
+  ADMINISTRATION: "administration",
+  OPEN: "open",
+  CLOSED: "closed",
+  REGISTERED: "registered",
+  REMOVED: "removed"
+} as const;
+
+export type COMPANY_STATUS_TYPE = typeof COMPANY_STATUS[keyof typeof COMPANY_STATUS];
+
+export const CLOSED_COMPANY_STATUSES: COMPANY_STATUS_TYPE[] = [COMPANY_STATUS.DISSOLVED, COMPANY_STATUS.CLOSED];

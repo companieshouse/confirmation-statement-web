@@ -12,17 +12,18 @@ import {
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import {
   CREATE_TRANSACTION_PATH,
+  DIRS_NOT_VERIFIED_PATH,
   INVALID_COMPANY_STATUS_PATH,
   LP_MUST_BE_AUTHORISED_AGENT_PATH,
+  LP_STOP_SCREEN_PATH,
   NO_FILING_REQUIRED_PATH,
   URL_QUERY_PARAM,
   USE_PAPER_PATH,
-  USE_WEBFILING_PATH,
-  DIRS_NOT_VERIFIED_PATH
+  USE_WEBFILING_PATH
 } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { toReadableFormat } from "../utils/date";
-import { COMPANY_PROFILE_SESSION_KEY, LIMITED_PARTNERSHIP_COMPANY_TYPE, SIC_CODE_SESSION_KEY } from "../utils/constants";
+import { COMPANY_PROFILE_SESSION_KEY, LIMITED_PARTNERSHIP_COMPANY_TYPE, SIC_CODE_SESSION_KEY, COMPANY_STATUS_TYPE, CLOSED_COMPANY_STATUSES } from "../utils/constants";
 import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
 import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
 import { resetAcspSession } from "../utils/session.acsp";
@@ -65,6 +66,15 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const company: CompanyProfile = await getCompanyProfile(req.query.companyNumber as string);
     const companyNumber = company.companyNumber;
     const eligibilityStatusCode: EligibilityStatusCode = await checkEligibility(session, companyNumber);
+
+   if (
+      isLimitedPartnershipCompanyType(company) &&
+      company.companyStatus &&
+      CLOSED_COMPANY_STATUSES.includes(company.companyStatus as COMPANY_STATUS_TYPE)
+    ) {
+        session.setExtraData(COMPANY_PROFILE_SESSION_KEY, company);
+        return res.redirect(LP_STOP_SCREEN_PATH);
+    }
 
     if (!isCompanyValidForService(eligibilityStatusCode)) {
       return displayEligibilityStopPage(res, eligibilityStatusCode, company);

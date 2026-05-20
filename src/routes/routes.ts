@@ -44,6 +44,7 @@ import * as lpCheckYourAnswerRoute from "../controllers/lp.check.your.answer.con
 import * as lpCSDateRoute from "../controllers/lp.cs.date.controller";
 import * as lpSicCodeSummaryRoute from "../controllers/lp.sic.code.summary.controller";
 import * as lpMustBeAuthorisedAgent from "../controllers/lp.must.be.authorised.agent.controller";
+import * as lpStopScreenRoute from "../controllers/lp.stop.screen.controller";
 
 import * as urls from "../types/page.urls";
 import { Templates } from "../types/template.paths";
@@ -187,6 +188,8 @@ if (isServiceWithdrawnFeatureEnabled()) {
   router.post(urls.LP_REVIEW, reviewRoute.post);
 
   router.get(urls.LP_CONFIRMATION, confirmationRoute.get);
+
+  router.get(urls.LP_STOP_SCREEN, lpStopScreenRoute.get);
 
   router.get(urls.LP_MUST_BE_AUTHORISED_AGENT, lpMustBeAuthorisedAgent.get);
 }

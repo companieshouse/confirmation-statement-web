@@ -126,5 +126,9 @@ export const LP_REVIEW = ACSP_LIMITED_PARTNERSHIP + "/review";
 export const LP_REVIEW_PATH = CONFIRMATION_STATEMENT + LP_REVIEW;
 export const LP_CONFIRMATION = ACSP_LIMITED_PARTNERSHIP + "/confirmation";
 export const LP_CONFIRMATION_PATH = CONFIRMATION_STATEMENT + LP_CONFIRMATION;
+export const LP_STOP_SCREEN = "/lp-stop-screen";
+export const LP_STOP_SCREEN_PATH = CONFIRMATION_STATEMENT + LP_STOP_SCREEN;
+
 
 export const middlewarePaths = /\/confirmation-statement\/((?!healthcheck).)*/;
+
