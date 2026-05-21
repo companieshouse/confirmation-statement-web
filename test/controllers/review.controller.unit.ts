@@ -11,7 +11,7 @@ import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transact
 import request from "supertest";
 import mocks from "../mocks/all.middleware.mock";
 import app from "../../src/app";
-import { CONFIRMATION_PATH, LP_CHECK_YOUR_ANSWER_PATH, LP_CONFIRMATION_PATH, LP_CS_DATE_PATH, LP_REVIEW_PATH, LP_SIC_CODE_SUMMARY_PATH, REVIEW_PATH, urlParams } from '../../src/types/page.urls';
+import { CONFIRMATION_PATH, LP_CHECK_YOUR_ANSWER_PATH, LP_CONFIRMATION_PATH, LP_CS_DATE_PATH, LP_REVIEW_PATH, LP_SIC_CODE_SUMMARY_PATH, REVIEW_PATH, TASK_LIST_PATH, urlParams } from '../../src/types/page.urls';
 import { urlUtils } from "../../src/utils/url";
 import { validCompanyProfile } from "../mocks/company.profile.mock";
 import { getCompanyProfile } from "../../src/services/company.profile.service";
@@ -74,6 +74,7 @@ const URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REVIEW_
 const LP_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(LP_REVIEW_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 const CONFIRMATION_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(CONFIRMATION_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 const LP_CONFIRMATION_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(LP_CONFIRMATION_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
+const BACK_LINK_URL = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TASK_LIST_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
 
 const dummyTransactionNoCosts = {
   id: TRANSACTION_ID
@@ -194,6 +195,19 @@ describe("review controller tests", () => {
       expect(response.text).toContain(PAGE_HEADING);
       expect(response.text).not.toContain(COSTS_TEXT);
       expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    });
+
+    it("should contain back button", async () => {
+      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+      mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
+      const response = await request(app)
+        .get(URL);
+
+      expect(response.status).toBe(200);
+      expect(mockGetTransaction).toBeCalledTimes(1);
+      expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+      expect(response.text).toContain("govuk-back-link");
+      expect(response.text).toContain(BACK_LINK_URL);
     });
 
     it("should show review page with costs text", async () => {
