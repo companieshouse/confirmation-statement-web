@@ -2,7 +2,7 @@ import mocks from "../mocks/all.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
 
-const EXPECTED_LOCATION = "/company-lookup/search?forward=/confirmation-statement/confirm-company?companyNumber=%7BcompanyNumber%7D";
+const EXPECTED_LOCATION = "/company-lookup/search?forward=/confirmation-statement/confirm-company?companyNumber=%7BcompanyNumber%7D&backLink=/confirmation-statement/";
 
 describe("company number controller tests", () => {
 
