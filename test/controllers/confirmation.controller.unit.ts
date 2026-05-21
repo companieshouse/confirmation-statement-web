@@ -84,7 +84,7 @@ describe("Confirmation controller tests", () => {
 
     const response = await request(app).get(LP_URL);
 
-    const DIFFERENT_LIMITED_PARTNERSHIP_LINK_URL = "/company-lookup/search?forward=/confirmation-statement/confirm-company?companyNumber=%7BcompanyNumber%7D";
+    const DIFFERENT_LIMITED_PARTNERSHIP_LINK_URL = "/company-lookup/search?forward=/confirmation-statement/confirm-company?companyNumber=%7BcompanyNumber%7D&amp;backLink=/confirmation-statement/";
     const LIMITED_PARTNERSHIP_OVERVIEW_LINK_URL = "/confirmation-statement/company/12345678/transaction/66454/submission/435435/acsp/confirmation?overview=true";
     const DIFFERENT_LIMITED_PARTNERSHIP_LINK_TEXT = "File for a different limited partnership";
     const LIMITED_PARTNERSHIP_OVERVIEW_LINK_TEXT = "Return to the overview screen for this limited partnership";
