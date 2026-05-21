@@ -67,8 +67,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const company: CompanyProfile = await getCompanyProfile(req.query.companyNumber as string);
     const companyNumber = company.companyNumber;
     const eligibilityStatusCode: EligibilityStatusCode = await checkEligibility(session, companyNumber);
-
-    session.setExtraData(COMPANY_PROFILE_SESSION_KEY, company);
+    req.session?.setExtraData(COMPANY_PROFILE_SESSION_KEY, company);
 
    if (
       isLimitedPartnershipCompanyType(company) &&
@@ -76,12 +75,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       CLOSED_COMPANY_STATUSES.includes(company.companyStatus as COMPANY_STATUS_TYPE)
     ) {
         return res.redirect(LP_STOP_SCREEN_PATH);
+    } else if (shouldRouteToTransitionalReturnStop(company)) {
+      return res.redirect(LP_TRANSITIONAL_STOP_PATH);
     }
 
     if (!isCompanyValidForService(eligibilityStatusCode)) {
       return displayEligibilityStopPage(res, eligibilityStatusCode, company);
-    } else if (shouldRouteToTransitionalReturnStop(company)) {
-      return res.redirect(LP_TRANSITIONAL_STOP_PATH);
     } else if (shouldRedirectToPaperFilingForInvalidLp(company)) {
       return displayEligibilityStopPage(res, EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY, company);
     }
