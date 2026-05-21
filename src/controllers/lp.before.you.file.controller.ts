@@ -38,7 +38,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     let prevPageURL = `${urls.CONFIRM_COMPANY_PATH}?companyNumber=${urlUtils.getCompanyNumberFromRequestParams(req)}`;
     let gciReturnUrl = session?.getExtraData('gci_return_url') as string;
     if (gciReturnUrl) {
-        prevPageURL = gciReturnUrl;
+      prevPageURL = gciReturnUrl;
     }
 
     return res.render(Templates.LP_BEFORE_YOU_FILE, {
