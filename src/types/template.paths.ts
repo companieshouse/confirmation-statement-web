@@ -43,6 +43,7 @@ export enum Templates {
   LP_CS_DATE = "limited-partners/components/date/confirmation-statement-date.njk",
   LP_SIC_CODE_SUMMARY = "limited-partners/components/sic-code-summary/sic-code-summary.njk",
   LP_MUST_BE_AUTHORISED_AGENT = "limited-partners/components/must-be-authorised-agent/must-be-authorised-agent.njk",
-  LP_STOP_SCREEN = "limited-partners/components/stop-screen/lp-stop-screen"
+  LP_STOP_SCREEN = "limited-partners/components/stop-screen/lp-stop-screen",
+  LP_TRANSITIONAL_STOP = "limited-partners/components/stop-screen/lp-tr-stop-screen"
 
 }

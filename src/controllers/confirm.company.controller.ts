@@ -15,6 +15,7 @@ import {
   DIRS_NOT_VERIFIED_PATH,
   INVALID_COMPANY_STATUS_PATH,
   LP_MUST_BE_AUTHORISED_AGENT_PATH,
+  LP_TRANSITIONAL_STOP_PATH,
   LP_STOP_SCREEN_PATH,
   NO_FILING_REQUIRED_PATH,
   URL_QUERY_PARAM,
@@ -67,23 +68,25 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = company.companyNumber;
     const eligibilityStatusCode: EligibilityStatusCode = await checkEligibility(session, companyNumber);
 
+    session.setExtraData(COMPANY_PROFILE_SESSION_KEY, company);
+
    if (
       isLimitedPartnershipCompanyType(company) &&
       company.companyStatus &&
       CLOSED_COMPANY_STATUSES.includes(company.companyStatus as COMPANY_STATUS_TYPE)
     ) {
-        session.setExtraData(COMPANY_PROFILE_SESSION_KEY, company);
         return res.redirect(LP_STOP_SCREEN_PATH);
     }
 
     if (!isCompanyValidForService(eligibilityStatusCode)) {
       return displayEligibilityStopPage(res, eligibilityStatusCode, company);
+    } else if (shouldRouteToTransitionalReturnStop(company)) {
+      return res.redirect(LP_TRANSITIONAL_STOP_PATH);
     } else if (shouldRedirectToPaperFilingForInvalidLp(company)) {
       return displayEligibilityStopPage(res, EligibilityStatusCode.INVALID_COMPANY_TYPE_PAPER_FILING_ONLY, company);
     }
 
     let nextPageUrl;
-    session.setExtraData(COMPANY_PROFILE_SESSION_KEY, company);
     if (isLimitedPartnershipCompanyType(company) && !isAuthorisedAgent(req.session)) {
       nextPageUrl = LP_MUST_BE_AUTHORISED_AGENT_PATH;
     } else {
@@ -124,6 +127,14 @@ export function shouldRedirectToPaperFilingForInvalidLp(companyProfile: CompanyP
     }
   }
   return false;
+}
+
+export function shouldRouteToTransitionalReturnStop(companyProfile: CompanyProfile): boolean {
+  const isLpType = companyProfile?.type === LIMITED_PARTNERSHIP_COMPANY_TYPE;
+  const isLpFeatureFlagEnabled = isLimitedPartnershipFeatureFlagEnabled();
+  const hasValidSubtype = isLimitedPartnershipCompanyType(companyProfile);
+
+  return Boolean(isLpType && isLpFeatureFlagEnabled && !hasValidSubtype);
 }
 
 function clearSessionData(companyProfile: CompanyProfile, session: Session) {
