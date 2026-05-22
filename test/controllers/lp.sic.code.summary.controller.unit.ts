@@ -362,3 +362,107 @@ describe("validateSicCodes", () => {
     expect(result.invalidError).toBeUndefined();
   });
 });
+
+describe("SicCode Session Errors", () => {
+
+  let mockSetExtraData: jest.Mock;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    jest.spyOn(limitedPartnershipUtils, "isACSPJourney").mockReturnValue(true);
+
+    jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+      changeConfirmationStatementDate: true,
+      beforeYouFileCheck: true,
+      newConfirmationDate: null,
+      confirmAllInformationCheck: false,
+      confirmLawfulActionsCheck: false,
+      sicCodes: [
+        { sic_code: "70001", sic_description: "Description 1" },
+        { sic_code: "70002", sic_description: "Description 2" },
+        { sic_code: "70003", sic_description: "Description 3" },
+        { sic_code: "70004", sic_description: "Description 4" },
+        { sic_code: "70005", sic_description: "Description 5" },
+        { sic_code: "70006", sic_description: "Description 6" }
+      ]
+    });
+
+    mockGetCompanyProfileFromSession.mockReturnValue({
+      companyName: "Test LP",
+      companyNumber: COMPANY_NUMBER,
+      sicCodes: ["70001"]
+    });
+  
+    mockSetExtraData = jest.fn();
+    middlewareMocks.mockSessionMiddleware.mockImplementation((req, res, next) => {
+      req.session = {
+        setExtraData: mockSetExtraData,
+        getExtraData: jest.fn().mockReturnValue({}) 
+      } as any;
+      return next();
+    });
+  });
+
+  it("should store session errors when invalid SIC code is submitted", async () => {
+    const response = await request(app)
+      .post(`${URL}/save`)
+      .send({ unsavedCodeList: "INVALIDCODE" });
+
+    const redirectUrl = LP_SIC_CODE_SUMMARY_PATH
+      .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
+      .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
+      .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe(redirectUrl);
+
+    expect(mockSetExtraData).toHaveBeenCalledWith("SIC_CODE_ERRORS", [
+      { text: "Invalid SIC code(s) entered. Please enter a Valid SIC code." }
+    ]);
+  });
+
+  it("should store session errors when duplicate SIC code is submitted", async () => {
+    const validate = jest.spyOn(sicCodeService, "validateSicCodes").mockReturnValue({
+      duplicateError: "Remove duplicate SIC codes. A limited partnership can not have duplicate SIC codes.",
+      invalidError: undefined,
+      maxError: undefined
+    });
+
+    const response = await request(app)
+      .post(`${URL}/save`)
+      .send({ code: "70001", unsavedCodeList: "70001"  });
+
+    expect(response.status).toBe(302);
+
+    expect(mockSetExtraData).toHaveBeenCalledWith("SIC_CODE_ERRORS", [
+      { text: "Remove duplicate SIC codes. A limited partnership can not have duplicate SIC codes." }
+    ]);
+
+    validate.mockRestore();
+  });
+
+  it("should store session errors when empty SIC code is submitted", async () => {
+    const response = await request(app)
+      .post(`${URL}/save`)
+      .send({ unsavedCodeList: "" });
+
+    expect(response.status).toBe(302);
+
+    expect(mockSetExtraData).toHaveBeenCalledWith("SIC_CODE_ERRORS", [
+      { text: "Add a SIC code. A limited partnership must have at least one SIC code." }
+    ]);
+  });
+
+  it("should store session errors when more than 4 SIC codes are submitted", async () => {
+    const response = await request(app)
+      .post(`${URL}/save`)
+      .send({ unsavedCodeList: "70001, 70002, 70003, 70004, 70005" });
+
+    expect(response.status).toBe(302);
+
+    expect(mockSetExtraData).toHaveBeenCalledWith("SIC_CODE_ERRORS", [
+      { text: "Remove SIC code(s). A limited partnership can only have a maximum of 4 SIC codes." }
+    ]);
+  });  
+});
