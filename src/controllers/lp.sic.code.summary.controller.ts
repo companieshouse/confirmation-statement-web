@@ -29,13 +29,15 @@ export const get = (req: Request, res: Response) => {
     req.session?.setExtraData(SIC_CODE_SESSION_KEY, sicCodesList);
   }
 
+  const errors: { text: string }[] = req.session?.getExtraData("SIC_CODE_ERRORS") || [];
+  req.session?.deleteExtraData("SIC_CODE_ERRORS");
+
   const sicCodeSummaryList = getSicCodeSummaryList(req, lang, sicCodesList);
 
-  return renderPage(req, res, sicCodeSummaryList, sicCodesList);
+  return renderPage(req, res, sicCodeSummaryList, sicCodesList, errors);
 };
 
 export const saveAndContinue = async (req: Request, res: Response) => {
-  const lang = selectLang(req.query.lang);
   const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
   const company = getCompanyProfileFromSession(req);
   const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
@@ -44,17 +46,29 @@ export const saveAndContinue = async (req: Request, res: Response) => {
   const nextPage = getReviewPath(isAcspJourney);
 
   const unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
-  const sicCodeSummaryList = getSicCodeSummaryList(req, lang, unsavedCodeList);
-
-  const { formErrors, maxError, duplicateError } = validateSicCodes(unsavedCodeList, company?.sicCodes?.length);
-
-  if (formErrors || maxError || duplicateError) {
-    return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, formErrors, maxError, duplicateError);
-  }
-
   const sessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
   const allSicCodes: CondensedSicCodeData[] = sessionData?.sicCodes || [];
   const sicCodeArray: SicCode[] = [];
+
+  const validationResults = validateSicCodes(unsavedCodeList, company?.sicCodes?.length ?? 0, allSicCodes);
+  const errors = [
+    ...(validationResults.maxError ? [{ text: validationResults.maxError }] : []),
+    ...(validationResults.duplicateError ? [{ text: validationResults.duplicateError }] : []),
+    ...(validationResults.invalidError ? [{ text: validationResults.invalidError }] : [])
+  ]
+
+  if (errors.length > 0) {
+    req.session?.setExtraData("SIC_CODE_ERRORS", errors);
+
+    return res.redirect(
+      urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+        urls.LP_SIC_CODE_SUMMARY_PATH,
+        companyNumber,
+        transactionId,
+        submissionId
+      )
+    );
+  }  
 
   for (const code of unsavedCodeList) {
     const macthed = allSicCodes.find(sc => sc.sic_code === code);
@@ -97,36 +111,59 @@ export const getPreviousPagePath = (req: Request) => {
 };
 
 export const addSicCode = (req: Request, res: Response) => {
-  const lang = selectLang(req.query.lang);
   const { code } = req.body;
+  const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+  const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+  const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
 
-  if (!code) {
-    const errors = [{ text: "Missing SIC code" }];
-
-    const unsavedCodeList = req.body.unsavedCodeList
+  const unsavedCodeList = req.body.unsavedCodeList
       ? req.body.unsavedCodeList.split(",")
       : [];
+  const sessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
+  const allSicCodes: CondensedSicCodeData[] = sessionData?.sicCodes || [];  
+  const isValidSicCode = allSicCodes.some(
+    sic => sic.sic_code === code
+  );
 
-    const sicCodeSummaryList = getSicCodeSummaryList(req, lang, unsavedCodeList);
+  if (!code || unsavedCodeList.includes(code) || !isValidSicCode || unsavedCodeList.length >= 4) {
+    const errors: { text: string }[] = []; 
 
-    return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, errors);
+    if (!code) {
+      errors.push({ text: "Missing SIC code" });
+    } else if (unsavedCodeList.includes(code)) {
+      errors.push({ text: "This SIC code already exists for the limited partnership. Enter a different SIC code" });
+    } else if (unsavedCodeList.length >= 4) {
+      errors.push({ text: "Remove SIC code(s). A limited partnership can only have a maximum of 4 SIC codes." });
+    } else if (!isValidSicCode) {
+      errors.push({ text: "Enter a valid SIC code" });
+    } else {
+      unsavedCodeList.push(code);
+    }
+
+    req.session?.setExtraData("SIC_CODE_ERRORS", errors);
+
+    return res.redirect(
+      urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+        urls.LP_SIC_CODE_SUMMARY_PATH,
+        companyNumber,
+        transactionId,
+        submissionId
+      )
+    );
   }
 
-  const unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
-  const duplicate = unsavedCodeList.includes(code);
+  unsavedCodeList.push(code);
+  req.session?.setExtraData(SIC_CODE_SESSION_KEY, unsavedCodeList);
+  req.session?.deleteExtraData("SIC_CODE_ERRORS");
 
-  let errors: { text: string; }[] | undefined;
-  if (duplicate) {
-    errors = [{ text: `This SIC code already exists for the limited partnership. Enter a different SIC code` }];
-  } else if (unsavedCodeList.length >= 4) {
-    console.warn(`Maximum number of SIC codes reached.`);
-  } else {
-    unsavedCodeList.push(code);
-  }
-
-  const sicCodeSummaryList = getSicCodeSummaryList(req, lang, unsavedCodeList);
-
-  return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, errors);
+  return res.redirect(
+    urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+      urls.LP_SIC_CODE_SUMMARY_PATH,
+      companyNumber,
+      transactionId,
+      submissionId
+    )
+  );
 };
 
 export const removeSicCode = (req: Request, res: Response) => {
@@ -144,7 +181,7 @@ export const removeSicCode = (req: Request, res: Response) => {
 
   const sicCodeSummaryList = getSicCodeSummaryList(req, lang, unsavedCodeList);
 
-  return renderPage(req, res, sicCodeSummaryList, unsavedCodeList);
+  return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, []);
 };
 
 interface SicCode {
@@ -182,7 +219,7 @@ export function getSicCodeSummaryList(req: Request, lang: string, sicCodesList: 
 }
 
 export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicCodeSummaryListItem[],
-  unsavedCodeList: string[], errors?: { text: string }[], maxError?: string, duplicateError?: string): void {
+  unsavedCodeList: string[], errors: { text: string }[] = []): void {
   const lang = selectLang(req.query.lang);
   const locales = getLocalesService();
   const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
@@ -193,20 +230,6 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
   );
   const company = getCompanyProfileFromSession(req);
   const sessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
-
-  const sessionSicCodes = getSicCodeSummaryList(req, lang, unsavedCodeList);
-  const initSicCodeCount = company?.sicCodes?.length || 0;
-
-  let validationErrors: { text: string; }[] | undefined;
-  if (initSicCodeCount > 0 && sessionSicCodes.length === 0) {
-    validationErrors = [{ text: "Add a SIC code. A limited partnership must have at least one SIC code." }];
-  }
-
-  const combinedErrors = [...(errors || []),
-    ...(validationErrors || []),
-    ...(maxError ? [{ text: maxError }] : []),
-    ...(duplicateError ? [{ text: duplicateError }] : [])
-  ];
 
   return res.render(Templates.LP_SIC_CODE_SUMMARY, {
     ...getLocaleInfo(locales, lang),
@@ -223,9 +246,7 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
     })),
     company: company,
     unsavedCodeList: unsavedCodeList,
-    errors: combinedErrors,
-    maxError: maxError,
-    duplicateError: duplicateError,
+    errors,
     templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_SIC_CODE
   });
 }
