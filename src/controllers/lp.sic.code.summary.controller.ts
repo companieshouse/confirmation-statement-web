@@ -68,7 +68,7 @@ export const saveAndContinue = async (req: Request, res: Response) => {
         submissionId
       )
     );
-  }  
+  }
 
   for (const code of unsavedCodeList) {
     const macthed = allSicCodes.find(sc => sc.sic_code === code);
@@ -117,16 +117,16 @@ export const addSicCode = (req: Request, res: Response) => {
   const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
 
   const unsavedCodeList = req.body.unsavedCodeList
-      ? req.body.unsavedCodeList.split(",")
-      : [];
+    ? req.body.unsavedCodeList.split(",")
+    : [];
   const sessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
-  const allSicCodes: CondensedSicCodeData[] = sessionData?.sicCodes || [];  
+  const allSicCodes: CondensedSicCodeData[] = sessionData?.sicCodes || [];
   const isValidSicCode = allSicCodes.some(
     sic => sic.sic_code === code
   );
 
   if (!code || unsavedCodeList.includes(code) || !isValidSicCode || unsavedCodeList.length >= 4) {
-    const errors: { text: string }[] = []; 
+    const errors: { text: string }[] = [];
 
     if (!code) {
       errors.push({ text: "Missing SIC code" });

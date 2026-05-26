@@ -144,7 +144,7 @@ describe("Controller tests", () => {
       .send({ code: "70005", unsavedCodeList: "70001,70002,70003" })
       .expect(302);
 
-    const response = await request(app).get(URL);   
+    const response = await request(app).get(URL);
 
     expect(response.status).toBe(200);
     expect(response.text).toContain('70001');
@@ -393,12 +393,12 @@ describe("SicCode Session Errors", () => {
       companyNumber: COMPANY_NUMBER,
       sicCodes: ["70001"]
     });
-  
+
     mockSetExtraData = jest.fn();
     middlewareMocks.mockSessionMiddleware.mockImplementation((req, res, next) => {
       req.session = {
         setExtraData: mockSetExtraData,
-        getExtraData: jest.fn().mockReturnValue({}) 
+        getExtraData: jest.fn().mockReturnValue({})
       } as any;
       return next();
     });
@@ -464,5 +464,5 @@ describe("SicCode Session Errors", () => {
     expect(mockSetExtraData).toHaveBeenCalledWith("SIC_CODE_ERRORS", [
       { text: "Remove SIC code(s). A limited partnership can only have a maximum of 4 SIC codes." }
     ]);
-  });  
+  });
 });
