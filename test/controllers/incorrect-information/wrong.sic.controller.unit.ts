@@ -4,7 +4,8 @@ import app from "../../../src/app";
 import { SIC_PATH, WRONG_SIC_PATH } from "../../../src/types/page.urls";
 import { urlUtils } from "../../../src/utils/url";
 
-const PAGE_TITLE = "You cannot use this service to update the SIC codes - File a confirmation statement - GOV.UK";
+const PAGE_TITLE = "You must use our WebFiling service to update the SIC codes - File a confirmation statement - GOV.UK";
+const STOP_PAGE_HEADING = "You must use our WebFiling service to update the SIC codes";
 const STOP_PAGE_TEXT = "You must update this information by filing a confirmation statement through";
 const SIC_CODE = "123";
 const SIC_CODE_DESCRIPTIONS = "Test SIC code descriptions";
@@ -28,9 +29,10 @@ describe("Wrong sic stop controller tests", () => {
       const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(SIC_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID);
       const response = await request(app).get(populatedWrongSicPath);
 
+      expect(response.text).toContain(PAGE_TITLE);
+      expect(response.text).toContain(STOP_PAGE_HEADING);
       expect(response.text).toContain(STOP_PAGE_TEXT);
       expect(response.text).not.toContain(SIC_CODE_DETAILS);
-      expect(response.text).toContain(PAGE_TITLE);
       expect(response.text).toContain(backLinkUrl);
     });
   });

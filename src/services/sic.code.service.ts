@@ -42,7 +42,7 @@ export function validateSicCodes(sicCodes: string[], initSicCodes: number, sicCo
     result.maxError = "Remove SIC code(s). A limited partnership can only have a maximum of 4 SIC codes.";
   }
 
-  if(hasInvalidSicCodes(sicCodes, sicCodeList)) {
+  if (hasInvalidSicCodes(sicCodes, sicCodeList)) {
     result.invalidError = "Invalid SIC code(s) entered. Please enter a Valid SIC code."
   }
 

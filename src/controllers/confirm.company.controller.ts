@@ -67,13 +67,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const companyNumber = company.companyNumber;
     const eligibilityStatusCode: EligibilityStatusCode = await checkEligibility(session, companyNumber);
 
-   if (
+    if (
       isLimitedPartnershipCompanyType(company) &&
       company.companyStatus &&
       CLOSED_COMPANY_STATUSES.includes(company.companyStatus as COMPANY_STATUS_TYPE)
     ) {
-        session.setExtraData(COMPANY_PROFILE_SESSION_KEY, company);
-        return res.redirect(LP_STOP_SCREEN_PATH);
+      session.setExtraData(COMPANY_PROFILE_SESSION_KEY, company);
+      return res.redirect(LP_STOP_SCREEN_PATH);
     }
 
     if (!isCompanyValidForService(eligibilityStatusCode)) {
