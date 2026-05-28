@@ -9,7 +9,8 @@ import * as limitedPartnershipUtil from "../../src/utils/limited.partnership";
 import {
   COMPANY_PROFILE_SESSION_KEY,
   LIMITED_PARTNERSHIP_COMPANY_TYPE,
-  LIMITED_PARTNERSHIP_SUBTYPES
+  LIMITED_PARTNERSHIP_SUBTYPES,
+  GCI_RETURN_URL_SESSION_KEY
 } from "../../src/utils/constants";
 import { Request } from "express";
 import { getCompanyProfileFromSession } from "../../src/utils/session";
@@ -224,4 +225,19 @@ describe("Limited partnership util tests", () => {
     expect(mockConfirmationStatementSubmission.data.newConfirmationDate).toContain("2025-09-01");
   });
 
+  it("isIntegratedJourney returns false if session does not have gci_return_url", () => {
+    let response: boolean = limitedPartnershipUtil.isIntegratedJourney(sessionData);
+    expect(response).toBeFalsy();
+  });
+
+  it("isIntegratedJourney returns true if session does have gci_return_url", () => {
+    sessionData.setExtraData(GCI_RETURN_URL_SESSION_KEY, "http://chs.local/company/12345678");
+    let response: boolean = limitedPartnershipUtil.isIntegratedJourney(sessionData);
+    expect(response).toBeTruthy();
+  });
+
+  it("isIntegratedJourney returns false if session is undefined", () => {
+    let response: boolean = limitedPartnershipUtil.isIntegratedJourney(null);
+    expect(response).toBeFalsy();
+  });
 });
