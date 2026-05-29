@@ -20,10 +20,11 @@ export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
   res.cookie('lang', lang, { httpOnly: true });
   const company: CompanyProfile = getCompanyProfileFromSession(req);
+  const sessionSicCodes = req.session?.getExtraData(SIC_CODE_SESSION_KEY);
   let sicCodesList: string[] = [];
 
-  if (req.session?.getExtraData(SIC_CODE_SESSION_KEY)) {
-    sicCodesList = req.session?.getExtraData(SIC_CODE_SESSION_KEY) as string[];
+  if (sessionSicCodes !== undefined) {
+    sicCodesList = sessionSicCodes as string[];
   } else if (company?.sicCodes) {
     sicCodesList = company.sicCodes;
     req.session?.setExtraData(SIC_CODE_SESSION_KEY, sicCodesList);
@@ -58,6 +59,10 @@ export const saveAndContinue = async (req: Request, res: Response) => {
   ]
 
   if (errors.length > 0) {
+    if (validationResults.minError){
+      req.session?.setExtraData(SIC_CODE_SESSION_KEY, []);
+    }
+    
     req.session?.setExtraData("SIC_CODE_ERRORS", errors);
 
     return res.redirect(

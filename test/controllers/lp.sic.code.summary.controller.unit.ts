@@ -252,6 +252,7 @@ describe("SIC code summary post tests", () => {
       .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
 
     expect(response.status).toBe(302);
+    expect(response.text).not.toContain('<div class="govuk-summary-list__key">');
     expect(response.headers.location).toBe(reviewPath);
   });
 
@@ -322,6 +323,7 @@ describe("validateSicCodes", () => {
 
   it("should return error for empty list", () => {
     const result = sicCodeService.validateSicCodes([], 1, mockSicCodes);
+    expect(result.minError).toBe(true);
     expect(result.maxError).toBe("Add a SIC code. A limited partnership must have at least one SIC code.");
   });
 
@@ -329,7 +331,7 @@ describe("validateSicCodes", () => {
     const result = sicCodeService.validateSicCodes([], 0, mockSicCodes);
 
     expect(result.maxError).toBeUndefined();
-    expect(result.maxError).toBeUndefined();
+    expect(result.invalidError).toBeUndefined();
     expect(result.duplicateError).toBeUndefined();
   });
 
@@ -448,6 +450,10 @@ describe("SicCode Session Errors", () => {
       .send({ unsavedCodeList: "" });
 
     expect(response.status).toBe(302);
+
+    expect(mockSetExtraData).toHaveBeenCalledWith(
+      "sic_code_session", []
+    );
 
     expect(mockSetExtraData).toHaveBeenCalledWith("SIC_CODE_ERRORS", [
       { text: "Add a SIC code. A limited partnership must have at least one SIC code." }
