@@ -1,5 +1,5 @@
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { LIMITED_PARTNERSHIP_COMPANY_TYPE,
+import { GCI_RETURN_URL_SESSION_KEY, LIMITED_PARTNERSHIP_COMPANY_TYPE,
   LIMITED_PARTNERSHIP_SUBTYPES } from "./constants";
 import { CONFIRMATION_PATH, LP_CHECK_YOUR_ANSWER_PATH, LP_CONFIRMATION_PATH, LP_CS_DATE_PATH, LP_REVIEW_PATH, LP_SIC_CODE_SUMMARY_PATH, REVIEW_PATH } from "../types/page.urls";
 import { Session } from "@companieshouse/node-session-handler";
@@ -71,4 +71,8 @@ export function getACSPBackPath(session: Session, company: CompanyProfile): stri
   }
 
   return LP_SIC_CODE_SUMMARY_PATH;
+}
+
+export function isIntegratedJourney(session: Session | undefined): boolean {
+  return undefined !== session?.getExtraData(GCI_RETURN_URL_SESSION_KEY);
 }

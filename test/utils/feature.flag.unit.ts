@@ -3,8 +3,11 @@ jest.mock("../../src/services/confirmation.statement.service");
 import { ecctDayOneEnabled,
   isActiveFeature,
   isLimitedPartnershipFeatureFlagEnabled,
-  isServiceWithdrawnFeatureEnabled
+  isServiceWithdrawnFeatureEnabled,
+  isCompanyTypePermittedForLimitedPartnerships
 } from "../../src/utils/feature.flag";
+
+import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 
 const PropertiesMock = jest.requireMock('../../src/utils/properties');
 jest.mock('../../src/utils/properties', () => ({
@@ -152,6 +155,23 @@ describe("feature flag tests", function() {
     it("should return false if the feature flag is disabled", () => {
       PropertiesMock.FEATURE_FLAG_SERVICE_WITHDRAWN_02102025 = "false";
       expect(isServiceWithdrawnFeatureEnabled()).toEqual(false);
+    });
+  });
+
+  describe("isCompanyTypePermittedForLimitedPartnerships Tests", () => {
+    PropertiesMock.FEATURE_FLAG_LP_INTEGRATED_JOURNEY_PERMITTED_TYPES = "limited-partnership";
+
+    it("should return false for CompanyProfile.type of ltd", () => {
+      let company: CompanyProfile = {
+        type: "ltd"
+      };
+      expect(isCompanyTypePermittedForLimitedPartnerships(company)).toBeFalsy();
+    });
+    it("should return true for CompanyProfile.type of limited-partnership", () => {
+      let company: CompanyProfile = {
+        type: "limited-partnership"
+      };
+      expect(isCompanyTypePermittedForLimitedPartnerships(company)).toBeTruthy();
     });
   });
 });

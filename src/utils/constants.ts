@@ -50,6 +50,7 @@ export const LIMITED_PARTNERSHIP_SUBTYPES = {
 export const COMPANY_PROFILE_SESSION_KEY = "company_profile";
 export const ACSP_SESSION_KEY = "acsp_session";
 export const SIC_CODE_SESSION_KEY = "sic_code_session";
+export const GCI_RETURN_URL_SESSION_KEY = "gci_return_url";
 export const PAYMENT_NONCE_SESSION_KEY = "payment-nonce";
 export const CONFIRMATION_STATEMENT_SESSION_KEY = 'confirmation-statement-check';
 export const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY = 'lawful-activity-statement-check';

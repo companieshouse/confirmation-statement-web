@@ -1,7 +1,8 @@
 import middlewareMocks from "../mocks/all.middleware.mock";
 import request from "supertest";
+import { Session } from "@companieshouse/node-session-handler";
 import app from "../../src/app";
-import { LP_BEFORE_YOU_FILE_PATH, urlParams } from "../../src/types/page.urls";
+import { LP_BEFORE_YOU_FILE_PATH, CONFIRM_COMPANY_PATH, URL_QUERY_PARAM, urlParams } from "../../src/types/page.urls";
 import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
 import { getTransaction } from "../../src/services/transaction.service";
 import { getCompanyProfileFromSession } from "../../src/utils/session";
@@ -28,6 +29,8 @@ const URL = LP_BEFORE_YOU_FILE_PATH
   .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
   .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
 
+const ACSP_NUMBER = "TSA001";
+const GCI_RETURN_URL = "http://chs.local/company/11456298";
 
 describe("start before you file controller tests", () => {
 
@@ -42,6 +45,11 @@ describe("start before you file controller tests", () => {
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.text).toContain("Before you file the confirmation statement");
     expect(response.text).toContain("You will not be able to view or change limited partnership information (except for the SIC codes) as part of this filing.");
+
+    // Check the Back link is the correct default value
+    const regex = new RegExp("<a href=\"" + CONFIRM_COMPANY_PATH + "\\?" + URL_QUERY_PARAM.COMPANY_NUM +
+      "=" + COMPANY_NUMBER + "\" class=\"govuk-back-link");
+    expect(response.text).toMatch(regex);
   });
 
   it("should return CS01 cost in the fee paragraph", async () => {
@@ -121,6 +129,19 @@ describe("start before you file controller tests", () => {
     expect(response.text).toContain(`${urls.CONFIRM_COMPANY_PATH}?companyNumber=${COMPANY_NUMBER}`);
     expect(response.text).toContain("<strong>&pound;50</strong>");
   });
+
+  it("should have correct previous page setting for gci_return_url ", async() => {
+    setGCIReturnUrlInSession();
+    const response = await doGetPageTest(LIMITED_PARTNERSHIP_SUBTYPES.LP);
+
+    expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+    expect(response.text).toContain("Before you file the confirmation statement");
+    expect(response.text).toContain("You will not be able to view or change limited partnership information (except for the SIC codes) as part of this filing.");
+
+    // Check the Back link is the correct GCI Return URL value
+    const regex = new RegExp("<a href=\"" + GCI_RETURN_URL + "\" class=\"govuk-back-link")
+    expect(response.text).toMatch(regex);
+  });
 });
 
 function doGetPageTest(subtype: string) {
@@ -137,4 +158,26 @@ function doGetPageTest(subtype: string) {
     id: TRANSACTION_ID
   });
   return request(app).get(URL);
+}
+
+function setGCIReturnUrlInSession() {
+
+  middlewareMocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
+    const session: Session = new Session();
+    session.data = {
+      signin_info: {
+        acsp_number: ACSP_NUMBER
+      },
+      extra_data: {
+        company_profile: {
+          type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+          subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP
+        },
+        gci_return_url: GCI_RETURN_URL
+      }
+    };
+
+    req.session = session;
+    return next();
+  });
 }

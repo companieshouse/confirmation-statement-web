@@ -3,7 +3,7 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { getCompanyProfileFromSession } from "../utils/session";
 import { Templates } from "../types/template.paths";
 
-export const get = async (req: Request, res: Response, next: NextFunction) => {
+export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     const sessionCompany = getCompanyProfileFromSession(req);
     const companyNumber = sessionCompany?.companyNumber;

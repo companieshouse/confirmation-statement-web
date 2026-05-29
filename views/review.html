@@ -30,6 +30,12 @@
   {% endif %}
 {% endblock %}
 
+{% block backLink %}
+  {% if not isLimitedPartnership %}
+    {% include "includes/back-link.html" %}
+  {% endif %}
+{% endblock %}
+
 {% block beforeContent %}
   {% if isLimitedPartnership %}
     {# Custom LP content here #}

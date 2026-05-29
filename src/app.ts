@@ -21,6 +21,7 @@ import { SessionStore } from "@companieshouse/node-session-handler";
 import { getGOVUKFrontendVersion } from "@companieshouse/ch-node-utils";
 import { CACHE_SERVER, COOKIE_NAME } from "./utils/properties";
 import Redis from 'ioredis';
+import { validateIntegratedJourney } from "./middleware/integrated.limited.partnership.validation.middleware";
 
 const app = express();
 app.disable("x-powered-by");
@@ -53,6 +54,15 @@ nunjucksEnv.addGlobal("CS01_PAPER_FEE", process.env.CS01_PAPER_FEE);
 app.enable("trust proxy");
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+app.use((req, res, next) => {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+  res.setHeader("Surrogate-Control", "no-store");
+
+  next();
+});
 
 // view engine setup
 app.set("views", [
@@ -94,6 +104,8 @@ const csrfProtectionMiddleware = CsrfProtectionMiddleware({
   sessionCookieName: COOKIE_NAME
 });
 app.use(urls.middlewarePaths, csrfProtectionMiddleware);
+
+app.post(`*/confirmation-statement/confirm-company`, validateIntegratedJourney);
 
 app.use(commonTemplateVariablesMiddleware);
 // apply our default router to /confirmation-statement

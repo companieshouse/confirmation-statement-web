@@ -6,7 +6,7 @@ import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
 import * as sessionAcspUtils from "../../src/utils/session.acsp";
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
-import { validateSicCodes } from "../../src/services/sic.code.service";
+import * as sicCodeService from "../../src/services/sic.code.service";
 import { getCompanyProfileFromSession } from "../../src/utils/session";
 
 const COMPANY_NUMBER = "12345678";
@@ -16,6 +16,28 @@ const URL = LP_SIC_CODE_SUMMARY_PATH
   .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
   .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
   .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
+const mockSicCodes = [
+  {
+    sic_code: "10001",
+    sic_description: "Test 1"
+  },
+  {
+    sic_code: "10002",
+    sic_description: "Test 2"
+  },
+  {
+    sic_code: "10003",
+    sic_description: "Test 3"
+  },
+  {
+    sic_code: "10004",
+    sic_description: "Test 4"
+  },
+  {
+    sic_code: "10005",
+    sic_description: "Test 5"
+  }
+];
 
 jest.mock("../../src/services/company.profile.service", () => ({
   getCompanyProfile: jest.fn()
@@ -57,7 +79,8 @@ describe("Controller tests", () => {
       sicCodes: [
         { sic_code: "70001", sic_description: "Description 1" },
         { sic_code: "70002", sic_description: "Description 2" },
-        { sic_code: "70003", sic_description: "Description 3" }
+        { sic_code: "70003", sic_description: "Description 3" },
+        { sic_code: "70005", sic_description: "Description 5" }
       ]
     });
     mockGetCompanyProfileFromSession.mockReturnValue({
@@ -116,25 +139,31 @@ describe("Controller tests", () => {
   });
 
   it("should add a valid SIC code", async () => {
-    const response = await request(app)
+    await request(app)
       .post(`${URL}/add`)
-      .send({ code: "70005", unsavedCodeList: "70001,70002,70003" });
+      .send({ code: "70005", unsavedCodeList: "70001,70002,70003" })
+      .expect(302);
 
-    expect(response.text).toContain('<div class="govuk-summary-list__key">70001</div>');
-    expect(response.text).toContain('<div class="govuk-summary-list__key">70002</div>');
-    expect(response.text).toContain('<div class="govuk-summary-list__key">70003</div>');
-    expect(response.text).toContain('<div class="govuk-summary-list__key">70005</div>');
+    const response = await request(app).get(URL);
+
+    expect(response.status).toBe(200);
+    expect(response.text).toContain('70001');
+    expect(response.text).toContain('70002');
+    expect(response.text).toContain('70003');
+    expect(response.text).toContain('70005');
   });
 
   it("should not add a duplicate SIC code", async () => {
-    const response = await request(app)
+    await request(app)
       .post(`${URL}/add`)
-      .send({ code: "70005", unsavedCodeList: "70001,70002,70003,70005"  });
+      .send({ code: "70005", unsavedCodeList: "70001,70002,70003,70005"  })
+      .expect(302);
 
-    const matches = response.text.match(/<div class="govuk-summary-list__key">70005<\/div>/g);
+    const response = await request(app).get(URL);
+    const matches = response.text.match(/70005/g);
 
     expect(response.text).toContain('Check the partnership&#39;s nature of business');
-    expect(response.text).toContain('<div class="govuk-summary-list__key">70005</div>');
+    expect(response.text).toContain('70005');
     expect(matches?.length).toBe(1);
   });
 
@@ -167,6 +196,10 @@ describe("Controller tests", () => {
     expect(response.text).toContain('<div class="govuk-summary-list__key">70003</div>');
     expect(response.text).toContain('<div class="govuk-summary-list__key">70005</div>');
   });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 });
 
 describe("SIC code summary post tests", () => {
@@ -179,7 +212,12 @@ describe("SIC code summary post tests", () => {
       newConfirmationDate: null,
       confirmAllInformationCheck: false,
       confirmLawfulActionsCheck: false,
-      sicCodes: []
+      sicCodes: [
+        { sic_code: "70001", sic_description: "Description 1" },
+        { sic_code: "70002", sic_description: "Description 2" },
+        { sic_code: "70003", sic_description: "Description 3" },
+        { sic_code: "70005", sic_description: "Description 5" }
+      ]
     });
 
     mockGetCompanyProfileFromSession.mockReturnValue({
@@ -214,6 +252,7 @@ describe("SIC code summary post tests", () => {
       .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
 
     expect(response.status).toBe(302);
+    expect(response.text).not.toContain('<div class="govuk-summary-list__key">');
     expect(response.headers.location).toBe(reviewPath);
   });
 
@@ -277,42 +316,159 @@ describe("SIC code summary post tests", () => {
 });
 
 describe("validateSicCodes", () => {
+
+  beforeEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it("should return error for empty list", () => {
-    const result = validateSicCodes([], 1);
-    expect(result.formErrors).toContainEqual({
-      text: "Add a SIC code. A limited partnership must have at least one SIC code."
-    });
+    const result = sicCodeService.validateSicCodes([], 1, mockSicCodes);
+    expect(result.minError).toBe(true);
+    expect(result.maxError).toBe("Add a SIC code. A limited partnership must have at least one SIC code.");
   });
 
   it("should allow when company has 0 SIC codes associated and empty list", () => {
-    const result = validateSicCodes([], 0);
+    const result = sicCodeService.validateSicCodes([], 0, mockSicCodes);
 
-    expect(result.formErrors).toBeUndefined();
     expect(result.maxError).toBeUndefined();
+    expect(result.invalidError).toBeUndefined();
     expect(result.duplicateError).toBeUndefined();
   });
 
+  it("should return error for invalid SIC codes", () => {
+    const result = sicCodeService.validateSicCodes(["jibberish"], 1, mockSicCodes);
+    expect(result.invalidError).toBe("Invalid SIC code(s) entered. Please enter a Valid SIC code.");
+  });
+
   it("should return error for more than 4 codes", () => {
-    const result = validateSicCodes(["10001", "10002", "10003", "10004", "10005"], 5);
+    const result = sicCodeService.validateSicCodes(["10001", "10002", "10003", "10004", "10005"], 5, mockSicCodes);
     expect(result.maxError).toBe("Remove SIC code(s). A limited partnership can only have a maximum of 4 SIC codes.");
   });
 
   it("should return error for duplicate codes", () => {
-    const result = validateSicCodes(["10001", "10002", "10001"], 3);
+    const result = sicCodeService.validateSicCodes(["10001", "10002", "10001"], 3, mockSicCodes);
     expect(result.duplicateError).toBe("Remove duplicate SIC codes. A limited partnership can not have duplicate SIC codes.");
   });
 
   it("should return multiple errors if multiple rules are violated", () => {
-    const result = validateSicCodes(["10001", "10001", "10002", "10003", "10004", "10005"], 5);
-    expect(result.formErrors).toBeUndefined();
+    const result = sicCodeService.validateSicCodes(["10001", "10001", "10002", "10003", "10004", "10005"], 5, mockSicCodes);
+    expect(result.invalidError).toBeUndefined();
     expect(result.maxError).toBe("Remove SIC code(s). A limited partnership can only have a maximum of 4 SIC codes.");
     expect(result.duplicateError).toBe("Remove duplicate SIC codes. A limited partnership can not have duplicate SIC codes.");
   });
 
   it("should return no errors for valid input", () => {
-    const result = validateSicCodes(["10001", "10002", "10003"], 3);
-    expect(result.formErrors).toBeUndefined();
+    const result = sicCodeService.validateSicCodes(["10001", "10002", "10003"], 3, mockSicCodes);
     expect(result.maxError).toBeUndefined();
     expect(result.duplicateError).toBeUndefined();
+    expect(result.invalidError).toBeUndefined();
+  });
+});
+
+describe("SicCode Session Errors", () => {
+
+  let mockSetExtraData: jest.Mock;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    jest.spyOn(limitedPartnershipUtils, "isACSPJourney").mockReturnValue(true);
+
+    jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+      changeConfirmationStatementDate: true,
+      beforeYouFileCheck: true,
+      newConfirmationDate: null,
+      confirmAllInformationCheck: false,
+      confirmLawfulActionsCheck: false,
+      sicCodes: [
+        { sic_code: "70001", sic_description: "Description 1" },
+        { sic_code: "70002", sic_description: "Description 2" },
+        { sic_code: "70003", sic_description: "Description 3" },
+        { sic_code: "70004", sic_description: "Description 4" },
+        { sic_code: "70005", sic_description: "Description 5" },
+        { sic_code: "70006", sic_description: "Description 6" }
+      ]
+    });
+
+    mockGetCompanyProfileFromSession.mockReturnValue({
+      companyName: "Test LP",
+      companyNumber: COMPANY_NUMBER,
+      sicCodes: ["70001"]
+    });
+
+    mockSetExtraData = jest.fn();
+    middlewareMocks.mockSessionMiddleware.mockImplementation((req, res, next) => {
+      req.session = {
+        setExtraData: mockSetExtraData,
+        getExtraData: jest.fn().mockReturnValue({})
+      } as any;
+      return next();
+    });
+  });
+
+  it("should store session errors when invalid SIC code is submitted", async () => {
+    const response = await request(app)
+      .post(`${URL}/save`)
+      .send({ unsavedCodeList: "INVALIDCODE" });
+
+    const redirectUrl = LP_SIC_CODE_SUMMARY_PATH
+      .replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER)
+      .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
+      .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe(redirectUrl);
+
+    expect(mockSetExtraData).toHaveBeenCalledWith("SIC_CODE_ERRORS", [
+      { text: "Invalid SIC code(s) entered. Please enter a Valid SIC code." }
+    ]);
+  });
+
+  it("should store session errors when duplicate SIC code is submitted", async () => {
+    const validate = jest.spyOn(sicCodeService, "validateSicCodes").mockReturnValue({
+      duplicateError: "Remove duplicate SIC codes. A limited partnership can not have duplicate SIC codes.",
+      invalidError: undefined,
+      maxError: undefined
+    });
+
+    const response = await request(app)
+      .post(`${URL}/save`)
+      .send({ code: "70001", unsavedCodeList: "70001"  });
+
+    expect(response.status).toBe(302);
+
+    expect(mockSetExtraData).toHaveBeenCalledWith("SIC_CODE_ERRORS", [
+      { text: "Remove duplicate SIC codes. A limited partnership can not have duplicate SIC codes." }
+    ]);
+
+    validate.mockRestore();
+  });
+
+  it("should store session errors when empty SIC code is submitted", async () => {
+    const response = await request(app)
+      .post(`${URL}/save`)
+      .send({ unsavedCodeList: "" });
+
+    expect(response.status).toBe(302);
+
+    expect(mockSetExtraData).toHaveBeenCalledWith(
+      "sic_code_session", []
+    );
+
+    expect(mockSetExtraData).toHaveBeenCalledWith("SIC_CODE_ERRORS", [
+      { text: "Add a SIC code. A limited partnership must have at least one SIC code." }
+    ]);
+  });
+
+  it("should store session errors when more than 4 SIC codes are submitted", async () => {
+    const response = await request(app)
+      .post(`${URL}/save`)
+      .send({ unsavedCodeList: "70001, 70002, 70003, 70004, 70005" });
+
+    expect(response.status).toBe(302);
+
+    expect(mockSetExtraData).toHaveBeenCalledWith("SIC_CODE_ERRORS", [
+      { text: "Remove SIC code(s). A limited partnership can only have a maximum of 4 SIC codes." }
+    ]);
   });
 });

@@ -24,7 +24,9 @@ import {
 } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { toReadableFormat } from "../utils/date";
-import { COMPANY_PROFILE_SESSION_KEY, LIMITED_PARTNERSHIP_COMPANY_TYPE, SIC_CODE_SESSION_KEY, COMPANY_STATUS_TYPE, CLOSED_COMPANY_STATUSES } from "../utils/constants";
+import { COMPANY_PROFILE_SESSION_KEY, LIMITED_PARTNERSHIP_COMPANY_TYPE,
+  SIC_CODE_SESSION_KEY, COMPANY_STATUS_TYPE, CLOSED_COMPANY_STATUSES,
+  GCI_RETURN_URL_SESSION_KEY } from "../utils/constants";
 import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
 import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
 import { resetAcspSession } from "../utils/session.acsp";
@@ -69,7 +71,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const eligibilityStatusCode: EligibilityStatusCode = await checkEligibility(session, companyNumber);
     req.session?.setExtraData(COMPANY_PROFILE_SESSION_KEY, company);
 
-   if (
+    if (
       isLimitedPartnershipCompanyType(company) &&
       company.companyStatus &&
       CLOSED_COMPANY_STATUSES.includes(company.companyStatus as COMPANY_STATUS_TYPE)
@@ -140,6 +142,7 @@ function clearSessionData(companyProfile: CompanyProfile, session: Session) {
   if (isLimitedPartnershipCompanyType(companyProfile)) {
     resetAcspSession(session);
     session.deleteExtraData(SIC_CODE_SESSION_KEY);
+    session.deleteExtraData(GCI_RETURN_URL_SESSION_KEY);
   }
 }
 

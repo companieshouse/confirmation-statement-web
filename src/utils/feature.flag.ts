@@ -1,8 +1,10 @@
+import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import { isValidDate } from "./date";
 import { FEATURE_FLAG_ECCT_START_DATE_14082023,
   FEATURE_FLAG_LP_REFORM_DATE,
   FEATURE_FLAG_SERVICE_WITHDRAWN_02102025,
-  FEATURE_FLAG_SAIL_ADDRESS } from "./properties";
-import { isValidDate } from "./date";
+  FEATURE_FLAG_SAIL_ADDRESS,
+  FEATURE_FLAG_LP_INTEGRATED_JOURNEY_PERMITTED_TYPES } from "./properties";
 import { logger } from "./logger";
 
 /**
@@ -47,4 +49,12 @@ export const isServiceWithdrawnFeatureEnabled = (): boolean => {
 
 export const isSAILAddressFeatureEnabled = (): boolean => {
   return isDateFeatureFlagEnabled("FEATURE_FLAG_SAIL_ADDRESS", FEATURE_FLAG_SAIL_ADDRESS, new Date());
+};
+
+export const isCompanyTypePermittedForLimitedPartnerships = (company: CompanyProfile): boolean => {
+  if (company?.type && FEATURE_FLAG_LP_INTEGRATED_JOURNEY_PERMITTED_TYPES) {
+    let companyTypes = FEATURE_FLAG_LP_INTEGRATED_JOURNEY_PERMITTED_TYPES.split(",");
+    return companyTypes.includes(company.type);
+  }
+  return false;
 };
