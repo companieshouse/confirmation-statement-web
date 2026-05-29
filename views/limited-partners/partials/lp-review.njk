@@ -22,6 +22,59 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
+    {% if ecctEnabled %}
+      {% if confirmationStatementError or lawfulActivityStatementError %}
+
+        {% set errorList = [] %}
+
+        {% if confirmationStatementError %}
+          {% set errorList = errorList.concat([{
+              text: i18n.SCSConfirmationStatementError,
+              href: "#confirmation-statement"
+            }]) %}
+        {% endif %}
+
+        {% if lawfulActivityStatementError %}
+          {% set errorList = errorList.concat([{
+              text: i18n.SCSLawfulActivityStatementError,
+              href: "#lawful-activity-statement"
+            }]) %}
+        {% endif %}
+
+        {% if errorList | length > 0 %}
+          {{ govukErrorSummary({
+              titleText: i18n.SCSErrorTitle,
+              errorList: errorList,
+              attributes: {
+                  "data-event-id": "error-summary"
+                }
+            }) }}
+        {% endif %}
+
+        {% if confirmationStatementError %}
+          {% set confirmationStatementError = {
+              text: i18n.SCSConfirmationStatementError,
+              attributes: {
+                  "data-event-id": "confirm-statement-error"
+                }
+            } %}
+        {% else %}
+          {% set confirmationStatementError = false %}
+        {% endif %}
+
+        {% if lawfulActivityStatementError %}
+          {% set lawfulActivityStatementError = {
+              text: i18n.SCSLawfulActivityStatementError,
+              attributes: {
+                  "data-event-id": "lawful-activity-error"
+                }
+            } %}
+        {% else %}
+          {% set lawfulActivityStatementError = false %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+
     <h1 class="govuk-heading-xl">{{i18n.SCSTitle}}</h1>
 
     {{ govukTable({
@@ -58,57 +111,6 @@
     <form action="" method="post">
       {% include "includes/csrf_token.html" %}
       {% if ecctEnabled %}
-        {% if confirmationStatementError or lawfulActivityStatementError %}
-
-          {% set errorList = [] %}
-
-          {% if confirmationStatementError %}
-            {% set errorList = errorList.concat([{
-              text: i18n.SCSConfirmationStatementError,
-              href: "#confirmation-statement"
-            }]) %}
-          {% endif %}
-
-          {% if lawfulActivityStatementError %}
-            {% set errorList = errorList.concat([{
-              text: i18n.SCSLawfulActivityStatementError,
-              href: "#lawful-activity-statement"
-            }]) %}
-          {% endif %}
-
-          {% if errorList | length > 0 %}
-            {{ govukErrorSummary({
-              titleText: i18n.SCSErrorTitle,
-              errorList: errorList,
-              attributes: {
-                  "data-event-id": "error-summary"
-                }
-            }) }}
-          {% endif %}
-
-
-          {% if confirmationStatementError %}
-            {% set confirmationStatementError = {
-              text: i18n.SCSConfirmationStatementError,
-              attributes: {
-                  "data-event-id": "confirm-statement-error"
-                }
-            } %}
-          {% else %}
-            {% set confirmationStatementError = false %}
-          {% endif %}
-
-          {% if lawfulActivityStatementError %}
-            {% set lawfulActivityStatementError = {
-              text: i18n.SCSLawfulActivityStatementError,
-              attributes: {
-                  "data-event-id": "lawful-activity-error"
-                }
-            } %}
-          {% else %}
-            {% set lawfulActivityStatementError = false %}
-          {% endif %}
-        {% endif %}
 
         {% if confirmationChecked %}
 
