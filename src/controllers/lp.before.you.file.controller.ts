@@ -11,7 +11,8 @@ import { getCompanyProfileFromSession } from "../utils/session";
 import { isPaymentDue } from '../utils/payments';
 import { getSicCodeCondensedList } from "../services/sic.code.service";
 import { fetchTransaction } from "../utils/confirmation/limited.partnership.confirmation";
-import { LIMITED_PARTNERSHIP_LP_SUBTYPE, LIMITED_PARTNERSHIP_SLP_SUBTYPE, MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME } from "../utils/constants";
+import { LIMITED_PARTNERSHIP_LP_SUBTYPE, LIMITED_PARTNERSHIP_SLP_SUBTYPE, MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME,
+  GCI_RETURN_URL_SESSION_KEY } from '../utils/constants';
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -36,7 +37,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     });
 
     let prevPageURL = `${urls.CONFIRM_COMPANY_PATH}?companyNumber=${urlUtils.getCompanyNumberFromRequestParams(req)}`;
-    let gciReturnUrl = session?.getExtraData('gci_return_url') as string;
+    let gciReturnUrl = session?.getExtraData(GCI_RETURN_URL_SESSION_KEY) as string;
     if (gciReturnUrl) {
       prevPageURL = gciReturnUrl;
     }

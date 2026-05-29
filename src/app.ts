@@ -21,6 +21,7 @@ import { SessionStore } from "@companieshouse/node-session-handler";
 import { getGOVUKFrontendVersion } from "@companieshouse/ch-node-utils";
 import { CACHE_SERVER, COOKIE_NAME } from "./utils/properties";
 import Redis from 'ioredis';
+import { validateIntegratedJourney } from "./middleware/integrated.limited.partnership.validation.middleware";
 
 const app = express();
 app.disable("x-powered-by");
@@ -103,6 +104,8 @@ const csrfProtectionMiddleware = CsrfProtectionMiddleware({
   sessionCookieName: COOKIE_NAME
 });
 app.use(urls.middlewarePaths, csrfProtectionMiddleware);
+
+app.post(`*/confirmation-statement/confirm-company`, validateIntegratedJourney);
 
 app.use(commonTemplateVariablesMiddleware);
 // apply our default router to /confirmation-statement
