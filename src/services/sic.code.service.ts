@@ -5,6 +5,7 @@ export interface SicCodeValidationResult {
   maxError?: string;
   duplicateError?: string;
   invalidError?: string;
+  minError?: boolean;
 }
 
 export const getSicCodeCondensedList = async (): Promise<CondensedSicCodeData[]> => {
@@ -35,6 +36,7 @@ export function validateSicCodes(sicCodes: string[], initSicCodes: number, sicCo
   }
 
   if (initSicCodes > 0 && sicCodes.length === 0) {
+    result.minError = true;
     result.maxError = "Add a SIC code. A limited partnership must have at least one SIC code.";
   }
 
