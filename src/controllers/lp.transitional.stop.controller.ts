@@ -11,9 +11,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       return next(new Error(`Invalid company number for LP transitional stop screen`));
     }
     const company: CompanyProfile = sessionCompany;
-    return res.render(Templates.LP_TRANSITIONAL_STOP, {
+    return res.render(Templates.LP_TRANSITIONAL_STOP_SCREEN, {
       company,
-      templateName: Templates.LP_TRANSITIONAL_STOP,
+      templateName: Templates.LP_TRANSITIONAL_STOP_SCREEN,
       companyNumber
     });
   } catch (e) {
