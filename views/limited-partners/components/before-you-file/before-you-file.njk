@@ -29,6 +29,18 @@
         <div class="govuk-width-container">
             <div class="govuk-grid-column-two-thirds">
 
+                {% if errors and pageProperties.isPost %}
+                  {{ govukErrorSummary({
+                        titleText: "There is a problem",
+                        errorList: [
+                            {
+                                text: i18n.BYFErrorMessageNotChecked,
+                                href: "#byfCheckbox"
+                            }
+                        ]
+                    }) }}
+                {% endif %}
+
                 <h1 class="govuk-heading-xl">
                     <span class="govuk-caption-l" style="text-transform: uppercase">
                         {{company.companyName}} ({{company.companyNumber}})
@@ -45,18 +57,6 @@
                     {{ govukWarningText({
                         text: i18n.BYFAlternateTextPFLP,
                         iconFallbackText: "Warning"
-                    }) }}
-                {% endif %}
-
-                {% if errors and pageProperties.isPost %}
-                  {{ govukErrorSummary({
-                        titleText: "There is a problem",
-                        errorList: [
-                            {
-                                text: i18n.BYFErrorMessageNotChecked,
-                                href: "#byfCheckbox"
-                            }
-                        ]
                     }) }}
                 {% endif %}
 
