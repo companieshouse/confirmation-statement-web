@@ -62,7 +62,7 @@ export const saveAndContinue = async (req: Request, res: Response) => {
     if (validationResults.minError){
       req.session?.setExtraData(SIC_CODE_SESSION_KEY, []);
     }
-    
+
     req.session?.setExtraData("SIC_CODE_ERRORS", errors);
 
     return res.redirect(
