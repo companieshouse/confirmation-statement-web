@@ -24,9 +24,11 @@ import {
 } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { toReadableFormat } from "../utils/date";
-import { COMPANY_PROFILE_SESSION_KEY, LIMITED_PARTNERSHIP_COMPANY_TYPE,
+import {
+  COMPANY_PROFILE_SESSION_KEY, LIMITED_PARTNERSHIP_COMPANY_TYPE,
   SIC_CODE_SESSION_KEY, COMPANY_STATUS_TYPE, CLOSED_COMPANY_STATUSES,
-  GCI_RETURN_URL_SESSION_KEY } from "../utils/constants";
+  GCI_RETURN_URL_SESSION_KEY
+} from "../utils/constants";
 import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
 import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
 import { resetAcspSession } from "../utils/session.acsp";
@@ -76,7 +78,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       company.companyStatus &&
       CLOSED_COMPANY_STATUSES.includes(company.companyStatus as COMPANY_STATUS_TYPE)
     ) {
-        return res.redirect(LP_STOP_SCREEN_PATH);
+      return res.redirect(LP_STOP_SCREEN_PATH);
     } else if (shouldRouteToTransitionalReturnStop(company)) {
       return res.redirect(LP_TRANSITIONAL_STOP_PATH);
     }

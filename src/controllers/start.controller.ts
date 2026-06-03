@@ -5,7 +5,7 @@ import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise"
 import { COMPANY_NUMBER, CONFIRMATION_STATEMENT } from "../types/page.urls";
 
 const parseTypes = (typeParam: unknown): string[] => {
-  if (!typeParam) return [];
+  if (!typeParam) {return [];}
   if (Array.isArray(typeParam)) {
     return typeParam.map(String).flatMap(p => String(p).split(",")).map(p => p.trim().toLowerCase()).filter(Boolean);
   }
@@ -14,7 +14,7 @@ const parseTypes = (typeParam: unknown): string[] => {
 
 const shouldSkipStart = (req: Request): boolean => {
   const configured = String(SKIP_START_PAGE_COMPANY_TYPES || "").split(",").map(s => s.trim().toLowerCase()).filter(Boolean);
-  if (!configured.length) return false;
+  if (!configured.length) {return false;}
   const types = parseTypes(req.query.type);
   return types.some(t => configured.includes(t));
 };
@@ -24,8 +24,8 @@ export const get = (req: Request, res: Response) => {
   const locales = getLocalesService();
 
   if (shouldSkipStart(req)) {
-      return res.redirect(CONFIRMATION_STATEMENT + COMPANY_NUMBER);
-    }
+    return res.redirect(CONFIRMATION_STATEMENT + COMPANY_NUMBER);
+  }
 
   return res.render(Templates.START, {
     ...getLocaleInfo(locales, lang),
