@@ -12,9 +12,8 @@ export const getSicCodeCondensedList = async (): Promise<CondensedSicCodeData[]>
   const client = createInternalApiKeyClient();
   const sicCodeService = client.sicCodeService;
   const data = await sicCodeService.getCondensedSicCodes();
-  const sicCodeList = data.resource;
-
-  return sicCodeList || [];
+  const sicCodeList = data?.httpStatusCode === 200 && data?.resource ? sortSicCodesList(data.resource) : [];
+  return sicCodeList;
 };
 
 export function validateSicCodes(sicCodes: string[], initSicCodes: number, sicCodeList: CondensedSicCodeData[]): SicCodeValidationResult {
@@ -59,4 +58,11 @@ export function hasInvalidSicCodes(sicCodes: string[], sicCodeList: CondensedSic
     return !validCodes.has(sc);
   })
 
+}
+
+function sortSicCodesList(sicCodeList: CondensedSicCodeData[]) {
+  if (!sicCodeList || sicCodeList.length === 0) {
+    return sicCodeList;
+  }
+  return sicCodeList.sort((a: CondensedSicCodeData, b: CondensedSicCodeData) => a.sic_code.localeCompare(b.sic_code));
 }
