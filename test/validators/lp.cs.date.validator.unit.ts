@@ -1,7 +1,11 @@
+// Default mock: set LP reform date in the past so most tests are not affected.
+jest.mock('../../src/utils/properties', () => ({ FEATURE_FLAG_LP_REFORM_DATE: '1970-01-01' }));
+
 import { isTodayBeforeFileCsDate, validateDateSelectorValue } from "../../src/validators/lp.cs.date.validator";
 import { validLimitedPartnershipProfile } from "../mocks/company.profile.mock";
 import { CsDateValue } from '../../src/utils/limited.partnership';
 import { getLocaleInfo, getLocalesService } from "../../src/utils/localise";
+import { formatDateString } from "../../src/utils/date";
 
 const locales = getLocalesService();
 const localInfo = getLocaleInfo(locales, "en");
@@ -226,7 +230,8 @@ describe("LP CS date validator tests", () => {
       csDateDay: "20"
     };
 
-    expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(undefined);
+    const expectedMustFileBy = localInfo.i18n.CDSErrorDateAfterMustFileBy + formatDateString("DD/MM/YYYY", validLimitedPartnershipProfile.confirmationStatement!.nextDue as string);
+    expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(expectedMustFileBy);
   });
 
 });

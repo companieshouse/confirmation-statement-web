@@ -1,7 +1,10 @@
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import moment from "moment";
-import { DATE_DAY_REGEX, DATE_MONTH_REGEX, DATE_YEAR_REGEX, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT } from "../utils/constants";
+import { DATE_DAY_REGEX, DATE_MONTH_REGEX, DATE_YEAR_REGEX, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT, DMMMMYYYY_DATE_FORMAT } from "../utils/constants";
 import { CsDateValue } from "../utils/limited.partnership";
+import { formatDateString } from "../utils/date";
+import { isDateFeatureFlagEnabled } from "../utils/feature.flag";
+import { FEATURE_FLAG_LP_REFORM_DATE } from "../utils/properties";
 
 
 export function isTodayBeforeFileCsDate(company: CompanyProfile): boolean {
@@ -39,6 +42,28 @@ export function validateDateSelectorValue(localInfo: any, csDateValue: CsDateVal
   const csDateInput = new Date(Number(csDateValue.csDateYear), Number(csDateValue.csDateMonth) - 1, Number(csDateValue.csDateDay));
   if (moment(csDateInput).isAfter(moment().startOf('day'))) {
     return localInfo.i18n.CDSErrorPastDate;
+  }
+
+  // validate that user cannot enter a date after the expected CS date (must file by)
+  const mustFileByDate = company.confirmationStatement?.nextDue;
+  if (mustFileByDate && moment(csDateInput).isAfter(moment(mustFileByDate), "day")) {
+    const formattedMustFileBy = formatDateString("DD/MM/YYYY", mustFileByDate);
+    return `${localInfo.i18n.CDSErrorDateAfterMustFileBy}${formattedMustFileBy}`;
+  }
+
+  // validate that user cannot enter a date before the LP registration date
+  const registrationDate = company.dateOfCreation;
+  if (registrationDate && moment(csDateInput).isBefore(moment(registrationDate), "day")) {
+    return localInfo.i18n.CDSErrorDateBeforeRegistration;
+  }
+
+  // validate that user cannot enter a date before LP Reform 'go live' date
+  // If the date entered is before the configured LP reform feature flag date, return an error
+  if (FEATURE_FLAG_LP_REFORM_DATE && moment(csDateInput).isBefore(moment(FEATURE_FLAG_LP_REFORM_DATE), "day")) {
+    // debug: log dates to troubleshoot unexpected comparisons in tests
+    // console.log(`CS date: ${csDateInput.toISOString()}, LP reform: ${FEATURE_FLAG_LP_REFORM_DATE}`);
+    const formattedReformDate = formatDateString("DD/MM/YYYY", FEATURE_FLAG_LP_REFORM_DATE);
+    return `${localInfo.i18n.CDSErrorDateBeforeLpReform}${formattedReformDate}`;
   }
 
   const lastOrNextMadeUpDate = isTodayBeforeFileCsDate(company) ? company?.confirmationStatement?.lastMadeUpTo : company.confirmationStatement?.nextMadeUpTo;

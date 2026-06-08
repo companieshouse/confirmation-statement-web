@@ -29,4 +29,7 @@
   "CDSRadioButtonNo":"No",
   "CDSContinueButton":"Continue",
   "CDSErrorPageTitle":"Error: "
+  ,"CDSErrorDateAfterMustFileBy":"The date you enter must be on or before "
+  ,"CDSErrorDateBeforeRegistration":"The confirmation date must be after the date the limited partnership was registered"
+  ,"CDSErrorDateBeforeLpReform":"The confirmation statement date cannot be before "
 }
