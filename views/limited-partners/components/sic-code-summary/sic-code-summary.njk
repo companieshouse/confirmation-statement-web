@@ -81,6 +81,12 @@
                           </div>
                       {% endfor %}
                   </div>
+                {% elif displayRemovedAllSicCodes %}
+                  <div>
+                    <p class="govuk-body">
+                      <strong>{{ i18n.SICCSRemovedAllCodes }}</strong>
+                    </p>
+                  </div>
                 {% else %}  
                   <div>
                     <p class="govuk-body">
