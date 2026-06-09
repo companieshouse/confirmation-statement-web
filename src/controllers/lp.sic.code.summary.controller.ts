@@ -186,7 +186,7 @@ export const removeSicCode = (req: Request, res: Response) => {
 
   const sicCodeSummaryList = getSicCodeSummaryList(req, lang, unsavedCodeList);
 
-  return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, []);
+  return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, [], (unsavedCodeList.length === 0));
 };
 
 interface SicCode {
@@ -224,7 +224,7 @@ export function getSicCodeSummaryList(req: Request, lang: string, sicCodesList: 
 }
 
 export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicCodeSummaryListItem[],
-  unsavedCodeList: string[], errors: { text: string }[] = []): void {
+  unsavedCodeList: string[], errors: { text: string }[] = [], removedLastSICCode: boolean = false): void {
   const lang = selectLang(req.query.lang);
   const locales = getLocalesService();
   const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
@@ -252,6 +252,7 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
     company: company,
     unsavedCodeList: unsavedCodeList,
     errors,
-    templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_SIC_CODE
+    templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_SIC_CODE,
+    displayRemovedAllSicCodes: removedLastSICCode
   });
 }

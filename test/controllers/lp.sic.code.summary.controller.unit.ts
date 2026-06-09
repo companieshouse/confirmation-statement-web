@@ -197,6 +197,16 @@ describe("Controller tests", () => {
     expect(response.text).toContain('<div class="govuk-summary-list__key">70005</div>');
   });
 
+  it("should remove a last SIC code, redirect and disaply message", async () => {
+
+    const response = await request(app)
+      .post(`${URL}/70002/remove?lang=en`)
+      .send({ unsavedCodeList: "70002" });
+
+    expect(response.text).not.toContain('<div class="govuk-summary-list__key">70002</div>');
+    expect(response.text).toContain("You have removed all the SIC codes for this limited partnership.");
+  });
+
   afterEach(() => {
     jest.restoreAllMocks();
   });
