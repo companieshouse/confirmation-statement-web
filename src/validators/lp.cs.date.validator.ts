@@ -36,10 +36,10 @@ export function validateDateSelectorValue(localInfo: any, csDateValue: CsDateVal
 
   // run a sequence of focused checks — each returns an error or undefined
   return (
-    validateFutureDate(csDateInput, localInfo) ||
-    validateMustFileBy(csDateInput, company, localInfo) ||
-    validateRegistrationDate(csDateInput, company, localInfo) ||
-    validateLpReformDate(csDateInput, localInfo) ||
+    validateFutureDate(csDateInput, localInfo) ??
+    validateMustFileBy(csDateInput, company, localInfo) ??
+    validateRegistrationDate(csDateInput, company, localInfo) ??
+    validateLpReformDate(csDateInput, localInfo) ??
     validateLastOrNextMadeUpDate(csDateInput, company, localInfo)
   );
 }
