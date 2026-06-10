@@ -67,4 +67,17 @@
       </div>
     </div>
   {% endif %}
+
+  <script nonce={{ nonce | dump | safe }}>
+    window._paq = window._paq || [];
+    const isLimitedPartnership = {{ isLimitedPartnership | dump | safe }};
+
+    document.addEventListener("DOMContentLoaded", function () {
+        if(isLimitedPartnership) {
+            _paq.push(['trackGoal', '{{PIWIK_LPCS01_CONFIRMATION_GOAL_ID}}']);
+        } else {
+            _paq.push(['trackGoal', '{{PIWIK_CS01_CONFIRMATION_GOAL_ID}}']);
+        }
+    });
+  </script>
 {% endblock %}

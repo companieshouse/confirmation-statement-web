@@ -9,6 +9,7 @@ import { resetAcspSession } from "../utils/session.acsp";
 import { getCompanyProfile } from "../services/company.profile.service";
 import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
 import { COMPANY_PROFILE_SESSION_KEY, CONFIRMATION_STATEMENT_SESSION_KEY, LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, PAYMENT_NONCE_SESSION_KEY, SIC_CODE_SESSION_KEY, MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME } from "../utils/constants";
+import { PIWIK_CS01_CONFIRMATION_GOAL_ID, PIWIK_LPCS01_CONFIRMATION_GOAL_ID } from "../utils/properties";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   const lang = selectLang(req.query.lang);
@@ -45,7 +46,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       isLimitedPartnership,
       hrefDifferentLimitedPartnership,
       hrefLimitedPartnershipOverview,
-      templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_SUBMITTED
+      templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_SUBMITTED,
+      PIWIK_LPCS01_CONFIRMATION_GOAL_ID,
+      PIWIK_CS01_CONFIRMATION_GOAL_ID
     });
   } catch (e) {
     return next(e);

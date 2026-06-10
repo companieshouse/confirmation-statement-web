@@ -53,6 +53,12 @@ export const FEATURE_FLAG_LP_INTEGRATED_JOURNEY_PERMITTED_TYPES = getEnvironment
 
 export const PIWIK_START_GOAL_ID = getEnvironmentVariable("PIWIK_START_GOAL_ID");
 
+export const PIWIK_LPCS01_START_JOURNEY_GOAL_ID = getEnvironmentVariable("PIWIK_LPCS01_START_JOURNEY_GOAL_ID");
+
+export const PIWIK_LPCS01_CONFIRMATION_GOAL_ID = getEnvironmentVariable("PIWIK_LPCS01_CONFIRMATION_GOAL_ID");
+
+export const PIWIK_CS01_CONFIRMATION_GOAL_ID = getEnvironmentVariable("PIWIK_CS01_CONFIRMATION_GOAL_ID");
+
 export const PSC_STATEMENTS_API_PAGE_SIZE = getEnvironmentVariable("PSC_STATEMENTS_API_PAGE_SIZE", "100");
 
 export const URL_LOG_MAX_LENGTH: number = parseInt(getEnvironmentVariable("URL_LOG_MAX_LENGTH", "400"), 10);
