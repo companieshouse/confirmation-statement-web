@@ -16,7 +16,7 @@ const URL = LP_CS_DATE_PATH
   .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
   .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
 const PAGE_TITLE_ERROR = "Error: Confirmation statement date";
-
+jest.mock("../../src/utils/properties", () => ({ ...(jest.requireActual('../../src/utils/properties') as any), FEATURE_FLAG_LP_REFORM_DATE: '1970-01-01' }));
 jest.mock("../../src/utils/session.acsp");
 jest.mock("../../src/utils/session");
 const mockGetCompanyProfileFromSession = getCompanyProfileFromSession as jest.Mock;
@@ -51,12 +51,12 @@ describe("start confirmation statement date controller tests", () => {
       .post(URL).set('Content-Type', 'application/json')
       .send({
         "confirmationStatementDate": "yes",
-        "csDate-year": "2025",
-        "csDate-month": "08",
-        "csDate-day": "01"
+        "csDate-year": "2020",
+        "csDate-month": "03",
+        "csDate-day": "20"
       });
 
-    expect(mockSendLimitedPartnershipTransactionUpdate.mock.calls[0][1]).toBe("2025-08-01");
+    expect(mockSendLimitedPartnershipTransactionUpdate.mock.calls[0][1]).toBe("2020-03-20");
     expect(response.headers.location).toBe("/confirmation-statement/company/12345678/transaction/66454/submission/435435/acsp/check-your-answer?lang=en");
   });
 
@@ -276,14 +276,14 @@ describe("date controller validation tests", () => {
     const response = await request(app)
       .post(URL)
       .send({
-        confirmationStatementDate: "yes",
-        "csDate-day": "29",
-        "csDate-month": "02",
-        "csDate-year": "2024"
-      });
+          confirmationStatementDate: "yes",
+          "csDate-day": "29",
+          "csDate-month": "02",
+          "csDate-year": "2020"
+        });
 
-    expect(mockSendLimitedPartnershipTransactionUpdate.mock.calls[0][1]).toBe("2024-02-29");
-    expect(response.status).toBe(302);
+      expect(mockSendLimitedPartnershipTransactionUpdate.mock.calls[0][1]).toBe("2020-02-29");
+      expect(response.status).toBe(302);
   });
 
 });
