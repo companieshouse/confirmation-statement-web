@@ -1,9 +1,8 @@
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import moment from "moment";
-import { DATE_DAY_REGEX, DATE_MONTH_REGEX, DATE_YEAR_REGEX, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT, DMMMMYYYY_DATE_FORMAT } from "../utils/constants";
+import { DATE_DAY_REGEX, DATE_MONTH_REGEX, DATE_YEAR_REGEX, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT } from "../utils/constants";
 import { CsDateValue } from "../utils/limited.partnership";
 import { formatDateString } from "../utils/date";
-import { isDateFeatureFlagEnabled } from "../utils/feature.flag";
 import { FEATURE_FLAG_LP_REFORM_DATE } from "../utils/properties";
 
 
@@ -28,56 +27,21 @@ export function validateDateSelectorValue(localInfo: any, csDateValue: CsDateVal
     return incompleteError;
   }
 
-  // validate that user enters an invalid date
-  if (!isDateValid(csDateValue)) {
+  // validate format and numeric parts
+  if (!isDateValid(csDateValue) || !isDateNumeric(csDateValue)) {
     return localInfo.i18n.CDSErrorDateWrong;
   }
 
-  // validate that user enters non-numeric characters
-  if (!isDateNumeric(csDateValue)) {
-    return localInfo.i18n.CDSErrorDateWrong;
-  }
+  const csDateInput = getCsDateInput(csDateValue);
 
-  // validate that user enters a date in the future
-  const csDateInput = new Date(Number(csDateValue.csDateYear), Number(csDateValue.csDateMonth) - 1, Number(csDateValue.csDateDay));
-  if (moment(csDateInput).isAfter(moment().startOf('day'))) {
-    return localInfo.i18n.CDSErrorPastDate;
-  }
-
-  // validate that user cannot enter a date after the expected CS date (must file by)
-  const mustFileByDate = company.confirmationStatement?.nextDue;
-  if (mustFileByDate && moment(csDateInput).isAfter(moment(mustFileByDate), "day")) {
-    const formattedMustFileBy = formatDateString("DD/MM/YYYY", mustFileByDate);
-    return `${localInfo.i18n.CDSErrorDateAfterMustFileBy}${formattedMustFileBy}`;
-  }
-
-  // validate that user cannot enter a date before the LP registration date
-  const registrationDate = company.dateOfCreation;
-  if (registrationDate && moment(csDateInput).isBefore(moment(registrationDate), "day")) {
-    return localInfo.i18n.CDSErrorDateBeforeRegistration;
-  }
-
-  // validate that user cannot enter a date before LP Reform 'go live' date
-  // If the date entered is before the configured LP reform feature flag date, return an error
-  if (FEATURE_FLAG_LP_REFORM_DATE && moment(csDateInput).isBefore(moment(FEATURE_FLAG_LP_REFORM_DATE), "day")) {
-    const formattedReformDate = formatDateString("DD/MM/YYYY", FEATURE_FLAG_LP_REFORM_DATE);
-    return `${localInfo.i18n.CDSErrorDateBeforeLpReform}${formattedReformDate}`;
-  }
-
-  const lastOrNextMadeUpDate = isTodayBeforeFileCsDate(company) ? company?.confirmationStatement?.lastMadeUpTo : company.confirmationStatement?.nextMadeUpTo;
-  if (lastOrNextMadeUpDate) {
-    // validate that user tries to enter a duplicate filing date
-    if (moment(csDateInput).isSame(moment(lastOrNextMadeUpDate), "day")) {
-      return localInfo.i18n.CDSErrorSameCsDate;
-    }
-
-    // validate that user tries to enter a past date that is already covered in a previous CS
-    if (moment(csDateInput).isBefore(moment(lastOrNextMadeUpDate), "day")) {
-      return localInfo.i18n.CDSErrorCsDateAfterlastCsDate;
-    }
-  }
-
-  return undefined;
+  // run a sequence of focused checks — each returns an error or undefined
+  return (
+    validateFutureDate(csDateInput, localInfo) ||
+    validateMustFileBy(csDateInput, company, localInfo) ||
+    validateRegistrationDate(csDateInput, company, localInfo) ||
+    validateLpReformDate(csDateInput, localInfo) ||
+    validateLastOrNextMadeUpDate(csDateInput, company, localInfo)
+  );
 }
 
 function getIncompleteDateError(date: CsDateValue, localInfo: any): string | undefined {
@@ -111,4 +75,57 @@ function isDateNumeric(date: CsDateValue): boolean {
     isNumeric(date.csDateMonth) &&
     isNumeric(date.csDateYear)
   );
+}
+
+function getCsDateInput(date: CsDateValue): Date {
+  return new Date(Number(date.csDateYear), Number(date.csDateMonth) - 1, Number(date.csDateDay));
+}
+
+function validateFutureDate(csDateInput: Date, localInfo: any): string | undefined {
+  if (moment(csDateInput).isAfter(moment().startOf('day'))) {
+    return localInfo.i18n.CDSErrorPastDate;
+  }
+  return undefined;
+}
+
+function validateMustFileBy(csDateInput: Date, company: CompanyProfile, localInfo: any): string | undefined {
+  const mustFileByDate = company.confirmationStatement?.nextDue;
+  if (mustFileByDate && moment(csDateInput).isAfter(moment(mustFileByDate), 'day')) {
+    const formattedMustFileBy = formatDateString('DD/MM/YYYY', mustFileByDate);
+    return `${localInfo.i18n.CDSErrorDateAfterMustFileBy}${formattedMustFileBy}`;
+  }
+  return undefined;
+}
+
+function validateRegistrationDate(csDateInput: Date, company: CompanyProfile, localInfo: any): string | undefined {
+  const registrationDate = company.dateOfCreation;
+  if (registrationDate && moment(csDateInput).isBefore(moment(registrationDate), 'day')) {
+    return localInfo.i18n.CDSErrorDateBeforeRegistration;
+  }
+  return undefined;
+}
+
+function validateLpReformDate(csDateInput: Date, localInfo: any): string | undefined {
+  if (FEATURE_FLAG_LP_REFORM_DATE && moment(csDateInput).isBefore(moment(FEATURE_FLAG_LP_REFORM_DATE), 'day')) {
+    const formattedReformDate = formatDateString('DD/MM/YYYY', FEATURE_FLAG_LP_REFORM_DATE);
+    return `${localInfo.i18n.CDSErrorDateBeforeLpReform}${formattedReformDate}`;
+  }
+  return undefined;
+}
+
+function validateLastOrNextMadeUpDate(csDateInput: Date, company: CompanyProfile, localInfo: any): string | undefined {
+  const lastOrNextMadeUpDate = isTodayBeforeFileCsDate(company) ? company?.confirmationStatement?.lastMadeUpTo : company.confirmationStatement?.nextMadeUpTo;
+  if (!lastOrNextMadeUpDate) {
+    return undefined;
+  }
+
+  if (moment(csDateInput).isSame(moment(lastOrNextMadeUpDate), 'day')) {
+    return localInfo.i18n.CDSErrorSameCsDate;
+  }
+
+  if (moment(csDateInput).isBefore(moment(lastOrNextMadeUpDate), 'day')) {
+    return localInfo.i18n.CDSErrorCsDateAfterlastCsDate;
+  }
+
+  return undefined;
 }
