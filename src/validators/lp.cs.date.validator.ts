@@ -60,8 +60,6 @@ export function validateDateSelectorValue(localInfo: any, csDateValue: CsDateVal
   // validate that user cannot enter a date before LP Reform 'go live' date
   // If the date entered is before the configured LP reform feature flag date, return an error
   if (FEATURE_FLAG_LP_REFORM_DATE && moment(csDateInput).isBefore(moment(FEATURE_FLAG_LP_REFORM_DATE), "day")) {
-    // debug: log dates to troubleshoot unexpected comparisons in tests
-    // console.log(`CS date: ${csDateInput.toISOString()}, LP reform: ${FEATURE_FLAG_LP_REFORM_DATE}`);
     const formattedReformDate = formatDateString("DD/MM/YYYY", FEATURE_FLAG_LP_REFORM_DATE);
     return `${localInfo.i18n.CDSErrorDateBeforeLpReform}${formattedReformDate}`;
   }
