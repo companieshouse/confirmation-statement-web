@@ -73,7 +73,7 @@ export const LOCALES_ENABLED = getEnvironmentVariable("LOCALES_ENABLED", "true")
 
 export const LOCALES_PATH = getEnvironmentVariable("LOCALES_PATH", "locales");
 
-export const CS01_COST = getEnvironmentVariable("CS01_COST");
+export const CS01_COST = Number(getEnvironmentVariable("CS01_COST")).toFixed(2);
 
 export const CS01_PAPER_FEE = getEnvironmentVariable("CS01_PAPER_FEE");
 
