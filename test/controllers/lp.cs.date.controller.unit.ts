@@ -6,7 +6,7 @@ import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
 import { validLimitedPartnershipProfile } from "../mocks/company.profile.mock";
 import { getCompanyProfileFromSession } from "../../src/utils/session";
 import { getAcspSessionData } from "../../src/utils/session.acsp";
-import { sendLimitedPartnershipTransactionUpdate } from "../../src/utils/confirmation/limited.partnership.confirmation.ts";
+import { resetReviewCheckboxes, sendLimitedPartnershipTransactionUpdate } from "../../src/utils/confirmation/limited.partnership.confirmation.ts";
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -21,7 +21,8 @@ jest.mock("../../src/utils/session.acsp");
 jest.mock("../../src/utils/session");
 const mockGetCompanyProfileFromSession = getCompanyProfileFromSession as jest.Mock;
 
-jest.mock("../../src/utils/confirmation/limited.partnership.confirmation.ts");
+jest.mock("../../src/utils/confirmation/limited.partnership.confirmation");
+const mockResetReviewCheckboxes = resetReviewCheckboxes as jest.Mock;
 const mockSendLimitedPartnershipTransactionUpdate = sendLimitedPartnershipTransactionUpdate as jest.Mock;
 
 jest.mock("../../src/utils/limited.partnership", () => ({
@@ -58,6 +59,7 @@ describe("start confirmation statement date controller tests", () => {
 
     expect(mockSendLimitedPartnershipTransactionUpdate.mock.calls[0][1]).toBe("2025-08-01");
     expect(response.headers.location).toBe("/confirmation-statement/company/12345678/transaction/66454/submission/435435/acsp/check-your-answer?lang=en");
+    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
   });
 
   it("should show error message when the entire CS date is missing", async () => {
@@ -69,6 +71,7 @@ describe("start confirmation statement date controller tests", () => {
 
     expect(response.text).toContain(PAGE_TITLE_ERROR);
     expect(response.text).toContain("Enter the new confirmation statement date");
+    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
   });
 
   it("should show error message when the year of CS date is missing", async () => {
@@ -82,6 +85,7 @@ describe("start confirmation statement date controller tests", () => {
 
     expect(response.text).toContain(PAGE_TITLE_ERROR);
     expect(response.text).toContain("Confirmation statement date must include a year");
+    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
   });
 
   it("should show error message when the CS date is valid", async () => {
@@ -96,6 +100,7 @@ describe("start confirmation statement date controller tests", () => {
 
     expect(response.text).toContain(PAGE_TITLE_ERROR);
     expect(response.text).toContain("Confirmation statement date must be a real date");
+    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
   });
 
   it("should forward to sic code page", async () => {
@@ -106,6 +111,7 @@ describe("start confirmation statement date controller tests", () => {
     expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
     expect(response.status).toBe(302); // Expecting a redirect response
     expect(response.headers.location).toBe("/confirmation-statement/company/12345678/transaction/66454/submission/435435/acsp/sic-code-summary?lang=en");
+    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
   });
 
   it("should return on time screen if LP CS date is already late", async () => {
@@ -115,6 +121,7 @@ describe("start confirmation statement date controller tests", () => {
     expect(response.text).toContain("The date of this confirmation statement is:  <b>15 March 2020</b>");
     expect(response.text).toContain("You must file it by: <b>29 March 2020</b>");
     expect(response.text).toContain("No");
+    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
   });
 
   it("should return early screen if today is before LP CS file date", async () => {
@@ -161,7 +168,9 @@ describe("date controller post tests", () => {
       .send({ confirmationStatementDate: "no" });
 
     expect(response.status).toBe(302);
-    expect(response.headers.location).toBe(`/confirmation-statement/company/${COMPANY_NUMBER}/transaction/${TRANSACTION_ID}/submission/${SUBMISSION_ID}/acsp/sic-code-summary?lang=en`);
+    expect(response.headers.location).toBe(`/confirmation-statement/company/${COMPANY_NUMBER}/transaction/${TRANSACTION_ID}/submission/${SUBMISSION_ID}/acsp/sic-code-summary?lang=en`);    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
+
+    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
   });
 
   it("should redirect to Review page when 'no' is selected and company type is pflp", async () => {
@@ -173,6 +182,7 @@ describe("date controller post tests", () => {
 
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe(`/confirmation-statement/company/${COMPANY_NUMBER}/transaction/${TRANSACTION_ID}/submission/${SUBMISSION_ID}/acsp/review?lang=en`);
+    expect(mockResetReviewCheckboxes).toHaveBeenCalled();
   });
 
   it("should redirect to previous page when back button clicked", async () => {
@@ -216,6 +226,7 @@ describe("date controller validation tests", () => {
 
     expect(response.text).toContain(PAGE_TITLE_ERROR);
     expect(response.text).toContain("Confirmation statement date must be a real date");
+    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
   });
 
   it("should show error when CS month contains non-numeric values", async () => {
@@ -230,6 +241,7 @@ describe("date controller validation tests", () => {
 
     expect(response.text).toContain(PAGE_TITLE_ERROR);
     expect(response.text).toContain("Confirmation statement date must be a real date");
+    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
   });
 
   it("should show error when CS year contains non-numeric values", async () => {
@@ -244,6 +256,7 @@ describe("date controller validation tests", () => {
 
     expect(response.text).toContain(PAGE_TITLE_ERROR);
     expect(response.text).toContain("Confirmation statement date must be a real date");
+    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
   });
 
   it("should show error when CS date is missing day and month", async () => {
@@ -256,6 +269,7 @@ describe("date controller validation tests", () => {
 
     expect(response.text).toContain(PAGE_TITLE_ERROR);
     expect(response.text).toContain("Confirmation statement date must include a day");
+    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
   });
 
   it("should show error for invalid leap year date", async () => {
@@ -270,6 +284,7 @@ describe("date controller validation tests", () => {
 
     expect(response.text).toContain(PAGE_TITLE_ERROR);
     expect(response.text).toContain("Confirmation statement date must be a real date");
+    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
   });
 
   it("should accept valid leap year date", async () => {
@@ -284,6 +299,7 @@ describe("date controller validation tests", () => {
 
     expect(mockSendLimitedPartnershipTransactionUpdate.mock.calls[0][1]).toBe("2024-02-29");
     expect(response.status).toBe(302);
+    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
   });
 
 });

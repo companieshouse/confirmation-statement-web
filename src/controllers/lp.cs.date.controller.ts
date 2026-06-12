@@ -12,7 +12,7 @@ import { DMMMMYYYY_DATE_FORMAT, RADIO_BUTTON_VALUE, YYYYMMDD_WITH_HYPHEN_DATE_FO
 import { getReviewPath, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType, isACSPJourney, CsDateValue } from "../utils/limited.partnership";
 import { convertDateToString, formatDateString } from "../utils/date";
 import { isTodayBeforeFileCsDate, validateDateSelectorValue } from "../validators/lp.cs.date.validator";
-import { sendLimitedPartnershipTransactionUpdate } from "../utils/confirmation/limited.partnership.confirmation";
+import { resetReviewCheckboxes, sendLimitedPartnershipTransactionUpdate } from "../utils/confirmation/limited.partnership.confirmation";
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -108,9 +108,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
             saveCsDateIntoSession(acspSessionData, false, date);
             await sendLimitedPartnershipTransactionUpdate(req, convertDateToString(date, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT), null);
 
-            const path = (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company))
-              ? reviewPath
-              : urls.LP_SIC_CODE_SUMMARY_PATH;
+            const isPrivateFund: boolean = (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company));
+
+            if (isPrivateFund) {
+              resetReviewCheckboxes(req);
+            }
+
+            const path = (isPrivateFund) ? getReviewPath(isAcspJourney) : urls.LP_SIC_CODE_SUMMARY_PATH;
 
             const nextPage = urlUtils.getUrlToPath(`${path}?lang=${lang}`, req);
             res.redirect(nextPage);
