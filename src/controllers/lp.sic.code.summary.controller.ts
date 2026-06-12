@@ -11,10 +11,9 @@ import { AcspSessionData, getAcspSessionData } from "../utils/session.acsp";
 import { Session } from "@companieshouse/node-session-handler";
 import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services/sic-code";
 import { SectionStatus, SicCodeData } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
-import { sendLimitedPartnershipTransactionUpdate } from "../utils/confirmation/limited.partnership.confirmation";
+import { sendLimitedPartnershipTransactionUpdate, resetReviewCheckboxes } from "../utils/confirmation/limited.partnership.confirmation";
 import { validateSicCodes } from "../services/sic.code.service";
 import { getDateSubmission } from "../utils/date";
-
 
 export const get = (req: Request, res: Response) => {
   const lang = selectLang(req.query.lang);
@@ -45,7 +44,6 @@ export const saveAndContinue = async (req: Request, res: Response) => {
   const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
   const isAcspJourney = isACSPJourney(req.originalUrl);
   const nextPage = getReviewPath(isAcspJourney);
-
   const unsavedCodeList = req.body.unsavedCodeList ? req.body.unsavedCodeList.split(",") : [];
   const sessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
   const allSicCodes: CondensedSicCodeData[] = sessionData?.sicCodes || [];
@@ -93,6 +91,8 @@ export const saveAndContinue = async (req: Request, res: Response) => {
   const submitDate = getDateSubmission(sessionData?.newConfirmationDate, req);
 
   await sendLimitedPartnershipTransactionUpdate(req, submitDate, sicCodeList);
+
+  resetReviewCheckboxes(req);
 
   return res.redirect(
     urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
@@ -186,7 +186,7 @@ export const removeSicCode = (req: Request, res: Response) => {
 
   const sicCodeSummaryList = getSicCodeSummaryList(req, lang, unsavedCodeList);
 
-  return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, []);
+  return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, [], (unsavedCodeList.length === 0));
 };
 
 interface SicCode {
@@ -224,7 +224,7 @@ export function getSicCodeSummaryList(req: Request, lang: string, sicCodesList: 
 }
 
 export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicCodeSummaryListItem[],
-  unsavedCodeList: string[], errors: { text: string }[] = []): void {
+  unsavedCodeList: string[], errors: { text: string }[] = [], removedLastSICCode: boolean = false): void {
   const lang = selectLang(req.query.lang);
   const locales = getLocalesService();
   const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
@@ -252,6 +252,7 @@ export function renderPage(req: Request, res: Response, sicCodeSummaryList: SicC
     company: company,
     unsavedCodeList: unsavedCodeList,
     errors,
-    templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_SIC_CODE
+    templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_SIC_CODE,
+    displayRemovedAllSicCodes: removedLastSICCode
   });
 }

@@ -5,6 +5,8 @@ import { LP_CHECK_YOUR_ANSWER_PATH, urlParams } from "../../src/types/page.urls"
 import { Session } from "@companieshouse/node-session-handler";
 import { NextFunction, Request, Response } from "express";
 import { createDefaultAcspSessionData } from "../../src/utils/session.acsp";
+import { resetReviewCheckboxes } from "../../src/utils/confirmation/limited.partnership.confirmation";
+import { getCompanyProfileFromSession } from "../../src/utils/session";
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -16,6 +18,11 @@ const URL = LP_CHECK_YOUR_ANSWER_PATH
 const csDatePageUrl = "/confirmation-statement/company/12345678/transaction/66454/submission/435435/acsp/confirmation-statement-date?lang=en";
 const csDate = new Date("2025-08-01:00:00Z");
 const acspSessionData = createDefaultAcspSessionData();
+
+jest.mock("../../src/utils/confirmation/limited.partnership.confirmation");
+const mockResetReviewCheckboxes = resetReviewCheckboxes as jest.Mock;
+jest.mock("../../src/utils/session");
+const mockGetCompanyProfileFromSession = getCompanyProfileFromSession as jest.Mock;
 
 middlewareMocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
   const session: Session = new Session();
@@ -85,5 +92,33 @@ describe("start controller tests", () => {
 
     expect(response.status).toBe(200);
     expect(response.text).toContain(`href="${expectedBackUrl}"`);
+  });
+
+  it("should redirect to SIC codes page confirming Limited Partnership", async () => {
+    mockGetCompanyProfileFromSession.mockReturnValue({
+      companyName: "Test Limited Partnership",
+      companyNumber: COMPANY_NUMBER,
+      type: 'limited-partnership',
+      subtype: 'lp'
+    });
+    const response = await request(app).post(URL);
+
+    expect(response.status).toBe(302);
+    expect(response.text).toContain("sic-code-summary");
+    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
+  });
+
+  it("should redirect to Review page confirming Private Fund Limited Partnership", async () => {
+    mockGetCompanyProfileFromSession.mockReturnValue({
+      companyName: "Test Limited Partnership",
+      companyNumber: COMPANY_NUMBER,
+      type: 'limited-partnership',
+      subtype: 'pflp'
+    });
+    const response = await request(app).post(URL);
+
+    expect(response.status).toBe(302);
+    expect(response.text).toContain("acsp/review");
+    expect(mockResetReviewCheckboxes).toHaveBeenCalled();
   });
 });

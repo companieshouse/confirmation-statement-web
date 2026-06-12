@@ -8,6 +8,7 @@ import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 import * as sicCodeService from "../../src/services/sic.code.service";
 import { getCompanyProfileFromSession } from "../../src/utils/session";
+import { resetReviewCheckboxes } from "../../src/utils/confirmation/limited.partnership.confirmation";
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -44,8 +45,10 @@ jest.mock("../../src/services/company.profile.service", () => ({
 }));
 
 jest.mock("../../src/utils/confirmation/limited.partnership.confirmation", () => ({
-  sendLimitedPartnershipTransactionUpdate: jest.fn().mockResolvedValue(undefined)
+  sendLimitedPartnershipTransactionUpdate: jest.fn().mockResolvedValue(undefined),
+  resetReviewCheckboxes: jest.fn()
 }));
+const mockResetReviewCheckboxes = resetReviewCheckboxes as jest.Mock;
 
 jest.mock("../../src/utils/session");
 const mockGetCompanyProfileFromSession = getCompanyProfileFromSession as jest.Mock;
@@ -197,6 +200,16 @@ describe("Controller tests", () => {
     expect(response.text).toContain('<div class="govuk-summary-list__key">70005</div>');
   });
 
+  it("should remove a last SIC code, redirect and display message", async () => {
+
+    const response = await request(app)
+      .post(`${URL}/70002/remove?lang=en`)
+      .send({ unsavedCodeList: "70002" });
+
+    expect(response.text).not.toContain('<div class="govuk-summary-list__key">70002</div>');
+    expect(response.text).toContain("You have removed all the SIC codes for this limited partnership.");
+  });
+
   afterEach(() => {
     jest.restoreAllMocks();
   });
@@ -239,6 +252,7 @@ describe("SIC code summary post tests", () => {
 
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe(reviewPath);
+    expect(mockResetReviewCheckboxes).toHaveBeenCalled();
   });
 
   it("should redirect to review page when valid SIC codes 0 present", async () => {
@@ -254,6 +268,7 @@ describe("SIC code summary post tests", () => {
     expect(response.status).toBe(302);
     expect(response.text).not.toContain('<div class="govuk-summary-list__key">');
     expect(response.headers.location).toBe(reviewPath);
+    expect(mockResetReviewCheckboxes).toHaveBeenCalled();
   });
 
   it("should redirect to review page when valid SIC codes present and BODY journey", async () => {
@@ -270,6 +285,7 @@ describe("SIC code summary post tests", () => {
 
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe(reviewPath);
+    expect(mockResetReviewCheckboxes).toHaveBeenCalled();
   });
 
   it("should redirect to Check Your Answer page when back button clicked and confirmation statement date has changed", async() => {
@@ -422,6 +438,7 @@ describe("SicCode Session Errors", () => {
     expect(mockSetExtraData).toHaveBeenCalledWith("SIC_CODE_ERRORS", [
       { text: "Invalid SIC code(s) entered. Please enter a Valid SIC code." }
     ]);
+    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
   });
 
   it("should store session errors when duplicate SIC code is submitted", async () => {
@@ -442,6 +459,7 @@ describe("SicCode Session Errors", () => {
     ]);
 
     validate.mockRestore();
+    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
   });
 
   it("should store session errors when empty SIC code is submitted", async () => {
@@ -458,6 +476,7 @@ describe("SicCode Session Errors", () => {
     expect(mockSetExtraData).toHaveBeenCalledWith("SIC_CODE_ERRORS", [
       { text: "Add a SIC code. A limited partnership must have at least one SIC code." }
     ]);
+    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
   });
 
   it("should store session errors when more than 4 SIC codes are submitted", async () => {
@@ -470,5 +489,6 @@ describe("SicCode Session Errors", () => {
     expect(mockSetExtraData).toHaveBeenCalledWith("SIC_CODE_ERRORS", [
       { text: "Remove SIC code(s). A limited partnership can only have a maximum of 4 SIC codes." }
     ]);
+    expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
   });
 });
