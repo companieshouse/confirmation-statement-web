@@ -93,3 +93,8 @@ export async function fetchTransaction(session: Session, req: Request): Promise<
   }
   return await getTransaction(session, transactionId);
 }
+
+export function resetReviewCheckboxes(req: Request) {
+  req.session?.deleteExtraData(CONFIRMATION_STATEMENT_SESSION_KEY);
+  req.session?.deleteExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY);
+}

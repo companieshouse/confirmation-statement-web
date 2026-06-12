@@ -9,6 +9,7 @@ import { urlUtils } from "../utils/url";
 import { Session } from "@companieshouse/node-session-handler";
 import moment from 'moment';
 import { getReviewPath, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType, isACSPJourney } from '../utils/limited.partnership';
+import { resetReviewCheckboxes } from "../utils/confirmation/limited.partnership.confirmation";
 import { MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME } from "../utils/constants";
 
 export const get = (req: Request, res: Response) => {
@@ -54,9 +55,13 @@ export const post = (req: Request, res: Response) => {
   const isAcspJourney = isACSPJourney(req.originalUrl);
   const reviewPath = getReviewPath(isAcspJourney);
 
-  const nextPage = (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company))
-    ? reviewPath
-    : urls.LP_SIC_CODE_SUMMARY_PATH;
+  const isPrivateFund: boolean = (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company));
+
+  if (isPrivateFund) {
+    resetReviewCheckboxes(req);
+  }
+
+  const nextPage = isPrivateFund ? reviewPath : urls.LP_SIC_CODE_SUMMARY_PATH;
 
   return res.redirect(
     urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
