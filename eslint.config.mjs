@@ -5,6 +5,8 @@ import js from "@eslint/js";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import tsparser from "@typescript-eslint/parser";
 import stylistic from "@stylistic/eslint-plugin";
+import prettierPlugin from 'eslint-plugin-prettier';
+import prettierConfig from 'eslint-config-prettier'
 
 /** @type {import("eslint").Linter.FlatConfig[]} */
 export default [
@@ -29,6 +31,7 @@ export default [
     plugins: {
       "@typescript-eslint": tseslint,
       "@stylistic/ts": stylistic,
+      "prettier": prettierPlugin,
     },
     rules: {
       "@typescript-eslint/ban-types": "off",
@@ -63,6 +66,8 @@ export default [
       "require-await": "error",
       "space-infix-ops": "error",
       "spaced-comment": ["error", "always", { "markers": ["/", "*"] }],
+      "prettier/prettier": "error",
     },
+    prettierConfig,
   },
 ];
