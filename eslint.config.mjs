@@ -6,7 +6,7 @@ import tseslint from "@typescript-eslint/eslint-plugin";
 import tsparser from "@typescript-eslint/parser";
 import stylistic from "@stylistic/eslint-plugin";
 import prettierPlugin from 'eslint-plugin-prettier';
-import prettierConfig from 'eslint-config-prettier'
+import prettierConfig from 'eslint-config-prettier/flat';
 
 /** @type {import("eslint").Linter.FlatConfig[]} */
 export default [
@@ -39,7 +39,6 @@ export default [
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-inferrable-types": "off",
       // "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "caughtErrorsIgnorePattern": "^_" }],
-      // "@stylistic/ts/semi": ["error", "always"],
       "@stylistic/ts/type-annotation-spacing": "error",
       "arrow-spacing": "error",
       "brace-style": ["error", "1tbs", { "allowSingleLine": true }],
@@ -47,12 +46,6 @@ export default [
       "curly": "error",
       "eqeqeq": "error",
       "eol-last": ["warn", "always"],
-      "indent": ["error", 2, {
-        "FunctionExpression": { "parameters": "first" },
-        "CallExpression": { "arguments": "first" },
-        "outerIIFEBody": 2,
-        "SwitchCase": 2
-      }],
       "no-use-before-define": "off",
       "no-undef": "off",
       "key-spacing": ["error", { "afterColon": true }],
@@ -68,6 +61,6 @@ export default [
       "spaced-comment": ["error", "always", { "markers": ["/", "*"] }],
       "prettier/prettier": "error",
     },
-    prettierConfig,
   },
+  prettierConfig,
 ];
