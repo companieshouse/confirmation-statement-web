@@ -6,16 +6,18 @@ import { urlUtils } from "../utils/url";
 import { Templates } from "../types/template.paths";
 
 export const submissionIdValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  logger.debug("Execute URL submission id validation middleware checks");
+    logger.debug("Execute URL submission id validation middleware checks");
 
-  const submissionId: string = req.params[urlParams.PARAM_SUBMISSION_ID];
+    const submissionId: string = req.params[urlParams.PARAM_SUBMISSION_ID];
 
-  logger.debug("Check submission id");
-  if (!isUrlIdValid(submissionId)) {
-    urlUtils.sanitiseReqUrls(req);
-    logger.errorRequest(req, `No Valid Submission Id in URL: ${req.originalUrl}`);
-    return res.status(400).render(Templates.SERVICE_OFFLINE_MID_JOURNEY, { templateName: Templates.SERVICE_OFFLINE_MID_JOURNEY });
-  }
+    logger.debug("Check submission id");
+    if (!isUrlIdValid(submissionId)) {
+        urlUtils.sanitiseReqUrls(req);
+        logger.errorRequest(req, `No Valid Submission Id in URL: ${req.originalUrl}`);
+        return res
+            .status(400)
+            .render(Templates.SERVICE_OFFLINE_MID_JOURNEY, { templateName: Templates.SERVICE_OFFLINE_MID_JOURNEY });
+    }
 
-  return next();
+    return next();
 };

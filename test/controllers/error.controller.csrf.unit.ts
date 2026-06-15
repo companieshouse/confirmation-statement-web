@@ -14,23 +14,23 @@ const CSRF_ERROR_PAGE_TEXT = "We have not been able to save the information you 
 const CSRF_ERROR_PAGE_HEADING = "Sorry, something went wrong";
 
 describe("ERROR controller", () => {
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    // clearing the mocks will initialise them for first use as well as between tests
-    mocks.mockAuthenticationMiddleware.mockClear();
-    mocks.mockServiceAvailabilityMiddleware.mockClear();
-    mocks.mockSessionMiddleware.mockClear();
-  });
-
-  describe("CSRF error page tests", () => {
-
-    test("Should render the CSRF error page", async () => {
-      mockGetConfirmCompany.mockImplementationOnce(() => { throw new CsrfError(CSRF_TOKEN_ERROR); });
-      const response = await request(app).get(pageUrls.CONFIRM_COMPANY_PATH);
-      expect(response.status).toEqual(403);
-      expect(response.text).toContain(CSRF_ERROR_PAGE_HEADING);
-      expect(response.text).toContain(CSRF_ERROR_PAGE_TEXT);
+    beforeEach(() => {
+        jest.clearAllMocks();
+        // clearing the mocks will initialise them for first use as well as between tests
+        mocks.mockAuthenticationMiddleware.mockClear();
+        mocks.mockServiceAvailabilityMiddleware.mockClear();
+        mocks.mockSessionMiddleware.mockClear();
     });
-  });
+
+    describe("CSRF error page tests", () => {
+        test("Should render the CSRF error page", async () => {
+            mockGetConfirmCompany.mockImplementationOnce(() => {
+                throw new CsrfError(CSRF_TOKEN_ERROR);
+            });
+            const response = await request(app).get(pageUrls.CONFIRM_COMPANY_PATH);
+            expect(response.status).toEqual(403);
+            expect(response.text).toContain(CSRF_ERROR_PAGE_HEADING);
+            expect(response.text).toContain(CSRF_ERROR_PAGE_TEXT);
+        });
+    });
 });

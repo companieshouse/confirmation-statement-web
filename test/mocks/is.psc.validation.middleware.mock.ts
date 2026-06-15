@@ -7,6 +7,8 @@ import { isPscQueryParameterValidationMiddleware } from "../../src/middleware/is
 const mockIsPscQueryParameterValidationMiddleware = isPscQueryParameterValidationMiddleware as jest.Mock;
 
 // tell the mock what to return
-mockIsPscQueryParameterValidationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
+mockIsPscQueryParameterValidationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) =>
+    next()
+);
 
 export default mockIsPscQueryParameterValidationMiddleware;

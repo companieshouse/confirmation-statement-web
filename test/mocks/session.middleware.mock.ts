@@ -13,10 +13,10 @@ export const session = new Session();
 
 // tell the mock what to return
 mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
-  req.session = session;
-  req.session.data.extra_data[PAYMENT_NONCE_SESSION_KEY] = "123456";
-  req.session.data.extra_data["entered-email-address"] = "info@mock-test.com";
-  next();
+    req.session = session;
+    req.session.data.extra_data[PAYMENT_NONCE_SESSION_KEY] = "123456";
+    req.session.data.extra_data["entered-email-address"] = "info@mock-test.com";
+    next();
 });
 
 export default mockSessionMiddleware;

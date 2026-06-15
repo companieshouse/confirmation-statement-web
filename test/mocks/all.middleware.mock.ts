@@ -11,15 +11,15 @@ import mockAcspValidationMiddleware from "./acsp.validation.middleware.mock";
 import mockValidateIntegratedJourney from "./integrated.limited.partnership.validation.middleware.mock";
 
 export default {
-  mockServiceAvailabilityMiddleware,
-  mockAuthenticationMiddleware,
-  mockSessionMiddleware,
-  mockCompanyAuthenticationMiddleware,
-  mockSubmissionIdValidationMiddleware,
-  mockTransactionIdValidationMiddleware,
-  mockIsPscQueryParameterValidationMiddleware,
-  mockCompanyNumberQueryParameterValidationMiddleware,
-  mockCsrfMiddleware,
-  mockAcspValidationMiddleware,
-  mockValidateIntegratedJourney
+    mockServiceAvailabilityMiddleware,
+    mockAuthenticationMiddleware,
+    mockSessionMiddleware,
+    mockCompanyAuthenticationMiddleware,
+    mockSubmissionIdValidationMiddleware,
+    mockTransactionIdValidationMiddleware,
+    mockIsPscQueryParameterValidationMiddleware,
+    mockCompanyNumberQueryParameterValidationMiddleware,
+    mockCsrfMiddleware,
+    mockAcspValidationMiddleware,
+    mockValidateIntegratedJourney,
 };

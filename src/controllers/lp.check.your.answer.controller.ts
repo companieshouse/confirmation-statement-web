@@ -7,68 +7,74 @@ import { getCompanyProfileFromSession } from "../utils/session";
 import * as urls from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { Session } from "@companieshouse/node-session-handler";
-import moment from 'moment';
-import { getReviewPath, isPflpLimitedPartnershipCompanyType, isSpflpLimitedPartnershipCompanyType, isACSPJourney } from '../utils/limited.partnership';
+import moment from "moment";
+import {
+    getReviewPath,
+    isPflpLimitedPartnershipCompanyType,
+    isSpflpLimitedPartnershipCompanyType,
+    isACSPJourney,
+} from "../utils/limited.partnership";
 import { resetReviewCheckboxes } from "../utils/confirmation/limited.partnership.confirmation";
 import { MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME } from "../utils/constants";
 
 export const get = (req: Request, res: Response) => {
-  const lang = selectLang(req.query.lang);
-  const company: CompanyProfile = getCompanyProfileFromSession(req);
-  const locales = getLocalesService();
-  const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
-  const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
-  const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
-  const nextPage = urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`, req);
-  const acspSessionData = getAcspSessionData(req.session as Session);
-  const csDatePageUrl = urlUtils.getUrlToPath(`${urls.LP_CS_DATE_PATH}?lang=${lang}`, req);
+    const lang = selectLang(req.query.lang);
+    const company: CompanyProfile = getCompanyProfileFromSession(req);
+    const locales = getLocalesService();
+    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+    const nextPage = urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}?lang=${lang}`, req);
+    const acspSessionData = getAcspSessionData(req.session as Session);
+    const csDatePageUrl = urlUtils.getUrlToPath(`${urls.LP_CS_DATE_PATH}?lang=${lang}`, req);
 
-  let csDateString;
-  if (acspSessionData && acspSessionData.changeConfirmationStatementDate && acspSessionData.newConfirmationDate) {
-    csDateString = moment(acspSessionData.newConfirmationDate).format("D MMMM YYYY");
-  } else {
-    return res.redirect(csDatePageUrl);
-  }
+    let csDateString;
+    if (acspSessionData && acspSessionData.changeConfirmationStatementDate && acspSessionData.newConfirmationDate) {
+        csDateString = moment(acspSessionData.newConfirmationDate).format("D MMMM YYYY");
+    } else {
+        return res.redirect(csDatePageUrl);
+    }
 
-  return res.render(Templates.LP_CHECK_YOUR_ANSWER, {
-    ...getLocaleInfo(locales, lang),
-    htmlLang: lang,
-    previousPage: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
-      urls.LP_CS_DATE_PATH,
-      companyNumber,
-      transactionId,
-      submissionId
-    ),
-    company,
-    csDate: csDateString,
-    csDatePageUrl,
-    nextPage,
-    templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_DATE_CYA
-  });
+    return res.render(Templates.LP_CHECK_YOUR_ANSWER, {
+        ...getLocaleInfo(locales, lang),
+        htmlLang: lang,
+        previousPage: urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+            urls.LP_CS_DATE_PATH,
+            companyNumber,
+            transactionId,
+            submissionId
+        ),
+        company,
+        csDate: csDateString,
+        csDatePageUrl,
+        nextPage,
+        templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_DATE_CYA,
+    });
 };
 
 export const post = (req: Request, res: Response) => {
-  const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
-  const company: CompanyProfile = getCompanyProfileFromSession(req);
-  const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
-  const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
-  const isAcspJourney = isACSPJourney(req.originalUrl);
-  const reviewPath = getReviewPath(isAcspJourney);
+    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+    const company: CompanyProfile = getCompanyProfileFromSession(req);
+    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+    const isAcspJourney = isACSPJourney(req.originalUrl);
+    const reviewPath = getReviewPath(isAcspJourney);
 
-  const isPrivateFund: boolean = (isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company));
+    const isPrivateFund: boolean =
+        isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company);
 
-  if (isPrivateFund) {
-    resetReviewCheckboxes(req);
-  }
+    if (isPrivateFund) {
+        resetReviewCheckboxes(req);
+    }
 
-  const nextPage = isPrivateFund ? reviewPath : urls.LP_SIC_CODE_SUMMARY_PATH;
+    const nextPage = isPrivateFund ? reviewPath : urls.LP_SIC_CODE_SUMMARY_PATH;
 
-  return res.redirect(
-    urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
-      nextPage,
-      companyNumber,
-      transactionId,
-      submissionId
-    )
-  );
+    return res.redirect(
+        urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+            nextPage,
+            companyNumber,
+            transactionId,
+            submissionId
+        )
+    );
 };

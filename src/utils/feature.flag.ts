@@ -1,10 +1,12 @@
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { isValidDate } from "./date";
-import { FEATURE_FLAG_ECCT_START_DATE_14082023,
-  FEATURE_FLAG_LP_REFORM_DATE,
-  FEATURE_FLAG_SERVICE_WITHDRAWN_02102025,
-  FEATURE_FLAG_SAIL_ADDRESS,
-  FEATURE_FLAG_LP_INTEGRATED_JOURNEY_PERMITTED_TYPES } from "./properties";
+import {
+    FEATURE_FLAG_ECCT_START_DATE_14082023,
+    FEATURE_FLAG_LP_REFORM_DATE,
+    FEATURE_FLAG_SERVICE_WITHDRAWN_02102025,
+    FEATURE_FLAG_SAIL_ADDRESS,
+    FEATURE_FLAG_LP_INTEGRATED_JOURNEY_PERMITTED_TYPES,
+} from "./properties";
 import { logger } from "./logger";
 
 /**
@@ -12,49 +14,52 @@ import { logger } from "./logger";
  * either string or undefined. This function will ensure that 'false', '0', 'off' etc remain falsy
  */
 export const isActiveFeature = (flag: string | undefined): boolean => {
-  if (flag === undefined) {
-    return false;
-  }
-  const featureFlag = flag.toLowerCase();
-  return !(featureFlag === "false" ||
-          featureFlag === "0" ||
-          featureFlag === "off" ||
-          featureFlag === "");
-
+    if (flag === undefined) {
+        return false;
+    }
+    const featureFlag = flag.toLowerCase();
+    return !(featureFlag === "false" || featureFlag === "0" || featureFlag === "off" || featureFlag === "");
 };
 
-export const isDateFeatureFlagEnabled = (featureFlagKey: string, featureFlagDateString: string, dateToCompare: Date): boolean => {
+export const isDateFeatureFlagEnabled = (
+    featureFlagKey: string,
+    featureFlagDateString: string,
+    dateToCompare: Date
+): boolean => {
+    if (!isValidDate(featureFlagDateString)) {
+        logger.info(`Environment Variable "${featureFlagKey}" must be in yyyy-mm-dd format`);
+        return false;
+    }
 
-  if (!isValidDate(featureFlagDateString)) {
-    logger.info(`Environment Variable "${featureFlagKey}" must be in yyyy-mm-dd format`);
-    return false;
-  }
+    const featureFlagStartDate: Date = new Date(featureFlagDateString);
 
-  const featureFlagStartDate: Date = new Date(featureFlagDateString);
-
-  return dateToCompare >= featureFlagStartDate;
+    return dateToCompare >= featureFlagStartDate;
 };
 
 export const ecctDayOneEnabled = (dateToCompare: Date): boolean => {
-  return isDateFeatureFlagEnabled("FEATURE_FLAG_ECCT_START_DATE_14082023", FEATURE_FLAG_ECCT_START_DATE_14082023, dateToCompare);
+    return isDateFeatureFlagEnabled(
+        "FEATURE_FLAG_ECCT_START_DATE_14082023",
+        FEATURE_FLAG_ECCT_START_DATE_14082023,
+        dateToCompare
+    );
 };
 
 export const isLimitedPartnershipFeatureFlagEnabled = (): boolean => {
-  return isDateFeatureFlagEnabled("FEATURE_FLAG_LP_REFORM_DATE", FEATURE_FLAG_LP_REFORM_DATE, new Date());
+    return isDateFeatureFlagEnabled("FEATURE_FLAG_LP_REFORM_DATE", FEATURE_FLAG_LP_REFORM_DATE, new Date());
 };
 
 export const isServiceWithdrawnFeatureEnabled = (): boolean => {
-  return isActiveFeature(FEATURE_FLAG_SERVICE_WITHDRAWN_02102025);
+    return isActiveFeature(FEATURE_FLAG_SERVICE_WITHDRAWN_02102025);
 };
 
 export const isSAILAddressFeatureEnabled = (): boolean => {
-  return isDateFeatureFlagEnabled("FEATURE_FLAG_SAIL_ADDRESS", FEATURE_FLAG_SAIL_ADDRESS, new Date());
+    return isDateFeatureFlagEnabled("FEATURE_FLAG_SAIL_ADDRESS", FEATURE_FLAG_SAIL_ADDRESS, new Date());
 };
 
 export const isCompanyTypePermittedForLimitedPartnerships = (company: CompanyProfile): boolean => {
-  if (company?.type && FEATURE_FLAG_LP_INTEGRATED_JOURNEY_PERMITTED_TYPES) {
-    let companyTypes = FEATURE_FLAG_LP_INTEGRATED_JOURNEY_PERMITTED_TYPES.split(",");
-    return companyTypes.includes(company.type);
-  }
-  return false;
+    if (company?.type && FEATURE_FLAG_LP_INTEGRATED_JOURNEY_PERMITTED_TYPES) {
+        let companyTypes = FEATURE_FLAG_LP_INTEGRATED_JOURNEY_PERMITTED_TYPES.split(",");
+        return companyTypes.includes(company.type);
+    }
+    return false;
 };

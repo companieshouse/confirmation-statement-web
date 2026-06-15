@@ -23,99 +23,106 @@ const PAGE_TITLE = "Check the registered office address - File a confirmation st
 const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 const COMPANY_NUMBER = "12345678";
 
-const REGISTERED_OFFICE_ADDRESS_URL = REGISTERED_OFFICE_ADDRESS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+const REGISTERED_OFFICE_ADDRESS_URL = REGISTERED_OFFICE_ADDRESS_PATH.replace(
+    `:${urlParams.PARAM_COMPANY_NUMBER}`,
+    COMPANY_NUMBER
+);
 const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 const WRONG_RO_URL = WRONG_RO_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
 describe("Registered Office Address controller tests", () => {
+    beforeEach(() => {
+        mocks.mockAuthenticationMiddleware.mockClear();
+        mocks.mockServiceAvailabilityMiddleware.mockClear();
+        mocks.mockSessionMiddleware.mockClear();
+        mockGetCompanyProfile.mockClear();
+        mockSendUpdate.mockClear();
+    });
 
-  beforeEach(() => {
-    mocks.mockAuthenticationMiddleware.mockClear();
-    mocks.mockServiceAvailabilityMiddleware.mockClear();
-    mocks.mockSessionMiddleware.mockClear();
-    mockGetCompanyProfile.mockClear();
-    mockSendUpdate.mockClear();
-  });
+    it("Should navigate to the Registered Office Address page", async () => {
+        mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+        const response = await request(app).get(REGISTERED_OFFICE_ADDRESS_URL);
 
-  it("Should navigate to the Registered Office Address page", async () => {
-    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-    const response = await request(app).get(REGISTERED_OFFICE_ADDRESS_URL);
+        expect(response.text).toContain(PAGE_TITLE);
+        expect(response.text).toContain("Check the registered office address");
+        expect(response.text).toContain(validCompanyProfile.registeredOfficeAddress.addressLineOne);
+        expect(response.text).toContain(validCompanyProfile.registeredOfficeAddress.addressLineTwo);
+        expect(response.text).toContain(validCompanyProfile.registeredOfficeAddress.postalCode);
+    });
 
-    expect(response.text).toContain(PAGE_TITLE);
-    expect(response.text).toContain("Check the registered office address");
-    expect(response.text).toContain(validCompanyProfile.registeredOfficeAddress.addressLineOne);
-    expect(response.text).toContain(validCompanyProfile.registeredOfficeAddress.addressLineTwo);
-    expect(response.text).toContain(validCompanyProfile.registeredOfficeAddress.postalCode);
-  });
+    it("Should redirect to an error page when error is thrown", async () => {
+        const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
+        spyGetUrlToPath.mockImplementationOnce(() => {
+            throw new Error();
+        });
+        const response = await request(app).get(REGISTERED_OFFICE_ADDRESS_URL);
 
-  it("Should redirect to an error page when error is thrown", async () => {
-    const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
-    spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
-    const response = await request(app).get(REGISTERED_OFFICE_ADDRESS_URL);
+        expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
-    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+        // restore original function so it is no longer mocked
+        spyGetUrlToPath.mockRestore();
+    });
 
-    // restore original function so it is no longer mocked
-    spyGetUrlToPath.mockRestore();
-  });
+    it("Should return to task list page when roa is confirmed", async () => {
+        const response = await request(app)
+            .post(REGISTERED_OFFICE_ADDRESS_URL)
+            .send({ registeredOfficeAddress: "yes" });
 
-  it("Should return to task list page when roa is confirmed", async () => {
-    const response = await request(app).post(REGISTERED_OFFICE_ADDRESS_URL).send({ registeredOfficeAddress: "yes" });
+        expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ROA);
+        expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+        expect(response.status).toEqual(302);
+        expect(response.header.location).toEqual(TASK_LIST_URL);
+    });
 
-    expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ROA);
-    expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
-    expect(response.status).toEqual(302);
-    expect(response.header.location).toEqual(TASK_LIST_URL);
-  });
+    it("Should display stop screen if roa details are incorrect", async () => {
+        const response = await request(app).post(REGISTERED_OFFICE_ADDRESS_URL).send({ registeredOfficeAddress: "no" });
 
-  it("Should display stop screen if roa details are incorrect", async () => {
-    const response = await request(app).post(REGISTERED_OFFICE_ADDRESS_URL).send({ registeredOfficeAddress: "no" });
+        expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ROA);
+        expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
+        expect(response.status).toEqual(302);
+        expect(response.header.location).toEqual(WRONG_RO_URL);
+    });
 
-    expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ROA);
-    expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
-    expect(response.status).toEqual(302);
-    expect(response.header.location).toEqual(WRONG_RO_URL);
-  });
+    it("Should redirect to task list when recently filed radio button is selected", async () => {
+        const response = await request(app)
+            .post(REGISTERED_OFFICE_ADDRESS_URL)
+            .send({ registeredOfficeAddress: "recently_filed" });
 
-  it("Should redirect to task list when recently filed radio button is selected", async () => {
-    const response = await request(app)
-      .post(REGISTERED_OFFICE_ADDRESS_URL)
-      .send({ registeredOfficeAddress: "recently_filed" });
+        expect(response.status).toEqual(302);
+        expect(response.header.location).toEqual(TASK_LIST_URL);
+        expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ROA);
+        expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.RECENT_FILING);
+    });
 
-    expect(response.status).toEqual(302);
-    expect(response.header.location).toEqual(TASK_LIST_URL);
-    expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.ROA);
-    expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.RECENT_FILING);
-  });
+    it("Should redisplay roa page with error when radio button is not selected", async () => {
+        mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+        const response = await request(app).post(REGISTERED_OFFICE_ADDRESS_URL);
 
-  it("Should redisplay roa page with error when radio button is not selected", async () => {
-    mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-    const response = await request(app).post(REGISTERED_OFFICE_ADDRESS_URL);
+        expect(response.status).toEqual(200);
+        expect(response.text).toContain(PAGE_TITLE);
+        expect(response.text).toContain(REGISTERED_OFFICE_ADDRESS_ERROR);
+        expect(response.text).toContain("Check the registered office address");
+    });
 
-    expect(response.status).toEqual(200);
-    expect(response.text).toContain(PAGE_TITLE);
-    expect(response.text).toContain(REGISTERED_OFFICE_ADDRESS_ERROR);
-    expect(response.text).toContain("Check the registered office address");
-  });
+    it("Should return error page when radio button id is not valid", async () => {
+        const response = await request(app)
+            .post(REGISTERED_OFFICE_ADDRESS_URL)
+            .send({ registeredOfficeAddress: "malicious code block" });
 
-  it("Should return error page when radio button id is not valid", async () => {
-    const response = await request(app)
-      .post(REGISTERED_OFFICE_ADDRESS_URL)
-      .send({ registeredOfficeAddress: "malicious code block" });
+        expect(response.status).toEqual(500);
+        expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+    });
 
-    expect(response.status).toEqual(500);
-    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
-  });
+    it("Should return an error page if error is thrown in post function", async () => {
+        const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
+        spyGetUrlToPath.mockImplementationOnce(() => {
+            throw new Error();
+        });
+        const response = await request(app).post(REGISTERED_OFFICE_ADDRESS_URL);
 
-  it("Should return an error page if error is thrown in post function", async () => {
-    const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
-    spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
-    const response = await request(app).post(REGISTERED_OFFICE_ADDRESS_URL);
+        expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
-    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
-
-    // restore original function so it is no longer mocked
-    spyGetUrlToPath.mockRestore();
-  });
-
+        // restore original function so it is no longer mocked
+        spyGetUrlToPath.mockRestore();
+    });
 });

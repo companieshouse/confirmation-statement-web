@@ -13,28 +13,41 @@ import * as urls from "../types/page.urls";
 import { getCompanyProfileFromSession } from "../utils/session";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const session = req.session as Session;
+        const companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER];
+        const transaction: Transaction = await postTransaction(session, companyNumber, DESCRIPTION, REFERENCE);
+        const transactionId = transaction.id as string;
+        const submissionResponse = await createConfirmationStatement(session, transactionId);
+        if (submissionResponse.httpStatusCode === 201) {
+            const castedResponseResource: ConfirmationStatementCreated =
+                submissionResponse.resource as ConfirmationStatementCreated;
 
-  try {
-    const session = req.session as Session;
-    const companyNumber = req.params[urlParams.PARAM_COMPANY_NUMBER];
-    const transaction: Transaction = await postTransaction(session, companyNumber, DESCRIPTION, REFERENCE);
-    const transactionId = transaction.id as string;
-    const submissionResponse = await createConfirmationStatement(session, transactionId);
-    if (submissionResponse.httpStatusCode === 201) {
-      const castedResponseResource: ConfirmationStatementCreated =
-        submissionResponse.resource as ConfirmationStatementCreated;
+            let nextPageUrl;
+            if (isLimitedPartnershipCompanyType(getCompanyProfileFromSession(req)) && isAuthorisedAgent(req.session)) {
+                nextPageUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+                    `${urls.LP_BEFORE_YOU_FILE_PATH}?lang=en`,
+                    companyNumber,
+                    transactionId,
+                    castedResponseResource.id
+                );
+            } else {
+                nextPageUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+                    TRADING_STATUS_PATH,
+                    companyNumber,
+                    transactionId,
+                    castedResponseResource.id
+                );
+            }
 
-      let nextPageUrl;
-      if (isLimitedPartnershipCompanyType(getCompanyProfileFromSession(req)) && isAuthorisedAgent(req.session)) {
-        nextPageUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(`${urls.LP_BEFORE_YOU_FILE_PATH}?lang=en`, companyNumber, transactionId, castedResponseResource.id);
-      } else {
-        nextPageUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TRADING_STATUS_PATH, companyNumber, transactionId, castedResponseResource.id);
-      }
-
-      return res.redirect(nextPageUrl);
+            return res.redirect(nextPageUrl);
+        }
+        next(
+            new Error(
+                `Unable to create Confirmation Statement, httpStatusCode = ${submissionResponse.httpStatusCode}, resource = ${JSON.stringify(submissionResponse.resource)}`
+            )
+        );
+    } catch (e) {
+        return next(e);
     }
-    next(new Error(`Unable to create Confirmation Statement, httpStatusCode = ${submissionResponse.httpStatusCode}, resource = ${JSON.stringify(submissionResponse.resource)}`));
-  } catch (e) {
-    return next(e);
-  }
 };

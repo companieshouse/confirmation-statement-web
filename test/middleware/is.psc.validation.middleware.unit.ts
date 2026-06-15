@@ -11,56 +11,59 @@ const req: Request = { originalUrl: URL, headers: {} } as Request;
 const res: Response = {} as Response;
 const mockStatus = jest.fn() as jest.Mock;
 const mockRender = jest.fn() as jest.Mock;
-mockRender.mockImplementation((..._args: any) => { return; });
-mockStatus.mockImplementation((_view: string, _options?: object) => { return { render: mockRender }; });
+mockRender.mockImplementation((..._args: any) => {
+    return;
+});
+mockStatus.mockImplementation((_view: string, _options?: object) => {
+    return { render: mockRender };
+});
 res.status = mockStatus;
 const next = jest.fn();
 const mockIsPscValidator = isPscFlagValid as jest.Mock;
 mockIsPscValidator.mockReturnValue(true);
 
 describe("is PSC validation middleware tests", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        urlUtils.sanitiseReqUrls = jest.fn();
+    });
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-    urlUtils.sanitiseReqUrls = jest.fn();
-  });
+    it("should call next() when isPsc query parameter not present", () => {
+        req.query = { isPsc: undefined };
 
-  it("should call next() when isPsc query parameter not present", () => {
-    req.query = { isPsc: undefined };
+        isPscQueryParameterValidationMiddleware(req, res, next);
 
-    isPscQueryParameterValidationMiddleware(req, res, next);
+        expect(next).toHaveBeenCalled();
+        expect(urlUtils.sanitiseReqUrls).not.toHaveBeenCalled();
+    });
 
-    expect(next).toHaveBeenCalled();
-    expect(urlUtils.sanitiseReqUrls).not.toHaveBeenCalled();
-  });
+    it("should call next() when no query parameters are present", () => {
+        req.query = {};
 
-  it("should call next() when no query parameters are present", () => {
-    req.query = {};
+        isPscQueryParameterValidationMiddleware(req, res, next);
 
-    isPscQueryParameterValidationMiddleware(req, res, next);
+        expect(next).toHaveBeenCalled();
+        expect(urlUtils.sanitiseReqUrls).not.toHaveBeenCalled();
+    });
 
-    expect(next).toHaveBeenCalled();
-    expect(urlUtils.sanitiseReqUrls).not.toHaveBeenCalled();
-  });
+    it("should call next() when isPsc query parameter validation passes", () => {
+        req.query = { isPsc: "true" };
 
-  it("should call next() when isPsc query parameter validation passes", () => {
-    req.query = { isPsc: "true" };
+        isPscQueryParameterValidationMiddleware(req, res, next);
 
-    isPscQueryParameterValidationMiddleware(req, res, next);
+        expect(next).toHaveBeenCalled();
+        expect(urlUtils.sanitiseReqUrls).not.toHaveBeenCalled();
+    });
 
-    expect(next).toHaveBeenCalled();
-    expect(urlUtils.sanitiseReqUrls).not.toHaveBeenCalled();
-  });
+    it("should show the error screen when isPsc query parameter validation fails", () => {
+        mockIsPscValidator.mockReturnValueOnce(false);
 
-  it("should show the error screen when isPsc query parameter validation fails", () => {
-    mockIsPscValidator.mockReturnValueOnce(false);
+        req.query = { isPsc: "invalidValue" };
 
-    req.query = { isPsc: "invalidValue" };
+        isPscQueryParameterValidationMiddleware(req, res, next);
 
-    isPscQueryParameterValidationMiddleware(req, res, next);
-
-    expect(mockStatus.mock.calls[0][0]).toEqual(400);
-    expect(mockRender.mock.calls[0][0]).toEqual(Templates.SERVICE_OFFLINE_MID_JOURNEY);
-    expect(urlUtils.sanitiseReqUrls).toHaveBeenCalled();
-  });
+        expect(mockStatus.mock.calls[0][0]).toEqual(400);
+        expect(mockRender.mock.calls[0][0]).toEqual(Templates.SERVICE_OFFLINE_MID_JOURNEY);
+        expect(urlUtils.sanitiseReqUrls).toHaveBeenCalled();
+    });
 });

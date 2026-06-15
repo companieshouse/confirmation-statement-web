@@ -35,114 +35,121 @@ const URL = CONFIRMATION_STATEMENT + COMPANY_AUTH_PROTECTED_BASE.replace(":compa
 const ERROR_PAGE_TEXT = "Sorry, there is a problem with the service";
 
 const expectedAuthMiddlewareConfig: AuthOptions = {
-  chsWebUrl: "http://chs.local",
-  returnUrl: URL,
-  companyNumber: "12345678"
+    chsWebUrl: "http://chs.local",
+    returnUrl: URL,
+    companyNumber: "12345678",
 };
 
 describe("company authentication middleware tests", () => {
+    beforeEach(() => {
+        mockCompanyAuthMiddleware.mockClear();
+        mockSessionMiddleware.mockClear();
+        mockServiceAvailabilityMiddleware.mockClear();
+        mockAuthenticationMiddleware.mockClear();
+        mockIsPscQueryParameterValidationMiddleware.mockClear();
+        mockCompanyNumberQueryParameterValidationMiddleware.mockClear();
+        mockTransactionIdValidationMiddleware.mockClear();
+        mockSubmissionIdValidationMiddleware.mockClear();
+        mockLoggerErrorRequest.mockClear();
+        mockCsrfProtectionMiddleware.mockClear();
+    });
 
-  beforeEach(() => {
-    mockCompanyAuthMiddleware.mockClear();
-    mockSessionMiddleware.mockClear();
-    mockServiceAvailabilityMiddleware.mockClear();
-    mockAuthenticationMiddleware.mockClear();
-    mockIsPscQueryParameterValidationMiddleware.mockClear();
-    mockCompanyNumberQueryParameterValidationMiddleware.mockClear();
-    mockTransactionIdValidationMiddleware.mockClear();
-    mockSubmissionIdValidationMiddleware.mockClear();
-    mockLoggerErrorRequest.mockClear();
-    mockCsrfProtectionMiddleware.mockClear();
-  });
+    it("should call CH authentication library when company pattern in url", async () => {
+        await request(app).get(URL);
 
-  it("should call CH authentication library when company pattern in url", async () => {
-    await request(app).get(URL);
+        expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction();
+    });
 
-    expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction();
-  });
+    it("should call LP journey when company type is limited partnership and contain ACSP member", async () => {
+        setCompanyTypeAndAcspNumberInSession(
+            LIMITED_PARTNERSHIP_COMPANY_TYPE,
+            "TSA001",
+            LIMITED_PARTNERSHIP_SUBTYPES.LP
+        );
+        await request(app).get(URL);
 
-  it("should call LP journey when company type is limited partnership and contain ACSP member", async () => {
-    setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, "TSA001", LIMITED_PARTNERSHIP_SUBTYPES.LP);
-    await request(app).get(URL);
+        // TODO: the following code need to be updated once ACSP authentication support to create transaction at this moment
+        expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction();
+    });
 
-    // TODO: the following code need to be updated once ACSP authentication support to create transaction at this moment
-    expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction();
-  });
+    it("should display stop screen when company type is limited partnership and do not contain ACSP number", async () => {
+        setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, "", LIMITED_PARTNERSHIP_SUBTYPES.LP);
+        const response = await request(app).get(URL);
 
-  it("should display stop screen when company type is limited partnership and do not contain ACSP number", async () => {
-    setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, "", LIMITED_PARTNERSHIP_SUBTYPES.LP);
-    const response = await request(app).get(URL);
+        expect(response.header.location).toBe("/confirmation-statement/acsp/must-be-authorised-agent");
+    });
 
-    expect(response.header.location).toBe("/confirmation-statement/acsp/must-be-authorised-agent");
-  });
+    it("should call existing CS journey when company type is not limited partnership and contain ACSP member", async () => {
+        setCompanyTypeAndAcspNumberInSession("ltd", "TSA001");
+        await request(app).get(URL);
 
-  it("should call existing CS journey when company type is not limited partnership and contain ACSP member", async () => {
-    setCompanyTypeAndAcspNumberInSession("ltd", "TSA001");
-    await request(app).get(URL);
+        expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction();
+    });
 
-    expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction();
-  });
+    it("should call existing CS journey when company type is not limited partnership and contain ACSP member", async () => {
+        setCompanyTypeAndAcspNumberInSession("ltd", "");
+        await request(app).get(URL);
 
-  it("should call existing CS journey when company type is not limited partnership and contain ACSP member", async () => {
-    setCompanyTypeAndAcspNumberInSession("ltd", "");
-    await request(app).get(URL);
+        expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction();
+    });
 
-    expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction();
-  });
+    it("should call CH authentication library when company pattern in middle of url", async () => {
+        const extraUrl = URL + "/extra";
+        const originalReturnUrl = expectedAuthMiddlewareConfig.returnUrl;
+        expectedAuthMiddlewareConfig.returnUrl = extraUrl;
 
-  it("should call CH authentication library when company pattern in middle of url", async () => {
-    const extraUrl = URL + "/extra";
-    const originalReturnUrl = expectedAuthMiddlewareConfig.returnUrl;
-    expectedAuthMiddlewareConfig.returnUrl = extraUrl;
+        await request(app).get(extraUrl);
 
-    await request(app).get(extraUrl);
+        expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction();
 
-    expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction();
+        expectedAuthMiddlewareConfig.returnUrl = originalReturnUrl;
+    });
 
-    expectedAuthMiddlewareConfig.returnUrl = originalReturnUrl;
-  });
+    it("should call next(Error) when invalid company pattern in url", async () => {
+        mockCompanyNumberValidator.mockReturnValueOnce(false);
 
-  it("should call next(Error) when invalid company pattern in url", async () => {
-    mockCompanyNumberValidator.mockReturnValueOnce(false);
+        const returnedPage = await request(app).get(CONFIRMATION_STATEMENT + "/company/1234");
 
-    const returnedPage = await request(app).get(CONFIRMATION_STATEMENT + "/company/1234");
+        expect(mockCompanyAuthMiddleware).not.toHaveBeenCalled();
+        expect(mockLoggerErrorRequest.mock.calls[0][1]).toEqual(
+            `No Valid Company Number in URL: ${CONFIRMATION_STATEMENT}/company/1234`
+        );
+        expect(returnedPage.text).toContain(ERROR_PAGE_TEXT);
+    });
 
-    expect(mockCompanyAuthMiddleware).not.toHaveBeenCalled();
-    expect(mockLoggerErrorRequest.mock.calls[0][1]).toEqual(`No Valid Company Number in URL: ${CONFIRMATION_STATEMENT}/company/1234`);
-    expect(returnedPage.text).toContain(ERROR_PAGE_TEXT);
-  });
+    it("should call next(Error) when company pattern not in url", async () => {
+        mockCompanyNumberValidator.mockReturnValueOnce(false);
 
-  it("should call next(Error) when company pattern not in url", async () => {
-    mockCompanyNumberValidator.mockReturnValueOnce(false);
+        const returnedPage = await request(app).get(CONFIRMATION_STATEMENT + "/company/test");
 
-    const returnedPage = await request(app).get(CONFIRMATION_STATEMENT + "/company/test");
-
-    expect(mockCompanyAuthMiddleware).not.toHaveBeenCalled();
-    expect(mockLoggerErrorRequest.mock.calls[0][1]).toEqual(`No Valid Company Number in URL: ${CONFIRMATION_STATEMENT}/company/test`);
-    expect(returnedPage.text).toContain(ERROR_PAGE_TEXT);
-  });
+        expect(mockCompanyAuthMiddleware).not.toHaveBeenCalled();
+        expect(mockLoggerErrorRequest.mock.calls[0][1]).toEqual(
+            `No Valid Company Number in URL: ${CONFIRMATION_STATEMENT}/company/test`
+        );
+        expect(returnedPage.text).toContain(ERROR_PAGE_TEXT);
+    });
 });
 
 function setCompanyTypeAndAcspNumberInSession(companyType: string, acspNumber: string, companySubtype?: string) {
-  mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
-    const session: Session = new Session();
-    session.data = {
-      signin_info: {
-        acsp_number: acspNumber
-      },
-      extra_data: {
-        company_profile: {
-          type: companyType,
-          subtype: companySubtype
-        }
-      }
-    };
-    req.session = session;
-    return next();
-  });
+    mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
+        const session: Session = new Session();
+        session.data = {
+            signin_info: {
+                acsp_number: acspNumber,
+            },
+            extra_data: {
+                company_profile: {
+                    type: companyType,
+                    subtype: companySubtype,
+                },
+            },
+        };
+        req.session = session;
+        return next();
+    });
 }
 
 function expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction() {
-  expect(mockCompanyAuthMiddleware).toHaveBeenCalledWith(expectedAuthMiddlewareConfig);
-  expect(mockAuthReturnedFunction).toHaveBeenCalled();
+    expect(mockCompanyAuthMiddleware).toHaveBeenCalledWith(expectedAuthMiddlewareConfig);
+    expect(mockAuthReturnedFunction).toHaveBeenCalled();
 }

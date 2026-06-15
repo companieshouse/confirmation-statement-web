@@ -1,63 +1,89 @@
 import { createPublicOAuthApiClient } from "./api.service";
 import { Session } from "@companieshouse/node-session-handler";
 import Resource, { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
-import { CompanyPersonsWithSignificantControlStatements, CompanyPersonWithSignificantControlStatement } from "@companieshouse/api-sdk-node/dist/services/company-psc-statements";
+import {
+    CompanyPersonsWithSignificantControlStatements,
+    CompanyPersonWithSignificantControlStatement,
+} from "@companieshouse/api-sdk-node/dist/services/company-psc-statements";
 import { DateTime } from "luxon";
 import { logger } from "../utils/logger";
 import { PSC_STATEMENTS_API_PAGE_SIZE } from "../utils/properties";
 import {
-  ConfirmationStatementService,
-  PersonOfSignificantControl
+    ConfirmationStatementService,
+    PersonOfSignificantControl,
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
-export const getPscs = async (session: Session, transactionId: string, submissionId: string): Promise<PersonOfSignificantControl[]> => {
-  const client = createPublicOAuthApiClient(session);
-  const csService: ConfirmationStatementService = client.confirmationStatementService;
-  const response: Resource<PersonOfSignificantControl[]> | ApiErrorResponse = await csService.getPersonsOfSignificantControl(transactionId, submissionId);
-  const status = response.httpStatusCode as number;
-  if (status >= 400) {
-    const errorResponse = response as ApiErrorResponse;
-    throw new Error("Error retrieving pscs from confirmation-statement-api " + JSON.stringify(errorResponse));
-  }
-  const successfulResponse = response as Resource<PersonOfSignificantControl[]>;
-  return successfulResponse.resource as PersonOfSignificantControl[];
+export const getPscs = async (
+    session: Session,
+    transactionId: string,
+    submissionId: string
+): Promise<PersonOfSignificantControl[]> => {
+    const client = createPublicOAuthApiClient(session);
+    const csService: ConfirmationStatementService = client.confirmationStatementService;
+    const response: Resource<PersonOfSignificantControl[]> | ApiErrorResponse =
+        await csService.getPersonsOfSignificantControl(transactionId, submissionId);
+    const status = response.httpStatusCode as number;
+    if (status >= 400) {
+        const errorResponse = response as ApiErrorResponse;
+        throw new Error("Error retrieving pscs from confirmation-statement-api " + JSON.stringify(errorResponse));
+    }
+    const successfulResponse = response as Resource<PersonOfSignificantControl[]>;
+    return successfulResponse.resource as PersonOfSignificantControl[];
 };
 
-export const getPscStatements = async (session: Session, companyNumber: string, pageSize: number, pageIndex: number): Promise<CompanyPersonsWithSignificantControlStatements> => {
-  const client = createPublicOAuthApiClient(session);
-  logger.info(`Calling SDK getCompanyPscStatements with pageSize = ${pageSize}, pageIndex = ${pageIndex}`);
+export const getPscStatements = async (
+    session: Session,
+    companyNumber: string,
+    pageSize: number,
+    pageIndex: number
+): Promise<CompanyPersonsWithSignificantControlStatements> => {
+    const client = createPublicOAuthApiClient(session);
+    logger.info(`Calling SDK getCompanyPscStatements with pageSize = ${pageSize}, pageIndex = ${pageIndex}`);
 
-  const response: Resource<CompanyPersonsWithSignificantControlStatements> | ApiErrorResponse =
-    await client.companyPscStatements.getCompanyPscStatements(companyNumber, pageSize, pageIndex);
+    const response: Resource<CompanyPersonsWithSignificantControlStatements> | ApiErrorResponse =
+        await client.companyPscStatements.getCompanyPscStatements(companyNumber, pageSize, pageIndex);
 
-  if (response.httpStatusCode === 404) {
-    logger.info(`psc.service getCompanyPscStatements received 404 for company number ${companyNumber}. Returning empty result.`);
-    return {
-      activeCount: "0",
-      ceasedCount: "0",
-      items: [],
-      links: {
-        self: "",
-      },
-      totalResults: "0"
-    } as CompanyPersonsWithSignificantControlStatements;
-  }
-  if (!response.httpStatusCode || response.httpStatusCode >= 400) {
-    const errorResponse = response as ApiErrorResponse;
-    throw new Error("Error retrieving psc statement from psc statement api " + JSON.stringify(errorResponse));
-  }
+    if (response.httpStatusCode === 404) {
+        logger.info(
+            `psc.service getCompanyPscStatements received 404 for company number ${companyNumber}. Returning empty result.`
+        );
+        return {
+            activeCount: "0",
+            ceasedCount: "0",
+            items: [],
+            links: {
+                self: "",
+            },
+            totalResults: "0",
+        } as CompanyPersonsWithSignificantControlStatements;
+    }
+    if (!response.httpStatusCode || response.httpStatusCode >= 400) {
+        const errorResponse = response as ApiErrorResponse;
+        throw new Error("Error retrieving psc statement from psc statement api " + JSON.stringify(errorResponse));
+    }
 
-  const successfulResponse = response as Resource<CompanyPersonsWithSignificantControlStatements>;
-  return successfulResponse.resource as CompanyPersonsWithSignificantControlStatements;
+    const successfulResponse = response as Resource<CompanyPersonsWithSignificantControlStatements>;
+    return successfulResponse.resource as CompanyPersonsWithSignificantControlStatements;
 };
 
-export const getMostRecentActivePscStatement = async (session: Session, companyNumber: string): Promise<CompanyPersonWithSignificantControlStatement> => {
-  const pageSize = parseInt(PSC_STATEMENTS_API_PAGE_SIZE);
-  const pscStatements: CompanyPersonsWithSignificantControlStatements = await getPscStatements(session, companyNumber, pageSize, 0);
+export const getMostRecentActivePscStatement = async (
+    session: Session,
+    companyNumber: string
+): Promise<CompanyPersonWithSignificantControlStatement> => {
+    const pageSize = parseInt(PSC_STATEMENTS_API_PAGE_SIZE);
+    const pscStatements: CompanyPersonsWithSignificantControlStatements = await getPscStatements(
+        session,
+        companyNumber,
+        pageSize,
+        0
+    );
 
-  logger.info(`Extracting most recent active PSC statement from ${pscStatements?.totalResults} returned items`);
-  return pscStatements.items
-    .filter(statement => !statement.ceasedOn)
-    .sort((statement1, statement2) => DateTime.fromISO(statement2.notifiedOn).toMillis() - DateTime.fromISO(statement1.notifiedOn).toMillis())
-    .shift() as CompanyPersonWithSignificantControlStatement;
+    logger.info(`Extracting most recent active PSC statement from ${pscStatements?.totalResults} returned items`);
+    return pscStatements.items
+        .filter(statement => !statement.ceasedOn)
+        .sort(
+            (statement1, statement2) =>
+                DateTime.fromISO(statement2.notifiedOn).toMillis() - DateTime.fromISO(statement1.notifiedOn).toMillis()
+        )
+        .shift() as CompanyPersonWithSignificantControlStatement;
 };

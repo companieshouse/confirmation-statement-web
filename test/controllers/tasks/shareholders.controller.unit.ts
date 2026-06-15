@@ -27,83 +27,80 @@ const TASK_LIST_URL = TASK_LIST_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}
 const WRONG_SHAREHOLDERS_URL = WRONG_SHAREHOLDERS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
 describe("Shareholders controller tests", () => {
+    beforeEach(() => {
+        mocks.mockAuthenticationMiddleware.mockClear();
+        mockGetShareholders.mockClear();
+        mockSendUpdate.mockClear();
+    });
 
-  beforeEach(() => {
-    mocks.mockAuthenticationMiddleware.mockClear();
-    mockGetShareholders.mockClear();
-    mockSendUpdate.mockClear();
-  });
+    it("should navigate to the shareholders page", async () => {
+        mockGetShareholders.mockResolvedValueOnce(mockShareholder);
+        const response = await request(app).get(SHAREHOLDERS_URL);
+        const shareholder = mockShareholderFormatted[0];
+        expect(response.text).toContain("Check the shareholder detail");
+        expect(response.text).toContain(shareholder.surname);
+        expect(response.text).toContain(shareholder.shares);
+        expect(response.text).toContain(shareholder.classOfShares);
+    });
 
-  it("should navigate to the shareholders page", async () => {
-    mockGetShareholders.mockResolvedValueOnce(mockShareholder);
-    const response = await request(app).get(SHAREHOLDERS_URL);
-    const shareholder = mockShareholderFormatted[0];
-    expect(response.text).toContain("Check the shareholder detail");
-    expect(response.text).toContain(shareholder.surname);
-    expect(response.text).toContain(shareholder.shares);
-    expect(response.text).toContain(shareholder.classOfShares);
-  });
+    it("Should return an error page if error is thrown in get function", async () => {
+        const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlToPath");
+        spyGetUrlWithCompanyNumber.mockImplementationOnce(() => {
+            throw new Error();
+        });
+        const response = await request(app).get(SHAREHOLDERS_URL);
 
-  it("Should return an error page if error is thrown in get function", async () => {
-    const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlToPath");
-    spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
-    const response = await request(app).get(SHAREHOLDERS_URL);
+        expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
-    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+        // restore original function so it is no longer mocked
+        spyGetUrlWithCompanyNumber.mockRestore();
+    });
 
-    // restore original function so it is no longer mocked
-    spyGetUrlWithCompanyNumber.mockRestore();
-  });
+    it("Should navigate to the task list page when shareholder details confirmed", async () => {
+        const response = await request(app).post(SHAREHOLDERS_URL).send({ shareholders: "yes" });
 
-  it("Should navigate to the task list page when shareholder details confirmed", async () => {
-    const response = await request(app)
-      .post(SHAREHOLDERS_URL)
-      .send({ shareholders: "yes" });
+        expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.SHAREHOLDER);
+        expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
+        expect(response.status).toEqual(302);
+        expect(response.header.location).toEqual(TASK_LIST_URL);
+    });
 
-    expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.SHAREHOLDER);
-    expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.CONFIRMED);
-    expect(response.status).toEqual(302);
-    expect(response.header.location).toEqual(TASK_LIST_URL);
-  });
+    it("Should navigate to the share holder stop page if shareholder details are incorrect", async () => {
+        const response = await request(app).post(SHAREHOLDERS_URL).send({ shareholders: "no" });
 
-  it("Should navigate to the share holder stop page if shareholder details are incorrect", async () => {
-    const response = await request(app)
-      .post(SHAREHOLDERS_URL)
-      .send({ shareholders: "no" });
+        expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.SHAREHOLDER);
+        expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
+        expect(response.status).toEqual(302);
+        expect(response.header.location).toEqual(WRONG_SHAREHOLDERS_URL);
+    });
 
-    expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.SHAREHOLDER);
-    expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.NOT_CONFIRMED);
-    expect(response.status).toEqual(302);
-    expect(response.header.location).toEqual(WRONG_SHAREHOLDERS_URL);
-  });
+    it("Should display error message on shareholders page when radio button is not selected", async () => {
+        mockGetShareholders.mockResolvedValueOnce(mockShareholder);
+        const response = await request(app).post(SHAREHOLDERS_URL);
 
-  it("Should display error message on shareholders page when radio button is not selected", async () => {
-    mockGetShareholders.mockResolvedValueOnce(mockShareholder);
-    const response = await request(app).post(SHAREHOLDERS_URL);
+        expect(response.status).toEqual(200);
+        expect(response.text).toContain(PAGE_TITLE);
+        expect(response.text).toContain(SHAREHOLDERS_ERROR);
+        expect(response.text).toContain("Check the shareholder detail");
+    });
 
-    expect(response.status).toEqual(200);
-    expect(response.text).toContain(PAGE_TITLE);
-    expect(response.text).toContain(SHAREHOLDERS_ERROR);
-    expect(response.text).toContain("Check the shareholder detail");
-  });
+    it("Should return error page when radio button id is not valid", async () => {
+        const response = await request(app).post(SHAREHOLDERS_URL).send({ shareholders: "malicious code block" });
 
-  it("Should return error page when radio button id is not valid", async () => {
-    const response = await request(app)
-      .post(SHAREHOLDERS_URL)
-      .send({ shareholders: "malicious code block" });
+        expect(response.status).toEqual(500);
+        expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+    });
 
-    expect(response.status).toEqual(500);
-    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
-  });
+    it("Should return an error page if error is thrown in post function", async () => {
+        const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlToPath");
+        spyGetUrlWithCompanyNumber.mockImplementationOnce(() => {
+            throw new Error();
+        });
+        const response = await request(app).post(SHAREHOLDERS_URL);
 
-  it("Should return an error page if error is thrown in post function", async () => {
-    const spyGetUrlWithCompanyNumber = jest.spyOn(urlUtils, "getUrlToPath");
-    spyGetUrlWithCompanyNumber.mockImplementationOnce(() => { throw new Error(); });
-    const response = await request(app).post(SHAREHOLDERS_URL);
+        expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
-    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
-
-    // restore original function so it is no longer mocked
-    spyGetUrlWithCompanyNumber.mockRestore();
-  });
+        // restore original function so it is no longer mocked
+        spyGetUrlWithCompanyNumber.mockRestore();
+    });
 });

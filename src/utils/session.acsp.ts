@@ -4,48 +4,47 @@ import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services
 import { CsDateValue } from "./limited.partnership";
 
 export interface AcspSessionData {
-  beforeYouFileCheck: boolean;
-  changeConfirmationStatementDate: boolean | null;
-  newConfirmationDate: Date | null;
-  confirmAllInformationCheck: boolean;
-  confirmLawfulActionsCheck: boolean;
-  companySubtype?: string;
-  sicCodes: CondensedSicCodeData[];
+    beforeYouFileCheck: boolean;
+    changeConfirmationStatementDate: boolean | null;
+    newConfirmationDate: Date | null;
+    confirmAllInformationCheck: boolean;
+    confirmLawfulActionsCheck: boolean;
+    companySubtype?: string;
+    sicCodes: CondensedSicCodeData[];
 }
 
 export function createDefaultAcspSessionData(): AcspSessionData {
-  return {
-    beforeYouFileCheck: false,
-    changeConfirmationStatementDate: null,
-    newConfirmationDate: null,
-    confirmAllInformationCheck: false,
-    confirmLawfulActionsCheck: false,
-    companySubtype: undefined,
-    sicCodes: []
-  };
+    return {
+        beforeYouFileCheck: false,
+        changeConfirmationStatementDate: null,
+        newConfirmationDate: null,
+        confirmAllInformationCheck: false,
+        confirmLawfulActionsCheck: false,
+        companySubtype: undefined,
+        sicCodes: [],
+    };
 }
 
 export function getAcspSessionData(session: Session): AcspSessionData | undefined {
-  return session.getExtraData(ACSP_SESSION_KEY) as AcspSessionData | undefined;
+    return session.getExtraData(ACSP_SESSION_KEY) as AcspSessionData | undefined;
 }
 
 export function resetAcspSession(session: Session): void {
-  session.setExtraData(ACSP_SESSION_KEY, createDefaultAcspSessionData());
+    session.setExtraData(ACSP_SESSION_KEY, createDefaultAcspSessionData());
 }
 
 export function updateAcspSessionData(session: Session, updates: Partial<AcspSessionData>): void {
-  const currentSessionData = getAcspSessionData(session) || createDefaultAcspSessionData();
-  const updatedSessionData = { ...currentSessionData, ...updates };
-  session.setExtraData(ACSP_SESSION_KEY, updatedSessionData);
+    const currentSessionData = getAcspSessionData(session) || createDefaultAcspSessionData();
+    const updatedSessionData = { ...currentSessionData, ...updates };
+    session.setExtraData(ACSP_SESSION_KEY, updatedSessionData);
 }
 
-
 export function getCsDateValueFromSession(acspSessionData: AcspSessionData): CsDateValue | undefined {
-  if (acspSessionData?.newConfirmationDate) {
-    return {
-      csDateYear: `${acspSessionData.newConfirmationDate.getFullYear()}`,
-      csDateMonth: `${acspSessionData.newConfirmationDate.getMonth() + 1}`,
-      csDateDay: `${acspSessionData.newConfirmationDate.getDate()}`
-    };
-  }
+    if (acspSessionData?.newConfirmationDate) {
+        return {
+            csDateYear: `${acspSessionData.newConfirmationDate.getFullYear()}`,
+            csDateMonth: `${acspSessionData.newConfirmationDate.getMonth() + 1}`,
+            csDateDay: `${acspSessionData.newConfirmationDate.getDate()}`,
+        };
+    }
 }

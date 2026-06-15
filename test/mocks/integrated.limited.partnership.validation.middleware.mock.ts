@@ -10,4 +10,3 @@ const mockValidateIntegratedJourney = validateIntegratedJourney as jest.Mock;
 mockValidateIntegratedJourney.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 export default mockValidateIntegratedJourney;
-

@@ -17,67 +17,87 @@ const USE_PAPER_FILING_PAGE_TITLE = "You cannot use this service - Company Type 
 const SERVICE_UNAVAILABLE_TEXT = "Sorry, there is a problem with the service";
 
 describe("User paper filing controller tests", () => {
-
-  beforeEach(() => {
-    mocks.mockAuthenticationMiddleware.mockClear();
-    mocks.mockServiceAvailabilityMiddleware.mockClear();
-    mocks.mockSessionMiddleware.mockClear();
-    mockGetCompanyProfile.mockClear();
-    mockIsCompanyNumberValid.mockReturnValue(true);
-    validCompanyProfile.type = "limited";
-  });
-
-  describe("tests for the get function", () => {
-
-    it("Should render the use paper filing stop page for limited company", async () => {
-      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-      const usePaperFilingPath = urlUtils.setQueryParam(USE_PAPER_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
-
-      const response = await request(app).get(usePaperFilingPath);
-
-      expect(mockGetCompanyProfile).toBeCalledWith(validCompanyProfile.companyNumber);
-      expect(response.text).toContain(USE_PAPER_FILING_PAGE_TITLE);
-      expect(response.text).toContain("CS01 confirmation statement paper form");
+    beforeEach(() => {
+        mocks.mockAuthenticationMiddleware.mockClear();
+        mocks.mockServiceAvailabilityMiddleware.mockClear();
+        mocks.mockSessionMiddleware.mockClear();
+        mockGetCompanyProfile.mockClear();
+        mockIsCompanyNumberValid.mockReturnValue(true);
+        validCompanyProfile.type = "limited";
     });
 
-    it("Should render the use paper filing stop page for limited partnership", async () => {
-      validCompanyProfile.type = "limited-partnership";
-      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-      const usePaperFilingPath = urlUtils.setQueryParam(USE_PAPER_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
+    describe("tests for the get function", () => {
+        it("Should render the use paper filing stop page for limited company", async () => {
+            mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+            const usePaperFilingPath = urlUtils.setQueryParam(
+                USE_PAPER_PATH,
+                URL_QUERY_PARAM.COMPANY_NUM,
+                validCompanyProfile.companyNumber
+            );
 
-      const response = await request(app).get(usePaperFilingPath);
+            const response = await request(app).get(usePaperFilingPath);
 
-      expect(response.text).toContain(USE_PAPER_FILING_PAGE_TITLE);
-      expect(response.text).toContain("SLP CSO1 confirmation statement paper form");
+            expect(mockGetCompanyProfile).toBeCalledWith(validCompanyProfile.companyNumber);
+            expect(response.text).toContain(USE_PAPER_FILING_PAGE_TITLE);
+            expect(response.text).toContain("CS01 confirmation statement paper form");
+        });
+
+        it("Should render the use paper filing stop page for limited partnership", async () => {
+            validCompanyProfile.type = "limited-partnership";
+            mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+            const usePaperFilingPath = urlUtils.setQueryParam(
+                USE_PAPER_PATH,
+                URL_QUERY_PARAM.COMPANY_NUM,
+                validCompanyProfile.companyNumber
+            );
+
+            const response = await request(app).get(usePaperFilingPath);
+
+            expect(response.text).toContain(USE_PAPER_FILING_PAGE_TITLE);
+            expect(response.text).toContain("SLP CSO1 confirmation statement paper form");
+        });
+
+        it("Should render the use paper filing stop page for scottish partnership", async () => {
+            validCompanyProfile.type = "scottish-partnership";
+            mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+            const usePaperFilingPath = urlUtils.setQueryParam(
+                USE_PAPER_PATH,
+                URL_QUERY_PARAM.COMPANY_NUM,
+                validCompanyProfile.companyNumber
+            );
+
+            const response = await request(app).get(usePaperFilingPath);
+
+            expect(response.text).toContain(USE_PAPER_FILING_PAGE_TITLE);
+            expect(response.text).toContain("SQP CSO1 confirmation statement paper form");
+        });
+
+        it("Should return an error page if error is thrown in get function", async () => {
+            mockGetCompanyProfile.mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const usePaperFilingPath = urlUtils.setQueryParam(
+                USE_PAPER_PATH,
+                URL_QUERY_PARAM.COMPANY_NUM,
+                validCompanyProfile.companyNumber
+            );
+
+            const response = await request(app).get(usePaperFilingPath);
+
+            expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
+        });
+
+        it("Should return an error page if invalid company number is entered in url query param", async () => {
+            mockIsCompanyNumberValid.mockReturnValueOnce(false);
+            const usePaperFilingPath = urlUtils.setQueryParam(
+                USE_PAPER_PATH,
+                URL_QUERY_PARAM.COMPANY_NUM,
+                "this is not a valid number"
+            );
+
+            const response = await request(app).get(usePaperFilingPath);
+
+            expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
+        });
     });
-
-    it("Should render the use paper filing stop page for scottish partnership", async () => {
-      validCompanyProfile.type = "scottish-partnership";
-      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-      const usePaperFilingPath = urlUtils.setQueryParam(USE_PAPER_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
-
-      const response = await request(app).get(usePaperFilingPath);
-
-      expect(response.text).toContain(USE_PAPER_FILING_PAGE_TITLE);
-      expect(response.text).toContain("SQP CSO1 confirmation statement paper form");
-    });
-
-    it("Should return an error page if error is thrown in get function", async () => {
-      mockGetCompanyProfile.mockImplementationOnce(() => { throw new Error(); });
-      const usePaperFilingPath = urlUtils.setQueryParam(USE_PAPER_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
-
-      const response = await request(app).get(usePaperFilingPath);
-
-      expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
-    });
-
-    it("Should return an error page if invalid company number is entered in url query param", async () => {
-      mockIsCompanyNumberValid.mockReturnValueOnce(false);
-      const usePaperFilingPath = urlUtils.setQueryParam(USE_PAPER_PATH, URL_QUERY_PARAM.COMPANY_NUM, "this is not a valid number");
-
-      const response = await request(app).get(usePaperFilingPath);
-
-      expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
-    });
-  });
 });

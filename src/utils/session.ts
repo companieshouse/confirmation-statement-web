@@ -5,16 +5,15 @@ import { ISignInInfo } from "@companieshouse/node-session-handler/lib/session/mo
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { COMPANY_PROFILE_SESSION_KEY } from "../utils/constants";
 
-
 export function getSignInInfo(session: any): ISignInInfo {
-  return session?.data?.[SessionKey.SignInInfo];
+    return session?.data?.[SessionKey.SignInInfo];
 }
 
 export function getLoggedInAcspNumber(session: any): string {
-  const signInInfo = getSignInInfo(session);
-  return signInInfo?.[SignInInfoKeys.AcspNumber] as string;
+    const signInInfo = getSignInInfo(session);
+    return signInInfo?.[SignInInfoKeys.AcspNumber] as string;
 }
 
 export function getCompanyProfileFromSession(req: Request): CompanyProfile {
-  return req.session?.getExtraData(COMPANY_PROFILE_SESSION_KEY) as CompanyProfile;
+    return req.session?.getExtraData(COMPANY_PROFILE_SESSION_KEY) as CompanyProfile;
 }
