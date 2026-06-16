@@ -146,7 +146,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
                         resetReviewCheckboxes(req);
                     }
 
-                    const path = isPrivateFund ? getReviewPath(isAcspJourney) : urls.LP_SIC_CODE_SUMMARY_PATH;
+                    const path = isPrivateFund ? reviewPath : urls.LP_SIC_CODE_SUMMARY_PATH;
 
                     const nextPage = urlUtils.getUrlToPath(`${path}?lang=${lang}`, req);
                     res.redirect(nextPage);

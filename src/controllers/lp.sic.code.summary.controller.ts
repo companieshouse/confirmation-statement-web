@@ -77,10 +77,10 @@ export const saveAndContinue = async (req: Request, res: Response) => {
     }
 
     for (const code of unsavedCodeList) {
-        const macthed = allSicCodes.find(sc => sc.sic_code === code);
+        const matched = allSicCodes.find(sc => sc.sic_code === code);
         sicCodeArray.push({
             code: code,
-            description: macthed?.sic_description ?? "No Description Found.",
+            description: matched?.sic_description ?? "No Description Found.",
         });
     }
 
@@ -209,11 +209,11 @@ export function getSicCodeSummaryList(req: Request, lang: string, sicCodesList: 
 
     if (sicCodesList.length > 0) {
         for (const code of sicCodesList) {
-            const macthed = allSicCodes.find(sc => sc.sic_code === code);
+            const matched = allSicCodes.find(sc => sc.sic_code === code);
             sicCodeSummaryList.push({
                 sicCode: {
                     code: code,
-                    description: macthed?.sic_description || "No Description Found.",
+                    description: matched?.sic_description ?? "No Description Found.",
                 },
                 removeUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_PATH}/${code}/remove?lang=${lang}`, req),
             });
