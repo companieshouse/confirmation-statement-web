@@ -16,43 +16,42 @@ export const ACCESS_TOKEN_MOCK: IAccessToken = { [AccessTokenKeys.AccessToken]: 
 export const REFRESH_TOKEN_MOCK: IAccessToken = { [AccessTokenKeys.RefreshToken]: "refreshToken" };
 
 const sessionData: Session = new Session({
-  [SessionKey.SignInInfo]: {
-    [SignInInfoKeys.SignedIn]: 1,
-    [SignInInfoKeys.UserProfile]: { [UserProfileKeys.Email]: USER_EMAIL, [UserProfileKeys.UserId]: USER_ID },
-    [SignInInfoKeys.AcspNumber]: ACSP_NUMBER,
-    [SignInInfoKeys.AcspRole]: ACSP_ROLE,
-    [SignInInfoKeys.AccessToken]: {
-      ...ACCESS_TOKEN_MOCK,
-      ...REFRESH_TOKEN_MOCK
-    }
-  },
-  [SessionKey.ExtraData]: {
-    [COMPANY_PROFILE_SESSION_KEY]: {
-      "type": LIMITED_PARTNERSHIP_COMPANY_TYPE
-    }
-  }
+    [SessionKey.SignInInfo]: {
+        [SignInInfoKeys.SignedIn]: 1,
+        [SignInInfoKeys.UserProfile]: { [UserProfileKeys.Email]: USER_EMAIL, [UserProfileKeys.UserId]: USER_ID },
+        [SignInInfoKeys.AcspNumber]: ACSP_NUMBER,
+        [SignInInfoKeys.AcspRole]: ACSP_ROLE,
+        [SignInInfoKeys.AccessToken]: {
+            ...ACCESS_TOKEN_MOCK,
+            ...REFRESH_TOKEN_MOCK,
+        },
+    },
+    [SessionKey.ExtraData]: {
+        [COMPANY_PROFILE_SESSION_KEY]: {
+            type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+        },
+    },
 });
 
 describe("Session util tests", () => {
-  it("getSignInInfo should return sigin information", () => {
-    const res = sessionUtil.getSignInInfo(sessionData);
+    it("getSignInInfo should return sigin information", () => {
+        const res = sessionUtil.getSignInInfo(sessionData);
 
-    expect(res.acsp_role).toBe(ACSP_ROLE);
-    expect(res.user_profile?.id).toBe(USER_ID);
-    expect(res.user_profile?.email).toContain(USER_EMAIL);
-  });
+        expect(res.acsp_role).toBe(ACSP_ROLE);
+        expect(res.user_profile?.id).toBe(USER_ID);
+        expect(res.user_profile?.email).toContain(USER_EMAIL);
+    });
 
-  it("getLoggedInAcspNumber should return acsp number", () => {
-    const res = sessionUtil.getLoggedInAcspNumber(sessionData);
+    it("getLoggedInAcspNumber should return acsp number", () => {
+        const res = sessionUtil.getLoggedInAcspNumber(sessionData);
 
-    expect(res).toBe(ACSP_NUMBER);
-  });
+        expect(res).toBe(ACSP_NUMBER);
+    });
 
-  it("getCompanyProfileFromSession should return company profile data from session", () => {
-    const expectedResCompanyProfile = { "type": LIMITED_PARTNERSHIP_COMPANY_TYPE };
-    const res = sessionUtil.getCompanyProfileFromSession({ session: sessionData } as Request);
+    it("getCompanyProfileFromSession should return company profile data from session", () => {
+        const expectedResCompanyProfile = { type: LIMITED_PARTNERSHIP_COMPANY_TYPE };
+        const res = sessionUtil.getCompanyProfileFromSession({ session: sessionData } as Request);
 
-    expect(res).toEqual(expectedResCompanyProfile);
-  });
-
+        expect(res).toEqual(expectedResCompanyProfile);
+    });
 });

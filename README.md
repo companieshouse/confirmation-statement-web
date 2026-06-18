@@ -1,7 +1,8 @@
 # confirmation-statement-web
+
 Web front end for Confirmation Statement service
 
-### Requirements
+## Requirements
 
 In order to run the service locally you will need the following:
 
@@ -20,14 +21,18 @@ To checkout and build the service:
 
 These instructions are for a local docker environment.
 
-
 ### Config variables
 
-Key             | Example Value   | Description
-----------------|---------------- |------------------------------------
-CACHE_SERVER | redis               | Required for storing values in memory
-CDN_HOST     | http://cdn.chs.local | Used when navigating to the webpage
-COOKIE_DOMAIN| chs.local |
-COOKIE_NAME  |__SID |
-COOKIE_SECRET | 
-SHOW_SERVICE_OFFLINE_PAGE | false | Feature Flag
+| Key                       | Example Value        | Description                           |
+| ------------------------- | -------------------- | ------------------------------------- |
+| CACHE_SERVER              | redis                | Required for storing values in memory |
+| CDN_HOST                  | http://cdn.chs.local | Used when navigating to the webpage   |
+| COOKIE_DOMAIN             | chs.local            |                                       |
+| COOKIE_NAME               | __SID                |                                       |
+| COOKIE_SECRET             |                      |                                       |
+| SHOW_SERVICE_OFFLINE_PAGE | false                | Feature Flag                          |
+
+## Formatting & Linting
+
+This repo uses ESLint and Prettier for code linting and formatting, and are configured to run automatically via a pre-commit hook.
+You can by-pass the pre-commit hook using the `--no-verify` option in the `git` CLI.

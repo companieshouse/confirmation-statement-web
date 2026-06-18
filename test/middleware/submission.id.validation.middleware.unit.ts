@@ -19,7 +19,6 @@ import { TRADING_STATUS_PATH } from "../../src/types/page.urls";
 import { urlUtils } from "../../src/utils/url";
 import { logger } from "../../src/utils/logger";
 
-
 const mockIsUrlIdValid = isUrlIdValid as jest.Mock;
 
 const mockTransactionIdValidationMiddleware = transactionIdValidationMiddleware as jest.Mock;
@@ -36,69 +35,86 @@ const TRANSACTION_ID_INVALID = "111905-476716-4578315665464564564564564564565464
 const SUBMISSION_ID_VALID = "8686876876ds6fds6fsd87f686";
 const SUBMISSION_ID_INVALID = "3223432kjh32kh42342344332443232b32j4jk32h43k2h4k233k2jh43k2h4-h32jhg4j2g4jh23gh4";
 
-
 describe("Submission ID validation middleware tests", () => {
+    beforeEach(() => {
+        mockServiceAvailabilityMiddleware.mockClear();
+        mockAuthenticationMiddleware.mockClear();
+        mockSessionMiddleware.mockClear();
+        mockCompanyAuthenticationMiddleware.mockClear();
+        mockIsPscQueryParameterValidationMiddleware.mockClear();
+        mockCompanyNumberQueryParameterValidationMiddleware.mockClear();
+        mockIsUrlIdValid.mockClear();
+        mockTransactionIdValidationMiddleware.mockClear();
+        mockLoggerErrorRequest.mockClear();
+        mockCsrfProtectionMiddleware.mockClear();
+    });
 
-  beforeEach(() => {
-    mockServiceAvailabilityMiddleware.mockClear();
-    mockAuthenticationMiddleware.mockClear();
-    mockSessionMiddleware.mockClear();
-    mockCompanyAuthenticationMiddleware.mockClear();
-    mockIsPscQueryParameterValidationMiddleware.mockClear();
-    mockCompanyNumberQueryParameterValidationMiddleware.mockClear();
-    mockIsUrlIdValid.mockClear();
-    mockTransactionIdValidationMiddleware.mockClear();
-    mockLoggerErrorRequest.mockClear();
-    mockCsrfProtectionMiddleware.mockClear();
-  });
+    it("Should stop invalid submission id", async () => {
+        const ERROR_PAGE_TEXT = "Sorry, there is a problem with the service";
+        mockIsUrlIdValid.mockReturnValueOnce(false);
+        const spyTruncateRequestUrl = jest.spyOn(urlUtils, "sanitiseReqUrls");
 
-  it("Should stop invalid submission id", async () => {
-    const ERROR_PAGE_TEXT = "Sorry, there is a problem with the service";
-    mockIsUrlIdValid.mockReturnValueOnce(false);
-    const spyTruncateRequestUrl = jest.spyOn(urlUtils, "sanitiseReqUrls");
+        const urlWithInvalidSubId = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+            TRADING_STATUS_PATH,
+            COMPANY_NUMBER,
+            TRANSACTION_ID,
+            SUBMISSION_ID_INVALID
+        );
+        const response = await request(app).get(urlWithInvalidSubId);
 
-    const urlWithInvalidSubId = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TRADING_STATUS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID_INVALID);
-    const response = await request(app).get(urlWithInvalidSubId);
+        expect(spyTruncateRequestUrl).toBeCalledTimes(1);
+        expect(isUrlIdValid).toBeCalledWith(SUBMISSION_ID_INVALID);
+        expect(mockLoggerErrorRequest.mock.calls[0][1]).toContain(SUBMISSION_ID_INVALID.substring(0, TRUNCATED_LENGTH));
+        expect(response.statusCode).toEqual(400);
+        expect(response.text).toContain(ERROR_PAGE_TEXT);
 
-    expect(spyTruncateRequestUrl).toBeCalledTimes(1);
-    expect(isUrlIdValid).toBeCalledWith(SUBMISSION_ID_INVALID);
-    expect(mockLoggerErrorRequest.mock.calls[0][1]).toContain(SUBMISSION_ID_INVALID.substring(0, TRUNCATED_LENGTH));
-    expect(response.statusCode).toEqual(400);
-    expect(response.text).toContain(ERROR_PAGE_TEXT);
+        spyTruncateRequestUrl.mockRestore();
+    });
 
-    spyTruncateRequestUrl.mockRestore();
-  });
+    it("Should not stop valid submission id", async () => {
+        mockIsUrlIdValid.mockReturnValueOnce(true);
+        const urlWithValidSubId = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+            TRADING_STATUS_PATH,
+            COMPANY_NUMBER,
+            TRANSACTION_ID,
+            SUBMISSION_ID_VALID
+        );
 
-  it("Should not stop valid submission id", async () => {
-    mockIsUrlIdValid.mockReturnValueOnce(true);
-    const urlWithValidSubId = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TRADING_STATUS_PATH, COMPANY_NUMBER, TRANSACTION_ID, SUBMISSION_ID_VALID);
+        const response = await request(app).get(urlWithValidSubId);
 
-    const response = await request(app).get(urlWithValidSubId);
+        expect(isUrlIdValid).toBeCalledWith(SUBMISSION_ID_VALID);
+        expect(response.text).toContain(TRADING_STATUS_PAGE_HEADING);
+        expect(response.statusCode).toEqual(200);
+    });
 
-    expect(isUrlIdValid).toBeCalledWith(SUBMISSION_ID_VALID);
-    expect(response.text).toContain(TRADING_STATUS_PAGE_HEADING);
-    expect(response.statusCode).toEqual(200);
-  });
+    it("Should truncate all invalid ids", async () => {
+        const ERROR_PAGE_TEXT = "Sorry, there is a problem with the service";
+        const spyTruncateRequestUrl = jest.spyOn(urlUtils, "sanitiseReqUrls");
+        mockIsUrlIdValid.mockReturnValueOnce(false);
 
-  it("Should truncate all invalid ids", async () => {
-    const ERROR_PAGE_TEXT = "Sorry, there is a problem with the service";
-    const spyTruncateRequestUrl = jest.spyOn(urlUtils, "sanitiseReqUrls");
-    mockIsUrlIdValid.mockReturnValueOnce(false);
+        const urlWithInvalidTransactionIdSubmissionId = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+            TRADING_STATUS_PATH,
+            COMPANY_NUMBER_INVALID,
+            TRANSACTION_ID_INVALID,
+            SUBMISSION_ID_INVALID
+        );
+        const response = await request(app).get(urlWithInvalidTransactionIdSubmissionId);
 
-    const urlWithInvalidTransactionIdSubmissionId = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(TRADING_STATUS_PATH, COMPANY_NUMBER_INVALID, TRANSACTION_ID_INVALID, SUBMISSION_ID_INVALID);
-    const response = await request(app).get(urlWithInvalidTransactionIdSubmissionId);
+        expect(isUrlIdValid).toBeCalledWith(SUBMISSION_ID_INVALID);
+        expect(spyTruncateRequestUrl).toBeCalledTimes(1);
+        expect(mockLoggerErrorRequest.mock.calls[0][1]).not.toContain(COMPANY_NUMBER_INVALID);
+        expect(mockLoggerErrorRequest.mock.calls[0][1]).not.toContain(SUBMISSION_ID_INVALID);
+        expect(mockLoggerErrorRequest.mock.calls[0][1]).not.toContain(TRANSACTION_ID_INVALID);
+        expect(mockLoggerErrorRequest.mock.calls[0][1]).toContain(
+            COMPANY_NUMBER_INVALID.substring(0, TRUNCATED_LENGTH)
+        );
+        expect(mockLoggerErrorRequest.mock.calls[0][1]).toContain(
+            TRANSACTION_ID_INVALID.substring(0, TRUNCATED_LENGTH)
+        );
+        expect(mockLoggerErrorRequest.mock.calls[0][1]).toContain(SUBMISSION_ID_INVALID.substring(0, TRUNCATED_LENGTH));
+        expect(response.statusCode).toEqual(400);
+        expect(response.text).toContain(ERROR_PAGE_TEXT);
 
-    expect(isUrlIdValid).toBeCalledWith(SUBMISSION_ID_INVALID);
-    expect(spyTruncateRequestUrl).toBeCalledTimes(1);
-    expect(mockLoggerErrorRequest.mock.calls[0][1]).not.toContain(COMPANY_NUMBER_INVALID);
-    expect(mockLoggerErrorRequest.mock.calls[0][1]).not.toContain(SUBMISSION_ID_INVALID);
-    expect(mockLoggerErrorRequest.mock.calls[0][1]).not.toContain(TRANSACTION_ID_INVALID);
-    expect(mockLoggerErrorRequest.mock.calls[0][1]).toContain(COMPANY_NUMBER_INVALID.substring(0, TRUNCATED_LENGTH));
-    expect(mockLoggerErrorRequest.mock.calls[0][1]).toContain(TRANSACTION_ID_INVALID.substring(0, TRUNCATED_LENGTH));
-    expect(mockLoggerErrorRequest.mock.calls[0][1]).toContain(SUBMISSION_ID_INVALID.substring(0, TRUNCATED_LENGTH));
-    expect(response.statusCode).toEqual(400);
-    expect(response.text).toContain(ERROR_PAGE_TEXT);
-
-    spyTruncateRequestUrl.mockRestore();
-  });
+        spyTruncateRequestUrl.mockRestore();
+    });
 });

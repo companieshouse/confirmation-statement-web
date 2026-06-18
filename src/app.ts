@@ -20,33 +20,36 @@ import { CsrfProtectionMiddleware } from "@companieshouse/web-security-node";
 import { SessionStore } from "@companieshouse/node-session-handler";
 import { getGOVUKFrontendVersion } from "@companieshouse/ch-node-utils";
 import { CACHE_SERVER, COOKIE_NAME } from "./utils/properties";
-import Redis from 'ioredis';
+import Redis from "ioredis";
 import { validateIntegratedJourney } from "./middleware/integrated.limited.partnership.validation.middleware";
 
 const app = express();
 app.disable("x-powered-by");
 
 //  view engine setup
-const nunjucksEnv = nunjucks.configure([
-  "views",
-  "node_modules/govuk-frontend/dist/",
-  "node_modules/govuk-frontend/dist/govuk",
-  "node_modules/govuk-frontend/components/",
-  "node_modules/@companieshouse/ch-node-utils/templates/",
-  "node_modules/@companieshouse",
-  "node_modules/accessible-autocomplete"
-], {
-  autoescape: true,
-  express: app
-});
+const nunjucksEnv = nunjucks.configure(
+    [
+        "views",
+        "node_modules/govuk-frontend/dist/",
+        "node_modules/govuk-frontend/dist/govuk",
+        "node_modules/govuk-frontend/components/",
+        "node_modules/@companieshouse/ch-node-utils/templates/",
+        "node_modules/@companieshouse",
+        "node_modules/accessible-autocomplete",
+    ],
+    {
+        autoescape: true,
+        express: app,
+    }
+);
 
 nunjucksEnv.addGlobal("assetPath", process.env.CDN_HOST);
 nunjucksEnv.addGlobal("cdnHost", process.env.CDN_HOST);
 nunjucksEnv.addGlobal("govukFrontendVersion", getGOVUKFrontendVersion());
 nunjucksEnv.addGlobal("PIWIK_URL", process.env.PIWIK_URL);
 nunjucksEnv.addGlobal("PIWIK_SITE_ID", process.env.PIWIK_SITE_ID);
-nunjucksEnv.addGlobal('CONTACT_US_URL', process.env.CONTACT_US_URL);
-nunjucksEnv.addGlobal('govukRebrand', true);
+nunjucksEnv.addGlobal("CONTACT_US_URL", process.env.CONTACT_US_URL);
+nunjucksEnv.addGlobal("govukRebrand", true);
 
 // Required because it is used on error pages that might occur at any point during the user journey.
 nunjucksEnv.addGlobal("CS01_PAPER_FEE", process.env.CS01_PAPER_FEE);
@@ -56,20 +59,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use((req, res, next) => {
-  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-  res.setHeader("Pragma", "no-cache");
-  res.setHeader("Expires", "0");
-  res.setHeader("Surrogate-Control", "no-store");
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+    res.setHeader("Surrogate-Control", "no-store");
 
-  next();
+    next();
 });
 
 // view engine setup
-app.set("views", [
-  path.join(__dirname, "views"),
-  "node_modules/govuk-frontend/dist",
-  "node_modules/@companieshouse"
-]);
+app.set("views", [path.join(__dirname, "views"), "node_modules/govuk-frontend/dist", "node_modules/@companieshouse"]);
 app.set("view engine", "html");
 
 // support view in njk and html
@@ -99,9 +98,9 @@ app.use(urls.ACSP_LIMITED_PARTNERSHIP_PATH, acspValidationMiddleware);
 const sessionStore = new SessionStore(new Redis(`redis://${CACHE_SERVER}`));
 
 const csrfProtectionMiddleware = CsrfProtectionMiddleware({
-  sessionStore,
-  enabled: true,
-  sessionCookieName: COOKIE_NAME
+    sessionStore,
+    enabled: true,
+    sessionCookieName: COOKIE_NAME,
 });
 app.use(urls.middlewarePaths, csrfProtectionMiddleware);
 

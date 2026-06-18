@@ -18,30 +18,28 @@ const res: Response = {} as Response;
 const next = jest.fn();
 
 const expectedAuthMiddlewareConfig: AuthOptions = {
-  chsWebUrl: "http://chs.local",
-  returnUrl: URL
+    chsWebUrl: "http://chs.local",
+    returnUrl: URL,
 };
 
 describe("authentication middleware tests", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        req.originalUrl = URL;
+    });
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-    req.originalUrl = URL;
-  });
+    it("should call CH authentication library", () => {
+        authenticationMiddleware(req, res, next);
 
-  it("should call CH authentication library", () => {
-    authenticationMiddleware(req, res, next);
+        expect(mockAuthMiddleware).toHaveBeenCalledWith(expectedAuthMiddlewareConfig);
+        expect(mockAuthReturnedFunction).toHaveBeenCalledWith(req, res, next);
+    });
 
-    expect(mockAuthMiddleware).toHaveBeenCalledWith(expectedAuthMiddlewareConfig);
-    expect(mockAuthReturnedFunction).toHaveBeenCalledWith(req, res, next);
-  });
+    it("should not redirect to sign in when url is on whitelist", () => {
+        req.originalUrl = CONFIRMATION_STATEMENT + ACCESSIBILITY_STATEMENT;
+        authenticationMiddleware(req, res, next);
 
-  it("should not redirect to sign in when url is on whitelist", () => {
-    req.originalUrl = CONFIRMATION_STATEMENT + ACCESSIBILITY_STATEMENT;
-    authenticationMiddleware(req, res, next);
-
-    expect(mockAuthMiddleware).not.toHaveBeenCalled();
-    expect(next).toHaveBeenCalled();
-  });
-
+        expect(mockAuthMiddleware).not.toHaveBeenCalled();
+        expect(next).toHaveBeenCalled();
+    });
 });

@@ -23,48 +23,47 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req, res, next) => next(
 const mockSendUpdate = sendUpdate as jest.Mock;
 
 describe("Confirm Email Address controller tests", () => {
+    describe("When entered email has been provided", () => {
+        beforeEach(() => {
+            mocks.mockAuthenticationMiddleware.mockClear();
+            mocks.mockServiceAvailabilityMiddleware.mockClear();
+            mocks.mockSessionMiddleware.mockClear();
+            mocks.mockCsrfMiddleware.mockClear();
+        });
 
-  describe("When entered email has been provided", () => {
+        it("Should navigate to the Confirm Email Address page", async () => {
+            const response = await request(app).get(CONFIRM_EMAIL_ADDRESS_URL);
+            expect(response.text).toContain(PAGE_TITLE);
+            expect(response.text).toContain("Email address");
+        });
 
-    beforeEach(() => {
-      mocks.mockAuthenticationMiddleware.mockClear();
-      mocks.mockServiceAvailabilityMiddleware.mockClear();
-      mocks.mockSessionMiddleware.mockClear();
-      mocks.mockCsrfMiddleware.mockClear();
+        it("Should redirect to an error page when error is thrown", async () => {
+            const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
+            spyGetUrlToPath.mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const response = await request(app).get(CONFIRM_EMAIL_ADDRESS_URL);
+
+            expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+
+            spyGetUrlToPath.mockRestore();
+        });
     });
 
-    it("Should navigate to the Confirm Email Address page", async () => {
-      const response = await request(app).get(CONFIRM_EMAIL_ADDRESS_URL);
-      expect(response.text).toContain(PAGE_TITLE);
-      expect(response.text).toContain("Email address");
+    describe("Check registered email address controller POST tests", () => {
+        it("Should send update and return to task list page when email address is confirmed", async () => {
+            const response = await request(app).post(CONFIRM_EMAIL_ADDRESS_URL);
+            expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.EMAIL);
+            expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.INITIAL_FILING);
+            expect(mockSendUpdate.mock.calls[0][3]).toBe(ENTERED_EMAIL);
+            expect(response.status).toEqual(302);
+            expect(response.header.location).toEqual(TASK_LIST_URL);
+        });
+
+        it("Should redirect to an error page when error is returned in POST", async () => {
+            mockSendUpdate.mockRejectedValueOnce(new Error());
+            const response = await request(app).post(CONFIRM_EMAIL_ADDRESS_URL);
+            expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+        });
     });
-
-    it("Should redirect to an error page when error is thrown", async () => {
-      const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
-      spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
-      const response = await request(app).get(CONFIRM_EMAIL_ADDRESS_URL);
-
-      expect(response.text).toContain(EXPECTED_ERROR_TEXT);
-
-      spyGetUrlToPath.mockRestore();
-    });
-  });
-
-  describe("Check registered email address controller POST tests", () => {
-    it("Should send update and return to task list page when email address is confirmed", async () => {
-      const response = await request(app).post(CONFIRM_EMAIL_ADDRESS_URL);
-      expect(mockSendUpdate.mock.calls[0][1]).toBe(SECTIONS.EMAIL);
-      expect(mockSendUpdate.mock.calls[0][2]).toBe(SectionStatus.INITIAL_FILING);
-      expect(mockSendUpdate.mock.calls[0][3]).toBe(ENTERED_EMAIL);
-      expect(response.status).toEqual(302);
-      expect(response.header.location).toEqual(TASK_LIST_URL);
-    });
-
-    it("Should redirect to an error page when error is returned in POST", async () => {
-      mockSendUpdate.mockRejectedValueOnce(new Error());
-      const response = await request(app).post(CONFIRM_EMAIL_ADDRESS_URL);
-      expect(response.text).toContain(EXPECTED_ERROR_TEXT);
-    });
-
-  });
 });

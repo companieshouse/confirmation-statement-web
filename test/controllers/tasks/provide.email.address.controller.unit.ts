@@ -15,67 +15,74 @@ const PAGE_HEADING = "Registered email address";
 const EXPECTED_ERROR_TEXT = "Sorry, there is a problem with the service";
 const COMPANY_NUMBER = "12345678";
 
-const PROVIDE_EMAIL_ADDRESS_URL = PROVIDE_EMAIL_ADDRESS_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
+const PROVIDE_EMAIL_ADDRESS_URL = PROVIDE_EMAIL_ADDRESS_PATH.replace(
+    `:${urlParams.PARAM_COMPANY_NUMBER}`,
+    COMPANY_NUMBER
+);
 const CONFIRM_EMAIL_ADDRESS_URL = CONFIRM_EMAIL_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`, COMPANY_NUMBER);
 
 describe("Provide Email Address controller tests", () => {
+    beforeEach(() => {
+        mocks.mockAuthenticationMiddleware.mockClear();
+        mocks.mockServiceAvailabilityMiddleware.mockClear();
+        mocks.mockSessionMiddleware.mockClear();
+    });
 
-  beforeEach(() => {
-    mocks.mockAuthenticationMiddleware.mockClear();
-    mocks.mockServiceAvailabilityMiddleware.mockClear();
-    mocks.mockSessionMiddleware.mockClear();
-  });
+    it("Should navigate to the Registered Email Address page", async () => {
+        const response = await request(app).get(PROVIDE_EMAIL_ADDRESS_URL);
 
-  it("Should navigate to the Registered Email Address page", async () => {
-    const response = await request(app).get(PROVIDE_EMAIL_ADDRESS_URL);
+        expect(response.text).toContain(PAGE_HEADING);
+        expect(response.text).toContain("What is the registered email address?");
+    });
 
-    expect(response.text).toContain(PAGE_HEADING);
-    expect(response.text).toContain("What is the registered email address?");
-  });
+    it("Should redirect to an error page when error is thrown", async () => {
+        const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
+        spyGetUrlToPath.mockImplementationOnce(() => {
+            throw new Error();
+        });
+        const response = await request(app).get(PROVIDE_EMAIL_ADDRESS_URL);
 
-  it("Should redirect to an error page when error is thrown", async () => {
-    const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
-    spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
-    const response = await request(app).get(PROVIDE_EMAIL_ADDRESS_URL);
+        expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
-    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
+        // restore original function so it is no longer mocked
+        spyGetUrlToPath.mockRestore();
+    });
 
-    // restore original function so it is no longer mocked
-    spyGetUrlToPath.mockRestore();
-  });
+    it("Should proceed to confirm email page when valid email address entered", async () => {
+        const response = await request(app)
+            .post(PROVIDE_EMAIL_ADDRESS_URL)
+            .send({ registeredEmailAddress: "name@example.com" });
 
-  it("Should proceed to confirm email page when valid email address entered", async () => {
-    const response = await request(app).post(PROVIDE_EMAIL_ADDRESS_URL).send({ registeredEmailAddress: "name@example.com" });
+        expect(response.status).toEqual(302);
+        expect(response.header.location).toEqual(CONFIRM_EMAIL_ADDRESS_URL);
+    });
 
-    expect(response.status).toEqual(302);
-    expect(response.header.location).toEqual(CONFIRM_EMAIL_ADDRESS_URL);
-  });
+    it("Should redisplay with appropriate error message when blank email submitted", async () => {
+        const response = await request(app).post(PROVIDE_EMAIL_ADDRESS_URL).send({ registeredEmailAddress: "" });
 
-  it("Should redisplay with appropriate error message when blank email submitted", async () => {
-    const response = await request(app).post(PROVIDE_EMAIL_ADDRESS_URL).send({ registeredEmailAddress: "" });
+        expect(response.status).toEqual(200);
+        expect(response.text).toContain(PAGE_HEADING);
+        expect(response.text).toContain(NO_EMAIL_ADDRESS_SUPPLIED);
+    });
 
-    expect(response.status).toEqual(200);
-    expect(response.text).toContain(PAGE_HEADING);
-    expect(response.text).toContain(NO_EMAIL_ADDRESS_SUPPLIED);
-  });
+    it("Should redisplay with appropriate error message when invalid email submitted", async () => {
+        const response = await request(app).post(PROVIDE_EMAIL_ADDRESS_URL).send({ registeredEmailAddress: "bob" });
 
-  it("Should redisplay with appropriate error message when invalid email submitted", async () => {
-    const response = await request(app).post(PROVIDE_EMAIL_ADDRESS_URL).send({ registeredEmailAddress: "bob" });
+        expect(response.status).toEqual(200);
+        expect(response.text).toContain(PAGE_HEADING);
+        expect(response.text).toContain(EMAIL_ADDRESS_INVALID);
+    });
 
-    expect(response.status).toEqual(200);
-    expect(response.text).toContain(PAGE_HEADING);
-    expect(response.text).toContain(EMAIL_ADDRESS_INVALID);
-  });
+    it("Should return an error page if error is thrown in post function", async () => {
+        const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
+        spyGetUrlToPath.mockImplementationOnce(() => {
+            throw new Error();
+        });
+        const response = await request(app).post(PROVIDE_EMAIL_ADDRESS_URL);
 
-  it("Should return an error page if error is thrown in post function", async () => {
-    const spyGetUrlToPath = jest.spyOn(urlUtils, "getUrlToPath");
-    spyGetUrlToPath.mockImplementationOnce(() => { throw new Error(); });
-    const response = await request(app).post(PROVIDE_EMAIL_ADDRESS_URL);
+        expect(response.text).toContain(EXPECTED_ERROR_TEXT);
 
-    expect(response.text).toContain(EXPECTED_ERROR_TEXT);
-
-    // restore original function so it is no longer mocked
-    spyGetUrlToPath.mockRestore();
-  });
-
+        // restore original function so it is no longer mocked
+        spyGetUrlToPath.mockRestore();
+    });
 });

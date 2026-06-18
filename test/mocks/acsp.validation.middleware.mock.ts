@@ -10,4 +10,3 @@ const mockAcspValidationMiddleware = acspValidationMiddleware as jest.Mock;
 mockAcspValidationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 export default mockAcspValidationMiddleware;
-

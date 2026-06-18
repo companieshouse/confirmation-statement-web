@@ -5,14 +5,14 @@
  */
 
 const getEnvironmentVariable = (key: string, defaultValue?: any): string => {
-  const isMandatory = !defaultValue;
-  const value: string = process.env[key] || "";
+    const isMandatory = !defaultValue;
+    const value: string = process.env[key] || "";
 
-  if (!value && isMandatory) {
-    throw new Error(`Please set the environment variable "${key}"`);
-  }
+    if (!value && isMandatory) {
+        throw new Error(`Please set the environment variable "${key}"`);
+    }
 
-  return value || defaultValue as string;
+    return value || (defaultValue as string);
 };
 
 export const ACCOUNT_URL = getEnvironmentVariable("ACCOUNT_URL");
@@ -37,19 +37,30 @@ export const API_URL = getEnvironmentVariable("API_URL");
 
 export const INTERNAL_API_URL = getEnvironmentVariable("INTERNAL_API_URL");
 
-export const FEATURE_FLAG_SERVICE_WITHDRAWN_02102025 = getEnvironmentVariable("FEATURE_FLAG_SERVICE_WITHDRAWN_02102025", "false");
+export const FEATURE_FLAG_SERVICE_WITHDRAWN_02102025 = getEnvironmentVariable(
+    "FEATURE_FLAG_SERVICE_WITHDRAWN_02102025",
+    "false"
+);
 
 export const FEATURE_FLAG_PRIVATE_SDK_12052021 = getEnvironmentVariable("FEATURE_FLAG_PRIVATE_SDK_12052021");
 
-export const FEATURE_FLAG_ECCT_START_DATE_14082023 = getEnvironmentVariable("FEATURE_FLAG_ECCT_START_DATE_14082023", "9999-12-31");
+export const FEATURE_FLAG_ECCT_START_DATE_14082023 = getEnvironmentVariable(
+    "FEATURE_FLAG_ECCT_START_DATE_14082023",
+    "9999-12-31"
+);
 
-export const FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 = getEnvironmentVariable("FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021");
+export const FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021 = getEnvironmentVariable(
+    "FEATURE_FLAG_FIVE_OR_LESS_OFFICERS_JOURNEY_21102021"
+);
 
 export const FEATURE_FLAG_LP_REFORM_DATE = getEnvironmentVariable("FEATURE_FLAG_LP_REFORM_DATE", "2026-01-01");
 
 export const FEATURE_FLAG_SAIL_ADDRESS = getEnvironmentVariable("FEATURE_FLAG_SAIL_ADDRESS", "2025-01-09");
 
-export const FEATURE_FLAG_LP_INTEGRATED_JOURNEY_PERMITTED_TYPES = getEnvironmentVariable("FEATURE_FLAG_LP_INTEGRATED_JOURNEY_PERMITTED_TYPES", "limited-partnership");
+export const FEATURE_FLAG_LP_INTEGRATED_JOURNEY_PERMITTED_TYPES = getEnvironmentVariable(
+    "FEATURE_FLAG_LP_INTEGRATED_JOURNEY_PERMITTED_TYPES",
+    "limited-partnership"
+);
 
 export const PIWIK_START_GOAL_ID = getEnvironmentVariable("PIWIK_START_GOAL_ID");
 
@@ -65,7 +76,10 @@ export const URL_LOG_MAX_LENGTH: number = parseInt(getEnvironmentVariable("URL_L
 
 export const URL_PARAM_MAX_LENGTH: number = parseInt(getEnvironmentVariable("URL_PARAM_MAX_LENGTH", "50"), 10);
 
-export const RADIO_BUTTON_VALUE_LOG_LENGTH = parseInt(getEnvironmentVariable("RADIO_BUTTON_VALUE_LOG_LENGTH", "50"), 10);
+export const RADIO_BUTTON_VALUE_LOG_LENGTH = parseInt(
+    getEnvironmentVariable("RADIO_BUTTON_VALUE_LOG_LENGTH", "50"),
+    10
+);
 
 export const EWF_URL = getEnvironmentVariable("EWF_URL");
 
@@ -77,4 +91,7 @@ export const CS01_COST = getEnvironmentVariable("CS01_COST");
 
 export const CS01_PAPER_FEE = getEnvironmentVariable("CS01_PAPER_FEE");
 
-export const SKIP_START_PAGE_COMPANY_TYPES = getEnvironmentVariable("SKIP_START_PAGE_COMPANY_TYPES", "limited-partnership");
+export const SKIP_START_PAGE_COMPANY_TYPES = getEnvironmentVariable(
+    "SKIP_START_PAGE_COMPANY_TYPES",
+    "limited-partnership"
+);

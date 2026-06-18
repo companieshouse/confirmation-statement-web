@@ -9,82 +9,77 @@ import { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/res
 import { formatOfficerDetails } from "../../src/utils/format";
 import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 import {
-  ActiveOfficerDetails,
-  ConfirmationStatementService
+    ActiveOfficerDetails,
+    ConfirmationStatementService,
 } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 const mockGetActiveOfficersDetails = ConfirmationStatementService.prototype.getListActiveOfficerDetails as jest.Mock;
 const mockCreatePrivateApiClient = createApiClient as jest.Mock;
 
 mockCreatePrivateApiClient.mockReturnValue({
-  confirmationStatementService: ConfirmationStatementService.prototype
+    confirmationStatementService: ConfirmationStatementService.prototype,
 } as ApiClient);
 
 const clone = (objectToClone: any): any => {
-  return JSON.parse(JSON.stringify(objectToClone));
+    return JSON.parse(JSON.stringify(objectToClone));
 };
 
 describe("Test active officers details service", () => {
+    const TRANSACTION_ID = "66454";
+    const SUBMISSION_ID = "435435";
 
-  const TRANSACTION_ID = "66454";
-  const SUBMISSION_ID = "435435";
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+    it("Should call the sdk and get the active officers details data", async () => {
+        const resource: Resource<ActiveOfficerDetails[]> = {
+            httpStatusCode: 200,
+            resource: mockActiveOfficersDetails,
+        };
 
-  it("Should call the sdk and get the active officers details data", async () => {
+        mockGetActiveOfficersDetails.mockReturnValueOnce(resource);
+        const session = getSessionRequest({ access_token: "token" });
+        const response = await getActiveOfficersDetailsData(session, TRANSACTION_ID, SUBMISSION_ID);
 
-    const resource: Resource<ActiveOfficerDetails[]> = {
-      httpStatusCode: 200,
-      resource: mockActiveOfficersDetails
-    };
+        expect(mockGetActiveOfficersDetails).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID);
+        expect(response).toEqual(mockActiveOfficersDetails);
+    });
 
-    mockGetActiveOfficersDetails.mockReturnValueOnce(resource);
-    const session =  getSessionRequest({ access_token: "token" });
-    const response = await getActiveOfficersDetailsData(session, TRANSACTION_ID, SUBMISSION_ID);
+    it("should throw error when http error code is returned", async () => {
+        const errorMessage = "Oops! Someone stepped on the wire.";
+        const errorResponse: ApiErrorResponse = {
+            httpStatusCode: 404,
+            errors: [{ error: errorMessage }],
+        };
 
-    expect(mockGetActiveOfficersDetails).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID);
-    expect(response).toEqual(mockActiveOfficersDetails);
+        mockGetActiveOfficersDetails.mockReturnValueOnce(errorResponse);
+        const session = getSessionRequest({ access_token: "token" });
+        const expectedMessage = "Error retrieving active officer details: " + JSON.stringify(errorResponse);
+        let actualMessage;
 
-  });
+        try {
+            await getActiveOfficersDetailsData(session, TRANSACTION_ID, SUBMISSION_ID);
+        } catch (err) {
+            actualMessage = err.message;
+        }
 
-  it("should throw error when http error code is returned", async () => {
-
-    const errorMessage = "Oops! Someone stepped on the wire.";
-    const errorResponse: ApiErrorResponse = {
-      httpStatusCode: 404,
-      errors: [{ error: errorMessage }]
-    };
-
-    mockGetActiveOfficersDetails.mockReturnValueOnce(errorResponse);
-    const session =  getSessionRequest({ access_token: "token" });
-    const expectedMessage = "Error retrieving active officer details: " + JSON.stringify(errorResponse);
-    let actualMessage;
-
-    try {
-      await getActiveOfficersDetailsData(session, TRANSACTION_ID, SUBMISSION_ID);
-    } catch (err) {
-      actualMessage = err.message;
-    }
-
-    expect(actualMessage).toBeTruthy();
-    expect(actualMessage).toEqual(expectedMessage);
-
-  });
-
+        expect(actualMessage).toBeTruthy();
+        expect(actualMessage).toEqual(expectedMessage);
+    });
 });
 
 describe("Format officers details test", () => {
-  it ("should convert officers details to presentible format ", () => {
-    const formattedOfficerDetails: ActiveOfficerDetails = formatOfficerDetails(clone(mockActiveOfficersDetails[0]));
-    expect(formattedOfficerDetails.foreName1).toEqual(mockActiveOfficersDetailsFormatted.foreName1);
-    expect(formattedOfficerDetails.foreName2).toEqual(mockActiveOfficersDetailsFormatted.foreName2);
-    expect(formattedOfficerDetails.surname).toEqual(mockActiveOfficersDetailsFormatted.surname);
-    expect(formattedOfficerDetails.nationality).toEqual(mockActiveOfficersDetailsFormatted.nationality);
-    expect(formattedOfficerDetails.occupation).toEqual(mockActiveOfficersDetailsFormatted.occupation);
-    expect(formattedOfficerDetails.serviceAddress).toEqual(mockActiveOfficersDetailsFormatted.serviceAddress);
-    expect(formattedOfficerDetails.residentialAddress).toEqual(mockActiveOfficersDetailsFormatted.residentialAddress);
-  });
-
+    it("should convert officers details to presentible format ", () => {
+        const formattedOfficerDetails: ActiveOfficerDetails = formatOfficerDetails(clone(mockActiveOfficersDetails[0]));
+        expect(formattedOfficerDetails.foreName1).toEqual(mockActiveOfficersDetailsFormatted.foreName1);
+        expect(formattedOfficerDetails.foreName2).toEqual(mockActiveOfficersDetailsFormatted.foreName2);
+        expect(formattedOfficerDetails.surname).toEqual(mockActiveOfficersDetailsFormatted.surname);
+        expect(formattedOfficerDetails.nationality).toEqual(mockActiveOfficersDetailsFormatted.nationality);
+        expect(formattedOfficerDetails.occupation).toEqual(mockActiveOfficersDetailsFormatted.occupation);
+        expect(formattedOfficerDetails.serviceAddress).toEqual(mockActiveOfficersDetailsFormatted.serviceAddress);
+        expect(formattedOfficerDetails.residentialAddress).toEqual(
+            mockActiveOfficersDetailsFormatted.residentialAddress
+        );
+    });
 });

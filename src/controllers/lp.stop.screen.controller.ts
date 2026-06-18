@@ -4,19 +4,19 @@ import { getCompanyProfileFromSession } from "../utils/session";
 import { Templates } from "../types/template.paths";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const sessionCompany = getCompanyProfileFromSession(req);
-    const companyNumber = sessionCompany?.companyNumber;
-    if (!companyNumber) {
-      return next(new Error(`Invalid company number for LP stop screen`));
+    try {
+        const sessionCompany = getCompanyProfileFromSession(req);
+        const companyNumber = sessionCompany?.companyNumber;
+        if (!companyNumber) {
+            return next(new Error(`Invalid company number for LP stop screen`));
+        }
+        const company: CompanyProfile = sessionCompany;
+        return res.render(Templates.LP_STOP_SCREEN, {
+            company,
+            templateName: Templates.LP_STOP_SCREEN,
+            companyNumber,
+        });
+    } catch (e) {
+        return next(e);
     }
-    const company: CompanyProfile = sessionCompany;
-    return res.render(Templates.LP_STOP_SCREEN, {
-      company,
-      templateName: Templates.LP_STOP_SCREEN,
-      companyNumber
-    });
-  } catch (e) {
-    return next(e);
-  }
 };

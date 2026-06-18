@@ -13,7 +13,7 @@ import app from "../app";
  */
 
 const argv = yargs.argv as { PORT?: string | number; _: (string | number)[] };
-const port = normalizePort(argv.PORT  || argv._[0]);
+const port = normalizePort(argv.PORT || argv._[0]);
 app.set("port", port);
 
 /**
@@ -34,19 +34,19 @@ server.on("error", onError);
  */
 
 function normalizePort(val) {
-  const portNumber = parseInt(val, 10);
+    const portNumber = parseInt(val, 10);
 
-  if (isNaN(portNumber)) {
-    // named pipe
-    return val;
-  }
+    if (isNaN(portNumber)) {
+        // named pipe
+        return val;
+    }
 
-  if (portNumber >= 0) {
-    // port number
-    return portNumber;
-  }
+    if (portNumber >= 0) {
+        // port number
+        return portNumber;
+    }
 
-  return false;
+    return false;
 }
 
 /**
@@ -54,27 +54,25 @@ function normalizePort(val) {
  */
 
 function onError(error) {
-  if (error.syscall !== "listen") {
-    throw error;
-  }
-
-  const bind = typeof port === "string"
-    ? "Pipe " + port
-    : "Port " + port;
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-      case "EACCES":
-        // TODO implement logger
-        // logger.error(bind + " requires elevated privileges");
-        process.exit(1);
-        break;
-      case "EADDRINUSE":
-        // TODO implement logger
-        // logger.error(bind + " is already in use");
-        process.exit(1);
-        break;
-      default:
+    if (error.syscall !== "listen") {
         throw error;
-  }
+    }
+
+    const bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
+
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case "EACCES":
+            // TODO implement logger
+            // logger.error(bind + " requires elevated privileges");
+            process.exit(1);
+            break;
+        case "EADDRINUSE":
+            // TODO implement logger
+            // logger.error(bind + " is already in use");
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
 }

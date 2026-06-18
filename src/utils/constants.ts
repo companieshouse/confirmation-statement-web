@@ -11,7 +11,8 @@ export const CHECK_EMAIL_ADDRESS_ERROR = "Select yes if the registered email add
 export const DIRECTOR_DETAILS_ERROR = "Select yes if director details are correct";
 export const OFFICER_DETAILS_ERROR = "Select yes if officer details are correct";
 export const SHAREHOLDERS_ERROR = "Select yes if the active shareholders are correct";
-export const PSC_STATEMENT_NOT_FOUND = "No additional statements relating to PSCs are currently held on the public register.";
+export const PSC_STATEMENT_NOT_FOUND =
+    "No additional statements relating to PSCs are currently held on the public register.";
 export const WRONG_DETAILS_UPDATE_PSC = "Update the people with significant control (PSC) details";
 export const WRONG_DETAILS_INCORRECT_PSC = "Incorrect people with significant control - File a confirmation statement";
 export const WRONG_DETAILS_UPDATE_SECRETARY = "Update the secretary details";
@@ -26,14 +27,16 @@ export const WRONG_REGISTER_ERROR = "Select yes if you have updated where the co
 export const WRONG_ROA_ERROR = "Select yes if you have updated the registered office address";
 export const WRONG_OFFICER_ERROR = "Select yes if you have updated the officer details";
 export const WRONG_PSC_ERROR = "Select yes if you have updated the PSC details";
-export const SIGNOUT_RETURN_URL_SESSION_KEY = 'signout-return-to-url';
+export const SIGNOUT_RETURN_URL_SESSION_KEY = "signout-return-to-url";
 export const WRONG_PSC_DETAILS_TEXT = "wrong-psc-details";
 export const WRONG_PSC_STATEMENT_TEXT = "wrong-psc-statement";
-export const EMAIL_ADDRESS_INVALID: string =  "Enter an email address in the correct format, like name@example.com";
-export const NO_EMAIL_ADDRESS_SUPPLIED: string =  "Enter the registered email address";
+export const EMAIL_ADDRESS_INVALID: string = "Enter an email address in the correct format, like name@example.com";
+export const NO_EMAIL_ADDRESS_SUPPLIED: string = "Enter the registered email address";
 export const CONFIRMATION_STATEMENT_ERROR: string = "You need to accept the confirmation statement";
-export const LAWFUL_ACTIVITY_STATEMENT_ERROR: string = "You need to accept the statement on the intended future activities of the company";
-export const LP_CONFIRMATION_STATEMENT_ERROR: string = "Select if all required information is either delivered or being delivered for the confirmation statement date";
+export const LAWFUL_ACTIVITY_STATEMENT_ERROR: string =
+    "You need to accept the statement on the intended future activities of the company";
+export const LP_CONFIRMATION_STATEMENT_ERROR: string =
+    "Select if all required information is either delivered or being delivered for the confirmation statement date";
 export const LP_LAWFUL_ACTIVITY_STATEMENT_ERROR: string = "Select if intended future activities are lawful";
 export const ACCEPT_LAWFUL_PURPOSE_STATEMENT = "acceptLawfulPurposeStatement";
 export const LIMITED_PARTNERSHIP_COMPANY_TYPE = "limited-partnership";
@@ -42,18 +45,18 @@ export const LIMITED_PARTNERSHIP_SLP_SUBTYPE = "slp";
 export const LIMITED_PARTNERSHIP_PFLP_SUBTYPE = "pflp";
 export const LIMITED_PARTNERSHIP_SPFLP_SUBTYPE = "spflp";
 export const LIMITED_PARTNERSHIP_SUBTYPES = {
-  LP: LIMITED_PARTNERSHIP_LP_SUBTYPE,
-  SLP: LIMITED_PARTNERSHIP_SLP_SUBTYPE,
-  PFLP: LIMITED_PARTNERSHIP_PFLP_SUBTYPE,
-  SPFLP: LIMITED_PARTNERSHIP_SPFLP_SUBTYPE
+    LP: LIMITED_PARTNERSHIP_LP_SUBTYPE,
+    SLP: LIMITED_PARTNERSHIP_SLP_SUBTYPE,
+    PFLP: LIMITED_PARTNERSHIP_PFLP_SUBTYPE,
+    SPFLP: LIMITED_PARTNERSHIP_SPFLP_SUBTYPE,
 };
 export const COMPANY_PROFILE_SESSION_KEY = "company_profile";
 export const ACSP_SESSION_KEY = "acsp_session";
 export const SIC_CODE_SESSION_KEY = "sic_code_session";
 export const GCI_RETURN_URL_SESSION_KEY = "gci_return_url";
 export const PAYMENT_NONCE_SESSION_KEY = "payment-nonce";
-export const CONFIRMATION_STATEMENT_SESSION_KEY = 'confirmation-statement-check';
-export const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY = 'lawful-activity-statement-check';
+export const CONFIRMATION_STATEMENT_SESSION_KEY = "confirmation-statement-check";
+export const LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY = "lawful-activity-statement-check";
 export const VALID_EMAIL_REGEX_PATTERN = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~\\-]+@([^.@][^@\\s]+)$";
 export const HOSTNAME_REGEX = "^(xn|[a-z0-9]+)(-?-[a-z0-9]+)*$";
 export const TLD_PART_REGEX = "^(?:[a-z]{2,63}|xn--[a-z0-9]+(?:-[a-z0-9]+){1,4})(?:$|[^-])";
@@ -63,81 +66,81 @@ export const DATE_DAY_REGEX: RegExp = /^(0?[1-9]|[12][0-9]|3[01])$/;
 export const DATE_MONTH_REGEX: RegExp = /^(0?[1-9]|1[0-2])$/;
 export const DATE_YEAR_REGEX: RegExp = /^\d{4}$/;
 export const MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME = {
-  LP_CS_DATE_ON_TIME: "confirmation-statement-date-on-time",
-  LP_CS_DATE_EARLY: "confirmation-statement-date-early",
-  LP_CS_BEFORE_YOU_FILE: "confirmation-statement-before-you-file",
-  LP_CS_DATE_CYA: "confirmation-statement-date-check-your-answer",
-  LP_SUBMIT_CONFIRMATION_STATEMENT: "confirmation-statement-submit-confirmation-statement",
-  LP_CS_SIC_CODE: "check-sic-code",
-  LP_CS_SUBMITTED: "submission-confirmation"
+    LP_CS_DATE_ON_TIME: "confirmation-statement-date-on-time",
+    LP_CS_DATE_EARLY: "confirmation-statement-date-early",
+    LP_CS_BEFORE_YOU_FILE: "confirmation-statement-before-you-file",
+    LP_CS_DATE_CYA: "confirmation-statement-date-check-your-answer",
+    LP_SUBMIT_CONFIRMATION_STATEMENT: "confirmation-statement-submit-confirmation-statement",
+    LP_CS_SIC_CODE: "check-sic-code",
+    LP_CS_SUBMITTED: "submission-confirmation",
 };
 
 export enum RADIO_BUTTON_VALUE {
-  NO = "no",
-  YES = "yes",
-  RECENTLY_FILED = "recently_filed"
+    NO = "no",
+    YES = "yes",
+    RECENTLY_FILED = "recently_filed",
 }
 
 export const taskKeys = {
-  SECTION_STATUS_KEY: "sectionStatus"
+    SECTION_STATUS_KEY: "sectionStatus",
 };
 
 export const appointmentTypes = {
-  INDIVIDUAL_PSC: "5007",
-  RLE_PSC: "5008",
-  LEGAL_PERSON_PSC: "5009"
+    INDIVIDUAL_PSC: "5007",
+    RLE_PSC: "5008",
+    LEGAL_PERSON_PSC: "5009",
 };
 
 export const appointmentTypeNames = {
-  PSC: "psc",
-  RLE: "rle",
-  ORP: "orp"
+    PSC: "psc",
+    RLE: "rle",
+    ORP: "orp",
 };
 
 export enum SECTIONS {
-  ACTIVE_OFFICER = "activeOfficerDetailsData",
-  EMAIL = "registeredEmailAddressData",
-  PSC = "personsSignificantControlData",
-  ROA = "registeredOfficeAddressData",
-  REGISTER_LOCATIONS = "registerLocationsData",
-  SIC = "sicCodeData",
-  SOC = "statementOfCapitalData",
-  SHAREHOLDER = "shareholderData",
-  TRADING_STATUS = "tradingStatusData"
+    ACTIVE_OFFICER = "activeOfficerDetailsData",
+    EMAIL = "registeredEmailAddressData",
+    PSC = "personsSignificantControlData",
+    ROA = "registeredOfficeAddressData",
+    REGISTER_LOCATIONS = "registerLocationsData",
+    SIC = "sicCodeData",
+    SOC = "statementOfCapitalData",
+    SHAREHOLDER = "shareholderData",
+    TRADING_STATUS = "tradingStatusData",
 }
 
 export const transactionStatuses = {
-  CLOSED: "closed"
+    CLOSED: "closed",
 };
 
 export const headers = {
-  PAYMENT_REQUIRED: "x-payment-required"
+    PAYMENT_REQUIRED: "x-payment-required",
 };
 
 export const links = {
-  COSTS: "costs"
+    COSTS: "costs",
 };
 
 export enum OFFICER_ROLE {
-  SECRETARY = "SECRETARY",
-  DIRECTOR = "DIRECTOR"
+    SECRETARY = "SECRETARY",
+    DIRECTOR = "DIRECTOR",
 }
 
 export const COMPANY_STATUS = {
-  ACTIVE: "active",
-  DISSOLVED: "dissolved",
-  LIQUIDATION: "liquidation",
-  RECEIVERSHIP: "receivership",
-  CONVERTED_CLOSED: "converted-closed",
-  VOLUNTARY_ARRANGEMENT: "voluntary-arrangement",
-  INSOLVENCY_PROCEEDINGS: "insolvency-proceedings",
-  ADMINISTRATION: "administration",
-  OPEN: "open",
-  CLOSED: "closed",
-  REGISTERED: "registered",
-  REMOVED: "removed"
+    ACTIVE: "active",
+    DISSOLVED: "dissolved",
+    LIQUIDATION: "liquidation",
+    RECEIVERSHIP: "receivership",
+    CONVERTED_CLOSED: "converted-closed",
+    VOLUNTARY_ARRANGEMENT: "voluntary-arrangement",
+    INSOLVENCY_PROCEEDINGS: "insolvency-proceedings",
+    ADMINISTRATION: "administration",
+    OPEN: "open",
+    CLOSED: "closed",
+    REGISTERED: "registered",
+    REMOVED: "removed",
 } as const;
 
-export type COMPANY_STATUS_TYPE = typeof COMPANY_STATUS[keyof typeof COMPANY_STATUS];
+export type COMPANY_STATUS_TYPE = (typeof COMPANY_STATUS)[keyof typeof COMPANY_STATUS];
 
 export const CLOSED_COMPANY_STATUSES: COMPANY_STATUS_TYPE[] = [COMPANY_STATUS.DISSOLVED, COMPANY_STATUS.CLOSED];

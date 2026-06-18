@@ -1,0 +1,8 @@
+# Ignore all files by default and explicitly include TypeScript files in src and test directories
+*
+!src/
+!src/**/
+!src/**/*.ts
+!test/
+!test/**/
+!test/**/*.ts

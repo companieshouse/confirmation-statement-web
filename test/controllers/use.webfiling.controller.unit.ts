@@ -14,50 +14,64 @@ const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockIsCompanyNumberValid = isCompanyNumberValid as jest.Mock;
 mockIsCompanyNumberValid.mockReturnValue(true);
 
-const STOP_PAGE_TITLE_USE_WEBFILING = "You must use our WebFiling service to file for this company - File a confirmation statement - GOV.UK";
+const STOP_PAGE_TITLE_USE_WEBFILING =
+    "You must use our WebFiling service to file for this company - File a confirmation statement - GOV.UK";
 const SERVICE_UNAVAILABLE_TEXT = "Sorry, there is a problem with the service";
 
 describe("Use Webfiling controller tests", () => {
-
-  beforeEach(() => {
-    mocks.mockAuthenticationMiddleware.mockClear();
-    mocks.mockServiceAvailabilityMiddleware.mockClear();
-    mocks.mockSessionMiddleware.mockClear();
-    mockGetCompanyProfile.mockClear();
-    mockIsCompanyNumberValid.mockClear();
-  });
-
-  describe("get() tests", () => {
-
-    it("Should render the use webfiling stop page", async () => {
-      mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
-      const useWebFilingPath = urlUtils.setQueryParam(USE_WEBFILING_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
-
-      const response = await request(app).get(useWebFilingPath);
-
-      expect(mockGetCompanyProfile).toBeCalledWith(validCompanyProfile.companyNumber);
-      expect(response.text).toContain(STOP_PAGE_TITLE_USE_WEBFILING);
-      expect(response.text).toContain("our Webfiling service");
-      expect(response.text).toContain(`You cannot file a confirmation statement for ${validCompanyProfile.companyName}`);
+    beforeEach(() => {
+        mocks.mockAuthenticationMiddleware.mockClear();
+        mocks.mockServiceAvailabilityMiddleware.mockClear();
+        mocks.mockSessionMiddleware.mockClear();
+        mockGetCompanyProfile.mockClear();
+        mockIsCompanyNumberValid.mockClear();
     });
 
+    describe("get() tests", () => {
+        it("Should render the use webfiling stop page", async () => {
+            mockGetCompanyProfile.mockResolvedValueOnce(validCompanyProfile);
+            const useWebFilingPath = urlUtils.setQueryParam(
+                USE_WEBFILING_PATH,
+                URL_QUERY_PARAM.COMPANY_NUM,
+                validCompanyProfile.companyNumber
+            );
 
-    it("Should return an error page if error is thrown in get function", async () => {
-      mockGetCompanyProfile.mockImplementationOnce(() => { throw new Error(); });
-      const useWebFilingPath = urlUtils.setQueryParam(USE_WEBFILING_PATH, URL_QUERY_PARAM.COMPANY_NUM, validCompanyProfile.companyNumber);
+            const response = await request(app).get(useWebFilingPath);
 
-      const response = await request(app).get(useWebFilingPath);
+            expect(mockGetCompanyProfile).toBeCalledWith(validCompanyProfile.companyNumber);
+            expect(response.text).toContain(STOP_PAGE_TITLE_USE_WEBFILING);
+            expect(response.text).toContain("our Webfiling service");
+            expect(response.text).toContain(
+                `You cannot file a confirmation statement for ${validCompanyProfile.companyName}`
+            );
+        });
 
-      expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
+        it("Should return an error page if error is thrown in get function", async () => {
+            mockGetCompanyProfile.mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const useWebFilingPath = urlUtils.setQueryParam(
+                USE_WEBFILING_PATH,
+                URL_QUERY_PARAM.COMPANY_NUM,
+                validCompanyProfile.companyNumber
+            );
+
+            const response = await request(app).get(useWebFilingPath);
+
+            expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
+        });
+
+        it("Should return an error page if invalid company number is entered in url query param", async () => {
+            mockIsCompanyNumberValid.mockReturnValueOnce(false);
+            const useWebFilingPath = urlUtils.setQueryParam(
+                USE_WEBFILING_PATH,
+                URL_QUERY_PARAM.COMPANY_NUM,
+                "this is not a valid number"
+            );
+
+            const response = await request(app).get(useWebFilingPath);
+
+            expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
+        });
     });
-
-    it("Should return an error page if invalid company number is entered in url query param", async () => {
-      mockIsCompanyNumberValid.mockReturnValueOnce(false);
-      const useWebFilingPath = urlUtils.setQueryParam(USE_WEBFILING_PATH, URL_QUERY_PARAM.COMPANY_NUM, "this is not a valid number");
-
-      const response = await request(app).get(useWebFilingPath);
-
-      expect(response.text).toContain(SERVICE_UNAVAILABLE_TEXT);
-    });
-  });
 });

@@ -15,56 +15,84 @@ import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/di
 import { ecctDayOneEnabled } from "../utils/feature.flag";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const session = req.session as Session;
-    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
-    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
-    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
-    const reviewUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(REVIEW_PATH, companyNumber, transactionId, submissionId);
-    const backLinkUrl = urlUtils
-      .getUrlWithCompanyNumberTransactionIdAndSubmissionId(TRADING_STATUS_PATH, companyNumber, transactionId, submissionId);
-    const company: CompanyProfile = await getCompanyProfile(companyNumber);
-    const companyHasExistingRea: boolean = await doesCompanyHaveEmailAddress(companyNumber);
-    const confirmationStatement: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
+    try {
+        const session = req.session as Session;
+        const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+        const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+        const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+        const reviewUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+            REVIEW_PATH,
+            companyNumber,
+            transactionId,
+            submissionId
+        );
+        const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+            TRADING_STATUS_PATH,
+            companyNumber,
+            transactionId,
+            submissionId
+        );
+        const company: CompanyProfile = await getCompanyProfile(companyNumber);
+        const companyHasExistingRea: boolean = await doesCompanyHaveEmailAddress(companyNumber);
+        const confirmationStatement: ConfirmationStatementSubmission = await getConfirmationStatement(
+            session,
+            transactionId,
+            submissionId
+        );
 
-    const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
-    const registeredEmailAddressOptionEnabled: boolean = ecctDayOneEnabled(statementDate);
-    const taskList: TaskList = initTaskList(company.companyNumber, transactionId, submissionId, confirmationStatement, registeredEmailAddressOptionEnabled, companyHasExistingRea);
-    taskList.recordDate = calculateFilingDate(taskList.recordDate, company);
+        const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
+        const registeredEmailAddressOptionEnabled: boolean = ecctDayOneEnabled(statementDate);
+        const taskList: TaskList = initTaskList(
+            company.companyNumber,
+            transactionId,
+            submissionId,
+            confirmationStatement,
+            registeredEmailAddressOptionEnabled,
+            companyHasExistingRea
+        );
+        taskList.recordDate = calculateFilingDate(taskList.recordDate, company);
 
-    return res.render(Templates.TASK_LIST, {
-      backLinkUrl,
-      company,
-      taskList,
-      reviewUrl,
-      templateName: Templates.TASK_LIST
-    });
-  } catch (e) {
-    return next(e);
-  }
+        return res.render(Templates.TASK_LIST, {
+            backLinkUrl,
+            company,
+            taskList,
+            reviewUrl,
+            templateName: Templates.TASK_LIST,
+        });
+    } catch (e) {
+        return next(e);
+    }
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
-    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
-    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+    try {
+        const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+        const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+        const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
 
-    return res.redirect(urlUtils
-      .getUrlWithCompanyNumberTransactionIdAndSubmissionId(REVIEW_PATH, companyNumber, transactionId, submissionId));
-  } catch (e) {
-    return next(e);
-  }
+        return res.redirect(
+            urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+                REVIEW_PATH,
+                companyNumber,
+                transactionId,
+                submissionId
+            )
+        );
+    } catch (e) {
+        return next(e);
+    }
 };
 
 const calculateFilingDate = (recordDate: string, companyProfile: CompanyProfile): string => {
-  const nextMadeUpToDate = companyProfile.confirmationStatement?.nextMadeUpTo;
-  if (nextMadeUpToDate) {
-    if (isInFuture(nextMadeUpToDate)) {
-      return recordDate;
-    } else {
-      return toReadableFormat(nextMadeUpToDate);
+    const nextMadeUpToDate = companyProfile.confirmationStatement?.nextMadeUpTo;
+    if (nextMadeUpToDate) {
+        if (isInFuture(nextMadeUpToDate)) {
+            return recordDate;
+        } else {
+            return toReadableFormat(nextMadeUpToDate);
+        }
     }
-  }
-  throw createAndLogError(`Company Profile is missing confirmationStatement info for company number: ${companyProfile.companyNumber}`);
+    throw createAndLogError(
+        `Company Profile is missing confirmationStatement info for company number: ${companyProfile.companyNumber}`
+    );
 };

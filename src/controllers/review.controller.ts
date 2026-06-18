@@ -1,186 +1,194 @@
 import { NextFunction, Request, Response } from "express";
 import { getTransaction } from "../services/transaction.service";
 import { Session } from "@companieshouse/node-session-handler";
-import { CONFIRMATION_PATH, TASK_LIST_PATH } from '../types/page.urls';
+import { CONFIRMATION_PATH, TASK_LIST_PATH } from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 import { urlUtils } from "../utils/url";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../services/company.profile.service";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
 import { toReadableFormat } from "../utils/date";
-import { ConfirmationStatementSubmission } from '@companieshouse/api-sdk-node/dist/services/confirmation-statement';
+import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
 import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
-import { isLimitedPartnershipCompanyType, getACSPBackPath } from '../utils/limited.partnership';
+import { isLimitedPartnershipCompanyType, getACSPBackPath } from "../utils/limited.partnership";
 import { isPaymentDue, executePaymentJourney } from "../utils/payments";
 import { handleLimitedPartnershipConfirmationJourney } from "../utils/confirmation/limited.partnership.confirmation";
 import { handleNoChangeConfirmationJourney } from "../utils/confirmation/no.change.confirmation";
 import { getAcspSessionData } from "../utils/session.acsp";
-import { CONFIRMATION_STATEMENT_SESSION_KEY, LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY, MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME } from "../utils/constants";
+import {
+    CONFIRMATION_STATEMENT_SESSION_KEY,
+    LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY,
+    MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME,
+} from "../utils/constants";
 import moment from "moment";
 import { CS01_COST } from "../utils/properties";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const session = req.session as Session;
-    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
-    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
-    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
-    const locales = getLocalesService();
-    const lang = selectLang(req.query.lang);
-    const localeInfo = getLocaleInfo(locales, lang);
-    res.cookie('lang', lang, { httpOnly: true });
+    try {
+        const session = req.session as Session;
+        const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+        const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+        const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+        const locales = getLocalesService();
+        const lang = selectLang(req.query.lang);
+        const localeInfo = getLocaleInfo(locales, lang);
+        res.cookie("lang", lang, { httpOnly: true });
 
-    const company: CompanyProfile = await getCompanyProfile(companyNumber);
-    const confirmationDate = company.confirmationStatement?.nextMadeUpTo;
+        const company: CompanyProfile = await getCompanyProfile(companyNumber);
+        const confirmationDate = company.confirmationStatement?.nextMadeUpTo;
 
-    const confirmationStatementCheck = session.getExtraData(CONFIRMATION_STATEMENT_SESSION_KEY) as string;
-    const lawfulActivityStatementCheck = session.getExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY) as string;
+        const confirmationStatementCheck = session.getExtraData(CONFIRMATION_STATEMENT_SESSION_KEY) as string;
+        const lawfulActivityStatementCheck = session.getExtraData(LAWFUL_ACTIVITY_STATEMENT_SESSION_KEY) as string;
 
-    const transaction: Transaction = await getTransaction(session, transactionId);
-    const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
-    const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
-    const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
-    const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
-      TASK_LIST_PATH, companyNumber, transactionId, submissionId);
-
-    if (isLimitedPartnershipCompanyType(company)) {
-      const backLinkPath = getACSPBackPath(session, company);
-      const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
-        backLinkPath,
-        companyNumber,
-        transactionId,
-        submissionId
-      );
-      const acspSessionData = getAcspSessionData(session);
-      const formattedCsDate = formatConfirmationDate(acspSessionData?.newConfirmationDate ?? confirmationDate);
-
-      return res.render(Templates.REVIEW, {
-        ...localeInfo,
-        previousPage,
-        company,
-        CS01_COST,
-        nextMadeUpToDate: confirmationDate,
-        isPaymentDue: isPaymentDue(transaction, submissionId),
-        ecctEnabled: true,
-        confirmationChecked: confirmationStatementCheck,
-        lawfulActivityChecked: lawfulActivityStatementCheck,
-        isLimitedPartnership: true,
-        csDateValue: formattedCsDate,
-        templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_SUBMIT_CONFIRMATION_STATEMENT
-      });
-
-    }
-
-    return res.render(Templates.REVIEW, {
-      ...localeInfo,
-      backLinkUrl,
-      company,
-      CS01_COST,
-      nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
-      isPaymentDue: isPaymentDue(transaction, submissionId),
-      ecctEnabled
-    });
-
-  } catch (e) {
-    return next(e);
-  }
-};
-
-export const post = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
-    const companyProfile: CompanyProfile = await getCompanyProfile(companyNumber);
-    const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
-    const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
-    const session = req.session as Session;
-    const transaction: Transaction = await getTransaction(
-      session,
-      transactionId
-    );
-    const acspSessionData = getAcspSessionData(session);
-    const confirmationDate = companyProfile.confirmationStatement?.nextMadeUpTo;
-
-    const formattedCsDate = formatConfirmationDate(acspSessionData?.newConfirmationDate ?? confirmationDate);
-    let nextPage;
-
-    if (isLimitedPartnershipCompanyType(companyProfile)) {
-      const lpJourneyResponse = handleLimitedPartnershipConfirmationJourney(req, companyNumber, companyProfile, transactionId, submissionId, session);
-
-      if ("renderData" in lpJourneyResponse && lpJourneyResponse.renderData) {
-        return res.render(Templates.REVIEW, {
-          ...getLocaleInfo(lpJourneyResponse.renderData.locales, lpJourneyResponse.renderData.lang),
-          htmlLang: lpJourneyResponse.renderData.lang,
-          previousPage: lpJourneyResponse.renderData.previousPage,
-          company: companyProfile,
-          CS01_COST,
-          ecctEnabled: lpJourneyResponse.renderData.ecctEnabled,
-          confirmationStatementError: lpJourneyResponse.renderData.confirmationStatementError,
-          lawfulActivityStatementError: lpJourneyResponse.renderData.lawfulActivityStatementError,
-          confirmationChecked: lpJourneyResponse.renderData.confirmationChecked,
-          lawfulActivityChecked: lpJourneyResponse.renderData.lawfulActivityChecked,
-          isLimitedPartnership: true,
-          csDateValue: formattedCsDate,
-          isPaymentDue: isPaymentDue(transaction, submissionId),
-          templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_SUBMIT_CONFIRMATION_STATEMENT
-        });
-      }
-
-      nextPage = lpJourneyResponse.nextPage;
-      if (!isPaymentDue(transaction, submissionId)) {
-        return res.redirect(
-          urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
-            nextPage,
+        const transaction: Transaction = await getTransaction(session, transactionId);
+        const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(
+            session,
+            transactionId,
+            submissionId
+        );
+        const statementDate: Date = new Date(company.confirmationStatement?.nextMadeUpTo as string);
+        const ecctEnabled: boolean = ecctDayOneEnabled(statementDate);
+        const backLinkUrl = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+            TASK_LIST_PATH,
             companyNumber,
             transactionId,
             submissionId
-          )
         );
-      }
 
-    } else {
-      const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(session, transactionId, submissionId);
-      const noChangeJourneyResponse = handleNoChangeConfirmationJourney(req, companyProfile, csSubmission);
+        if (isLimitedPartnershipCompanyType(company)) {
+            const backLinkPath = getACSPBackPath(session, company);
+            const previousPage = urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+                backLinkPath,
+                companyNumber,
+                transactionId,
+                submissionId
+            );
+            const acspSessionData = getAcspSessionData(session);
+            const formattedCsDate = formatConfirmationDate(acspSessionData?.newConfirmationDate ?? confirmationDate);
 
-      if (noChangeJourneyResponse?.renderData && "renderData" in noChangeJourneyResponse) {
+            return res.render(Templates.REVIEW, {
+                ...localeInfo,
+                previousPage,
+                company,
+                CS01_COST,
+                nextMadeUpToDate: confirmationDate,
+                isPaymentDue: isPaymentDue(transaction, submissionId),
+                ecctEnabled: true,
+                confirmationChecked: confirmationStatementCheck,
+                lawfulActivityChecked: lawfulActivityStatementCheck,
+                isLimitedPartnership: true,
+                csDateValue: formattedCsDate,
+                templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_SUBMIT_CONFIRMATION_STATEMENT,
+            });
+        }
+
         return res.render(Templates.REVIEW, {
-          backLinkUrl: noChangeJourneyResponse.renderData.backLinkUrl,
-          company: noChangeJourneyResponse.renderData.company,
-          CS01_COST,
-          nextMadeUpToDate: noChangeJourneyResponse.renderData.nextMadeUpToDate,
-          ecctEnabled: noChangeJourneyResponse.renderData.ecctEnabled,
-          confirmationStatementError: noChangeJourneyResponse.renderData.confirmationStatementError,
-          lawfulActivityStatementError: noChangeJourneyResponse.renderData.lawfulActivityStatementError,
-          confirmationChecked: noChangeJourneyResponse.renderData.confirmationChecked,
-          lawfulActivityChecked: noChangeJourneyResponse.renderData.lawfulActivityChecked,
-          isPaymentDue: isPaymentDue(transaction, submissionId)
+            ...localeInfo,
+            backLinkUrl,
+            company,
+            CS01_COST,
+            nextMadeUpToDate: toReadableFormat(csSubmission.data?.confirmationStatementMadeUpToDate),
+            isPaymentDue: isPaymentDue(transaction, submissionId),
+            ecctEnabled,
         });
-      }
-      nextPage = CONFIRMATION_PATH;
+    } catch (e) {
+        return next(e);
     }
+};
 
-    await sendLawfulPurposeStatementUpdate(req, true);
+export const post = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
+        const companyProfile: CompanyProfile = await getCompanyProfile(companyNumber);
+        const transactionId = urlUtils.getTransactionIdFromRequestParams(req);
+        const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+        const session = req.session as Session;
+        const transaction: Transaction = await getTransaction(session, transactionId);
+        const acspSessionData = getAcspSessionData(session);
+        const confirmationDate = companyProfile.confirmationStatement?.nextMadeUpTo;
 
-    await executePaymentJourney(
-      session,
-      res,
-      next,
-      companyNumber,
-      transactionId,
-      submissionId,
-      nextPage
-    );
+        const formattedCsDate = formatConfirmationDate(acspSessionData?.newConfirmationDate ?? confirmationDate);
+        let nextPage;
 
-  } catch (e) {
-    return next(e);
-  }
+        if (isLimitedPartnershipCompanyType(companyProfile)) {
+            const lpJourneyResponse = handleLimitedPartnershipConfirmationJourney(
+                req,
+                companyNumber,
+                companyProfile,
+                transactionId,
+                submissionId,
+                session
+            );
+
+            if ("renderData" in lpJourneyResponse && lpJourneyResponse.renderData) {
+                return res.render(Templates.REVIEW, {
+                    ...getLocaleInfo(lpJourneyResponse.renderData.locales, lpJourneyResponse.renderData.lang),
+                    htmlLang: lpJourneyResponse.renderData.lang,
+                    previousPage: lpJourneyResponse.renderData.previousPage,
+                    company: companyProfile,
+                    CS01_COST,
+                    ecctEnabled: lpJourneyResponse.renderData.ecctEnabled,
+                    confirmationStatementError: lpJourneyResponse.renderData.confirmationStatementError,
+                    lawfulActivityStatementError: lpJourneyResponse.renderData.lawfulActivityStatementError,
+                    confirmationChecked: lpJourneyResponse.renderData.confirmationChecked,
+                    lawfulActivityChecked: lpJourneyResponse.renderData.lawfulActivityChecked,
+                    isLimitedPartnership: true,
+                    csDateValue: formattedCsDate,
+                    isPaymentDue: isPaymentDue(transaction, submissionId),
+                    templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_SUBMIT_CONFIRMATION_STATEMENT,
+                });
+            }
+
+            nextPage = lpJourneyResponse.nextPage;
+            if (!isPaymentDue(transaction, submissionId)) {
+                return res.redirect(
+                    urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
+                        nextPage,
+                        companyNumber,
+                        transactionId,
+                        submissionId
+                    )
+                );
+            }
+        } else {
+            const csSubmission: ConfirmationStatementSubmission = await getConfirmationStatement(
+                session,
+                transactionId,
+                submissionId
+            );
+            const noChangeJourneyResponse = handleNoChangeConfirmationJourney(req, companyProfile, csSubmission);
+
+            if (noChangeJourneyResponse?.renderData && "renderData" in noChangeJourneyResponse) {
+                return res.render(Templates.REVIEW, {
+                    backLinkUrl: noChangeJourneyResponse.renderData.backLinkUrl,
+                    company: noChangeJourneyResponse.renderData.company,
+                    CS01_COST,
+                    nextMadeUpToDate: noChangeJourneyResponse.renderData.nextMadeUpToDate,
+                    ecctEnabled: noChangeJourneyResponse.renderData.ecctEnabled,
+                    confirmationStatementError: noChangeJourneyResponse.renderData.confirmationStatementError,
+                    lawfulActivityStatementError: noChangeJourneyResponse.renderData.lawfulActivityStatementError,
+                    confirmationChecked: noChangeJourneyResponse.renderData.confirmationChecked,
+                    lawfulActivityChecked: noChangeJourneyResponse.renderData.lawfulActivityChecked,
+                    isPaymentDue: isPaymentDue(transaction, submissionId),
+                });
+            }
+            nextPage = CONFIRMATION_PATH;
+        }
+
+        await sendLawfulPurposeStatementUpdate(req, true);
+
+        await executePaymentJourney(session, res, next, companyNumber, transactionId, submissionId, nextPage);
+    } catch (e) {
+        return next(e);
+    }
 };
 
 export function formatConfirmationDate(dateString?: string | Date | null): string | undefined {
-  if (!dateString) {
-    return undefined;
-  }
-  return moment(dateString).format("D MMMM YYYY");
+    if (!dateString) {
+        return undefined;
+    }
+    return moment(dateString).format("D MMMM YYYY");
 }

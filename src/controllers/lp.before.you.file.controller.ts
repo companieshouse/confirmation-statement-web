@@ -8,134 +8,137 @@ import { getAcspSessionData, resetAcspSession, updateAcspSessionData } from "../
 import { CS01_COST } from "../utils/properties";
 import { urlUtils } from "../utils/url";
 import { getCompanyProfileFromSession } from "../utils/session";
-import { isPaymentDue } from '../utils/payments';
+import { isPaymentDue } from "../utils/payments";
 import { getSicCodeCondensedList } from "../services/sic.code.service";
 import { fetchTransaction } from "../utils/confirmation/limited.partnership.confirmation";
-import { LIMITED_PARTNERSHIP_LP_SUBTYPE, LIMITED_PARTNERSHIP_SLP_SUBTYPE, MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME,
-  GCI_RETURN_URL_SESSION_KEY } from '../utils/constants';
+import {
+    LIMITED_PARTNERSHIP_LP_SUBTYPE,
+    LIMITED_PARTNERSHIP_SLP_SUBTYPE,
+    MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME,
+    GCI_RETURN_URL_SESSION_KEY,
+} from "../utils/constants";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const session: Session = req.session as Session;
+        const lang = selectLang(req.query.lang);
+        res.cookie("lang", lang, { httpOnly: true });
+        const company: CompanyProfile = getCompanyProfileFromSession(req);
+        const locales = getLocalesService();
+        const formData = { byfCheckbox: getAcspSessionData(session)?.beforeYouFileCheck ? "confirm" : "" };
+        const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
+        const transaction = fetchTransaction(session, req);
 
-  try {
+        if (!getAcspSessionData(session)) {
+            resetAcspSession(session);
+        }
+
+        const sicCodeList = await getSicCodeCondensedList();
+
+        updateAcspSessionData(session, {
+            sicCodes: sicCodeList,
+        });
+
+        let prevPageURL = `${urls.CONFIRM_COMPANY_PATH}?companyNumber=${urlUtils.getCompanyNumberFromRequestParams(req)}`;
+        let gciReturnUrl = session?.getExtraData(GCI_RETURN_URL_SESSION_KEY) as string;
+        if (gciReturnUrl) {
+            prevPageURL = gciReturnUrl;
+        }
+
+        return res.render(Templates.LP_BEFORE_YOU_FILE, {
+            ...getLocaleInfo(locales, lang),
+            htmlLang: lang,
+            urls,
+            company,
+            CS01_COST,
+            previousPageWithoutLang: prevPageURL,
+            formData,
+            showSICCodeReference: showSICCodeReference(company),
+            isPaymentDue: isPaymentDue(await transaction, submissionId),
+            templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_BEFORE_YOU_FILE,
+        });
+    } catch (e) {
+        return next(e);
+    }
+};
+
+export const post = async (req: Request, res: Response) => {
     const session: Session = req.session as Session;
     const lang = selectLang(req.query.lang);
-    res.cookie('lang', lang, { httpOnly: true });
+    const localInfo = getLocaleInfo(getLocalesService(), lang);
+    const nextPage = urlUtils.getUrlToPath(`${urls.LP_CS_DATE_PATH}?lang=${lang}`, req);
+    const byfCheckbox = req.body.byfCheckbox;
+    const isByfChecked = byfCheckbox === "confirm";
     const company: CompanyProfile = getCompanyProfileFromSession(req);
-    const locales = getLocalesService();
-    const formData = { byfCheckbox: getAcspSessionData(session)?.beforeYouFileCheck ? 'confirm' : '' };
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     const transaction = fetchTransaction(session, req);
 
     if (!getAcspSessionData(session)) {
-      resetAcspSession(session);
+        resetAcspSession(session);
     }
-
-    const sicCodeList = await getSicCodeCondensedList();
 
     updateAcspSessionData(session, {
-      sicCodes: sicCodeList
+        beforeYouFileCheck: isByfChecked,
     });
 
-    let prevPageURL = `${urls.CONFIRM_COMPANY_PATH}?companyNumber=${urlUtils.getCompanyNumberFromRequestParams(req)}`;
-    let gciReturnUrl = session?.getExtraData(GCI_RETURN_URL_SESSION_KEY) as string;
-    if (gciReturnUrl) {
-      prevPageURL = gciReturnUrl;
+    if (!byfCheckbox) {
+        return reloadPageWithError(req, res, {
+            lang,
+            localInfo,
+            byfCheckbox,
+            company,
+            isPaymentDue: isPaymentDue(await transaction, submissionId),
+            errorMessage: localInfo.i18n.BYFErrorMessageNotChecked,
+        });
     }
 
-    return res.render(Templates.LP_BEFORE_YOU_FILE, {
-      ...getLocaleInfo(locales, lang),
-      htmlLang: lang,
-      urls,
-      company,
-      CS01_COST,
-      previousPageWithoutLang: prevPageURL,
-      formData,
-      showSICCodeReference: showSICCodeReference(company),
-      isPaymentDue: isPaymentDue(await transaction, submissionId),
-      templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_BEFORE_YOU_FILE
-    });
-
-  } catch (e) {
-    return next(e);
-  }
-
-};
-
-export const post = async (req: Request, res: Response) => {
-  const session: Session = req.session as Session;
-  const lang = selectLang(req.query.lang);
-  const localInfo = getLocaleInfo(getLocalesService(), lang);
-  const nextPage = urlUtils.getUrlToPath(`${urls.LP_CS_DATE_PATH}?lang=${lang}`, req);
-  const byfCheckbox = req.body.byfCheckbox;
-  const isByfChecked = byfCheckbox === "confirm";
-  const company: CompanyProfile = getCompanyProfileFromSession(req);
-  const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
-  const transaction = fetchTransaction(session, req);
-
-
-  if (!getAcspSessionData(session)) {
-    resetAcspSession(session);
-  }
-
-  updateAcspSessionData(session, {
-    beforeYouFileCheck: isByfChecked
-  });
-
-  if (!byfCheckbox) {
-    return reloadPageWithError(req, res, { lang, localInfo, byfCheckbox, company,
-      isPaymentDue: isPaymentDue(await transaction, submissionId),
-      errorMessage: localInfo.i18n.BYFErrorMessageNotChecked
-    });
-  }
-
-  res.redirect(nextPage);
+    res.redirect(nextPage);
 };
 
 function reloadPageWithError(req: Request, res: Response, options: ReloadPageOptions): void {
-  const { lang, localInfo, byfCheckbox, company, isPaymentDue, errorMessage } = options;
-  res.cookie('lang', lang, { httpOnly: true });
-  res.render(Templates.LP_BEFORE_YOU_FILE, {
-    ...localInfo,
-    htmlLang: lang,
-    company: company,
-    urls,
-    CS01_COST,
-    previousPage: urls.ACSP_LIMITED_PARTNERSHIP,
-    isPaymentDue: isPaymentDue,
-    pageProperties: {
-      errors: [
-        {
-          text: errorMessage,
-          href: '#byfCheckbox'
-        }
-      ],
-      isPost: true
-    },
-    formData: {
-      byfCheckbox
-    },
-    showSICCodeReference: showSICCodeReference(getCompanyProfileFromSession(req)),
-    previousPageWithoutLang: `${urls.CONFIRM_COMPANY_PATH}?companyNumber=${urlUtils.getCompanyNumberFromRequestParams(req)}`,
-    templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_BEFORE_YOU_FILE
-  });
+    const { lang, localInfo, byfCheckbox, company, isPaymentDue, errorMessage } = options;
+    res.cookie("lang", lang, { httpOnly: true });
+    res.render(Templates.LP_BEFORE_YOU_FILE, {
+        ...localInfo,
+        htmlLang: lang,
+        company: company,
+        urls,
+        CS01_COST,
+        previousPage: urls.ACSP_LIMITED_PARTNERSHIP,
+        isPaymentDue: isPaymentDue,
+        pageProperties: {
+            errors: [
+                {
+                    text: errorMessage,
+                    href: "#byfCheckbox",
+                },
+            ],
+            isPost: true,
+        },
+        formData: {
+            byfCheckbox,
+        },
+        showSICCodeReference: showSICCodeReference(getCompanyProfileFromSession(req)),
+        previousPageWithoutLang: `${urls.CONFIRM_COMPANY_PATH}?companyNumber=${urlUtils.getCompanyNumberFromRequestParams(req)}`,
+        templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_BEFORE_YOU_FILE,
+    });
 }
 
 function showSICCodeReference(company: CompanyProfile): boolean {
+    switch (company?.subtype) {
+        case LIMITED_PARTNERSHIP_LP_SUBTYPE:
+        case LIMITED_PARTNERSHIP_SLP_SUBTYPE:
+            return true;
+    }
 
-  switch (company?.subtype) {
-      case LIMITED_PARTNERSHIP_LP_SUBTYPE:
-      case LIMITED_PARTNERSHIP_SLP_SUBTYPE:
-        return true;
-  }
-
-  return false;
+    return false;
 }
 
 interface ReloadPageOptions {
-  lang: string;
-  localInfo: object;
-  byfCheckbox: string;
-  company: CompanyProfile;
-  isPaymentDue: boolean;
-  errorMessage: string;
+    lang: string;
+    localInfo: object;
+    byfCheckbox: string;
+    company: CompanyProfile;
+    isPaymentDue: boolean;
+    errorMessage: string;
 }

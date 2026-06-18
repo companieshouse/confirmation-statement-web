@@ -10,29 +10,29 @@ import PrivateApiClient from "private-api-sdk-node/dist/client";
 import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 
 export const createPublicOAuthApiClient = (session: Session): ApiClient => {
-  const oAuth = session.data?.[SessionKey.SignInInfo]?.[SignInInfoKeys.AccessToken]?.[AccessTokenKeys.AccessToken];
-  if (oAuth) {
-    return createApiClient(undefined, oAuth, API_URL);
-  }
-  throw createAndLogError("Error getting session keys for creating public api client");
+    const oAuth = session.data?.[SessionKey.SignInInfo]?.[SignInInfoKeys.AccessToken]?.[AccessTokenKeys.AccessToken];
+    if (oAuth) {
+        return createApiClient(undefined, oAuth, API_URL);
+    }
+    throw createAndLogError("Error getting session keys for creating public api client");
 };
 
 export const createPublicApiKeyClient = (): ApiClient => {
-  return createApiClient(CHS_API_KEY, undefined, API_URL);
+    return createApiClient(CHS_API_KEY, undefined, API_URL);
 };
 
 export const createPaymentApiClient = (session: Session, paymentUrl: string): ApiClient => {
-  const oAuth = session.data?.[SessionKey.SignInInfo]?.[SignInInfoKeys.AccessToken]?.[AccessTokenKeys.AccessToken];
-  if (oAuth) {
-    return createApiClient(undefined, oAuth, paymentUrl);
-  }
-  throw createAndLogError("Error getting session keys for creating public api client");
+    const oAuth = session.data?.[SessionKey.SignInInfo]?.[SignInInfoKeys.AccessToken]?.[AccessTokenKeys.AccessToken];
+    if (oAuth) {
+        return createApiClient(undefined, oAuth, paymentUrl);
+    }
+    throw createAndLogError("Error getting session keys for creating public api client");
 };
 
 export const createPrivateApiKeyClient = (): PrivateApiClient => {
-  return createPrivateApiClient(CHS_INTERNAL_API_KEY, undefined, API_URL, undefined);
+    return createPrivateApiClient(CHS_INTERNAL_API_KEY, undefined, API_URL, undefined);
 };
 
 export const createInternalApiKeyClient = (): ApiClient => {
-  return createApiClient(CHS_INTERNAL_API_KEY, undefined, INTERNAL_API_URL);
+    return createApiClient(CHS_INTERNAL_API_KEY, undefined, INTERNAL_API_URL);
 };
