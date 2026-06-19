@@ -190,7 +190,10 @@ if (isServiceWithdrawnFeatureEnabled()) {
     router.get(urls.LP_CONFIRMATION, confirmationRoute.get);
 
     router.get(urls.LP_STOP_SCREEN, lpStopScreenRoute.get);
+
     router.get(urls.LP_TRANSITIONAL_STOP, lpTransitionalStopRoute.get);
 
     router.get(urls.LP_MUST_BE_AUTHORISED_AGENT, lpMustBeAuthorisedAgent.get);
+
+    router.post(urls.LP_INTEGRATED_ENTRY, confirmCompanyRoute.post);
 }

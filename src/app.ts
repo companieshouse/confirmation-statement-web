@@ -102,9 +102,9 @@ const csrfProtectionMiddleware = CsrfProtectionMiddleware({
     enabled: true,
     sessionCookieName: COOKIE_NAME,
 });
-app.use(urls.middlewarePaths, csrfProtectionMiddleware);
+app.use(urls.csrfCheckMiddlewarePaths, csrfProtectionMiddleware);
 
-app.post(`*/confirmation-statement/confirm-company`, validateIntegratedJourney);
+app.post(`*/confirmation-statement/integrated-entry`, validateIntegratedJourney);
 
 app.use(commonTemplateVariablesMiddleware);
 // apply our default router to /confirmation-statement

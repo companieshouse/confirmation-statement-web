@@ -138,5 +138,7 @@ export const LP_STOP_SCREEN = "/lp-stop-screen";
 export const LP_STOP_SCREEN_PATH = CONFIRMATION_STATEMENT + LP_STOP_SCREEN;
 export const LP_TRANSITIONAL_STOP = "/lp-transitional-stop";
 export const LP_TRANSITIONAL_STOP_PATH = CONFIRMATION_STATEMENT + LP_TRANSITIONAL_STOP;
+export const LP_INTEGRATED_ENTRY = "/integrated-entry";
 
 export const middlewarePaths = /\/confirmation-statement\/((?!healthcheck).)*/;
+export const csrfCheckMiddlewarePaths = /\/confirmation-statement\/((?!healthcheck|integrated-entry).*)/;
