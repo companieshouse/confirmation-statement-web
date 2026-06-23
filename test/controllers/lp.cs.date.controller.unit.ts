@@ -10,6 +10,7 @@ import {
     resetReviewCheckboxes,
     sendLimitedPartnershipTransactionUpdate,
 } from "../../src/utils/confirmation/limited.partnership.confirmation.ts";
+import * as csDateValidator from "../../src/validators/lp.cs.date.validator.ts";
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -197,6 +198,27 @@ describe("date controller post tests", () => {
 
         expect(response.status).toBe(200);
         expect(response.text).toContain(`href="${expectedBackUrl}"`);
+    });
+
+    it("should reload page with error when entered date is the same as current CS date", async () => {
+        jest.spyOn(csDateValidator, "validateLastOrNextMadeUpDate").mockReturnValue(
+            "A confirmation statement has already been filed for the date entered"
+        );
+
+        const response = await request(app).post(URL).send({
+            confirmationStatementDate: "no",
+            "csDate-day": "22",
+            "csDate-month": "06",
+            "csDate-year": "2026",
+        });
+
+        expect(csDateValidator.validateLastOrNextMadeUpDate).toHaveBeenCalled();
+
+        expect(response.status).toBe(200);
+
+        expect(response.text).toContain("A confirmation statement has already been filed for the date entered");
+
+        expect(mockSendLimitedPartnershipTransactionUpdate).not.toHaveBeenCalled();
     });
 });
 

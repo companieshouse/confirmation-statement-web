@@ -22,7 +22,12 @@ import {
     CsDateValue,
 } from "../utils/limited.partnership";
 import { convertDateToString, formatDateString } from "../utils/date";
-import { isTodayBeforeFileCsDate, validateDateSelectorValue } from "../validators/lp.cs.date.validator";
+import {
+    getCsDateInput,
+    isTodayBeforeFileCsDate,
+    validateDateSelectorValue,
+    validateLastOrNextMadeUpDate,
+} from "../validators/lp.cs.date.validator";
 import {
     resetReviewCheckboxes,
     sendLimitedPartnershipTransactionUpdate,
@@ -38,7 +43,13 @@ export const get = (req: Request, res: Response) => {
     const submissionId = urlUtils.getSubmissionIdFromRequestParams(req);
     res.cookie("lang", lang, { httpOnly: true });
 
-    let csDateRadioValue, csDateValue;
+    let csDateRadioValue: string | undefined = undefined;
+    let csDateValue: CsDateValue = {
+        csDateYear: "",
+        csDateMonth: "",
+        csDateDay: "",
+    };
+
     if (acspSessionData && acspSessionData.changeConfirmationStatementDate !== null) {
         if (acspSessionData.changeConfirmationStatementDate) {
             csDateRadioValue = RADIO_BUTTON_VALUE.YES;
@@ -87,16 +98,15 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         const localInfo = getLocaleInfo(locales, lang);
         const isAcspJourney = isACSPJourney(req.originalUrl);
         const reviewPath = getReviewPath(isAcspJourney);
+        const csDateValue: CsDateValue = {
+            csDateYear: req.body["csDate-year"],
+            csDateMonth: req.body["csDate-month"],
+            csDateDay: req.body["csDate-day"],
+        };
 
         if (req.body) {
             switch (req.body.confirmationStatementDate) {
                 case RADIO_BUTTON_VALUE.YES: {
-                    const csDateValue: CsDateValue = {
-                        csDateYear: req.body["csDate-year"],
-                        csDateMonth: req.body["csDate-month"],
-                        csDateDay: req.body["csDate-day"],
-                    };
-
                     const errorMessage = validateDateSelectorValue(localInfo, csDateValue, company);
 
                     if (errorMessage) {
@@ -133,6 +143,23 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
                 case RADIO_BUTTON_VALUE.NO: {
                     const date = returnTodayOnlyIfBeforeFileCsDate(company); // Saved the date value into session if user clicked no in early screen
                     saveCsDateIntoSession(acspSessionData, false, date);
+                    const formattedDate = getCsDateInput(csDateValue);
+                    const errorMessage = validateLastOrNextMadeUpDate(formattedDate, company, localInfo);
+
+                    if (errorMessage) {
+                        return reloadPageWithError({
+                            req,
+                            res,
+                            lang,
+                            localInfo,
+                            company,
+                            acspSessionData,
+                            errorMessage,
+                            csDateRadioValue: RADIO_BUTTON_VALUE.NO,
+                            csDateValue,
+                        });
+                    }
+
                     await sendLimitedPartnershipTransactionUpdate(
                         req,
                         convertDateToString(date, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT),
