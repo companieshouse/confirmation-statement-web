@@ -91,110 +91,130 @@ export const get = (req: Request, res: Response) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const lang = selectLang(req.query.lang);
-        const company: CompanyProfile = getCompanyProfileFromSession(req);
-        const acspSessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
-        const locales = getLocalesService();
-        const localInfo = getLocaleInfo(locales, lang);
-        const isAcspJourney = isACSPJourney(req.originalUrl);
-        const reviewPath = getReviewPath(isAcspJourney);
+        const context = buildContext(req);
         const csDateValue: CsDateValue = {
             csDateYear: req.body["csDate-year"],
             csDateMonth: req.body["csDate-month"],
             csDateDay: req.body["csDate-day"],
         };
 
-        if (req.body) {
-            switch (req.body.confirmationStatementDate) {
-                case RADIO_BUTTON_VALUE.YES: {
-                    const errorMessage = validateDateSelectorValue(localInfo, csDateValue, company);
+        if (!req.body) {
+            return;
+        }
 
-                    if (errorMessage) {
-                        reloadPageWithError({
-                            req,
-                            res,
-                            lang,
-                            localInfo,
-                            company,
-                            acspSessionData,
-                            errorMessage,
-                            csDateRadioValue: RADIO_BUTTON_VALUE.YES,
-                            csDateValue,
-                        });
-                    } else {
-                        const csDateInput = new Date(
-                            Number(csDateValue.csDateYear),
-                            Number(csDateValue.csDateMonth) - 1,
-                            Number(csDateValue.csDateDay)
-                        );
-                        saveCsDateIntoSession(acspSessionData, true, csDateInput);
-                        await sendLimitedPartnershipTransactionUpdate(
-                            req,
-                            moment(csDateInput).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT),
-                            null
-                        );
-
-                        return res.redirect(
-                            urlUtils.getUrlToPath(`${urls.LP_CHECK_YOUR_ANSWER_PATH}?lang=${lang}`, req)
-                        );
-                    }
-                    break;
-                }
-                case RADIO_BUTTON_VALUE.NO: {
-                    const date = returnTodayOnlyIfBeforeFileCsDate(company); // Saved the date value into session if user clicked no in early screen
-                    saveCsDateIntoSession(acspSessionData, false, date);
-                    const formattedDate = getCsDateInput(csDateValue);
-                    const errorMessage = validateLastOrNextMadeUpDate(formattedDate, company, localInfo);
-
-                    if (errorMessage) {
-                        return reloadPageWithError({
-                            req,
-                            res,
-                            lang,
-                            localInfo,
-                            company,
-                            acspSessionData,
-                            errorMessage,
-                            csDateRadioValue: RADIO_BUTTON_VALUE.NO,
-                            csDateValue,
-                        });
-                    }
-
-                    await sendLimitedPartnershipTransactionUpdate(
-                        req,
-                        convertDateToString(date, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT),
-                        null
-                    );
-
-                    const isPrivateFund: boolean =
-                        isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company);
-
-                    if (isPrivateFund) {
-                        resetReviewCheckboxes(req);
-                    }
-
-                    const path = isPrivateFund ? reviewPath : urls.LP_SIC_CODE_SUMMARY_PATH;
-
-                    const nextPage = urlUtils.getUrlToPath(`${path}?lang=${lang}`, req);
-                    res.redirect(nextPage);
-                    break;
-                }
-                default: {
-                    reloadPageWithError({
-                        req,
-                        res,
-                        lang,
-                        localInfo,
-                        company,
-                        acspSessionData,
-                        errorMessage: localInfo.i18n.CDSErrorNoRadioSelected,
-                    });
-                }
+        switch (req.body.confirmationStatementDate) {
+            case RADIO_BUTTON_VALUE.YES: {
+                return radioYesSelection(req, res, csDateValue, context);
+            }
+            case RADIO_BUTTON_VALUE.NO: {
+                return radioNoSelection(req, res, csDateValue, context);
+            }
+            default: {
+                reloadPageWithError({
+                    req,
+                    res,
+                    lang: context.lang,
+                    localInfo: context.localInfo,
+                    company: context.company,
+                    acspSessionData: context.acspSessionData,
+                    errorMessage: context.localInfo.i18n.CDSErrorNoRadioSelected,
+                });
             }
         }
     } catch (e) {
         return next(e);
     }
+};
+
+const buildContext = (req: Request): ConfirmationStatementContext => {
+    const lang = selectLang(req.query.lang);
+    const company: CompanyProfile = getCompanyProfileFromSession(req);
+    const acspSessionData = getAcspSessionData(req.session as Session) as AcspSessionData;
+    const locales = getLocalesService();
+    const localInfo = getLocaleInfo(locales, lang);
+
+    return {
+        lang,
+        company,
+        acspSessionData,
+        localInfo,
+        isACSPJourney: isACSPJourney(req.originalUrl),
+    };
+};
+
+const radioYesSelection = async (req: Request, res: Response, csDateValue, context: ConfirmationStatementContext) => {
+    const { lang, company, acspSessionData, localInfo } = context;
+
+    const errorMessage = validateDateSelectorValue(localInfo, csDateValue, company);
+
+    if (errorMessage) {
+        reloadPageWithError({
+            req,
+            res,
+            lang,
+            localInfo,
+            company,
+            acspSessionData,
+            errorMessage,
+            csDateRadioValue: RADIO_BUTTON_VALUE.YES,
+            csDateValue,
+        });
+    } else {
+        const csDateInput = new Date(
+            Number(csDateValue.csDateYear),
+            Number(csDateValue.csDateMonth) - 1,
+            Number(csDateValue.csDateDay)
+        );
+        saveCsDateIntoSession(acspSessionData, true, csDateInput);
+        await sendLimitedPartnershipTransactionUpdate(
+            req,
+            moment(csDateInput).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT),
+            null
+        );
+
+        return res.redirect(urlUtils.getUrlToPath(`${urls.LP_CHECK_YOUR_ANSWER_PATH}?lang=${lang}`, req));
+    }
+};
+
+const radioNoSelection = async (req: Request, res: Response, csDateValue, context: ConfirmationStatementContext) => {
+    const { lang, company, acspSessionData, localInfo, isACSPJourney } = context;
+    const date = returnTodayOnlyIfBeforeFileCsDate(company); // Saved the date value into session if user clicked no in early screen
+    saveCsDateIntoSession(acspSessionData, false, date);
+    const formattedDate = getCsDateInput(csDateValue);
+    const errorMessage = validateLastOrNextMadeUpDate(formattedDate, company, localInfo);
+
+    if (errorMessage) {
+        return reloadPageWithError({
+            req,
+            res,
+            lang,
+            localInfo,
+            company,
+            acspSessionData,
+            errorMessage,
+            csDateRadioValue: RADIO_BUTTON_VALUE.NO,
+            csDateValue,
+        });
+    }
+
+    await sendLimitedPartnershipTransactionUpdate(
+        req,
+        convertDateToString(date, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT),
+        null
+    );
+
+    const isPrivateFund: boolean =
+        isPflpLimitedPartnershipCompanyType(company) || isSpflpLimitedPartnershipCompanyType(company);
+
+    if (isPrivateFund) {
+        resetReviewCheckboxes(req);
+    }
+
+    const reviewPath = getReviewPath(isACSPJourney);
+    const path = isPrivateFund ? reviewPath : urls.LP_SIC_CODE_SUMMARY_PATH;
+
+    const nextPage = urlUtils.getUrlToPath(`${path}?lang=${lang}`, req);
+    res.redirect(nextPage);
 };
 
 function returnTodayOnlyIfBeforeFileCsDate(company: CompanyProfile): Date | null {
@@ -257,4 +277,12 @@ interface ReloadPageOptions {
     errorMessage: string;
     csDateRadioValue?: string;
     csDateValue?: CsDateValue;
+}
+
+interface ConfirmationStatementContext {
+    lang: string;
+    company: CompanyProfile;
+    acspSessionData: AcspSessionData;
+    localInfo: ReturnType<typeof getLocaleInfo>;
+    isACSPJourney: boolean;
 }
