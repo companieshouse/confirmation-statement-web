@@ -89,7 +89,7 @@ export const get = (req: Request, res: Response) => {
     });
 };
 
-export const post = async (req: Request, res: Response, next: NextFunction) => {
+export const post = (req: Request, res: Response, next: NextFunction) => {
     try {
         const context = buildContext(req);
         const csDateValue: CsDateValue = {
