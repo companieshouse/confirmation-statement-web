@@ -37,7 +37,13 @@ export const get = (req: Request, res: Response) => {
 
     const sicCodeSummaryList = getSicCodeSummaryList(req, lang, sicCodesList);
 
-    return renderPage(req, res, sicCodeSummaryList, sicCodesList, errors);
+    const removedLastSicCode =
+        sessionSicCodes !== undefined &&
+        Array.isArray(sessionSicCodes) &&
+        (sessionSicCodes as string[]).length === 0 &&
+        (company?.sicCodes?.length ?? 0) > 0;
+
+    return renderPage(req, res, sicCodeSummaryList, sicCodesList, errors, removedLastSicCode);
 };
 
 export const saveAndContinue = async (req: Request, res: Response) => {
