@@ -80,7 +80,7 @@ function isDateNumeric(date: CsDateValue): boolean {
     return isNumeric(date.csDateDay) && isNumeric(date.csDateMonth) && isNumeric(date.csDateYear);
 }
 
-function getCsDateInput(date: CsDateValue): Date {
+export function getCsDateInput(date: CsDateValue): Date {
     return new Date(Number(date.csDateYear), Number(date.csDateMonth) - 1, Number(date.csDateDay));
 }
 
@@ -124,7 +124,11 @@ function validateLpReformDate(csDateInput: Date, localInfo: any): string | undef
     return undefined;
 }
 
-function validateLastOrNextMadeUpDate(csDateInput: Date, company: CompanyProfile, localInfo: any): string | undefined {
+export function validateLastOrNextMadeUpDate(
+    csDateInput: Date,
+    company: CompanyProfile,
+    localInfo: any
+): string | undefined {
     const lastOrNextMadeUpDate = isTodayBeforeFileCsDate(company)
         ? company?.confirmationStatement?.lastMadeUpTo
         : company.confirmationStatement?.nextMadeUpTo;
