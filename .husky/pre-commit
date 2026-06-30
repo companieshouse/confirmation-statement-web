@@ -1,8 +1,2 @@
-#!/usr/bin/env sh
-
-export NVM_DIR="$HOME/.nvm"
-. "$NVM_DIR/nvm.sh"
-
-nvm use 20 >/dev/null
 npx lint-staged
 npm run lint
