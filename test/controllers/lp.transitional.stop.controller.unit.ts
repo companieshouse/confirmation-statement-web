@@ -6,6 +6,9 @@ import app from "../../src/app";
 import { getCompanyProfileFromSession } from "../../src/utils/session";
 import { validLimitedPartnershipProfile } from "../mocks/company.profile.mock";
 import { LP_TRANSITIONAL_STOP_PATH } from "../../src/types/page.urls";
+import { FEATURE_FLAG_LP_REFORM_DATE } from "../../src/utils/properties";
+import { addDayToDateString } from "../../src/utils/date";
+import { DMMMMYYYY_DATE_FORMAT } from "../../src/utils/constants";
 
 const mockGetCompanyProfileFromSession = getCompanyProfileFromSession as jest.Mock;
 
@@ -23,7 +26,8 @@ describe("LP transitional stop controller tests", () => {
 
         expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
         expect(response.text).toContain(PAGE_TITLE);
-        expect(response.text).toContain(validLimitedPartnershipProfile.companyName);
+        const expectedDate = addDayToDateString(DMMMMYYYY_DATE_FORMAT, FEATURE_FLAG_LP_REFORM_DATE, 1);
+        expect(response.text).toContain(expectedDate);
     });
 
     it("Should return error page if no company in session", async () => {
