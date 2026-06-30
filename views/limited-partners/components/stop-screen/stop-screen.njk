@@ -1,0 +1,25 @@
+{% extends "../../../layout.html" %}
+
+{% block pageTitle %}
+  You cannot use this service - Limited Partnership Status
+{% endblock %}
+{% block signOut %}{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-width-container">
+            <div class="govuk-grid-column-two-thirds">
+                <h1 class="govuk-heading-xl">
+                    You cannot file a confirmation statement
+                </h1>
+                <p>A confirmation statement cannot be filed for {{ company.companyName }} because it has been closed.</p>
+                <p><a data-event-id="contact-information-wrong" href="https://www.gov.uk/government/organisations/companies-house/about/access-and-opening">Contact us</a> if you think this information is wrong.</p>
+                <p>If this is the wrong limited partnership, <a data-event-id="start-again" href="/confirmation-statement">go back and enter a different company number</a>.</p>
+                <p>
+                    <a href="https://www.smartsurvey.co.uk/s/fileconfstmnt-cannotfiledissolvedorliquidated/">What did you think of this service?</a>
+                    (takes 2 minutes)
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
