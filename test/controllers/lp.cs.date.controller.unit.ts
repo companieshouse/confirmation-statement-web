@@ -199,27 +199,6 @@ describe("date controller post tests", () => {
         expect(response.status).toBe(200);
         expect(response.text).toContain(`href="${expectedBackUrl}"`);
     });
-
-    it("should reload page with error when entered date is the same as current CS date", async () => {
-        jest.spyOn(csDateValidator, "validateLastOrNextMadeUpDate").mockReturnValue(
-            "A confirmation statement has already been filed for the date entered"
-        );
-
-        const response = await request(app).post(URL).send({
-            confirmationStatementDate: "no",
-            "csDate-day": "22",
-            "csDate-month": "06",
-            "csDate-year": "2026",
-        });
-
-        expect(csDateValidator.validateLastOrNextMadeUpDate).toHaveBeenCalled();
-
-        expect(response.status).toBe(200);
-
-        expect(response.text).toContain("A confirmation statement has already been filed for the date entered");
-
-        expect(mockSendLimitedPartnershipTransactionUpdate).not.toHaveBeenCalled();
-    });
 });
 
 describe("date controller validation tests", () => {

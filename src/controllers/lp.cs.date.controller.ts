@@ -107,7 +107,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
                 return radioYesSelection(req, res, csDateValue, context);
             }
             case RADIO_BUTTON_VALUE.NO: {
-                return radioNoSelection(req, res, csDateValue, context);
+                return radioNoSelection(req, res, context);
             }
             default: {
                 reloadPageWithError({
@@ -176,12 +176,20 @@ const radioYesSelection = async (req: Request, res: Response, csDateValue, conte
     }
 };
 
-const radioNoSelection = async (req: Request, res: Response, csDateValue, context: ConfirmationStatementContext) => {
+const radioNoSelection = async (req: Request, res: Response, context: ConfirmationStatementContext) => {
     const { lang, company, acspSessionData, localInfo, isACSPJourney } = context;
     const date = returnTodayOnlyIfBeforeFileCsDate(company); // Saved the date value into session if user clicked no in early screen
     saveCsDateIntoSession(acspSessionData, false, date);
-    const formattedDate = getCsDateInput(csDateValue);
-    const errorMessage = validateLastOrNextMadeUpDate(formattedDate, company, localInfo);
+    const updatedCsDateValue = {
+        csDateYear: String(date?.getFullYear() || ""),
+        csDateMonth: String((date?.getMonth() || 0) + 1),
+        csDateDay: String(date?.getDate() || ""),
+    };
+    let errorMessage: string | undefined;
+
+    if (date) {
+        errorMessage = validateLastOrNextMadeUpDate(date, company, localInfo);
+    }
 
     if (errorMessage) {
         return reloadPageWithError({
@@ -193,7 +201,7 @@ const radioNoSelection = async (req: Request, res: Response, csDateValue, contex
             acspSessionData,
             errorMessage,
             csDateRadioValue: RADIO_BUTTON_VALUE.NO,
-            csDateValue,
+            csDateValue: updatedCsDateValue,
         });
     }
 
