@@ -181,9 +181,9 @@ const radioNoSelection = async (req: Request, res: Response, context: Confirmati
     const date = returnTodayOnlyIfBeforeFileCsDate(company); // Saved the date value into session if user clicked no in early screen
     saveCsDateIntoSession(acspSessionData, false, date);
     const updatedCsDateValue = {
-        csDateYear: String(date?.getFullYear() || ""),
-        csDateMonth: String((date?.getMonth() || 0) + 1),
-        csDateDay: String(date?.getDate() || ""),
+        csDateYear: String(date?.getFullYear() ?? ""),
+        csDateMonth: String((date?.getMonth() ?? 0) + 1),
+        csDateDay: String(date?.getDate() ?? ""),
     };
     let errorMessage: string | undefined;
 
