@@ -5,6 +5,7 @@ import { DMMMMYYYY_DATE_FORMAT, YYYYMMDD_WITH_HYPHEN_DATE_FORMAT } from "./const
 import { Request } from "express";
 import { isTodayBeforeFileCsDate } from "../validators/lp.cs.date.validator";
 import { getCompanyProfileFromSession } from "./session";
+import { AcspSessionData } from "../utils/session.acsp";
 
 export const toReadableFormat = (dateToConvert: string): string => {
     if (!dateToConvert) {
@@ -83,9 +84,9 @@ function isDefined<T>(value: T | null | undefined): value is T {
     return value !== null && value !== undefined;
 }
 
-export function getDateSubmission(newConfirmationDate: Date | null | undefined, req: Request): any {
-    if (newConfirmationDate) {
-        return moment(newConfirmationDate).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT);
+export function getDateSubmission(acspSessionData: AcspSessionData | null | undefined, req: Request): any {
+    if (acspSessionData?.newConfirmationDate) {
+        return moment(acspSessionData?.newConfirmationDate).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT);
     }
 
     const date = isTodayBeforeFileCsDate(getCompanyProfileFromSession(req)) ? moment().startOf("day").toDate() : null;

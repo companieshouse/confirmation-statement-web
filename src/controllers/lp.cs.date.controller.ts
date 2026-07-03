@@ -54,10 +54,12 @@ export const get = (req: Request, res: Response) => {
         if (acspSessionData.changeConfirmationStatementDate) {
             csDateRadioValue = RADIO_BUTTON_VALUE.YES;
             if (acspSessionData.newConfirmationDate) {
+                const newConfDateAsDate: Date = moment(acspSessionData.newConfirmationDate).toDate();
+
                 csDateValue = {
-                    csDateYear: `${acspSessionData.newConfirmationDate.getFullYear()}`,
-                    csDateMonth: `${acspSessionData.newConfirmationDate.getMonth() + 1}`,
-                    csDateDay: `${acspSessionData.newConfirmationDate.getDate()}`,
+                    csDateYear: `${newConfDateAsDate.getFullYear()}`,
+                    csDateMonth: `${newConfDateAsDate.getMonth() + 1}`,
+                    csDateDay: `${newConfDateAsDate.getDate()}`,
                 };
             }
         } else {
@@ -255,7 +257,7 @@ function saveCsDateIntoSession(
 ) {
     if (acspSessionData) {
         acspSessionData.changeConfirmationStatementDate = isChangedConfirmationStatementDate;
-        acspSessionData.newConfirmationDate = csDateInput;
+        acspSessionData.newConfirmationDate = moment(csDateInput).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT);
     }
 }
 

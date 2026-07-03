@@ -16,7 +16,7 @@ const URL = LP_CHECK_YOUR_ANSWER_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER
     .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
 const csDatePageUrl =
     "/confirmation-statement/company/12345678/transaction/66454/submission/435435/acsp/confirmation-statement-date?lang=en";
-const csDate = new Date("2025-08-01:00:00Z");
+const csDate = "2025-08-01";
 const acspSessionData = createDefaultAcspSessionData();
 
 jest.mock("../../src/utils/confirmation/limited.partnership.confirmation");

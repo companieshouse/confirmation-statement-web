@@ -97,7 +97,7 @@ export const saveAndContinue = async (req: Request, res: Response) => {
 
     req.session?.setExtraData(SIC_CODE_SESSION_KEY, unsavedCodeList);
 
-    const submitDate = getDateSubmission(sessionData?.newConfirmationDate, req);
+    const submitDate = getDateSubmission(sessionData, req);
 
     await sendLimitedPartnershipTransactionUpdate(req, submitDate, sicCodeList);
 
