@@ -105,8 +105,20 @@ describe("LP CS date validator tests", () => {
             csDateDay: "31",
         };
 
+        validLimitedPartnershipProfile.confirmationStatement = {
+            lastMadeUpTo: "2098-03-15",
+            nextDue: "2099-03-29",
+            nextMadeUpTo: "2099-03-15",
+            overdue: false,
+        };
+
+        const csExpectedDate = formatDateString(
+            "DD/MM/YYYY",
+            validLimitedPartnershipProfile.confirmationStatement?.nextMadeUpTo
+        );
+
         expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(
-            localInfo.i18n.CDSErrorPastDate
+            localInfo.i18n.CDSErrorPastDate + csExpectedDate
         );
     });
 

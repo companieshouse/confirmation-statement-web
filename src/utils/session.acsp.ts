@@ -2,11 +2,12 @@ import { Session } from "@companieshouse/node-session-handler";
 import { ACSP_SESSION_KEY } from "../utils/constants";
 import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services/sic-code";
 import { CsDateValue } from "./limited.partnership";
+import moment from "moment";
 
 export interface AcspSessionData {
     beforeYouFileCheck: boolean;
     changeConfirmationStatementDate: boolean | null;
-    newConfirmationDate: Date | null;
+    newConfirmationDate: string | null;
     confirmAllInformationCheck: boolean;
     confirmLawfulActionsCheck: boolean;
     companySubtype?: string;
@@ -41,10 +42,11 @@ export function updateAcspSessionData(session: Session, updates: Partial<AcspSes
 
 export function getCsDateValueFromSession(acspSessionData: AcspSessionData): CsDateValue | undefined {
     if (acspSessionData?.newConfirmationDate) {
+        const newConfDateAsDate: Date = moment(acspSessionData?.newConfirmationDate).toDate();
         return {
-            csDateYear: `${acspSessionData.newConfirmationDate.getFullYear()}`,
-            csDateMonth: `${acspSessionData.newConfirmationDate.getMonth() + 1}`,
-            csDateDay: `${acspSessionData.newConfirmationDate.getDate()}`,
+            csDateYear: `${newConfDateAsDate.getFullYear()}`,
+            csDateMonth: `${newConfDateAsDate.getMonth() + 1}`,
+            csDateDay: `${newConfDateAsDate.getDate()}`,
         };
     }
 }

@@ -204,13 +204,13 @@ describe("Date tests", () => {
             jest.clearAllMocks();
         });
 
-        it("should format and return newConfirmationDate when provided", () => {
-            const date = new Date("2023-10-01");
-            const result = getDateSubmission(date, mockReq);
-            expect(result).toBe(moment(date).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT));
+        it("should format and return newConfirmationDate on ACSP Session Data when provided", () => {
+            const ascpSessionData: AcspSessionData = { newConfirmationDate: "2023-10-01" };
+            const result = getDateSubmission(ascpSessionData, mockReq);
+            expect(result).toBe(moment("2023-10-01").format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT));
         });
 
-        it("should return formatted current date when newConfirmationDate is null and today is before file CS date", () => {
+        it("should return formatted current date when no newConfirmationDate on ACSP Session Data and today is before file CS date", () => {
             (isTodayBeforeFileCsDate as jest.Mock).mockReturnValue(true);
             const todayStart = moment().startOf("day").toDate();
             jest.spyOn(dateUtils, "convertDateToString").mockReturnValue("2023-10-01");
@@ -222,7 +222,7 @@ describe("Date tests", () => {
             expect(result).toBe("2023-10-01");
         });
 
-        it("should return null formatted when newConfirmationDate is null and today is not before file CS date", () => {
+        it("should return null formatted when no newConfirmationDate on ACSP Session Data  and today is not before file CS date", () => {
             (isTodayBeforeFileCsDate as jest.Mock).mockReturnValue(false);
             jest.spyOn(dateUtils, "convertDateToString").mockReturnValue(null);
 

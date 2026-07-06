@@ -43,7 +43,7 @@ export function validateDateSelectorValue(
 
     // run a sequence of focused checks — each returns an error or undefined
     return (
-        validateFutureDate(csDateInput, localInfo) ??
+        validateFutureDate(csDateInput, company, localInfo) ??
         validateMustFileBy(csDateInput, company, localInfo) ??
         validateRegistrationDate(csDateInput, company, localInfo) ??
         validateLpReformDate(csDateInput, localInfo) ??
@@ -84,9 +84,17 @@ export function getCsDateInput(date: CsDateValue): Date {
     return new Date(Number(date.csDateYear), Number(date.csDateMonth) - 1, Number(date.csDateDay));
 }
 
-function validateFutureDate(csDateInput: Date, localInfo: any): string | undefined {
+function validateFutureDate(csDateInput: Date, company: CompanyProfile, localInfo: any): string | undefined {
     if (moment(csDateInput).isAfter(moment().startOf("day"))) {
-        return localInfo.i18n.CDSErrorPastDate;
+        let expectedCSDate: string | undefined;
+
+        if (company.confirmationStatement?.lastMadeUpTo) {
+            expectedCSDate = formatDateString("DD/MM/YYYY", company.confirmationStatement?.nextMadeUpTo);
+        }
+
+        const errorMessage = localInfo.i18n.CDSErrorPastDate + expectedCSDate;
+
+        return errorMessage;
     }
     return undefined;
 }
