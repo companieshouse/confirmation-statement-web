@@ -16,6 +16,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import * as sicCodeService from "../../src/services/sic.code.service";
 import { getCompanyProfileFromSession } from "../../src/utils/session";
 import { resetReviewCheckboxes } from "../../src/utils/confirmation/limited.partnership.confirmation";
+import { getSicCodeSummaryList } from "../../src/controllers/lp.sic.code.summary.controller";
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -58,19 +59,8 @@ const mockResetReviewCheckboxes = resetReviewCheckboxes as jest.Mock;
 
 jest.mock("../../src/utils/session");
 const mockGetCompanyProfileFromSession = getCompanyProfileFromSession as jest.Mock;
-
-middlewareMocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
-    const session: Session = new Session();
-    session.data = {
-        extra_data: {
-            company_profile: {
-                sicCodes: ["70001", "70002", "70003"],
-            },
-        },
-    };
-    req.session = session;
-    return next();
-});
+let session: Session;
+let req: Partial<Request>;
 
 describe("Controller tests", () => {
     beforeEach(() => {
@@ -90,6 +80,21 @@ describe("Controller tests", () => {
                 { sic_code: "70005", sic_description: "Description 5" },
             ],
         });
+
+        session = new Session();
+        session.data = {
+            extra_data: {
+                company_profile: {
+                    sicCodes: ["70001", "70002", "70003"],
+                },
+            },
+        };
+
+        middlewareMocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
+            req.session = session;
+            return next();
+        });
+
         mockGetCompanyProfileFromSession.mockReturnValue({
             companyName: "Test Limited Partnership",
             companyNumber: "LP123456",
@@ -156,14 +161,14 @@ describe("Controller tests", () => {
     it("should not add a duplicate SIC code", async () => {
         await request(app)
             .post(`${URL}/add`)
-            .send({ code: "70005", unsavedCodeList: "70001,70002,70003,70005" })
+            .send({ code: "70003", unsavedCodeList: "70001,70002,70003,70005" })
             .expect(302);
 
         const response = await request(app).get(URL);
-        const matches = response.text.match(/70005/g);
+        const matches = response.text.match(/class="govuk-summary-list__key"[^>]*>\s*70003\s*<\/div>/g);
 
         expect(response.text).toContain("Check the partnership&#39;s nature of business");
-        expect(response.text).toContain("70005");
+        expect(response.text).toContain("70003");
         expect(matches?.length).toBe(1);
     });
 
@@ -230,6 +235,17 @@ describe("SIC code summary post tests", () => {
             companyNumber: COMPANY_NUMBER,
             sicCodes: [],
         });
+
+        req = {
+            session: {} as Session,
+            query: {},
+            params: {
+                companyNumber: COMPANY_NUMBER,
+                transactionId: TRANSACTION_ID,
+                submissionId: SUBMISSION_ID,
+            },
+            originalUrl: URL,
+        };
     });
 
     it("should redirect to review page when valid SIC codes present", async () => {
@@ -307,6 +323,35 @@ describe("SIC code summary post tests", () => {
             .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
 
         expect(response.text).toContain(backPath);
+    });
+
+    it("should return an empty array when no SIC codes are supplied", () => {
+        const result = getSicCodeSummaryList(req, "en", []);
+
+        expect(result).toEqual([]);
+    });
+
+    it("should use the fallback description for unknown SIC codes", () => {
+        const result = getSicCodeSummaryList(req, "en", ["99999"]);
+
+        expect(result).toEqual([
+            expect.objectContaining({
+                sicCode: {
+                    code: "99999",
+                    description: "No Description Found.",
+                },
+            }),
+        ]);
+    });
+
+    it("returns an empty array when there are no available SIC codes in session", () => {
+        jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue({
+            sicCodes: [],
+        } as any);
+
+        const result = getSicCodeSummaryList(req, "en", ["70001"]);
+
+        expect(result).toEqual([]);
     });
 });
 

@@ -35,9 +35,24 @@
       text-decoration: underline;
       cursor: pointer;
     }
+
     .autocomplete__menu {
       z-index: 1000;
       position: absolute;
+    }
+
+    .autocomplete__wrapper {
+      width: 100%;
+    }
+
+    .autocomplete__input {
+      box-sizing: border-box;
+      width: 100%;
+      height: 40px;
+      padding: 5px 10px;
+      font-size: 19px;
+      line-height: 1.25;
+      font-family: "GDS Transport", arial, sans-serif;
     }
   </style>
     <div class="govuk-grid-row">
@@ -114,25 +129,14 @@
                                 <span class="govuk-error-message">
                                   <span class="govuk-visually-hidden">Error:</span> {{ errors[0].text }}
                                 </span>
-                              </div>
                               {% endif %}
-                            <div id="sic-code-autocomplete"></div>
+                            </div>  
 
-                            <input
-                              class="govuk-input govuk-!-width-full"
-                              id="sic-code-input"
-                              placeholder="Search by SIC code or description"
-                              name="code"
-                              type="text"
-                              list="sic-codes"
-                              aria-describedby="sic-hint"
-                            />
-
-                            <datalist id="sic-codes">
+                            <select class="govuk-select govuk-!-width-full" id="code" name="code">
                               {% for sic in searchSicCodes %}
-                                <option value="{{ sic.sic_code }}" label="{{ sic.sic_description }}"></option>
+                                <option value="{{ sic.sic_code }}">{{ sic.sic_code }} - {{ sic.sic_description }}</option>
                               {% endfor %}
-                            </datalist>
+                            </select> 
 
                             {% if unsavedCodeList.length > 0 %}
                               <input
@@ -182,4 +186,42 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="{{assetPath}}/javascripts/app/accessible-autocomplete.min.js"></script>
+    <link rel="stylesheet" href="{{assetPath}}/stylesheets/accessible-autocomplete/autocomplete.min.css" />
+{% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+      const select = document.querySelector("#code");
+      select.selectedIndex = -1; // Set the selected index to -1 to show the placeholder
+      select.value = ""; // Set the value to an empty string to show the placeholder
+
+      if (select && window.accessibleAutocomplete) {
+        accessibleAutocomplete.enhanceSelectElement({
+          selectElement: select,
+          autoselect: false,
+          showAllValues: true,
+          defaultValue: "",
+          placeholder: "Search by SIC code or description",
+          confirmOnBlur: false,
+        });
+      }
+
+      // check for empty input and reset the select element if empty
+      const input = document.querySelector(".autocomplete__input");
+
+      if (input && select) {
+        input.addEventListener("input", function () {
+          if (this.value.trim() === "") {
+            select.selectedIndex = -1;
+            select.value = "";
+          }
+        });
+      }
+    });
+  </script>
 {% endblock %}

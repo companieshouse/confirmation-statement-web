@@ -25,7 +25,7 @@ export const get = (req: Request, res: Response) => {
     const sessionSicCodes = req.session?.getExtraData(SIC_CODE_SESSION_KEY);
     let sicCodesList: string[] = [];
 
-    if (sessionSicCodes !== undefined) {
+    if (Array.isArray(sessionSicCodes)) {
         sicCodesList = sessionSicCodes as string[];
     } else if (company?.sicCodes) {
         sicCodesList = company.sicCodes;
@@ -191,6 +191,7 @@ export const removeSicCode = (req: Request, res: Response) => {
     }
 
     const sicCodeSummaryList = getSicCodeSummaryList(req, lang, unsavedCodeList);
+    req.session?.setExtraData(SIC_CODE_SESSION_KEY, unsavedCodeList);
 
     return renderPage(req, res, sicCodeSummaryList, unsavedCodeList, [], unsavedCodeList.length === 0);
 };
