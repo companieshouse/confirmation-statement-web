@@ -1,10 +1,53 @@
 {% extends "../../layouts/layout.njk" %}
 {% set title = i18n.needToBeAddedToAuthorisedAgentAccountHeading %}
 {% block content %}
-    <h1 class="govuk-heading-l">{{ i18n.needToBeAddedToAuthorisedAgentAccountHeading }}</h1>
-    <p class="govuk-body">{{ i18n.needToAskToBeAdded }}</p>
+    <h1 class="govuk-heading-l">
+        {{ i18n.needToBeAnAcspHeading }}
+    </h1>
+
     <p class="govuk-body">
-        {{ i18n.applyAsAnAuthorisedAgent }}
-        <a href={{ applyAsACSPLink }}>{{ i18n.applyAsAnAuthorisedAgentLink }}</a>.
+        {{ i18n.acspNotLinkedToEmail }}
+    </p>
+
+    <p class="govuk-body">
+        {{ i18n.onlyAcspsCanFile }}
+    </p>
+
+    <p class="govuk-body">
+        {{ i18n.acspDefinition }}
+    </p>
+
+    <h2 class="govuk-heading-m">
+        {{ i18n.workForRegisteredAcspHeading }}
+    </h2>
+
+    <p class="govuk-body">
+        {{ i18n.askBusinessToAddYou }}
+        {{ i18n.findOutMoreReadSection }}
+        <a href="https://www.gov.uk/guidance/being-an-authorised-corporate-service-provider#how-to-use-your-authorised-agent-account" class="govuk-link">
+            {{ i18n.guidanceBeingAnAcspLinkText }}
+        </a>.
+    </p>
+
+    <h2 class="govuk-heading-m">
+        {{ i18n.needToRegisterAsAcspHeading }}
+    </h2>
+
+    <p class="govuk-body">
+        <a href="https://www.gov.uk/guidance/applying-to-register-as-a-companies-house-authorised-agent" class="govuk-link">
+            {{ i18n.guidanceRegisteringAsAcspLinkText }}
+        </a>
+    </p>
+
+    <h2 class="govuk-heading-m">
+        {{ i18n.someoneElseInvolvedHeading }}
+    </h2>
+
+    <p class="govuk-body">
+        {{ i18n.needToFindAnAcsp }}
+        <a href="https://www.gov.uk/government/publications/list-of-authorised-corporate-service-providers-acsps" class="govuk-link">
+            {{ i18n.findAnAcspLinkText }}
+        </a>
+        {{ i18n.toFileOnYourBehalf }}
     </p>
 {% endblock content %}
