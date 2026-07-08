@@ -86,15 +86,17 @@ export function getCsDateInput(date: CsDateValue): Date {
 
 function validateFutureDate(csDateInput: Date, company: CompanyProfile, localInfo: any): string | undefined {
     if (moment(csDateInput).isAfter(moment().startOf("day"))) {
-        let expectedCSDate: string | undefined;
+        let errorMessage: string | undefined;
 
-        if (company.confirmationStatement?.lastMadeUpTo) {
-            expectedCSDate = formatDateString("DD/MM/YYYY", company.confirmationStatement?.nextMadeUpTo);
+        if (isTodayBeforeFileCsDate(company)) {
+            return localInfo.i18n.CDSErrorEarlyPastDate;
         }
 
-        const errorMessage = localInfo.i18n.CDSErrorPastDate + expectedCSDate;
+        const expectedCSDate = company.confirmationStatement?.lastMadeUpTo
+            ? formatDateString("DD/MM/YYYY", company.confirmationStatement.nextMadeUpTo)
+            : "";
 
-        return errorMessage;
+        return localInfo.i18n.CDSErrorPastDate + expectedCSDate;
     }
     return undefined;
 }
