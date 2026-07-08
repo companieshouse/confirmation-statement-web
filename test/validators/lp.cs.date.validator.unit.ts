@@ -98,7 +98,7 @@ describe("LP CS date validator tests", () => {
         );
     });
 
-    it("validateDateSelectorValue should return CDSErrorPastDate error message if the CS date is in the future", () => {
+    it("validateDateSelectorValue should return CDSErrorEarlyPastDate error message if the CS date is in the future and filing is early", () => {
         const csDateValue: CsDateValue = {
             csDateYear: "2099",
             csDateMonth: "12",
@@ -112,13 +112,32 @@ describe("LP CS date validator tests", () => {
             overdue: false,
         };
 
-        const csExpectedDate = formatDateString(
+        expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(
+            localInfo.i18n.CDSErrorEarlyPastDate
+        );
+    });
+
+    it("validateDateSelectorValue should return CDSErrorPastDate when the CS date is in the future and filing is due", () => {
+        const csDateValue: CsDateValue = {
+            csDateYear: "2099",
+            csDateMonth: "12",
+            csDateDay: "31",
+        };
+
+        validLimitedPartnershipProfile.confirmationStatement = {
+            lastMadeUpTo: "2020-03-15",
+            nextMadeUpTo: "2021-03-15", // In the past so isTodayBeforeFileCsDate() is false
+            nextDue: "2099-03-29",
+            overdue: true,
+        };
+
+        const expectedCsDate = formatDateString(
             "DD/MM/YYYY",
-            validLimitedPartnershipProfile.confirmationStatement?.nextMadeUpTo
+            validLimitedPartnershipProfile.confirmationStatement.nextMadeUpTo
         );
 
         expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(
-            localInfo.i18n.CDSErrorPastDate + csExpectedDate
+            localInfo.i18n.CDSErrorPastDate + expectedCsDate
         );
     });
 

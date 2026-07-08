@@ -18,6 +18,7 @@
   "CDSErrorDateNoYear":"Confirmation statement date must include a year",
   "CDSErrorDateWrong":"Confirmation statement date must be a real date",
   "CDSErrorPastDate":"The date you enter must be on or before ",
+  "CDSErrorEarlyPastDate":"Confirmation statement date must be today or in the past",
   "CDSErrorSameCsDate":"A confirmation statement has already been filed for the date you’ve entered",
   "CDSErrorCsDateAfterlastCsDate":"The date you enter must be after the date of the last confirmation statement",
   "CDSDateValueInvalidError":"Error: The confirmation statement date is invalid",
