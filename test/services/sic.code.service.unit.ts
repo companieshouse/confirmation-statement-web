@@ -1,8 +1,11 @@
-import { createInternalApiKeyClient } from "../../src/services/api.service";
+import { createInternalApiKeyClient, createPublicOAuthApiClient } from "../../src/services/api.service";
 import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services/sic-code";
 import { getSicCodeCondensedList } from "../../src/services/sic.code.service";
+import { getSessionRequest } from "../mocks/session.mock";
+import { ConfirmationStatementService } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 jest.mock("../../src/services/api.service");
+const mockGetCondensedSicCodeList = ConfirmationStatementService.prototype.getCondensedSicCodeList as jest.Mock;
 
 describe("getSicCodeCondensedList", () => {
     const mockSicCodes: CondensedSicCodeData[] = [
@@ -21,13 +24,13 @@ describe("getSicCodeCondensedList", () => {
             .fn()
             .mockResolvedValue({ httpStatusCode: 200, resource: mockSicCodes.slice() });
 
-        (createInternalApiKeyClient as jest.Mock).mockReturnValue({
-            sicCodeService: {
-                getCondensedSicCodes: mockGetCondensedSicCodes,
+        (createPublicOAuthApiClient as jest.Mock).mockReturnValue({
+            confirmationStatementService: {
+                getCondensedSicCodeList: mockGetCondensedSicCodes,
             },
         });
 
-        const result = await getSicCodeCondensedList();
+        const result = await getSicCodeCondensedList(getSessionRequest({ access_token: "token" }));
 
         expect(result).not.toEqual(mockSicCodes);
         expect(result.length).toEqual(4);
@@ -39,15 +42,17 @@ describe("getSicCodeCondensedList", () => {
     });
 
     it("should return an empty array when API returns no resource", async () => {
-        const mockGetCondensedSicCodes = jest.fn().mockResolvedValue({ httpStatusRequest: 500, resource: undefined });
+        const mockGetCondensedSicCodes = jest
+            .fn()
+            .mockResolvedValue({ httpStatusRequest: 500, resource: "Internal Server Error" });
 
-        (createInternalApiKeyClient as jest.Mock).mockReturnValue({
-            sicCodeService: {
-                getCondensedSicCodes: mockGetCondensedSicCodes,
+        (createPublicOAuthApiClient as jest.Mock).mockReturnValue({
+            confirmationStatementService: {
+                getCondensedSicCodeList: mockGetCondensedSicCodes,
             },
         });
 
-        const result = await getSicCodeCondensedList();
+        const result = await getSicCodeCondensedList(getSessionRequest({ access_token: "token" }));
 
         expect(result).toEqual([]);
         expect(mockGetCondensedSicCodes).toHaveBeenCalledTimes(1);

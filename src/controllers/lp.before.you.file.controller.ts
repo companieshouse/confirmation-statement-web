@@ -33,7 +33,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
             resetAcspSession(session);
         }
 
-        const sicCodeList = await getSicCodeCondensedList();
+        const sicCodeList = await getSicCodeCondensedList(session);
 
         updateAcspSessionData(session, {
             sicCodes: sicCodeList,
