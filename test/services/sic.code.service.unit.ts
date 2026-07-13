@@ -1,11 +1,9 @@
-import { createInternalApiKeyClient, createPublicOAuthApiClient } from "../../src/services/api.service";
+import { createPublicOAuthApiClient } from "../../src/services/api.service";
 import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services/sic-code";
 import { getSicCodeCondensedList } from "../../src/services/sic.code.service";
 import { getSessionRequest } from "../mocks/session.mock";
-import { ConfirmationStatementService } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 
 jest.mock("../../src/services/api.service");
-const mockGetCondensedSicCodeList = ConfirmationStatementService.prototype.getCondensedSicCodeList as jest.Mock;
 
 describe("getSicCodeCondensedList", () => {
     const mockSicCodes: CondensedSicCodeData[] = [

@@ -17,6 +17,10 @@ jest.mock("../../src/services/transaction.service", () => ({
     getTransaction: jest.fn(),
 }));
 
+jest.mock("../../src/services/sic.code.service", () => ({
+    getSicCodeCondensedList: jest.fn(),
+}));
+
 const ACSP_NUMBER = "TSA001";
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";

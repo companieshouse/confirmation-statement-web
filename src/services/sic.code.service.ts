@@ -1,5 +1,4 @@
 import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services/sic-code";
-import { createAndLogError } from "../utils/logger";
 import { Session } from "@companieshouse/node-session-handler";
 import Resource from "@companieshouse/api-sdk-node/dist/services/resource";
 import { createPublicOAuthApiClient } from "./api.service";
