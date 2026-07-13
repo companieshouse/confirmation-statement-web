@@ -13,9 +13,8 @@ export interface SicCodeValidationResult {
 export const getSicCodeCondensedList = async (session: Session): Promise<CondensedSicCodeData[]> => {
     const client = createPublicOAuthApiClient(session);
     const csService = client.confirmationStatementService;
-    const response = (await csService.getCondensedSicCodeList()) as Resource<CondensedSicCodeData[]>;
+    const condensedSicCodeListResource = await csService.getCondensedSicCodeList();
 
-    const condensedSicCodeListResource: Resource<CondensedSicCodeData[]> = response as Resource<CondensedSicCodeData[]>;
     const sicCodeList =
         condensedSicCodeListResource?.httpStatusCode === 200 && condensedSicCodeListResource?.resource
             ? sortSicCodesList(condensedSicCodeListResource.resource)
