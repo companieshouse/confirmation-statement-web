@@ -21,6 +21,10 @@ jest.mock("../../src/utils/session", () => ({
     getCompanyProfileFromSession: jest.fn(),
 }));
 
+jest.mock("../../src/services/sic.code.service", () => ({
+    getSicCodeCondensedList: jest.fn(),
+}));
+
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
 const SUBMISSION_ID = "435435";

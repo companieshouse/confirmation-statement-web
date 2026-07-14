@@ -1,5 +1,6 @@
-import { createInternalApiKeyClient } from "./api.service";
 import { CondensedSicCodeData } from "@companieshouse/api-sdk-node/dist/services/sic-code";
+import { Session } from "@companieshouse/node-session-handler";
+import { createPublicOAuthApiClient } from "./api.service";
 
 export interface SicCodeValidationResult {
     maxError?: string;
@@ -8,11 +9,15 @@ export interface SicCodeValidationResult {
     minError?: boolean;
 }
 
-export const getSicCodeCondensedList = async (): Promise<CondensedSicCodeData[]> => {
-    const client = createInternalApiKeyClient();
-    const sicCodeService = client.sicCodeService;
-    const data = await sicCodeService.getCondensedSicCodes();
-    const sicCodeList = data?.httpStatusCode === 200 && data?.resource ? sortSicCodesList(data.resource) : [];
+export const getSicCodeCondensedList = async (session: Session): Promise<CondensedSicCodeData[]> => {
+    const client = createPublicOAuthApiClient(session);
+    const csService = client.confirmationStatementService;
+    const condensedSicCodeListResource = await csService.getCondensedSicCodeList();
+
+    const sicCodeList =
+        condensedSicCodeListResource?.httpStatusCode === 200 && condensedSicCodeListResource?.resource
+            ? sortSicCodesList(condensedSicCodeListResource.resource)
+            : [];
     return sicCodeList;
 };
 
