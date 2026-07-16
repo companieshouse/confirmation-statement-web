@@ -7,7 +7,7 @@ import { urlUtils } from "../utils/url";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../services/company.profile.service";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
-import { toReadableFormat } from "../utils/date";
+import { toReadableFormat, isValidDate } from "../utils/date";
 import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
@@ -67,7 +67,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
                 submissionId
             );
             const acspSessionData = getAcspSessionData(session);
-            const formattedCsDate = formatConfirmationDate(acspSessionData?.newConfirmationDate ?? confirmationDate);
+            const newConfirmationDate = acspSessionData?.newConfirmationDate;
+            const formattedCsDate = formatConfirmationDate(
+                newConfirmationDate && isValidDate(newConfirmationDate) ? newConfirmationDate : confirmationDate
+            );
 
             return res.render(Templates.REVIEW, {
                 ...localeInfo,

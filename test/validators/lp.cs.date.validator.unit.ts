@@ -6,6 +6,8 @@ import { validLimitedPartnershipProfile } from "../mocks/company.profile.mock";
 import { CsDateValue } from "../../src/utils/limited.partnership";
 import { getLocaleInfo, getLocalesService } from "../../src/utils/localise";
 import { formatDateString } from "../../src/utils/date";
+import * as csDateValidator from "../../src/validators/lp.cs.date.validator.ts";
+import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 
 const locales = getLocalesService();
 const localInfo = getLocaleInfo(locales, "en");
@@ -160,7 +162,26 @@ describe("LP CS date validator tests", () => {
         );
     });
 
-    it("validateDateSelectorValue should return CDSErrorCsDateAfterlastCsDate error message if new CS date is before as the date of lastMadeUpTo", () => {
+    it("validateDateSelectorValue should return CDSErrorCsDateAfterlastCsDate error message if new CS date is before as the date of lastMadeUpTo if not filing on time", () => {
+        validLimitedPartnershipProfile.confirmationStatement = {
+            lastMadeUpTo: "2098-03-15",
+            nextDue: "2099-03-29",
+            nextMadeUpTo: "2099-03-15",
+            overdue: false,
+        };
+
+        const csDateValue: CsDateValue = {
+            csDateYear: "2022",
+            csDateMonth: "3",
+            csDateDay: "13",
+        };
+
+        expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(
+            localInfo.i18n.CDSErrorCsDateAfterlastCsDate
+        );
+    });
+
+    it("validateDateSelectorValue should NOT return CDSErrorCsDateAfterlastCsDate error message if new CS date is before as the date of lastMadeUpTo if filing is on time", () => {
         validLimitedPartnershipProfile.confirmationStatement = {
             lastMadeUpTo: "2022-03-15",
             nextDue: "2099-03-29",
@@ -174,7 +195,7 @@ describe("LP CS date validator tests", () => {
             csDateDay: "13",
         };
 
-        expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(
+        expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).not.toEqual(
             localInfo.i18n.CDSErrorCsDateAfterlastCsDate
         );
     });
@@ -270,5 +291,72 @@ describe("LP CS date validator tests", () => {
         expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(
             expectedMustFileBy
         );
+    });
+});
+
+describe("isDateOnTime", () => {
+    beforeEach(() => {
+        jest.useFakeTimers();
+        jest.setSystemTime(new Date("2026-06-15"));
+    });
+
+    afterEach(() => {
+        jest.useRealTimers();
+    });
+
+    it("should return true when today is between nextMadeUpTo and nextDue", () => {
+        const company: CompanyProfile = {
+            ...validLimitedPartnershipProfile,
+            confirmationStatement: {
+                ...validLimitedPartnershipProfile.confirmationStatement,
+                nextMadeUpTo: "2026-06-01",
+                nextDue: "2026-06-30",
+                overdue: false,
+            },
+        };
+
+        expect(csDateValidator.isDateOnTime(company)).toBe(true);
+    });
+
+    it("should return true when today is before nextMadeUpTo", () => {
+        const company: CompanyProfile = {
+            ...validLimitedPartnershipProfile,
+            confirmationStatement: {
+                ...validLimitedPartnershipProfile.confirmationStatement,
+                nextMadeUpTo: "2026-07-01",
+                nextDue: "2026-07-31",
+                overdue: false,
+            },
+        };
+
+        expect(csDateValidator.isDateOnTime(company)).toBe(true);
+    });
+
+    it("should return false when today is after nextDue", () => {
+        const company: CompanyProfile = {
+            ...validLimitedPartnershipProfile,
+            confirmationStatement: {
+                ...validLimitedPartnershipProfile.confirmationStatement,
+                nextMadeUpTo: "2026-05-01",
+                nextDue: "2026-05-31",
+                overdue: false,
+            },
+        };
+
+        expect(csDateValidator.isDateOnTime(company)).toBe(false);
+    });
+
+    it("should return false when confirmation statement dates are missing", () => {
+        const company: CompanyProfile = {
+            ...validLimitedPartnershipProfile,
+            confirmationStatement: {
+                ...validLimitedPartnershipProfile.confirmationStatement,
+                nextMadeUpTo: undefined,
+                nextDue: undefined,
+                overdue: false,
+            },
+        };
+
+        expect(csDateValidator.isDateOnTime(company)).toBe(false);
     });
 });
