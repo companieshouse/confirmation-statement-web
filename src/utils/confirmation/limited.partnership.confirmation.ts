@@ -20,6 +20,7 @@ import {
 import { getConfirmationStatement, updateConfirmationStatement } from "../../services/confirmation.statement.service";
 import { getTransaction } from "../../services/transaction.service";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
+import { isValidDate } from "../date";
 
 export function handleLimitedPartnershipConfirmationJourney(
     req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
@@ -97,7 +98,10 @@ export async function sendLimitedPartnershipTransactionUpdate(
         transactionId,
         submissionId
     );
-    currentCsSubmission.data.newConfirmationDate = newCsDate;
+
+    if (newCsDate && isValidDate(newCsDate)) {
+        currentCsSubmission.data.newConfirmationDate = newCsDate;
+    }
     currentCsSubmission.data.sicCodeData = newSicCodes ?? undefined;
 
     await updateConfirmationStatement(session, transactionId, submissionId, currentCsSubmission);

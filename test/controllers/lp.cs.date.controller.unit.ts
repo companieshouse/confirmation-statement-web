@@ -10,7 +10,7 @@ import {
     resetReviewCheckboxes,
     sendLimitedPartnershipTransactionUpdate,
 } from "../../src/utils/confirmation/limited.partnership.confirmation.ts";
-import * as csDateValidator from "../../src/validators/lp.cs.date.validator.ts";
+import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -39,9 +39,13 @@ jest.mock("../../src/utils/limited.partnership", () => ({
 }));
 
 describe("start confirmation statement date controller tests", () => {
+    let companyProfile: CompanyProfile;
+
     beforeEach(() => {
         jest.clearAllMocks();
-        mockGetCompanyProfileFromSession.mockReturnValue(validLimitedPartnershipProfile);
+        companyProfile = structuredClone(validLimitedPartnershipProfile);
+
+        mockGetCompanyProfileFromSession.mockReturnValue(companyProfile);
         mockSendLimitedPartnershipTransactionUpdate.mockClear();
     });
 
@@ -144,7 +148,9 @@ describe("start confirmation statement date controller tests", () => {
         expect(response.text).toContain(
             "The date of your next expected confirmation statement is  <b>1 September 2999</b>"
         );
-        expect(response.text).toContain("No, I want to use today&#39;s date -");
+        expect(response.text).toContain(
+            "This will start a new 12 month review period and change the date of future confirmation statements"
+        );
     });
 });
 

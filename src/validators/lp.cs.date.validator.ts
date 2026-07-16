@@ -86,8 +86,6 @@ export function getCsDateInput(date: CsDateValue): Date {
 
 function validateFutureDate(csDateInput: Date, company: CompanyProfile, localInfo: any): string | undefined {
     if (moment(csDateInput).isAfter(moment().startOf("day"))) {
-        let errorMessage: string | undefined;
-
         if (isTodayBeforeFileCsDate(company)) {
             return localInfo.i18n.CDSErrorEarlyPastDate;
         }
@@ -142,9 +140,24 @@ export function validateLastOrNextMadeUpDate(
         return localInfo.i18n.CDSErrorSameCsDate;
     }
 
-    if (moment(csDateInput).isBefore(moment(lastOrNextMadeUpDate), "day")) {
+    if (moment(csDateInput).isBefore(moment(lastOrNextMadeUpDate), "day") && !isDateOnTime(company)) {
         return localInfo.i18n.CDSErrorCsDateAfterlastCsDate;
     }
 
     return undefined;
+}
+
+export function isDateOnTime(company: CompanyProfile): boolean {
+    const lastMadeUpTo = company.confirmationStatement?.lastMadeUpTo;
+    const nextDue = company.confirmationStatement?.nextDue;
+
+    if (!lastMadeUpTo || !nextDue) {
+        return false;
+    }
+
+    const today = moment().startOf("day");
+
+    const isOnTime = today.isSameOrAfter(moment(lastMadeUpTo), "day") && today.isSameOrBefore(moment(nextDue), "day");
+
+    return isOnTime;
 }
