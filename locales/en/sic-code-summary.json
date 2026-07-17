@@ -1,6 +1,6 @@
 {
     "SICCSPageTitle" : "Check the partnership's nature of business",
-    "SICCSTableHeader" : "Update the nature of business if it has changed. You can do this by adding or removing SIC codes.",
+    "SICCSTableHeader" : "Update the nature of business if it has changed. You can do this by adding or removing SIC codes. A partnership can have up to 4 SIC codes.",
     "SICCSTableRemoveButton" : "Remove",
     "SICCSAddSICInsetTitle" : "Add a new nature of business",
     "SICCSAddSICInsetInstructions" : "Start typing a keyword to see a list of business activities. For example, 'finance'. Or, enter the SIC code if you know it.",
