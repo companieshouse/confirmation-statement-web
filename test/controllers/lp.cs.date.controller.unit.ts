@@ -61,10 +61,10 @@ describe("start confirmation statement date controller tests", () => {
             confirmationStatementDate: "yes",
             "csDate-year": "2020",
             "csDate-month": "03",
-            "csDate-day": "20",
+            "csDate-day": "15",
         });
 
-        expect(mockSendLimitedPartnershipTransactionUpdate.mock.calls[0][1]).toBe("2020-03-20");
+        expect(mockSendLimitedPartnershipTransactionUpdate.mock.calls[0][1]).toBe("2020-03-15");
         expect(response.headers.location).toBe(
             "/confirmation-statement/company/12345678/transaction/66454/submission/435435/acsp/check-your-answer?lang=en"
         );
