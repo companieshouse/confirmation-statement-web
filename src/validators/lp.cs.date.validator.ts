@@ -110,6 +110,7 @@ function validateMustFileBy(csDateInput: Date, company: CompanyProfile, localInf
         const formattedMustFileBy = formatDateString("DD/MM/YYYY", mustFileByDate);
         return `${localInfo.i18n.CDSErrorDateAfterMustFileBy}${formattedMustFileBy}`;
     }
+
     return undefined;
 }
 
