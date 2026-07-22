@@ -85,17 +85,22 @@ export function getCsDateInput(date: CsDateValue): Date {
 }
 
 function validateFutureDate(csDateInput: Date, company: CompanyProfile, localInfo: any): string | undefined {
-    if (moment(csDateInput).isAfter(moment().startOf("day"))) {
-        if (isTodayBeforeFileCsDate(company)) {
+    if (isFilingDateEarly(company)) {
+        if (moment(csDateInput).isAfter(moment().startOf("day"), "day")) {
             return localInfo.i18n.CDSErrorEarlyPastDate;
         }
 
-        const expectedCSDate = company.confirmationStatement?.lastMadeUpTo
+        return undefined;
+    }
+
+    if (moment(csDateInput).isAfter(moment(company.confirmationStatement?.nextMadeUpTo), "day")) {
+        const expectedCSDate = company.confirmationStatement?.nextMadeUpTo
             ? formatDateString("DD/MM/YYYY", company.confirmationStatement.nextMadeUpTo)
             : "";
 
         return localInfo.i18n.CDSErrorPastDate + expectedCSDate;
     }
+
     return undefined;
 }
 
@@ -105,6 +110,7 @@ function validateMustFileBy(csDateInput: Date, company: CompanyProfile, localInf
         const formattedMustFileBy = formatDateString("DD/MM/YYYY", mustFileByDate);
         return `${localInfo.i18n.CDSErrorDateAfterMustFileBy}${formattedMustFileBy}`;
     }
+
     return undefined;
 }
 
@@ -132,7 +138,8 @@ export function validateLastOrNextMadeUpDate(
     const lastOrNextMadeUpDate = isTodayBeforeFileCsDate(company)
         ? company?.confirmationStatement?.lastMadeUpTo
         : company.confirmationStatement?.nextMadeUpTo;
-    if (!lastOrNextMadeUpDate) {
+
+    if (!lastOrNextMadeUpDate || !isFilingDateEarly(company)) {
         return undefined;
     }
 
@@ -140,24 +147,22 @@ export function validateLastOrNextMadeUpDate(
         return localInfo.i18n.CDSErrorSameCsDate;
     }
 
-    if (moment(csDateInput).isBefore(moment(lastOrNextMadeUpDate), "day") && !isDateOnTime(company)) {
+    if (moment(csDateInput).isBefore(moment(lastOrNextMadeUpDate), "day")) {
         return localInfo.i18n.CDSErrorCsDateAfterlastCsDate;
     }
 
     return undefined;
 }
 
-export function isDateOnTime(company: CompanyProfile): boolean {
-    const lastMadeUpTo = company.confirmationStatement?.lastMadeUpTo;
-    const nextDue = company.confirmationStatement?.nextDue;
+export function isFilingDateEarly(company: CompanyProfile): boolean {
+    const nextMadeUpToDate = company.confirmationStatement?.nextMadeUpTo;
 
-    if (!lastMadeUpTo || !nextDue) {
+    if (!nextMadeUpToDate) {
         return false;
     }
 
     const today = moment().startOf("day");
+    const isEarly = today.isSameOrBefore(moment(nextMadeUpToDate), "day");
 
-    const isOnTime = today.isSameOrAfter(moment(lastMadeUpTo), "day") && today.isSameOrBefore(moment(nextDue), "day");
-
-    return isOnTime;
+    return isEarly;
 }

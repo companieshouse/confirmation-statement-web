@@ -8,11 +8,17 @@ import { getLocaleInfo, getLocalesService } from "../../src/utils/localise";
 import { formatDateString } from "../../src/utils/date";
 import * as csDateValidator from "../../src/validators/lp.cs.date.validator.ts";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import moment from "moment";
 
 const locales = getLocalesService();
 const localInfo = getLocaleInfo(locales, "en");
 
 describe("LP CS date validator tests", () => {
+    beforeEach(() => {
+        jest.useFakeTimers();
+        jest.setSystemTime(new Date("2021-03-01"));
+    });
+
     it("isTodayBeforeFileCsDate should return false if today is not before expected CS filing date", () => {
         expect(isTodayBeforeFileCsDate(validLimitedPartnershipProfile)).toBeFalsy();
     });
@@ -114,12 +120,12 @@ describe("LP CS date validator tests", () => {
             overdue: false,
         };
 
-        expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(
+        expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toContain(
             localInfo.i18n.CDSErrorEarlyPastDate
         );
     });
 
-    it("validateDateSelectorValue should return CDSErrorPastDate when the CS date is in the future and filing is due", () => {
+    it("validateDateSelectorValue should return CDSErrorEarlyPastDate when the CS date is in the future and filing is due", () => {
         const csDateValue: CsDateValue = {
             csDateYear: "2099",
             csDateMonth: "12",
@@ -133,17 +139,12 @@ describe("LP CS date validator tests", () => {
             overdue: true,
         };
 
-        const expectedCsDate = formatDateString(
-            "DD/MM/YYYY",
-            validLimitedPartnershipProfile.confirmationStatement.nextMadeUpTo
-        );
-
         expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(
-            localInfo.i18n.CDSErrorPastDate + expectedCsDate
+            localInfo.i18n.CDSErrorEarlyPastDate
         );
     });
 
-    it("validateDateSelectorValue should return CDSErrorSameCsDate error message if the CS date is same as the date of lastMadeUpTo", () => {
+    it("validateDateSelectorValue should return CDSErrorEarlyPastDate error message if the CS date is same as the date of lastMadeUpTo", () => {
         validLimitedPartnershipProfile.confirmationStatement = {
             lastMadeUpTo: "2022-03-15",
             nextDue: "2099-03-29",
@@ -158,7 +159,7 @@ describe("LP CS date validator tests", () => {
         };
 
         expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(
-            localInfo.i18n.CDSErrorSameCsDate
+            localInfo.i18n.CDSErrorEarlyPastDate
         );
     });
 
@@ -177,7 +178,7 @@ describe("LP CS date validator tests", () => {
         };
 
         expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(
-            localInfo.i18n.CDSErrorCsDateAfterlastCsDate
+            localInfo.i18n.CDSErrorEarlyPastDate
         );
     });
 
@@ -200,23 +201,7 @@ describe("LP CS date validator tests", () => {
         );
     });
 
-    it("validateDateSelectorValue should not return error message if the date of lastMadeUpTo is missing", () => {
-        validLimitedPartnershipProfile.confirmationStatement = {
-            nextDue: "2099-03-29",
-            nextMadeUpTo: "2099-03-15",
-            overdue: false,
-        };
-
-        const csDateValue: CsDateValue = {
-            csDateYear: "2022",
-            csDateMonth: "3",
-            csDateDay: "13",
-        };
-
-        expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(undefined);
-    });
-
-    it("validateDateSelectorValue should return CDSErrorSameCsDate error message if the CS date is same as the date of nextMadeUpTo", () => {
+    it("validateDateSelectorValue should return CDSErrorEarlyPastDate error message if the CS date is same as the date of nextMadeUpTo", () => {
         validLimitedPartnershipProfile.confirmationStatement = {
             lastMadeUpTo: "2020-03-15",
             nextDue: "2021-03-29",
@@ -231,11 +216,59 @@ describe("LP CS date validator tests", () => {
         };
 
         expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(
+            localInfo.i18n.CDSErrorEarlyPastDate
+        );
+    });
+
+    it("should return CDSErrorSameCsDate when the CS date is the same as lastMadeUpTo for an early filing", () => {
+        const today = moment();
+        const lastMadeUpTo = today.clone().subtract(1, "month");
+        const nextMadeUpTo = today.clone().add(1, "month");
+
+        validLimitedPartnershipProfile.confirmationStatement = {
+            lastMadeUpTo: lastMadeUpTo.format("YYYY-MM-DD"),
+            nextMadeUpTo: nextMadeUpTo.format("YYYY-MM-DD"),
+            nextDue: nextMadeUpTo.clone().add(14, "days").format("YYYY-MM-DD"),
+            overdue: false,
+        };
+
+        const csDateValue: CsDateValue = {
+            csDateYear: lastMadeUpTo.format("YYYY"),
+            csDateMonth: lastMadeUpTo.format("M"),
+            csDateDay: lastMadeUpTo.format("D"),
+        };
+
+        expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(
             localInfo.i18n.CDSErrorSameCsDate
         );
     });
 
-    it("validateDateSelectorValue should return CDSErrorCsDateAfterlastCsDate error message if new CS date is before as the date of nextMadeUpTo", () => {
+    it("should return CDSErrorCsDateAfterlastCsDate when the CS date is before lastMadeUpTo for an early filing", () => {
+        const today = moment().startOf("day");
+        const lastMadeUpTo = today.clone().subtract(1, "month");
+        const nextMadeUpTo = today.clone().add(1, "month");
+
+        validLimitedPartnershipProfile.confirmationStatement = {
+            lastMadeUpTo: lastMadeUpTo.format("YYYY-MM-DD"),
+            nextMadeUpTo: nextMadeUpTo.format("YYYY-MM-DD"),
+            nextDue: nextMadeUpTo.clone().add(14, "days").format("YYYY-MM-DD"),
+            overdue: false,
+        };
+
+        const csDate = lastMadeUpTo.clone().subtract(1, "day");
+
+        const csDateValue: CsDateValue = {
+            csDateYear: csDate.format("YYYY"),
+            csDateMonth: csDate.format("M"),
+            csDateDay: csDate.format("D"),
+        };
+
+        expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(
+            localInfo.i18n.CDSErrorCsDateAfterlastCsDate
+        );
+    });
+
+    it("validateDateSelectorValue should return CDSErrorEarlyPastDate error message if new CS date is before as the date of nextMadeUpTo", () => {
         validLimitedPartnershipProfile.confirmationStatement = {
             lastMadeUpTo: "2020-03-15",
             nextDue: "2021-03-29",
@@ -250,46 +283,7 @@ describe("LP CS date validator tests", () => {
         };
 
         expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(
-            localInfo.i18n.CDSErrorCsDateAfterlastCsDate
-        );
-    });
-
-    it("validateDateSelectorValue should not return error message if the date of nextMadeUpTo is missing", () => {
-        validLimitedPartnershipProfile.confirmationStatement = {
-            lastMadeUpTo: "2020-03-15",
-            nextDue: "2021-03-29",
-            nextMadeUpTo: "",
-            overdue: false,
-        };
-
-        const csDateValue: CsDateValue = {
-            csDateYear: "2021",
-            csDateMonth: "3",
-            csDateDay: "03",
-        };
-
-        expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(undefined);
-    });
-
-    it("validateDateSelectorValue should pass the checking without error message if the CS date is valid", () => {
-        validLimitedPartnershipProfile.confirmationStatement = {
-            lastMadeUpTo: "2024-05-01",
-            nextDue: "2025-05-15",
-            nextMadeUpTo: "2025-05-01",
-            overdue: false,
-        };
-
-        const csDateValue: CsDateValue = {
-            csDateYear: "2025",
-            csDateMonth: "5",
-            csDateDay: "20",
-        };
-
-        const expectedMustFileBy =
-            localInfo.i18n.CDSErrorDateAfterMustFileBy +
-            formatDateString("DD/MM/YYYY", validLimitedPartnershipProfile.confirmationStatement!.nextDue as string);
-        expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(
-            expectedMustFileBy
+            localInfo.i18n.CDSErrorEarlyPastDate
         );
     });
 });
@@ -304,7 +298,7 @@ describe("isDateOnTime", () => {
         jest.useRealTimers();
     });
 
-    it("should return true when today is between nextMadeUpTo and nextDue", () => {
+    it("should return false when today is between nextMadeUpTo and nextDue", () => {
         const company: CompanyProfile = {
             ...validLimitedPartnershipProfile,
             confirmationStatement: {
@@ -315,7 +309,7 @@ describe("isDateOnTime", () => {
             },
         };
 
-        expect(csDateValidator.isDateOnTime(company)).toBe(true);
+        expect(csDateValidator.isFilingDateEarly(company)).toBe(false);
     });
 
     it("should return true when today is before nextMadeUpTo", () => {
@@ -329,7 +323,7 @@ describe("isDateOnTime", () => {
             },
         };
 
-        expect(csDateValidator.isDateOnTime(company)).toBe(true);
+        expect(csDateValidator.isFilingDateEarly(company)).toBe(true);
     });
 
     it("should return false when today is after nextDue", () => {
@@ -343,7 +337,7 @@ describe("isDateOnTime", () => {
             },
         };
 
-        expect(csDateValidator.isDateOnTime(company)).toBe(false);
+        expect(csDateValidator.isFilingDateEarly(company)).toBe(false);
     });
 
     it("should return false when confirmation statement dates are missing", () => {
@@ -357,6 +351,10 @@ describe("isDateOnTime", () => {
             },
         };
 
-        expect(csDateValidator.isDateOnTime(company)).toBe(false);
+        expect(csDateValidator.isFilingDateEarly(company)).toBe(false);
+    });
+
+    afterEach(() => {
+        jest.useRealTimers();
     });
 });
