@@ -139,7 +139,7 @@ export function validateLastOrNextMadeUpDate(
         ? company?.confirmationStatement?.lastMadeUpTo
         : company.confirmationStatement?.nextMadeUpTo;
 
-    if (!lastOrNextMadeUpDate || !isFilingDateEarly(company)) {
+    if (!lastOrNextMadeUpDate) {
         return undefined;
     }
 

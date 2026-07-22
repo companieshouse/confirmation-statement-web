@@ -6,11 +6,12 @@ import * as limitedPartnershipUtils from "../../src/utils/limited.partnership";
 import { validLimitedPartnershipProfile } from "../mocks/company.profile.mock";
 import { getCompanyProfileFromSession } from "../../src/utils/session";
 import { getAcspSessionData } from "../../src/utils/session.acsp";
+import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import moment from "moment";
 import {
     resetReviewCheckboxes,
     sendLimitedPartnershipTransactionUpdate,
-} from "../../src/utils/confirmation/limited.partnership.confirmation.ts";
-import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+} from "../../src/utils/confirmation/limited.partnership.confirmation";
 
 const COMPANY_NUMBER = "12345678";
 const TRANSACTION_ID = "66454";
@@ -57,14 +58,28 @@ describe("start confirmation statement date controller tests", () => {
     });
 
     it("should redirect to check your answer page", async () => {
-        const response = await request(app).post(URL).set("Content-Type", "application/json").send({
-            confirmationStatementDate: "yes",
-            "csDate-year": "2020",
-            "csDate-month": "03",
-            "csDate-day": "15",
-        });
+        const csDate = moment().subtract(1, "day");
 
-        expect(mockSendLimitedPartnershipTransactionUpdate.mock.calls[0][1]).toBe("2020-03-15");
+        companyProfile.confirmationStatement = {
+            lastMadeUpTo: moment().subtract(2, "days").format("YYYY-MM-DD"),
+            nextMadeUpTo: moment().add(1, "month").format("YYYY-MM-DD"),
+            nextDue: moment().add(1, "month").add(14, "days").format("YYYY-MM-DD"),
+            overdue: false,
+        };
+
+        const response = await request(app)
+            .post(URL)
+            .set("Content-Type", "application/json")
+            .send({
+                confirmationStatementDate: "yes",
+                "csDate-year": csDate.format("YYYY"),
+                "csDate-month": csDate.format("MM"),
+                "csDate-day": csDate.format("DD"),
+            });
+
+        expect(mockSendLimitedPartnershipTransactionUpdate).toHaveBeenCalled();
+        expect(mockSendLimitedPartnershipTransactionUpdate.mock.calls[0][1]).toBe(csDate.format("YYYY-MM-DD"));
+
         expect(response.headers.location).toBe(
             "/confirmation-statement/company/12345678/transaction/66454/submission/435435/acsp/check-your-answer?lang=en"
         );
