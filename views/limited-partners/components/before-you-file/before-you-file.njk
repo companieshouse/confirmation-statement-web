@@ -63,7 +63,7 @@
                 <p class="govuk-body">
                     {{i18n.BYFFileUpdatesParagraphStart}}
                     {% if company.companyNumber %}
-                        <a href="https://find-and-update.company-information.service.gov.uk/company/{{company.companyNumber}}" target="_blank"
+                        <a href="{{COMPANY_INFORMATION_BASE_URL}}/company/{{company.companyNumber}}" target="_blank"
                         data-event-id="check-company-info-link">
                             {{i18n.BYFFileUpdatesParagraphLink}}
                         </a>
