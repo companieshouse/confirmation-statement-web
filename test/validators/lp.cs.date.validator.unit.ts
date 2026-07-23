@@ -5,7 +5,6 @@ import { isTodayBeforeFileCsDate, validateDateSelectorValue } from "../../src/va
 import { validLimitedPartnershipProfile } from "../mocks/company.profile.mock";
 import { CsDateValue } from "../../src/utils/limited.partnership";
 import { getLocaleInfo, getLocalesService } from "../../src/utils/localise";
-import { formatDateString } from "../../src/utils/date";
 import * as csDateValidator from "../../src/validators/lp.cs.date.validator.ts";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import moment from "moment";
@@ -163,7 +162,7 @@ describe("LP CS date validator tests", () => {
         );
     });
 
-    it("validateDateSelectorValue should return CDSErrorCsDateAfterlastCsDate error message if new CS date is before as the date of lastMadeUpTo if not filing on time", () => {
+    it("validateDateSelectorValue should return CDSErrorEarlyPastDate error message if new CS date is before as the date of lastMadeUpTo if not filing on time", () => {
         validLimitedPartnershipProfile.confirmationStatement = {
             lastMadeUpTo: "2098-03-15",
             nextDue: "2099-03-29",
@@ -284,6 +283,52 @@ describe("LP CS date validator tests", () => {
 
         expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(
             localInfo.i18n.CDSErrorEarlyPastDate
+        );
+    });
+
+    it("should return CDSErrorSameCsDate when the CS date is the same as lastMadeUpTo for late filing", () => {
+        const today = moment();
+        const lastMadeUpTo = today.clone().subtract(14, "month");
+        const nextMadeUpTo = today.clone().add(2, "month");
+
+        validLimitedPartnershipProfile.confirmationStatement = {
+            lastMadeUpTo: lastMadeUpTo.format("YYYY-MM-DD"),
+            nextMadeUpTo: nextMadeUpTo.format("YYYY-MM-DD"),
+            nextDue: nextMadeUpTo.clone().add(14, "days").format("YYYY-MM-DD"),
+            overdue: false,
+        };
+
+        const csDateValue: CsDateValue = {
+            csDateYear: lastMadeUpTo.format("YYYY"),
+            csDateMonth: lastMadeUpTo.format("M"),
+            csDateDay: lastMadeUpTo.format("D"),
+        };
+
+        expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(
+            localInfo.i18n.CDSErrorSameCsDate
+        );
+    });
+
+    it("should return CDSErrorSameCsDate when the CS date is the same as lastMadeUpTo for on time filing", () => {
+        const today = moment();
+        const lastMadeUpTo = today.clone().subtract(3, "days");
+        const nextMadeUpTo = today.clone().add(2, "month");
+
+        validLimitedPartnershipProfile.confirmationStatement = {
+            lastMadeUpTo: lastMadeUpTo.format("YYYY-MM-DD"),
+            nextMadeUpTo: nextMadeUpTo.format("YYYY-MM-DD"),
+            nextDue: nextMadeUpTo.clone().add(14, "days").format("YYYY-MM-DD"),
+            overdue: false,
+        };
+
+        const csDateValue: CsDateValue = {
+            csDateYear: lastMadeUpTo.format("YYYY"),
+            csDateMonth: lastMadeUpTo.format("M"),
+            csDateDay: lastMadeUpTo.format("D"),
+        };
+
+        expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(
+            localInfo.i18n.CDSErrorSameCsDate
         );
     });
 });
