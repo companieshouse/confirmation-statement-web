@@ -95,3 +95,5 @@ export const SKIP_START_PAGE_COMPANY_TYPES = getEnvironmentVariable(
     "SKIP_START_PAGE_COMPANY_TYPES",
     "limited-partnership"
 );
+
+export const COMPANY_INFO_URL = getEnvironmentVariable("COMPANY_INFO_URL");
