@@ -10,6 +10,7 @@ import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transact
 import { toReadableFormat, isValidDate } from "../utils/date";
 import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
+import { closeTransaction } from "../../src/services/transaction.service";
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
 import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
@@ -147,6 +148,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
             nextPage = lpJourneyResponse.nextPage;
             if (!isPaymentDue(transaction, submissionId)) {
+                await closeTransaction(session, companyNumber, submissionId, transactionId);
                 return res.redirect(
                     urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
                         nextPage,
