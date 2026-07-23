@@ -47,7 +47,7 @@ export function validateDateSelectorValue(
         validateMustFileBy(csDateInput, company, localInfo) ??
         validateRegistrationDate(csDateInput, company, localInfo) ??
         validateLpReformDate(csDateInput, localInfo) ??
-        validateLastOrNextMadeUpDate(csDateInput, company, localInfo)
+        validateDateAfterLastMadeUpTo(csDateInput, company, localInfo)
     );
 }
 
@@ -130,24 +130,16 @@ function validateLpReformDate(csDateInput: Date, localInfo: any): string | undef
     return undefined;
 }
 
-export function validateLastOrNextMadeUpDate(
+export function validateDateAfterLastMadeUpTo(
     csDateInput: Date,
     company: CompanyProfile,
     localInfo: any
 ): string | undefined {
-    const lastOrNextMadeUpDate = isTodayBeforeFileCsDate(company)
-        ? company?.confirmationStatement?.lastMadeUpTo
-        : company.confirmationStatement?.nextMadeUpTo;
-
-    if (!lastOrNextMadeUpDate) {
-        return undefined;
-    }
-
-    if (moment(csDateInput).isSame(moment(lastOrNextMadeUpDate), "day")) {
+    if (moment(csDateInput).isSame(moment(company?.confirmationStatement?.lastMadeUpTo), "day")) {
         return localInfo.i18n.CDSErrorSameCsDate;
     }
 
-    if (moment(csDateInput).isBefore(moment(lastOrNextMadeUpDate), "day")) {
+    if (moment(csDateInput).isBefore(moment(company?.confirmationStatement?.lastMadeUpTo), "day")) {
         return localInfo.i18n.CDSErrorCsDateAfterlastCsDate;
     }
 

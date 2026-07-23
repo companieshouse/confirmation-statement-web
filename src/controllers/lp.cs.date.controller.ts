@@ -25,7 +25,7 @@ import { convertDateToString, formatDateString } from "../utils/date";
 import {
     isTodayBeforeFileCsDate,
     validateDateSelectorValue,
-    validateLastOrNextMadeUpDate,
+    validateDateAfterLastMadeUpTo,
 } from "../validators/lp.cs.date.validator";
 import {
     resetReviewCheckboxes,
@@ -189,7 +189,7 @@ const radioNoSelection = async (req: Request, res: Response, context: Confirmati
     let errorMessage: string | undefined;
 
     if (date) {
-        errorMessage = validateLastOrNextMadeUpDate(date, company, localInfo);
+        errorMessage = validateDateAfterLastMadeUpTo(date, company, localInfo);
     }
 
     if (errorMessage) {

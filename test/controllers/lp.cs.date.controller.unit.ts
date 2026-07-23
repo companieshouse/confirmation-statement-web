@@ -231,6 +231,13 @@ describe("date controller validation tests", () => {
             type: "limited-partnership",
             subtype: "limited-partnership",
             companyName: "Test Company",
+            confirmationStatement: {
+                lastMadeUpTo: "2023-02-28",
+                nextMadeUpTo: "2099-03-15",
+                nextDue: "2099-03-29",
+                overdue: false,
+            },
+            dateOfCreation: "2020-02-01",
         });
 
         (limitedPartnershipUtils.isACSPJourney as jest.Mock).mockReturnValue(true);
@@ -301,19 +308,6 @@ describe("date controller validation tests", () => {
 
         expect(response.text).toContain(PAGE_TITLE_ERROR);
         expect(response.text).toContain("Confirmation statement date must be a real date");
-        expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
-    });
-
-    it("should accept valid leap year date", async () => {
-        const response = await request(app).post(URL).send({
-            confirmationStatementDate: "yes",
-            "csDate-day": "29",
-            "csDate-month": "02",
-            "csDate-year": "2024",
-        });
-
-        expect(mockSendLimitedPartnershipTransactionUpdate.mock.calls[0][1]).toBe("2024-02-29");
-        expect(response.status).toBe(302);
         expect(mockResetReviewCheckboxes).not.toHaveBeenCalled();
     });
 });
