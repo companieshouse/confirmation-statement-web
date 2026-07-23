@@ -177,7 +177,7 @@ const dummyPaymentResponse = {
 function setupLimitedPartnershipCompany() {
     const mockLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
-        type: "limited-partnership",
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
         subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
         jurisdiction: "england-wales",
         companyName: "Test Company",
@@ -189,7 +189,7 @@ function setupLimitedPartnershipCompany() {
 function setupScottishLimitedPartnershipCompany() {
     const mockScottishLimitedPartnership = {
         companyNumber: COMPANY_NUMBER,
-        type: "limited-partnership",
+        type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
         subtype: LIMITED_PARTNERSHIP_SUBTYPES.SLP,
         jurisdiction: "scotland",
         companyName: "Test Company",
@@ -495,7 +495,7 @@ describe("review controller tests", () => {
         it("Should reload the LP review page with error messages when both confirmation & lawful activity statement checkboxes not ticked", async () => {
             const mockLimitedPartnership = {
                 companyNumber: COMPANY_NUMBER,
-                type: "limited-partnership",
+                type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
                 subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
                 companyName: "Test Company",
             };
@@ -515,7 +515,7 @@ describe("review controller tests", () => {
         it("Should reload the LP review page with an error message when confirmation statement checkbox not ticked", async () => {
             const mockLimitedPartnership = {
                 companyNumber: COMPANY_NUMBER,
-                type: "limited-partnership",
+                type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
                 subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
                 companyName: "Test Company",
             };
@@ -555,7 +555,7 @@ describe("review controller tests", () => {
         it("Should redirect to the LP confirmation url if the journey is LP and the payment is not due", async () => {
             const mockLimitedPartnership = {
                 companyNumber: COMPANY_NUMBER,
-                type: "limited-partnership",
+                type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
                 subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
                 companyName: "Test Company",
             };
@@ -569,13 +569,19 @@ describe("review controller tests", () => {
             });
 
             expect(response.status).toBe(302);
+            expect(mockCloseTransaction).toHaveBeenCalledWith(
+                expect.any(Session),
+                COMPANY_NUMBER,
+                SUBMISSION_ID,
+                TRANSACTION_ID
+            );
             expect(response.header.location).toEqual(LP_CONFIRMATION_URL);
         });
 
         it("Should redirect to the payment url if the journey is LP and the payment is due", async () => {
             const mockLimitedPartnership = {
                 companyNumber: COMPANY_NUMBER,
-                type: "limited-partnership",
+                type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
                 subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
                 companyName: "Test Company",
             };
@@ -592,6 +598,12 @@ describe("review controller tests", () => {
             });
 
             expect(response.status).toBe(302);
+            expect(mockCloseTransaction).toHaveBeenCalledWith(
+                expect.any(Session),
+                COMPANY_NUMBER,
+                SUBMISSION_ID,
+                TRANSACTION_ID
+            );
             expect(response.header.location).toEqual(PAYMENT_JOURNEY_URL);
         });
 
