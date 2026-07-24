@@ -25,7 +25,7 @@ import { convertDateToString, formatDateString } from "../utils/date";
 import {
     isTodayBeforeFileCsDate,
     validateDateSelectorValue,
-    validateLastOrNextMadeUpDate,
+    validateDateAfterLastMadeUpTo,
 } from "../validators/lp.cs.date.validator";
 import {
     resetReviewCheckboxes,
@@ -182,14 +182,14 @@ const radioNoSelection = async (req: Request, res: Response, context: Confirmati
     const date = returnTodayOnlyIfBeforeFileCsDate(company); // Saved the date value into session if user clicked no in early screen
     saveCsDateIntoSession(acspSessionData, false, date);
     const updatedCsDateValue = {
-        csDateYear: String(date?.getFullYear() ?? ""),
-        csDateMonth: String((date?.getMonth() ?? 0) + 1),
-        csDateDay: String(date?.getDate() ?? ""),
+        csDateYear: "",
+        csDateMonth: "",
+        csDateDay: "",
     };
     let errorMessage: string | undefined;
 
     if (date) {
-        errorMessage = validateLastOrNextMadeUpDate(date, company, localInfo);
+        errorMessage = validateDateAfterLastMadeUpTo(date, company, localInfo);
     }
 
     if (errorMessage) {
