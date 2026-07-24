@@ -23,4 +23,5 @@ export default () => {
     process.env.EWF_URL = "https://ewf.companieshouse.gov.uk/";
     process.env.CS01_COST = "50";
     process.env.CS01_PAPER_FEE = "110";
+    process.env.COMPANY_INFO_URL = "https://find-and-update.company-information.service.gov.uk";
 };
