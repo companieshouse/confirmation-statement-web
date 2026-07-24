@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { getTransaction } from "../services/transaction.service";
+import { closeTransaction, getTransaction } from "../services/transaction.service";
 import { Session } from "@companieshouse/node-session-handler";
 import { CONFIRMATION_PATH, TASK_LIST_PATH } from "../types/page.urls";
 import { Templates } from "../types/template.paths";
@@ -10,7 +10,6 @@ import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transact
 import { toReadableFormat, isValidDate } from "../utils/date";
 import { ConfirmationStatementSubmission } from "@companieshouse/api-sdk-node/dist/services/confirmation-statement";
 import { getConfirmationStatement } from "../services/confirmation.statement.service";
-import { closeTransaction } from "../../src/services/transaction.service";
 import { sendLawfulPurposeStatementUpdate } from "../utils/update.confirmation.statement.submission";
 import { ecctDayOneEnabled } from "../utils/feature.flag";
 import { getLocaleInfo, getLocalesService, selectLang } from "../utils/localise";
