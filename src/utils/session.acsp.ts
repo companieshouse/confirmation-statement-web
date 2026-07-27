@@ -27,7 +27,7 @@ export function createDefaultAcspSessionData(): AcspSessionData {
 }
 
 export function getAcspSessionData(session: Session): AcspSessionData | undefined {
-    return session.getExtraData(ACSP_SESSION_KEY) as AcspSessionData | undefined;
+    return session.getExtraData(ACSP_SESSION_KEY);
 }
 
 export function resetAcspSession(session: Session): void {
