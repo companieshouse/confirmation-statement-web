@@ -54,12 +54,25 @@ export function isSpflpLimitedPartnershipCompanyType(companyProfile: CompanyProf
     );
 }
 
-export function getReviewPath(isAcspJourney: boolean): string {
+export function getReviewPath(isAcspJourneyOrPath: boolean | string): string {
+    const isAcspJourney =
+        typeof isAcspJourneyOrPath === "boolean" ? isAcspJourneyOrPath : isACSPJourney(isAcspJourneyOrPath);
     return isAcspJourney ? LP_REVIEW_PATH : REVIEW_PATH;
 }
 
-export function getConfirmationPath(isAcspJourney: boolean): string {
+export function getConfirmationPath(isAcspJourneyOrPath: boolean | string): string {
+    const isAcspJourney =
+        typeof isAcspJourneyOrPath === "boolean" ? isAcspJourneyOrPath : isACSPJourney(isAcspJourneyOrPath);
     return isAcspJourney ? LP_CONFIRMATION_PATH : CONFIRMATION_PATH;
+}
+
+// Domain-specific helpers to determine ACSP intent from a path string.
+export function isAcspReviewPath(path: string): boolean {
+    return isACSPJourney(path) && path.toLowerCase().includes("review");
+}
+
+export function isAcspConfirmationPath(path: string): boolean {
+    return isACSPJourney(path) && path.toLowerCase().includes("confirmation");
 }
 
 export function isACSPJourney(path: string): boolean {
