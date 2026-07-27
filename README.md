@@ -36,3 +36,14 @@ These instructions are for a local docker environment.
 
 This repo uses ESLint and Prettier for code linting and formatting, and are configured to run automatically via a pre-commit hook.
 You can by-pass the pre-commit hook using the `--no-verify` option in the `git` CLI.
+
+## Troubleshooting
+If you see the following error when running `npm install`:
+```
+npm error code EALLOWGIT
+npm error Fetching packages of type "git" have been disabled
+```
+Run the following command to enable git fetching:
+```
+npm config set allow-git all
+```
