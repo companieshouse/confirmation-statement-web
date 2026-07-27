@@ -11,6 +11,7 @@ import {
     LIMITED_PARTNERSHIP_SUBTYPES,
     GCI_RETURN_URL_SESSION_KEY,
 } from "../../src/utils/constants";
+import { LP_REVIEW_PATH, REVIEW_PATH, LP_CONFIRMATION_PATH, CONFIRMATION_PATH } from "../../src/types/page.urls";
 import { Request } from "express";
 import { getCompanyProfileFromSession } from "../../src/utils/session";
 import { getConfirmationStatement } from "../../src/services/confirmation.statement.service";
@@ -249,5 +250,40 @@ describe("Limited partnership util tests", () => {
     it("isIntegratedJourney returns false if session is undefined", () => {
         let response: boolean = limitedPartnershipUtil.isIntegratedJourney(null);
         expect(response).toBeFalsy();
+    });
+
+    it("getReviewPath returns LP review path when passed boolean true", () => {
+        const res = limitedPartnershipUtil.getReviewPath(true);
+        expect(res).toEqual(LP_REVIEW_PATH);
+    });
+
+    it("getReviewPath returns standard review path when passed boolean false", () => {
+        const res = limitedPartnershipUtil.getReviewPath(false);
+        expect(res).toEqual(REVIEW_PATH);
+    });
+
+    it("getReviewPath returns LP review path when passed an ACSP review path string", () => {
+        const res = limitedPartnershipUtil.getReviewPath(LP_REVIEW_PATH);
+        expect(res).toEqual(LP_REVIEW_PATH);
+    });
+
+    it("getConfirmationPath returns LP confirmation path when passed boolean true", () => {
+        const res = limitedPartnershipUtil.getConfirmationPath(true);
+        expect(res).toEqual(LP_CONFIRMATION_PATH);
+    });
+
+    it("getConfirmationPath returns standard confirmation path when passed boolean false", () => {
+        const res = limitedPartnershipUtil.getConfirmationPath(false);
+        expect(res).toEqual(CONFIRMATION_PATH);
+    });
+
+    it("isAcspReviewPath detects ACSP review path", () => {
+        expect(limitedPartnershipUtil.isAcspReviewPath(LP_REVIEW_PATH)).toBeTruthy();
+        expect(limitedPartnershipUtil.isAcspReviewPath(REVIEW_PATH)).toBeFalsy();
+    });
+
+    it("isAcspConfirmationPath detects ACSP confirmation path", () => {
+        expect(limitedPartnershipUtil.isAcspConfirmationPath(LP_CONFIRMATION_PATH)).toBeTruthy();
+        expect(limitedPartnershipUtil.isAcspConfirmationPath(CONFIRMATION_PATH)).toBeFalsy();
     });
 });

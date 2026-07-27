@@ -66,7 +66,6 @@ export function getConfirmationPath(isAcspJourneyOrPath: boolean | string): stri
     return isAcspJourney ? LP_CONFIRMATION_PATH : CONFIRMATION_PATH;
 }
 
-// Domain-specific helpers to determine ACSP intent from a path string.
 export function isAcspReviewPath(path: string): boolean {
     return isACSPJourney(path) && path.toLowerCase().includes("review");
 }
