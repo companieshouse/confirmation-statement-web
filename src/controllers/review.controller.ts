@@ -148,13 +148,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
             nextPage = lpJourneyResponse.nextPage;
             if (!isPaymentDue(transaction, submissionId)) {
-                logger.info("Closing transaction for company ${companyNumber}");
-                try {
-                    await closeTransaction(session, companyNumber, submissionId, transactionId);
-                } catch (e) {
-                    logger.error("Failed to close transaction for company ${companyNumber}, error: ${e.message}");
-                }
-                logger.info("Transaction closed for company ${companyNumber}");
+                await closePaidTransaction(req, companyNumber, submissionId, transactionId);
                 return res.redirect(
                     urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
                         nextPage,
@@ -202,4 +196,29 @@ export function formatConfirmationDate(dateString?: string | Date | null): strin
         return undefined;
     }
     return moment(dateString).format("D MMMM YYYY");
+}
+
+const closePaidTransaction = async (
+    req: Request,
+    companyNumber: string,
+    submissionId: string,
+    transactionId: string
+) => {
+    logger.info("Closing transaction for company " + companyNumber);
+    try {
+        await sendLawfulPurposeStatementUpdate(req, true);
+
+        await closeTransaction(req.session as Session, companyNumber, submissionId, transactionId);
+    } catch (e) {
+        handleTransactionError(e, "Failed to close transaction for company " + companyNumber);
+    }
+    logger.info("Transaction closed for company " + companyNumber);
+};
+
+function handleTransactionError(error: unknown, additionalMessage: string) {
+    if (error instanceof Error) {
+        logger.error(additionalMessage + ", error: " + error.message);
+    } else {
+        logger.error(additionalMessage + ", error: " + error);
+    }
 }
