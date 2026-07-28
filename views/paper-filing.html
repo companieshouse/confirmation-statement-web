@@ -13,9 +13,9 @@
       <p>{{ company.companyName }} is a {{ company.type }}, which means it can only file confirmation statements using the
 
         {% if company.type === "limited-partnership" %}
-          <a href="https://www.gov.uk/government/publications/confirmation-statement-for-a-scottish-limited-partnership-slp-cs01"/>SLP CSO1 confirmation statement paper form</a>.
+          <a href="https://www.gov.uk/government/publications/confirmation-statement-for-a-scottish-limited-partnership-slp-cs01">SLP CSO1 confirmation statement paper form</a>.
         {% elseif company.type === "scottish-partnership" %}
-          <a href="https://www.gov.uk/government/publications/confirmation-statement-for-a-scottish-qualifying-partnership-sqp-cs01"/>SQP CSO1 confirmation statement paper form</a>.
+          <a href="https://www.gov.uk/government/publications/confirmation-statement-for-a-scottish-qualifying-partnership-sqp-cs01">SQP CSO1 confirmation statement paper form</a>.
         {% else %}
            <a href="https://www.gov.uk/government/publications/confirmation-statement-form-cs01-new-version" data-event-id="confirmation-statement-paper-form-link">CS01 confirmation statement paper form</a>.
         {% endif %}
