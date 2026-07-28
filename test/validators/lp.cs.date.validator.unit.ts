@@ -331,6 +331,25 @@ describe("LP CS date validator tests", () => {
             localInfo.i18n.CDSErrorSameCsDate
         );
     });
+
+    it("should return undefined when lastMadeUpTo date is missing from Confirmation Statement", () => {
+        const today = moment();
+        const nextMadeUpTo = today.clone().add(1, "month");
+
+        validLimitedPartnershipProfile.confirmationStatement = {
+            nextMadeUpTo: nextMadeUpTo.format("YYYY-MM-DD"),
+            nextDue: nextMadeUpTo.clone().add(14, "days").format("YYYY-MM-DD"),
+            overdue: false,
+        };
+
+        const csDateValue = {
+            csDateYear: moment().subtract(1, "year").format("YYYY"),
+            csDateMonth: moment().subtract(1, "year").format("M"),
+            csDateDay: moment().subtract(1, "year").format("DD"),
+        };
+
+        expect(validateDateSelectorValue(localInfo, csDateValue, validLimitedPartnershipProfile)).toEqual(undefined);
+    });
 });
 
 describe("isDateOnTime", () => {

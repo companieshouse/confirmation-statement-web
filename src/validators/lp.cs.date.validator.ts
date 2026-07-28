@@ -135,11 +135,13 @@ export function validateDateAfterLastMadeUpTo(
     company: CompanyProfile,
     localInfo: any
 ): string | undefined {
-    if (moment(csDateInput).isSame(moment(company?.confirmationStatement?.lastMadeUpTo), "day")) {
+    const lastMadeUpToDate = company.confirmationStatement?.lastMadeUpTo;
+
+    if (lastMadeUpToDate && moment(csDateInput).isSame(moment(lastMadeUpToDate), "day")) {
         return localInfo.i18n.CDSErrorSameCsDate;
     }
 
-    if (moment(csDateInput).isBefore(moment(company?.confirmationStatement?.lastMadeUpTo), "day")) {
+    if (lastMadeUpToDate && moment(csDateInput).isBefore(moment(lastMadeUpToDate), "day")) {
         return localInfo.i18n.CDSErrorCsDateAfterlastCsDate;
     }
 
