@@ -25,6 +25,7 @@ import {
 } from "../utils/constants";
 import moment from "moment";
 import { CS01_COST } from "../utils/properties";
+import { logger } from "../utils/logger";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -147,7 +148,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
             nextPage = lpJourneyResponse.nextPage;
             if (!isPaymentDue(transaction, submissionId)) {
-                await closeTransaction(session, companyNumber, submissionId, transactionId);
+                logger.info("Closing transaction for company ${companyNumber}");
+                try {
+                    await closeTransaction(session, companyNumber, submissionId, transactionId);
+                } catch (e) {
+                    logger.error("Failed to close transaction for company ${companyNumber}, error: ${e.message}");
+                }
+                logger.info("Transaction closed for company ${companyNumber}");
                 return res.redirect(
                     urlUtils.getUrlWithCompanyNumberTransactionIdAndSubmissionId(
                         nextPage,
