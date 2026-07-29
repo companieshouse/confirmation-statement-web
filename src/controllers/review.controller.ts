@@ -68,10 +68,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
                 submissionId
             );
             const acspSessionData = getAcspSessionData(session);
-            const newConfirmationDate = acspSessionData?.newConfirmationDate;
-            const formattedCsDate = formatConfirmationDate(
-                newConfirmationDate && isValidDate(newConfirmationDate) ? newConfirmationDate : confirmationDate
-            );
+            const formattedCsDate = resolveFormattedCsDate(acspSessionData?.newConfirmationDate, confirmationDate);
 
             return res.render(Templates.REVIEW, {
                 ...localeInfo,
@@ -114,7 +111,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         const acspSessionData = getAcspSessionData(session);
         const confirmationDate = companyProfile.confirmationStatement?.nextMadeUpTo;
 
-        const formattedCsDate = formatConfirmationDate(acspSessionData?.newConfirmationDate ?? confirmationDate);
+        const formattedCsDate = resolveFormattedCsDate(acspSessionData?.newConfirmationDate, confirmationDate);
         let nextPage;
 
         if (isLimitedPartnershipCompanyType(companyProfile)) {
@@ -202,4 +199,12 @@ export function formatConfirmationDate(dateString?: string | Date | null): strin
         return undefined;
     }
     return moment(dateString).format("D MMMM YYYY");
+}
+
+export function resolveFormattedCsDate(
+    newConfirmationDate: string | null | undefined,
+    confirmationDate: string | undefined
+): string | undefined {
+    const dateToUse = newConfirmationDate && isValidDate(newConfirmationDate) ? newConfirmationDate : confirmationDate;
+    return formatConfirmationDate(dateToUse);
 }

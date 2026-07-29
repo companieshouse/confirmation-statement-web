@@ -264,7 +264,9 @@ function saveCsDateIntoSession(
 ) {
     if (acspSessionData) {
         acspSessionData.changeConfirmationStatementDate = isChangedConfirmationStatementDate;
-        acspSessionData.newConfirmationDate = moment(csDateInput).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT);
+        acspSessionData.newConfirmationDate = csDateInput
+            ? moment(csDateInput).format(YYYYMMDD_WITH_HYPHEN_DATE_FORMAT)
+            : null;
     }
 }
 
