@@ -60,7 +60,7 @@ describe("company authentication middleware tests", () => {
         expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction();
     });
 
-    it("should call LP journey when company type is limited partnership and contain ACSP member", async () => {
+    it("should pass company authentication when company type is limited partnership and contain ACSP member", async () => {
         setCompanyTypeAndAcspNumberInSession(
             LIMITED_PARTNERSHIP_COMPANY_TYPE,
             "TSA001",
@@ -68,25 +68,17 @@ describe("company authentication middleware tests", () => {
         );
         await request(app).get(URL);
 
-        // TODO: the following code need to be updated once ACSP authentication support to create transaction at this moment
         expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction();
     });
 
-    it("should display stop screen when company type is limited partnership and do not contain ACSP number", async () => {
-        setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, "", LIMITED_PARTNERSHIP_SUBTYPES.LP);
-        const response = await request(app).get(URL);
-
-        expect(response.header.location).toBe("/confirmation-statement/acsp/must-be-authorised-agent");
-    });
-
-    it("should call existing CS journey when company type is not limited partnership and contain ACSP member", async () => {
+    it("should pass company authentication when company type is not limited partnership and contain ACSP member", async () => {
         setCompanyTypeAndAcspNumberInSession("ltd", "TSA001");
         await request(app).get(URL);
 
         expectToCallCompanyAuthMiddlewareAndAuthReturnedFunction();
     });
 
-    it("should call existing CS journey when company type is not limited partnership and contain ACSP member", async () => {
+    it("should pass company authentication when company type is not limited partnership and contain ACSP member", async () => {
         setCompanyTypeAndAcspNumberInSession("ltd", "");
         await request(app).get(URL);
 

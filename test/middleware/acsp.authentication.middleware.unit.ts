@@ -1,4 +1,3 @@
-import { acspValidationMiddleware } from "../../src/middleware/acsp.validation.middleware";
 import {
     LP_CHECK_YOUR_ANSWER_PATH,
     LP_BEFORE_YOU_FILE_PATH,
@@ -8,10 +7,14 @@ import {
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
-import middlewareMocks from "../mocks/all.middleware.mock";
+import mockAuthenticationMiddleware from "../mocks/authentication.middleware.mock";
+import mockSessionMiddleware from "../mocks/session.middleware.mock";
+import mockCompanyAuthenticationMiddleware from "../mocks/company.authentication.middleware.mock";
+import mockCsrfMiddleware from "../mocks/csrf.middleware.mock";
 import request from "supertest";
 import app from "../../src/app";
 import { getTransaction } from "../../src/services/transaction.service";
+import { acspManageUsersAuthMiddleware, AuthOptions } from "@companieshouse/web-security-node";
 
 jest.mock("../../src/services/transaction.service", () => ({
     getTransaction: jest.fn(),
@@ -35,11 +38,18 @@ const URL_CS_JOURNEY = TRADING_STATUS_PATH.replace(`:${urlParams.PARAM_COMPANY_N
     .replace(`:${urlParams.PARAM_TRANSACTION_ID}`, TRANSACTION_ID)
     .replace(`:${urlParams.PARAM_SUBMISSION_ID}`, SUBMISSION_ID);
 
-middlewareMocks.mockAcspValidationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
-    acspValidationMiddleware(req, res, next);
-});
+const mockAcspAuthReturnedFunction = jest.fn();
+mockAcspAuthReturnedFunction.mockImplementation((_req, _res, next) => next());
+const mockAcspManageUsersAuthMiddleware = acspManageUsersAuthMiddleware as jest.Mock;
+mockAcspManageUsersAuthMiddleware.mockReturnValue(mockAcspAuthReturnedFunction);
 
-middlewareMocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
+const expectedAuthMiddlewareConfig: AuthOptions = {
+    chsWebUrl: "http://chs.local",
+    returnUrl: URL_LP_BEFORE,
+    acspNumber: ACSP_NUMBER,
+};
+
+mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
     const session: Session = new Session();
     session.data = {
         signin_info: {
@@ -56,12 +66,15 @@ middlewareMocks.mockSessionMiddleware.mockImplementation((req: Request, res: Res
     return next();
 });
 
-describe("start ACSP validation middleware tests", () => {
+describe("start ACSP authentication middleware tests", () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        mockAuthenticationMiddleware.mockClear();
+        mockSessionMiddleware.mockClear();
+        mockCompanyAuthenticationMiddleware.mockClear();
+        mockCsrfMiddleware.mockClear();
     });
 
-    it("acspValidationMiddleware should redirect to LP before you file page if user is ACSP member and LP type", async () => {
+    it("acspAuthenticationMiddleware should redirect to LP before you file page if user is ACSP member and LP type", async () => {
         setCompanyTypeAndAcspNumberInSession(
             LIMITED_PARTNERSHIP_COMPANY_TYPE,
             ACSP_NUMBER,
@@ -74,67 +87,69 @@ describe("start ACSP validation middleware tests", () => {
 
         const response = await request(app).get(URL_LP_BEFORE);
 
-        expect(middlewareMocks.mockAcspValidationMiddleware).toHaveBeenCalled();
+        expectToCallAcspAuthMiddlewareAndAcspAuthReturnedFunction(expectedAuthMiddlewareConfig);
         expect(response.text).toContain("Before you file the confirmation statement");
     });
 
-    it("acspValidationMiddleware should redirect to LP check your answer page if user is ACSP member and LP subtype", async () => {
+    it("acspAuthenticationMiddleware should redirect to LP check your answer page if user is ACSP member and LP subtype", async () => {
         setCompanyTypeAndAcspNumberInSession(
             LIMITED_PARTNERSHIP_COMPANY_TYPE,
             ACSP_NUMBER,
             LIMITED_PARTNERSHIP_SUBTYPES.SLP
         );
+        expectedAuthMiddlewareConfig.returnUrl = URL_LP_CHECK;
         const response = await request(app).get(URL_LP_CHECK);
 
-        expect(middlewareMocks.mockAcspValidationMiddleware).toHaveBeenCalled();
+        expectToCallAcspAuthMiddlewareAndAcspAuthReturnedFunction(expectedAuthMiddlewareConfig);
         expect(response.headers.location).toBe(
             "/confirmation-statement/company/12345678/transaction/66454/submission/435435/acsp/confirmation-statement-date?lang=en"
         );
     });
 
-    it("acspValidationMiddleware should redirect to LP stop screen if user is non ACSP member", async () => {
+    it("acspAuthenticationMiddleware should redirect to LP stop screen if user is non ACSP member", async () => {
         setCompanyTypeAndAcspNumberInSession(LIMITED_PARTNERSHIP_COMPANY_TYPE, "", LIMITED_PARTNERSHIP_SUBTYPES.LP);
         const response = await request(app).get(URL_LP_CHECK);
 
-        expect(middlewareMocks.mockAcspValidationMiddleware).toHaveBeenCalled();
+        expectToCallAcspAuthMiddlewareAndAcspAuthReturnedFunction(expectedAuthMiddlewareConfig);
         expect(response.headers.location).toBe("/confirmation-statement/acsp/must-be-authorised-agent");
     });
 
-    it("acspValidationMiddleware should redirect to LP stop screen if company profile is empty and user is non ACSP member ", async () => {
+    it("acspAuthenticationMiddleware should redirect to LP stop screen if company profile is empty and user is non ACSP member ", async () => {
         setCompanyTypeAndAcspNumberInSession("", "");
         const response = await request(app).get(URL_LP_CHECK);
 
-        expect(middlewareMocks.mockAcspValidationMiddleware).toHaveBeenCalled();
+        expectToCallAcspAuthMiddlewareAndAcspAuthReturnedFunction(expectedAuthMiddlewareConfig);
         expect(response.headers.location).toBe("/confirmation-statement/acsp/must-be-authorised-agent");
     });
 
-    it("acspValidationMiddleware should redirect to service offline screen if company type is empty and user is ACSP member ", async () => {
+    it("acspAuthenticationMiddleware should redirect to service offline screen if company type is empty and user is ACSP member ", async () => {
         setCompanyTypeAndAcspNumberInSession("", ACSP_NUMBER);
         const response = await request(app).get(URL_LP_CHECK);
 
-        expect(middlewareMocks.mockAcspValidationMiddleware).toHaveBeenCalled();
+        expectToCallAcspAuthMiddlewareAndAcspAuthReturnedFunction(expectedAuthMiddlewareConfig);
         expect(response.text).toContain("Sorry, there is a problem with the service");
     });
 
-    it("acspValidationMiddleware should not be called if the URL is not part of ACSP journey and user is non ACSP member", async () => {
+    it("acspAuthenticationMiddleware should not be called if the URL is not part of ACSP journey and user is non ACSP member", async () => {
         setCompanyTypeAndAcspNumberInSession("ltd", "");
         const response = await request(app).get(URL_CS_JOURNEY);
 
-        expect(middlewareMocks.mockAcspValidationMiddleware).not.toHaveBeenCalled();
+        expect(mockAcspManageUsersAuthMiddleware).toHaveBeenCalledWith(expectedAuthMiddlewareConfig);
+        expect(mockAcspAuthReturnedFunction).toHaveBeenCalled();
         expect(response.text).toContain("Is the trading status of shares correct?");
     });
 
-    it("acspValidationMiddleware should not be called if the URL is not part of ACSP journey and user is ACSP member", async () => {
+    it("acspAuthenticationMiddleware should not be called if the URL is not part of ACSP journey and user is ACSP member", async () => {
         setCompanyTypeAndAcspNumberInSession("ltd", ACSP_NUMBER);
         const response = await request(app).get(URL_CS_JOURNEY);
 
-        expect(middlewareMocks.mockAcspValidationMiddleware).not.toHaveBeenCalled();
+        expectToCallAcspAuthMiddlewareAndAcspAuthReturnedFunction(expectedAuthMiddlewareConfig);
         expect(response.text).toContain("Is the trading status of shares correct?");
     });
 });
 
 function setCompanyTypeAndAcspNumberInSession(companyType: string, acspNumber: string, companySubtype?: string) {
-    middlewareMocks.mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
+    mockSessionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
         const session: Session = new Session();
         session.data = {
             signin_info: {
@@ -150,4 +165,9 @@ function setCompanyTypeAndAcspNumberInSession(companyType: string, acspNumber: s
         req.session = session;
         return next();
     });
+}
+
+function expectToCallAcspAuthMiddlewareAndAcspAuthReturnedFunction(expectedAuthMiddlewareConfig: AuthOptions) {
+    expect(mockAcspManageUsersAuthMiddleware).toHaveBeenCalledWith(expectedAuthMiddlewareConfig);
+    expect(mockAcspAuthReturnedFunction).toHaveBeenCalled();
 }

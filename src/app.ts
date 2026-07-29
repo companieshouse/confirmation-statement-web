@@ -14,7 +14,7 @@ import { companyNumberQueryParameterValidationMiddleware } from "./middleware/co
 import { isPscQueryParameterValidationMiddleware } from "./middleware/is.psc.validation.middleware";
 import { transactionIdValidationMiddleware } from "./middleware/transaction.id.validation.middleware";
 import { submissionIdValidationMiddleware } from "./middleware/submission.id.validation.middleware";
-import { acspValidationMiddleware } from "./middleware/acsp.validation.middleware";
+import { acspAuthenticationMiddleware } from "./middleware/acsp.authentication.middleware";
 import { commonTemplateVariablesMiddleware } from "./middleware/common.variables.middleware";
 import { CsrfProtectionMiddleware } from "@companieshouse/web-security-node";
 import { SessionStore } from "@companieshouse/node-session-handler";
@@ -92,7 +92,7 @@ app.use(urls.middlewarePaths, sessionMiddleware);
 const userAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
 app.use(userAuthRegex, authenticationMiddleware);
 app.use(`${urls.CONFIRMATION_STATEMENT}${urls.COMPANY_AUTH_PROTECTED_BASE}`, companyAuthenticationMiddleware);
-app.use(urls.ACSP_LIMITED_PARTNERSHIP_PATH, acspValidationMiddleware);
+app.use(urls.ACSP_LIMITED_PARTNERSHIP_PATH, acspAuthenticationMiddleware);
 
 // csrf middleware
 const sessionStore = new SessionStore(new Redis(`redis://${CACHE_SERVER}`));

@@ -4,9 +4,11 @@ import { LP_MUST_BE_AUTHORISED_AGENT_PATH } from "../types/page.urls";
 import { Templates } from "../types/template.paths";
 import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
 import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
-import { getCompanyProfileFromSession } from "../utils/session";
+import { getCompanyProfileFromSession, getLoggedInAcspNumber } from "../utils/session";
+import { CHS_URL } from "../utils/properties";
+import { acspManageUsersAuthMiddleware, AuthOptions } from "@companieshouse/web-security-node";
 
-export const acspValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const acspAuthenticationMiddleware = (req: Request, res: Response, next: NextFunction) => {
     logger.debug("Execute ACSP URL validation middleware checks");
 
     if (!isAuthorisedAgent(req.session)) {
@@ -17,7 +19,13 @@ export const acspValidationMiddleware = (req: Request, res: Response, next: Next
         return res
             .status(400)
             .render(Templates.SERVICE_OFFLINE_MID_JOURNEY, { templateName: Templates.SERVICE_OFFLINE_MID_JOURNEY });
+    } else {
+        const acspNumber: string = getLoggedInAcspNumber(req.session);
+        const authMiddlewareConfig: AuthOptions = {
+            chsWebUrl: CHS_URL,
+            returnUrl: req.originalUrl,
+            acspNumber: acspNumber,
+        };
+        return acspManageUsersAuthMiddleware(authMiddlewareConfig)(req, res, next);
     }
-
-    return next();
 };
