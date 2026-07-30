@@ -75,7 +75,13 @@ export function isAcspConfirmationPath(path: string): boolean {
 }
 
 export function isACSPJourney(path: string): boolean {
-    return path.toLowerCase().includes("acsp");
+    if (!path) {
+        return false;
+    }
+    // Remove query string, normalise to lowercase
+    const cleaned = path.split("?")[0].toLowerCase();
+    const segments = cleaned.split("/").filter(Boolean);
+    return segments.includes("acsp");
 }
 
 export function getACSPBackPath(session: Session, company: CompanyProfile): string {

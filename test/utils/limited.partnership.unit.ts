@@ -11,7 +11,22 @@ import {
     LIMITED_PARTNERSHIP_SUBTYPES,
     GCI_RETURN_URL_SESSION_KEY,
 } from "../../src/utils/constants";
-import { LP_REVIEW_PATH, REVIEW_PATH, LP_CONFIRMATION_PATH, CONFIRMATION_PATH } from "../../src/types/page.urls";
+import {
+    LP_REVIEW_PATH,
+    REVIEW_PATH,
+    LP_CONFIRMATION_PATH,
+    CONFIRMATION_PATH,
+    ACSP_LIMITED_PARTNERSHIP_PATH,
+    LP_BEFORE_YOU_FILE_PATH,
+    LP_CS_DATE_PATH,
+    LP_CHECK_AND_CONFIRM_PATH,
+    LP_CHECK_YOUR_ANSWER_PATH,
+    LP_MUST_BE_AUTHORISED_AGENT_PATH,
+    LP_SIC_CODE_SUMMARY_ADD_PATH,
+    LP_SIC_CODE_SUMMARY_PATH,
+    LP_SIC_CODE_SUMMARY_REMOVE,
+    PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH,
+} from "../../src/types/page.urls";
 import { Request } from "express";
 import { getCompanyProfileFromSession } from "../../src/utils/session";
 import { getConfirmationStatement } from "../../src/services/confirmation.statement.service";
@@ -285,5 +300,32 @@ describe("Limited partnership util tests", () => {
     it("isAcspConfirmationPath detects ACSP confirmation path", () => {
         expect(limitedPartnershipUtil.isAcspConfirmationPath(LP_CONFIRMATION_PATH)).toBeTruthy();
         expect(limitedPartnershipUtil.isAcspConfirmationPath(CONFIRMATION_PATH)).toBeFalsy();
+    });
+
+    it("isACSPJourney returns true when the URL path is the Limited Partnership journey", () => {
+        expect(limitedPartnershipUtil.isACSPJourney(ACSP_LIMITED_PARTNERSHIP_PATH)).toBeTruthy();
+        expect(limitedPartnershipUtil.isACSPJourney(LP_BEFORE_YOU_FILE_PATH)).toBeTruthy();
+        expect(limitedPartnershipUtil.isACSPJourney(LP_CS_DATE_PATH)).toBeTruthy();
+        expect(limitedPartnershipUtil.isACSPJourney(LP_CHECK_AND_CONFIRM_PATH)).toBeTruthy();
+        expect(limitedPartnershipUtil.isACSPJourney(LP_CHECK_YOUR_ANSWER_PATH)).toBeTruthy();
+        expect(limitedPartnershipUtil.isACSPJourney(LP_SIC_CODE_SUMMARY_PATH)).toBeTruthy();
+        expect(limitedPartnershipUtil.isACSPJourney(LP_SIC_CODE_SUMMARY_ADD_PATH)).toBeTruthy();
+        expect(limitedPartnershipUtil.isACSPJourney(LP_MUST_BE_AUTHORISED_AGENT_PATH)).toBeTruthy();
+        expect(limitedPartnershipUtil.isACSPJourney(LP_REVIEW_PATH)).toBeTruthy();
+        expect(limitedPartnershipUtil.isACSPJourney(LP_CONFIRMATION_PATH)).toBeTruthy();
+        expect(limitedPartnershipUtil.isACSPJourney(LP_SIC_CODE_SUMMARY_REMOVE)).toBeTruthy();
+    });
+
+    it("isACSPJourney returns false when the URL path is no change CS journey", () => {
+        expect(limitedPartnershipUtil.isACSPJourney(PEOPLE_WITH_SIGNIFICANT_CONTROL_PATH)).toBeFalsy();
+        expect(limitedPartnershipUtil.isACSPJourney(REVIEW_PATH)).toBeFalsy();
+        expect(limitedPartnershipUtil.isACSPJourney(CONFIRMATION_PATH)).toBeFalsy();
+    });
+
+    it("isACSPJourney returns false when acsp is not a path segment (query/fragment/substring)", () => {
+        expect(limitedPartnershipUtil.isACSPJourney("/abc/path?acsp=true")).toBeFalsy();
+        expect(limitedPartnershipUtil.isACSPJourney("/acspish?param=acsp")).toBeFalsy();
+        expect(limitedPartnershipUtil.isACSPJourney("/abc/path#acsp")).toBeFalsy();
+        expect(limitedPartnershipUtil.isACSPJourney("/acspish#section")).toBeFalsy();
     });
 });
