@@ -251,6 +251,21 @@ describe("Limited partnership util tests", () => {
         expect(mockConfirmationStatementSubmission.data.newConfirmationDate).toContain("2025-09-01");
     });
 
+    it("sendLimitedPartnershipTransactionUpdate should clear newConfirmationDate when null is passed (on-time/late No selection)", async () => {
+        const req = {
+            session: sessionData,
+            params: { companyNumber: "258258", transactionId: "123456", submissionId: "654321" } as ParamsDictionary,
+        } as Request;
+        const submissionWithPreviousDate = {
+            ...mockConfirmationStatementSubmission,
+            data: { ...mockConfirmationStatementSubmission.data, newConfirmationDate: "2025-09-01" },
+        };
+        mockGetConfirmationStatement.mockResolvedValue(submissionWithPreviousDate);
+
+        await sendLimitedPartnershipTransactionUpdate(req, null, null);
+        expect(submissionWithPreviousDate.data.newConfirmationDate).toBeUndefined();
+    });
+
     it("isIntegratedJourney returns false if session does not have gci_return_url", () => {
         let response: boolean = limitedPartnershipUtil.isIntegratedJourney(sessionData);
         expect(response).toBeFalsy();

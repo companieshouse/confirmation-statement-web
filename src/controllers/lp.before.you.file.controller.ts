@@ -98,6 +98,10 @@ export const post = async (req: Request, res: Response) => {
 
 function reloadPageWithError(req: Request, res: Response, options: ReloadPageOptions): void {
     const { lang, localInfo, byfCheckbox, company, isPaymentDue, errorMessage } = options;
+    const session: Session = req.session as Session;
+    const gciReturnUrl = session?.getExtraData(GCI_RETURN_URL_SESSION_KEY) as string;
+    const previousPageWithoutLang =
+        gciReturnUrl ?? `${urls.CONFIRM_COMPANY_PATH}?companyNumber=${urlUtils.getCompanyNumberFromRequestParams(req)}`;
     res.cookie("lang", lang, { httpOnly: true });
     res.render(Templates.LP_BEFORE_YOU_FILE, {
         ...localInfo,
@@ -121,7 +125,7 @@ function reloadPageWithError(req: Request, res: Response, options: ReloadPageOpt
             byfCheckbox,
         },
         showSICCodeReference: showSICCodeReference(getCompanyProfileFromSession(req)),
-        previousPageWithoutLang: `${urls.CONFIRM_COMPANY_PATH}?companyNumber=${urlUtils.getCompanyNumberFromRequestParams(req)}`,
+        previousPageWithoutLang,
         templateName: MATOMO_LIMITED_PARTNERSHIP_PAGE_NAME.LP_CS_BEFORE_YOU_FILE,
     });
 }

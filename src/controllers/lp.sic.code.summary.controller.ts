@@ -258,7 +258,7 @@ export function renderPage(
         isShowingAddSection: sicCodeSummaryList.length < 4,
         addUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_ADD_PATH}?lang=${lang}`, req),
         saveUrl: urlUtils.getUrlToPath(`${urls.LP_SIC_CODE_SUMMARY_SAVE_PATH}?lang=${lang}`, req),
-        searchSicCodes: sessionData.sicCodes.map(sic => ({
+        searchSicCodes: (sessionData?.sicCodes ?? []).map(sic => ({
             ...sic,
             sic_description: sic.sic_description.trim(),
         })),

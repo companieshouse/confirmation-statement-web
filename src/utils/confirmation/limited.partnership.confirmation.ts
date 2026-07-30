@@ -101,6 +101,8 @@ export async function sendLimitedPartnershipTransactionUpdate(
 
     if (newCsDate && isValidDate(newCsDate)) {
         currentCsSubmission.data.newConfirmationDate = newCsDate;
+    } else if (newCsDate === null) {
+        currentCsSubmission.data.newConfirmationDate = undefined;
     }
     currentCsSubmission.data.sicCodeData = newSicCodes ?? undefined;
 

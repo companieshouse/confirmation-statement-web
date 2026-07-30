@@ -353,6 +353,14 @@ describe("SIC code summary post tests", () => {
 
         expect(result).toEqual([]);
     });
+
+    it("should render successfully with an empty searchSicCodes when ACSP session is uninitialised", async () => {
+        jest.spyOn(sessionAcspUtils, "getAcspSessionData").mockReturnValue(null as any);
+
+        const response = await request(app).get(URL);
+
+        expect(response.status).toBe(200);
+    });
 });
 
 describe("validateSicCodes", () => {
