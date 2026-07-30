@@ -166,6 +166,22 @@ describe("start Integrated Limited Partnership Journey validation middleware tes
         verifyRenderOfflinePage();
     });
 
+    it("validateIntegratedJourney to fail if no companyNumber parameter", async () => {
+        const req_no_company: Request = { query: {} } as Request;
+
+        await validateIntegratedJourney(req_no_company, res, next);
+
+        verifyRenderOfflinePage();
+    });
+
+    it("validateIntegratedJourney to fail if companyNumber parameter blank", async () => {
+        const req_no_company: Request = { query: { companyNumber: "" } } as Request;
+
+        await validateIntegratedJourney(req_no_company, res, next);
+
+        verifyRenderOfflinePage();
+    });
+
     function verifyRenderOfflinePage() {
         expect(next).not.toHaveBeenCalled();
         expect(mockStatus.mock.calls[0][0]).toEqual(400);

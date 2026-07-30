@@ -1,4 +1,5 @@
 import express from "express";
+import asyncHandler from "express-async-handler";
 import * as nunjucks from "nunjucks";
 import * as path from "path";
 import { router } from "./routes/routes";
@@ -104,7 +105,11 @@ const csrfProtectionMiddleware = CsrfProtectionMiddleware({
 });
 app.use(urls.csrfCheckMiddlewarePaths, csrfProtectionMiddleware);
 
-app.post(`*/confirmation-statement/integrated-entry`, validateIntegratedJourney);
+const asyncValidateIntegratedJourney = asyncHandler(
+    async (req, res, next) => await validateIntegratedJourney(req, res, next)
+);
+
+app.post(`*/confirmation-statement/integrated-entry`, asyncValidateIntegratedJourney);
 
 app.use(commonTemplateVariablesMiddleware);
 // apply our default router to /confirmation-statement
