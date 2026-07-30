@@ -437,6 +437,7 @@ describe("review controller tests", () => {
     describe("post tests", () => {
         beforeEach(() => {
             jest.clearAllMocks();
+            mockCloseTransaction.mockImplementation(() => {});
         });
 
         it("Should redirect to the confirmation url", async () => {
@@ -561,6 +562,7 @@ describe("review controller tests", () => {
             };
             mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
             mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
+            jest.spyOn(updateUtils, "sendLawfulPurposeStatementUpdate").mockResolvedValue(undefined);
             PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
 
             const response = await request(app).post(LP_URL).send({
@@ -569,6 +571,40 @@ describe("review controller tests", () => {
             });
 
             expect(response.status).toBe(302);
+            expect(updateUtils.sendLawfulPurposeStatementUpdate).toHaveBeenCalledWith(expect.any(Object), true);
+            expect(mockCloseTransaction).toHaveBeenCalledWith(
+                expect.any(Session),
+                COMPANY_NUMBER,
+                SUBMISSION_ID,
+                TRANSACTION_ID
+            );
+            expect(response.header.location).toEqual(LP_CONFIRMATION_URL);
+        });
+
+        it("Should redirect to the LP confirmation url if the journey is LP and the payment is not due, Error closing transaction", async () => {
+            const mockLimitedPartnership = {
+                companyNumber: COMPANY_NUMBER,
+                type: LIMITED_PARTNERSHIP_COMPANY_TYPE,
+                subtype: LIMITED_PARTNERSHIP_SUBTYPES.LP,
+                companyName: "Test Company",
+            };
+            mockGetCompanyProfile.mockResolvedValueOnce(mockLimitedPartnership);
+            mockGetTransaction.mockResolvedValueOnce(dummyTransactionNoCosts);
+            mockCloseTransaction.mockImplementation(() => {
+                throw new Error("Something went wrong!");
+            });
+
+            jest.spyOn(updateUtils, "sendLawfulPurposeStatementUpdate").mockResolvedValue(undefined);
+
+            PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-02-01";
+
+            const response = await request(app).post(LP_URL).send({
+                confirmationStatement: "true",
+                lawfulActivityStatement: "true",
+            });
+
+            expect(response.status).toBe(302);
+            expect(updateUtils.sendLawfulPurposeStatementUpdate).toHaveBeenCalledWith(expect.any(Object), true);
             expect(mockCloseTransaction).toHaveBeenCalledWith(
                 expect.any(Session),
                 COMPANY_NUMBER,
