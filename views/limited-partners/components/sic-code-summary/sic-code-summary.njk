@@ -63,7 +63,7 @@
                     titleText: i18n.SCSErrorTitle,
                     errorList: [
                         { text: errors[0].text, 
-                          href: "#sic-code-autocomplete" 
+                          href: "#code" 
                         }
                     ]
                   }) }}
@@ -118,7 +118,7 @@
                     {% include "../../partials/csrf-token.njk" %}
                     <div class="govuk-inset-text">
                         <div class="govuk-form-group govuk-!-margin-bottom-6">
-                            <label class="govuk-label govuk-label--m" for="sic-code-input">
+                            <label class="govuk-label govuk-label--m" for="code">
                               {{ i18n.SICCSAddSICInsetTitle }}
                             </label>
                             <div id="sic-hint" class="govuk-hint">
@@ -132,7 +132,7 @@
                               {% endif %}
                             </div>  
 
-                            <select class="govuk-select govuk-!-width-full" id="code" name="code">
+                            <select class="govuk-select govuk-!-width-full" id="code" name="code" aria-label="{{ i18n.SICCSAddSICInsetTitle }}">
                               {% for sic in searchSicCodes %}
                                 <option value="{{ sic.sic_code }}">{{ sic.sic_code }} - {{ sic.sic_description }}</option>
                               {% endfor %}
