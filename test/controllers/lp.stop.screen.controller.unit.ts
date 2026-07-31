@@ -29,7 +29,7 @@ describe("LP stop screen controller tests", () => {
     it("Should use companyNumber in back link, not the current company number", async () => {
         const response = await request(app).get(LP_STOP_SCREEN_PATH);
 
-        expect(response.text).toContain("companyNumber={companyNumber}");
+        expect(response.text).toContain("%7BcompanyNumber%7D");
         expect(response.text).not.toContain(`companyNumber=${validLimitedPartnershipProfile.companyNumber}`);
     });
 
