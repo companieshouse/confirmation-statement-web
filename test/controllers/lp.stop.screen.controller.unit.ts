@@ -26,6 +26,13 @@ describe("LP stop screen controller tests", () => {
         expect(response.text).toContain(validLimitedPartnershipProfile.companyName);
     });
 
+    it("Should use companyNumber in back link, not the current company number", async () => {
+        const response = await request(app).get(LP_STOP_SCREEN_PATH);
+
+        expect(response.text).toContain("companyNumber={companyNumber}");
+        expect(response.text).not.toContain(`companyNumber=${validLimitedPartnershipProfile.companyNumber}`);
+    });
+
     it("Should return error page if no company in session", async () => {
         mockGetCompanyProfileFromSession.mockReturnValueOnce(undefined);
         const response = await request(app).get(LP_STOP_SCREEN_PATH);
