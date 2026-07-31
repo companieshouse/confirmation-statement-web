@@ -11,10 +11,14 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
             return next(new Error(`Invalid company number for LP stop screen`));
         }
         const company: CompanyProfile = sessionCompany;
+        const forwardUrl =
+            "/confirmation-statement/confirm-company?companyNumber={companyNumber}&backLink=/confirmation-statement/";
+        const companyLookupUrl = `/company-lookup/search?forward=${encodeURIComponent(forwardUrl)}`;
         return res.render(Templates.LP_STOP_SCREEN, {
             company,
             templateName: Templates.LP_STOP_SCREEN,
             companyNumber,
+            companyLookupUrl,
         });
     } catch (e) {
         return next(e);
