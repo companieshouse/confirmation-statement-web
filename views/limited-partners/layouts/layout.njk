@@ -1,5 +1,9 @@
 {% extends "ch-node-utils/templates/layouts/template.njk" %}
 
+{% block bodyStart %}
+  {% include "includes/cookie-consent-banner.html" %}
+{% endblock %}
+
 {% block pageTitle %}
     {{ title }}
 {% endblock %}
