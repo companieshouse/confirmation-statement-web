@@ -141,4 +141,4 @@ export const LP_TRANSITIONAL_STOP_PATH = CONFIRMATION_STATEMENT + LP_TRANSITIONA
 export const LP_INTEGRATED_ENTRY = "/integrated-entry";
 
 export const middlewarePaths = /\/confirmation-statement\/((?!healthcheck).)*/;
-export const csrfCheckMiddlewarePaths = /\/confirmation-statement\/((?!healthcheck|integrated-entry).*)/;
+export const csrfCheckMiddlewarePaths = /\/confirmation-statement\/((?!healthcheck).)*/;

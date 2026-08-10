@@ -5,7 +5,7 @@ import app from "../../src/app";
 import { LP_BEFORE_YOU_FILE_PATH, CONFIRM_COMPANY_PATH, URL_QUERY_PARAM, urlParams } from "../../src/types/page.urls";
 import { LIMITED_PARTNERSHIP_COMPANY_TYPE, LIMITED_PARTNERSHIP_SUBTYPES } from "../../src/utils/constants";
 import { getTransaction } from "../../src/services/transaction.service";
-import { getCompanyProfileFromSession } from "../../src/utils/session";
+import { getCompanyProfileFromSession, logCSRFToken } from "../../src/utils/session";
 import { isPaymentDue } from "../../src/utils/payments";
 import * as urls from "../../src/types/page.urls";
 
@@ -34,6 +34,7 @@ const URL = LP_BEFORE_YOU_FILE_PATH.replace(`:${urlParams.PARAM_COMPANY_NUMBER}`
 
 const ACSP_NUMBER = "TSA001";
 const GCI_RETURN_URL = "http://chs.local/company/11456298";
+const CSRF_TOKEN = "0786344b-1c45-407c-b058-3392cf87a13c";
 
 describe("start before you file controller tests", () => {
     beforeEach(() => {
@@ -189,6 +190,7 @@ function setGCIReturnUrlInSession() {
                 },
                 gci_return_url: GCI_RETURN_URL,
             },
+            csrf_token: CSRF_TOKEN,
         };
 
         req.session = session;
