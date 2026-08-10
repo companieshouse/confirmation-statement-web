@@ -80,6 +80,15 @@ describe("start before you file controller tests", () => {
         );
     });
 
+    it("should display cookie consent banner", async () => {
+        const response = await doGetPageTest(LIMITED_PARTNERSHIP_SUBTYPES.LP);
+
+        expect(middlewareMocks.mockAuthenticationMiddleware).toHaveBeenCalled();
+        expect(response.text).toContain("Cookies on Companies House services");
+        expect(response.text).toContain("Accept analytics cookies");
+        expect(response.text).toContain("Reject analytics cookies");
+    });
+
     it("should return acsp / limited partnership before you file page page, for Private Fund subtype", async () => {
         const response = await doGetPageTest(LIMITED_PARTNERSHIP_SUBTYPES.PFLP);
 
