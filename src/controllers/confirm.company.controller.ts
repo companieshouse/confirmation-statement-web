@@ -36,6 +36,7 @@ import {
 import { isLimitedPartnershipCompanyType } from "../utils/limited.partnership";
 import { isAuthorisedAgent } from "@companieshouse/ch-node-utils";
 import { resetAcspSession } from "../utils/session.acsp";
+import { logCSRFToken } from "../utils/session";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -72,6 +73,8 @@ const buildPageOptions = async (session: Session, companyProfile: CompanyProfile
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        logCSRFToken(req, "Start Confirm Company POST");
+
         const session: Session = req.session as Session;
         const company: CompanyProfile = await getCompanyProfile(req.query.companyNumber as string);
         const companyNumber = company.companyNumber;
@@ -105,6 +108,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
             await createNewConfirmationStatement(session);
             nextPageUrl = urlUtils.getUrlWithCompanyNumber(CREATE_TRANSACTION_PATH, companyNumber);
         }
+
+        logCSRFToken(req, "End Confirm Company POST");
+
         return res.redirect(nextPageUrl);
     } catch (e) {
         return next(e);

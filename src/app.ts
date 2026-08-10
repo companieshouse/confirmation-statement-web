@@ -91,7 +91,18 @@ app.use(`*${urls.ACTIVE_SUBMISSION_BASE}`, submissionIdValidationMiddleware);
 app.use(urls.middlewarePaths, sessionMiddleware);
 
 const userAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
+app.use((req, res, next) => {
+    logger.info("Before authenticationMiddleware, URL [" + req.originalUrl + "]");
+    next();
+});
+
 app.use(userAuthRegex, authenticationMiddleware);
+
+app.use((req, res, next) => {
+    logger.info("After authenticationMiddleware, URL [" + req.originalUrl + "]");
+    next();
+});
+
 app.use(`${urls.CONFIRMATION_STATEMENT}${urls.COMPANY_AUTH_PROTECTED_BASE}`, companyAuthenticationMiddleware);
 app.use(urls.ACSP_LIMITED_PARTNERSHIP_PATH, acspAuthenticationMiddleware);
 

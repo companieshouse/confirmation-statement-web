@@ -37,6 +37,7 @@ export const setCompanyTypeAndAcspNumberInSession = (
                     subtype: companySubtype,
                 },
             },
+            csrf_token: "0786344b-1c45-407c-b058-3392cf87a13c",
         };
         req.session = session;
         return next();

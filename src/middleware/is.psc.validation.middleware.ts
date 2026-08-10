@@ -4,6 +4,7 @@ import { isPscFlagValid } from "../validators/is.psc.validator";
 import { logger } from "../utils/logger";
 import { Templates } from "../types/template.paths";
 import { urlUtils } from "../utils/url";
+import { logCSRFToken } from "../utils/session";
 
 export const isPscQueryParameterValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
     logger.debug("Execute isPsc query parameter validation middleware checks");
@@ -23,6 +24,6 @@ export const isPscQueryParameterValidationMiddleware = (req: Request, res: Respo
             .status(400)
             .render(Templates.SERVICE_OFFLINE_MID_JOURNEY, { templateName: Templates.SERVICE_OFFLINE_MID_JOURNEY });
     }
-
+    logCSRFToken(req, "isPscQueryParameterValidationMiddleware");
     return next();
 };
