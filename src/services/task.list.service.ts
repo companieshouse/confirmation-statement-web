@@ -135,14 +135,10 @@ const getPscSectionUrl = (): string => {
     }
 };
 
-const getCheckEmailAddressPath = (): string => CHECK_EMAIL_ADDRESS_PATH;
-
-const getProvideEmailAddressPath = (): string => PROVIDE_EMAIL_ADDRESS_PATH;
-
 const getRegisteredEmailAddressSectionUrl = (reaExists: boolean): string => {
     if (reaExists) {
-        return getCheckEmailAddressPath();
+        return CHECK_EMAIL_ADDRESS_PATH;
     } else {
-        return getProvideEmailAddressPath();
+        return PROVIDE_EMAIL_ADDRESS_PATH;
     }
 };
