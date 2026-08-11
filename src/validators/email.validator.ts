@@ -5,7 +5,7 @@ export const isEmailAddressValid = (emailAddress: string): boolean => {
         return false;
     }
 
-    const regexResult: RegExpMatchArray | null = emailAddress.match(VALID_EMAIL_REGEX_PATTERN);
+    const regexResult: RegExpMatchArray | null = VALID_EMAIL_REGEX_PATTERN.exec(emailAddress);
     if (!regexResult) {
         return false;
     }
