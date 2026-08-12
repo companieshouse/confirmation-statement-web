@@ -23,6 +23,7 @@ import { getGOVUKFrontendVersion } from "@companieshouse/ch-node-utils";
 import { CACHE_SERVER, COOKIE_NAME } from "./utils/properties";
 import Redis from "ioredis";
 import { validateIntegratedJourney } from "./middleware/integrated.limited.partnership.validation.middleware";
+import { logCSRFToken } from "./utils/session";
 
 const app = express();
 app.disable("x-powered-by");
@@ -88,20 +89,19 @@ app.use(isPscQueryParameterValidationMiddleware);
 app.use(`*${urls.ACTIVE_SUBMISSION_BASE}`, transactionIdValidationMiddleware);
 app.use(`*${urls.ACTIVE_SUBMISSION_BASE}`, submissionIdValidationMiddleware);
 
+app.use((req, res, next) => {
+    logCSRFToken(req, "Before sessionMiddleware");
+    next();
+});
 app.use(urls.middlewarePaths, sessionMiddleware);
+app.use((req, res, next) => {
+    logCSRFToken(req, "After sessionMiddleware");
+    next();
+});
 
 const userAuthRegex = new RegExp("^" + urls.CONFIRMATION_STATEMENT + "/.+");
-app.use((req, res, next) => {
-    logger.info("Before authenticationMiddleware, URL [" + req.originalUrl + "]");
-    next();
-});
 
 app.use(userAuthRegex, authenticationMiddleware);
-
-app.use((req, res, next) => {
-    logger.info("After authenticationMiddleware, URL [" + req.originalUrl + "]");
-    next();
-});
 
 app.use(`${urls.CONFIRMATION_STATEMENT}${urls.COMPANY_AUTH_PROTECTED_BASE}`, companyAuthenticationMiddleware);
 app.use(urls.ACSP_LIMITED_PARTNERSHIP_PATH, acspAuthenticationMiddleware);
@@ -114,7 +114,7 @@ const csrfProtectionMiddleware = CsrfProtectionMiddleware({
     enabled: true,
     sessionCookieName: COOKIE_NAME,
 });
-app.use(urls.csrfCheckMiddlewarePaths, csrfProtectionMiddleware);
+app.use(urls.middlewarePaths, csrfProtectionMiddleware);
 
 const asyncValidateIntegratedJourney = asyncHandler(
     async (req, res, next) => await validateIntegratedJourney(req, res, next)

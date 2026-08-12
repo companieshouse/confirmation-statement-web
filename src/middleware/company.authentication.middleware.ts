@@ -6,12 +6,9 @@ import { isCompanyNumberValid } from "../validators/company.number.validator";
 import { urlParams } from "../types/page.urls";
 import { urlUtils } from "../utils/url";
 import { Templates } from "../types/template.paths";
-import { logCSRFToken } from "../utils/session";
 
 export const companyAuthenticationMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const companyNumber: string = req.params[urlParams.PARAM_COMPANY_NUMBER];
-
-    logCSRFToken(req, "companyAuthenticationMiddleware");
 
     if (!isCompanyNumberValid(companyNumber)) {
         urlUtils.sanitiseReqUrls(req);

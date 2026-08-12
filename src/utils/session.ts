@@ -20,11 +20,11 @@ export function getCompanyProfileFromSession(req: Request): CompanyProfile {
 }
 
 export function logCSRFToken(req: Request, message: string): void {
-    // only if the request is MUTABLE
+    // only if the request is MUTABLE, as it is for mutable calls that the CSRF check is done.
     const MUTABLE_METHODS = ["POST", "DELETE", "PUT", "PATCH"];
 
     if (MUTABLE_METHODS.includes(req.method)) {
-        logger.info(
+        logger.debug(
             message +
                 ", url [" +
                 req.url +
