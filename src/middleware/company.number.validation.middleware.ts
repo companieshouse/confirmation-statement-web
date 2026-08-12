@@ -4,7 +4,6 @@ import { isCompanyNumberValid } from "../validators/company.number.validator";
 import { logger } from "../utils/logger";
 import { Templates } from "../types/template.paths";
 import { urlUtils } from "../utils/url";
-import { logCSRFToken } from "../utils/session";
 
 export const companyNumberQueryParameterValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const companyNumber: string = req.query[URL_QUERY_PARAM.COMPANY_NUM] as string;
@@ -20,6 +19,6 @@ export const companyNumberQueryParameterValidationMiddleware = (req: Request, re
             .status(400)
             .render(Templates.SERVICE_OFFLINE_MID_JOURNEY, { templateName: Templates.SERVICE_OFFLINE_MID_JOURNEY });
     }
-    logCSRFToken(req, "companyNumberQueryParameterValidationMiddleware");
+
     return next();
 };

@@ -16,6 +16,8 @@ import {
 export const validateIntegratedJourney = async (req: Request, res: Response, next: NextFunction) => {
     const session = req.session as Session;
 
+    logger.debug("Start validateIntegratedJourney");
+
     if (!req.query.companyNumber) {
         logger.error("Parameter companyNumber missing for call to integrated-entry");
         return renderServiceOfflinePage(res);

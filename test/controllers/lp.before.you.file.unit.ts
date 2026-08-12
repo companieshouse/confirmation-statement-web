@@ -19,6 +19,7 @@ jest.mock("../../src/utils/payments", () => ({
 
 jest.mock("../../src/utils/session", () => ({
     getCompanyProfileFromSession: jest.fn(),
+    logCSRFToken: jest.fn(),
 }));
 
 jest.mock("../../src/services/sic.code.service", () => ({
