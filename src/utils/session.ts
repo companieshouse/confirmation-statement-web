@@ -24,14 +24,32 @@ export function logCSRFToken(req: Request, message: string): void {
     const MUTABLE_METHODS = ["POST", "DELETE", "PUT", "PATCH"];
 
     if (MUTABLE_METHODS.includes(req.method)) {
+        const sessionCsrfToken = req?.session?.data[SessionKey.CsrfToken];
+        let maskedSessionCsrfToken;
+        if (sessionCsrfToken) {
+            maskedSessionCsrfToken = maskCsrfToken(sessionCsrfToken);
+        }
+
         logger.debug(
             message +
                 ", url [" +
                 req.url +
                 "], Session csrf token: " +
-                req?.session?.data[SessionKey.CsrfToken] +
+                maskedSessionCsrfToken +
                 ", Request CSRF Token: " +
-                req?.body?.["_csrf"]
+                maskCsrfToken(req?.body?.["_csrf"])
         );
     }
+}
+
+function maskCsrfToken(csrfToken: string): string {
+    let maskedCsrfToken;
+    if (csrfToken && csrfToken.length > 8) {
+        maskedCsrfToken = csrfToken.substring(0, 4);
+        maskedCsrfToken += "*".repeat(csrfToken.length - 8);
+        maskedCsrfToken += csrfToken.substring(csrfToken.length - 4);
+    } else {
+        maskedCsrfToken = csrfToken;
+    }
+    return maskedCsrfToken;
 }
