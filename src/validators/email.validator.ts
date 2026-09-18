@@ -5,7 +5,7 @@ export const isEmailAddressValid = (emailAddress: string): boolean => {
         return false;
     }
 
-    const regexResult: RegExpMatchArray | null = emailAddress.match(VALID_EMAIL_REGEX_PATTERN);
+    const regexResult: RegExpExecArray | null = new RegExp(VALID_EMAIL_REGEX_PATTERN).exec(emailAddress);
     if (!regexResult) {
         return false;
     }
@@ -19,11 +19,11 @@ export const isEmailAddressValid = (emailAddress: string): boolean => {
     if (parts.length < 2) {
         return false;
     }
-    if (!parts[parts.length - 1].toLowerCase().match(HOSTNAME_REGEX)) {
+    if (!new RegExp(HOSTNAME_REGEX).exec(parts[parts.length - 1].toLowerCase())) {
         return false;
     }
     for (const part of parts) {
-        if (!part.toLowerCase().match(HOSTNAME_REGEX)) {
+        if (!new RegExp(HOSTNAME_REGEX).exec(part.toLowerCase())) {
             return false;
         }
     }

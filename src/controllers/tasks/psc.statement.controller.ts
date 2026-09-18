@@ -86,7 +86,7 @@ const getPscStatementText = async (req: Request): Promise<string> => {
     const companyNumber = urlUtils.getCompanyNumberFromRequestParams(req);
     const pscStatement = await getMostRecentActivePscStatement(req.session as Session, companyNumber);
 
-    if (!pscStatement || !pscStatement.statement) {
+    if (!pscStatement?.statement) {
         return PSC_STATEMENT_NOT_FOUND;
     }
     const pscStatementDescriptionKey: string = pscStatement.statement;

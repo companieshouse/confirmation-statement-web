@@ -103,10 +103,8 @@ const getPscData = async (req: Request): Promise<PersonOfSignificantControl[] | 
         if (pscs.length > 5) {
             throw createAndLogError(`More than five, (${pscs.length}) PSC returned for company ${companyNumber}`);
         }
-    } else {
-        if (pscs.length > 1) {
-            throw createAndLogError(`More than one (${pscs.length}) PSC returned for company ${companyNumber}`);
-        }
+    } else if (pscs.length > 1) {
+        throw createAndLogError(`More than one (${pscs.length}) PSC returned for company ${companyNumber}`);
     }
 
     return pscs;
