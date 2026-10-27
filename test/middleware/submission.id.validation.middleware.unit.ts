@@ -62,8 +62,8 @@ describe("Submission ID validation middleware tests", () => {
         );
         const response = await request(app).get(urlWithInvalidSubId);
 
-        expect(spyTruncateRequestUrl).toBeCalledTimes(1);
-        expect(isUrlIdValid).toBeCalledWith(SUBMISSION_ID_INVALID);
+        expect(spyTruncateRequestUrl).toHaveBeenCalledTimes(1);
+        expect(isUrlIdValid).toHaveBeenCalledWith(SUBMISSION_ID_INVALID);
         expect(mockLoggerErrorRequest.mock.calls[0][1]).toContain(SUBMISSION_ID_INVALID.substring(0, TRUNCATED_LENGTH));
         expect(response.statusCode).toEqual(400);
         expect(response.text).toContain(ERROR_PAGE_TEXT);
@@ -82,7 +82,7 @@ describe("Submission ID validation middleware tests", () => {
 
         const response = await request(app).get(urlWithValidSubId);
 
-        expect(isUrlIdValid).toBeCalledWith(SUBMISSION_ID_VALID);
+        expect(isUrlIdValid).toHaveBeenCalledWith(SUBMISSION_ID_VALID);
         expect(response.text).toContain(TRADING_STATUS_PAGE_HEADING);
         expect(response.statusCode).toEqual(200);
     });
@@ -100,8 +100,8 @@ describe("Submission ID validation middleware tests", () => {
         );
         const response = await request(app).get(urlWithInvalidTransactionIdSubmissionId);
 
-        expect(isUrlIdValid).toBeCalledWith(SUBMISSION_ID_INVALID);
-        expect(spyTruncateRequestUrl).toBeCalledTimes(1);
+        expect(isUrlIdValid).toHaveBeenCalledWith(SUBMISSION_ID_INVALID);
+        expect(spyTruncateRequestUrl).toHaveBeenCalledTimes(1);
         expect(mockLoggerErrorRequest.mock.calls[0][1]).not.toContain(COMPANY_NUMBER_INVALID);
         expect(mockLoggerErrorRequest.mock.calls[0][1]).not.toContain(SUBMISSION_ID_INVALID);
         expect(mockLoggerErrorRequest.mock.calls[0][1]).not.toContain(TRANSACTION_ID_INVALID);

@@ -380,7 +380,7 @@ describe("Confirm company controller tests", () => {
 
         await request(app).get(CONFIRM_COMPANY_PATH);
 
-        expect(mockToReadableFormat).not.toBeCalled();
+        expect(mockToReadableFormat).not.toHaveBeenCalled();
     });
 
     it("Should call private sdk client and redirect to transaction using company number for limited partnership and logged in ACSP", async () => {

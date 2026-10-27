@@ -63,8 +63,8 @@ describe("Transaction ID validation middleware tests", () => {
         );
         const response = await request(app).get(urlWithInvalidTransactionId);
 
-        expect(isUrlIdValid).toBeCalledWith(TRANSACTION_ID_INVALID);
-        expect(spyTruncateRequestUrl).toBeCalledTimes(1);
+        expect(isUrlIdValid).toHaveBeenCalledWith(TRANSACTION_ID_INVALID);
+        expect(spyTruncateRequestUrl).toHaveBeenCalledTimes(1);
         expect(mockLoggerErrorRequest.mock.calls[0][1]).toContain(
             TRANSACTION_ID_INVALID.substring(0, TRUNCATED_LENGTH)
         );
@@ -85,7 +85,7 @@ describe("Transaction ID validation middleware tests", () => {
 
         const response = await request(app).get(urlWithValidSubId);
 
-        expect(isUrlIdValid).toBeCalledWith(TRANSACTION_ID_VALID);
+        expect(isUrlIdValid).toHaveBeenCalledWith(TRANSACTION_ID_VALID);
         expect(response.statusCode).toEqual(200);
         expect(response.text).toContain(TRADING_STATUS_PAGE_HEADING);
     });
@@ -103,8 +103,8 @@ describe("Transaction ID validation middleware tests", () => {
         );
         const response = await request(app).get(urlWithInvalidTransactionIdSubmissionId);
 
-        expect(isUrlIdValid).toBeCalledWith(TRANSACTION_ID_INVALID);
-        expect(spyTruncateRequestUrl).toBeCalledTimes(1);
+        expect(isUrlIdValid).toHaveBeenCalledWith(TRANSACTION_ID_INVALID);
+        expect(spyTruncateRequestUrl).toHaveBeenCalledTimes(1);
         expect(mockLoggerErrorRequest.mock.calls[0][1]).not.toContain(COMPANY_NUMBER_INVALID);
         expect(mockLoggerErrorRequest.mock.calls[0][1]).not.toContain(TRANSACTION_ID_INVALID);
         expect(mockLoggerErrorRequest.mock.calls[0][1]).not.toContain(SUBMISSION_ID_INVALID);

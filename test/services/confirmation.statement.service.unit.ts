@@ -60,7 +60,7 @@ describe("Confirmation statement api service unit tests", () => {
                 TRANSACTION_ID
             );
             expect(response.httpStatusCode).toEqual(201);
-            expect(mockPostNewConfirmationStatement).toBeCalledWith(TRANSACTION_ID);
+            expect(mockPostNewConfirmationStatement).toHaveBeenCalledWith(TRANSACTION_ID);
         });
 
         it("should call create confirmation statement in the private sdk (failed eligibility)", async () => {
@@ -72,7 +72,7 @@ describe("Confirmation statement api service unit tests", () => {
                 TRANSACTION_ID
             );
             expect(response.httpStatusCode).toEqual(400);
-            expect(mockPostNewConfirmationStatement).toBeCalledWith(TRANSACTION_ID);
+            expect(mockPostNewConfirmationStatement).toHaveBeenCalledWith(TRANSACTION_ID);
         });
 
         it("should throw error when failed post call", async () => {
@@ -87,7 +87,7 @@ describe("Confirmation statement api service unit tests", () => {
                     expect(e.message).toContain("Something went wrong creating confirmation statement");
                     expect(e.message).toContain(TRANSACTION_ID);
                 });
-            expect(mockPostNewConfirmationStatement).toBeCalledWith(TRANSACTION_ID);
+            expect(mockPostNewConfirmationStatement).toHaveBeenCalledWith(TRANSACTION_ID);
         });
     });
 
@@ -104,7 +104,7 @@ describe("Confirmation statement api service unit tests", () => {
                 SUBMISSION_ID
             );
 
-            expect(mockGetConfirmationStatementSubmission).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID);
+            expect(mockGetConfirmationStatementSubmission).toHaveBeenCalledWith(TRANSACTION_ID, SUBMISSION_ID);
             expect(response).toBe(mockConfirmationStatementSubmission);
         });
 
@@ -174,7 +174,7 @@ describe("updateConfirmationStatement unit tests", () => {
             SUBMISSION_ID,
             csSubmission
         );
-        expect(mockPostUpdateConfirmationStatement).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID, csSubmission);
+        expect(mockPostUpdateConfirmationStatement).toHaveBeenCalledWith(TRANSACTION_ID, SUBMISSION_ID, csSubmission);
     });
 
     it("should should throw error when not found", async () => {
@@ -196,7 +196,7 @@ describe("updateConfirmationStatement unit tests", () => {
                 expect(e.message).toContain("404");
             });
 
-        expect(mockPostUpdateConfirmationStatement).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID, csSubmission);
+        expect(mockPostUpdateConfirmationStatement).toHaveBeenCalledWith(TRANSACTION_ID, SUBMISSION_ID, csSubmission);
     });
 
     it("should should throw error when other http code is returned", async () => {
@@ -218,7 +218,7 @@ describe("updateConfirmationStatement unit tests", () => {
                 expect(e.message).toContain("500");
             });
 
-        expect(mockPostUpdateConfirmationStatement).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID, csSubmission);
+        expect(mockPostUpdateConfirmationStatement).toHaveBeenCalledWith(TRANSACTION_ID, SUBMISSION_ID, csSubmission);
     });
 
     it("should should throw error with any special characters encoded when other http code is returned", async () => {
@@ -242,7 +242,7 @@ describe("updateConfirmationStatement unit tests", () => {
                 expect(e.message).toContain(ENCODED_TRANSACTION_ID_WITH_SPECIAL_CHARACTERS);
             });
 
-        expect(mockPostUpdateConfirmationStatement).toBeCalledWith(
+        expect(mockPostUpdateConfirmationStatement).toHaveBeenCalledWith(
             TRANSACTION_ID_WITH_SPECIAL_CHARACTERS,
             SUBMISSION_ID_WITH_SPECIAL_CHARACTERS,
             csSubmission
@@ -283,7 +283,7 @@ describe("getNextMadeUpToDate tests", () => {
             ERROR
         );
 
-        expect(mockCreateAndLogError).toBeCalledWith(
+        expect(mockCreateAndLogError).toHaveBeenCalledWith(
             expect.stringContaining(
                 `Error getting next made up to date from api with company number = ${COMPANY_NUMBER}`
             )
@@ -299,7 +299,7 @@ describe("getNextMadeUpToDate tests", () => {
             ERROR
         );
 
-        expect(mockCreateAndLogError).toBeCalledWith(
+        expect(mockCreateAndLogError).toHaveBeenCalledWith(
             expect.stringContaining(
                 `Error No resource returned when getting next made up to date from api with companyNumber = ${COMPANY_NUMBER}`
             )

@@ -87,7 +87,7 @@ describe("Payment Service tests", () => {
             expect(apiResponse.resource).toBe(dummyPayment);
             expect(apiResponse.headers).toBe(dummyHeaders);
 
-            expect(mockCreatePaymentApiClient).toBeCalledWith(session, PAYMENT_SESSION_URL);
+            expect(mockCreatePaymentApiClient).toHaveBeenCalledWith(session, PAYMENT_SESSION_URL);
 
             const paymentRequest: CreatePaymentRequest = mockCreatePaymentWithFullUrl.mock.calls[0][0];
             expect(paymentRequest.redirectUri).toBe(
@@ -114,7 +114,7 @@ describe("Payment Service tests", () => {
                 )
             ).rejects.toThrow(ERROR);
 
-            expect(mockCreateAndLogError).toBeCalledWith(
+            expect(mockCreateAndLogError).toHaveBeenCalledWith(
                 'payment.service Http status code 401 - Failed to create payment,  {"error1":"something"}'
             );
         });
@@ -135,7 +135,7 @@ describe("Payment Service tests", () => {
                 )
             ).rejects.toThrow(ERROR);
 
-            expect(mockCreateAndLogError).toBeCalledWith(
+            expect(mockCreateAndLogError).toHaveBeenCalledWith(
                 'payment.service Http status code 429 - Failed to create payment,  {"error1":"something"}'
             );
         });
@@ -156,7 +156,7 @@ describe("Payment Service tests", () => {
                 )
             ).rejects.toThrow(ERROR);
 
-            expect(mockCreateAndLogError).toBeCalledWith('payment.service Unknown Error {"error1":"something"}');
+            expect(mockCreateAndLogError).toHaveBeenCalledWith('payment.service Unknown Error {"error1":"something"}');
         });
     });
 });

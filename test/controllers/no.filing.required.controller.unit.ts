@@ -35,7 +35,7 @@ describe("No filing required controller tests", () => {
             );
             const response = await request(app).get(noFilingRequiredPath);
 
-            expect(mockGetCompanyProfile).toBeCalledWith(validCompanyProfile.companyNumber);
+            expect(mockGetCompanyProfile).toHaveBeenCalledWith(validCompanyProfile.companyNumber);
             expect(response.text).toContain(NO_FILING_REQUIRED_PAGE_TITLE);
             expect(response.text).toContain("it is not required to file confirmation statements.");
         });

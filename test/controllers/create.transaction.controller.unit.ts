@@ -45,8 +45,8 @@ describe("create transaction controller tests", () => {
         const response = await request(app).get(url);
 
         expect(response.status).toBe(302);
-        expect(mockPostTransaction).toBeCalledTimes(1);
-        expect(mockCreateConfirmationStatement).toBeCalledTimes(1);
+        expect(mockPostTransaction).toHaveBeenCalledTimes(1);
+        expect(mockCreateConfirmationStatement).toHaveBeenCalledTimes(1);
         expect(mockCreateConfirmationStatement.mock.calls[0][1]).toEqual(TRANSACTION_ID);
         expect(response.text).toContain(PAGE_HEADING);
         expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
@@ -61,8 +61,8 @@ describe("create transaction controller tests", () => {
         const response = await request(app).get(url);
 
         expect(response.status).toBe(500);
-        expect(mockPostTransaction).toBeCalledTimes(1);
-        expect(mockCreateConfirmationStatement).toBeCalledTimes(1);
+        expect(mockPostTransaction).toHaveBeenCalledTimes(1);
+        expect(mockCreateConfirmationStatement).toHaveBeenCalledTimes(1);
         expect(mockCreateConfirmationStatement.mock.calls[0][1]).toEqual(TRANSACTION_ID);
         expect(response.text).toContain(ERROR_PAGE_TEXT);
         expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();

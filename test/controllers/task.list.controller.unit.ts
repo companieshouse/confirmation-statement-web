@@ -67,7 +67,7 @@ describe("Task list controller tests", () => {
 
             const response = await request(app).get(URL);
 
-            expect(mockInitTaskList).toBeCalledWith(
+            expect(mockInitTaskList).toHaveBeenCalledWith(
                 validCompanyProfile.companyNumber,
                 TRANSACTION_ID,
                 SUBMISSION_ID,
@@ -152,7 +152,7 @@ describe("Task list controller tests", () => {
             PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-03-15";
             const response = await request(app).get(URL);
 
-            expect(mockInitTaskList).toBeCalledWith(
+            expect(mockInitTaskList).toHaveBeenCalledWith(
                 validCompanyProfile.companyNumber,
                 TRANSACTION_ID,
                 SUBMISSION_ID,
@@ -169,7 +169,7 @@ describe("Task list controller tests", () => {
             PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-03-14";
             const response = await request(app).get(URL);
 
-            expect(mockInitTaskList).toBeCalledWith(
+            expect(mockInitTaskList).toHaveBeenCalledWith(
                 validCompanyProfile.companyNumber,
                 TRANSACTION_ID,
                 SUBMISSION_ID,
@@ -186,7 +186,7 @@ describe("Task list controller tests", () => {
             PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-03-16";
             const response = await request(app).get(URL);
 
-            expect(mockInitTaskList).toBeCalledWith(
+            expect(mockInitTaskList).toHaveBeenCalledWith(
                 validCompanyProfile.companyNumber,
                 TRANSACTION_ID,
                 SUBMISSION_ID,
@@ -202,7 +202,7 @@ describe("Task list controller tests", () => {
             mockInitTaskList.mockReturnValueOnce(mockTaskListNoEmail);
             PropertiesMock.FEATURE_FLAG_ECCT_START_DATE_14082023 = "2020-03-99";
             const response = await request(app).get(URL);
-            expect(mockInitTaskList).toBeCalledWith(
+            expect(mockInitTaskList).toHaveBeenCalledWith(
                 validCompanyProfile.companyNumber,
                 TRANSACTION_ID,
                 SUBMISSION_ID,
@@ -218,7 +218,7 @@ describe("Task list controller tests", () => {
             mockInitTaskList.mockReturnValueOnce(mockTaskListNoEmail);
             const response = await request(app).get(URL);
 
-            expect(mockInitTaskList).toBeCalledWith(
+            expect(mockInitTaskList).toHaveBeenCalledWith(
                 validCompanyProfile.companyNumber,
                 TRANSACTION_ID,
                 SUBMISSION_ID,

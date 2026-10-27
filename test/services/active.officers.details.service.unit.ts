@@ -42,7 +42,7 @@ describe("Test active officers details service", () => {
         const session = getSessionRequest({ access_token: "token" });
         const response = await getActiveOfficersDetailsData(session, TRANSACTION_ID, SUBMISSION_ID);
 
-        expect(mockGetActiveOfficersDetails).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID);
+        expect(mockGetActiveOfficersDetails).toHaveBeenCalledWith(TRANSACTION_ID, SUBMISSION_ID);
         expect(response).toEqual(mockActiveOfficersDetails);
     });
 

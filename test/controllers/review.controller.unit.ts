@@ -230,7 +230,7 @@ describe("review controller tests", () => {
             const response = await request(app).get(URL);
 
             expect(response.status).toBe(200);
-            expect(mockGetTransaction).toBeCalledTimes(1);
+            expect(mockGetTransaction).toHaveBeenCalledTimes(1);
             expect(response.text).toContain(PAGE_HEADING);
             expect(response.text).not.toContain(COSTS_TEXT);
             expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
@@ -242,7 +242,7 @@ describe("review controller tests", () => {
             const response = await request(app).get(URL);
 
             expect(response.status).toBe(200);
-            expect(mockGetTransaction).toBeCalledTimes(1);
+            expect(mockGetTransaction).toHaveBeenCalledTimes(1);
             expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
             expect(response.text).toContain("govuk-back-link");
             expect(response.text).toContain(BACK_LINK_URL);
@@ -258,7 +258,7 @@ describe("review controller tests", () => {
             const response = await request(app).get(URL);
 
             expect(response.status).toBe(200);
-            expect(mockGetTransaction).toBeCalledTimes(1);
+            expect(mockGetTransaction).toHaveBeenCalledTimes(1);
             expect(response.text).toContain(PAGE_HEADING);
             expect(response.text).toContain(COSTS_TEXT);
             expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
@@ -270,7 +270,7 @@ describe("review controller tests", () => {
             const response = await request(app).get(URL);
 
             expect(response.status).toBe(500);
-            expect(mockGetTransaction).toBeCalledTimes(1);
+            expect(mockGetTransaction).toHaveBeenCalledTimes(1);
             expect(response.text).toContain(ERROR_PAGE_HEADING);
             expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();
         });
@@ -281,7 +281,7 @@ describe("review controller tests", () => {
             const response = await request(app).get(URL);
 
             expect(response.status).toBe(200);
-            expect(mockGetTransaction).toBeCalledTimes(1);
+            expect(mockGetTransaction).toHaveBeenCalledTimes(1);
             expect(response.text).toContain(PAGE_HEADING);
             expect(response.text).not.toContain(COSTS_TEXT);
             expect(mocks.mockAuthenticationMiddleware).toHaveBeenCalled();

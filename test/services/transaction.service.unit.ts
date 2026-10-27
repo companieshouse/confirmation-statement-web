@@ -65,7 +65,7 @@ describe("transaction service tests", () => {
             mockPostTransaction.mockResolvedValueOnce(undefined);
 
             await expect(postTransaction(session, COMPANY_NUMBER, "desc", "ref")).rejects.toThrow(ERROR);
-            expect(mockCreateAndLogError).toBeCalledWith(
+            expect(mockCreateAndLogError).toHaveBeenCalledWith(
                 "Transaction API POST request returned no response for company number 12345678"
             );
         });
@@ -76,7 +76,7 @@ describe("transaction service tests", () => {
             });
 
             await expect(postTransaction(session, COMPANY_NUMBER, "desc", "ref")).rejects.toThrow(ERROR);
-            expect(mockCreateAndLogError).toBeCalledWith(
+            expect(mockCreateAndLogError).toHaveBeenCalledWith(
                 "Http status code 404 - Failed to post transaction for company number 12345678"
             );
         });
@@ -87,7 +87,7 @@ describe("transaction service tests", () => {
             });
 
             await expect(postTransaction(session, COMPANY_NUMBER, "desc", "ref")).rejects.toThrow(ERROR);
-            expect(mockCreateAndLogError).toBeCalledWith(
+            expect(mockCreateAndLogError).toHaveBeenCalledWith(
                 "Transaction API POST request returned no resource for company number 12345678"
             );
         });
@@ -132,7 +132,7 @@ describe("transaction service tests", () => {
             await expect(
                 putTransaction(session, COMPANY_NUMBER, CS_SUBMISSION_ID, TRANSACTION_ID, "desc", "closed")
             ).rejects.toThrow(ERROR);
-            expect(mockCreateAndLogError).toBeCalledWith(
+            expect(mockCreateAndLogError).toHaveBeenCalledWith(
                 `Transaction API PUT request returned no response for transaction id ${TRANSACTION_ID}, company number ${COMPANY_NUMBER}`
             );
         });
@@ -145,7 +145,7 @@ describe("transaction service tests", () => {
             await expect(
                 putTransaction(session, COMPANY_NUMBER, CS_SUBMISSION_ID, TRANSACTION_ID, "desc", "closed")
             ).rejects.toThrow(ERROR);
-            expect(mockCreateAndLogError).toBeCalledWith(
+            expect(mockCreateAndLogError).toHaveBeenCalledWith(
                 `Http status code 404 - Failed to put transaction for transaction id ${TRANSACTION_ID}, company number ${COMPANY_NUMBER}`
             );
         });
@@ -229,7 +229,7 @@ describe("transaction service tests", () => {
             mockGetTransaction.mockResolvedValueOnce(undefined);
 
             await expect(getTransaction(session, TRANSACTION_ID)).rejects.toThrow(ERROR);
-            expect(mockCreateAndLogError).toBeCalledWith(
+            expect(mockCreateAndLogError).toHaveBeenCalledWith(
                 `Transaction API GET request returned no response for transaction id ${TRANSACTION_ID}`
             );
         });
@@ -238,7 +238,7 @@ describe("transaction service tests", () => {
             mockGetTransaction.mockResolvedValueOnce({});
 
             await expect(getTransaction(session, TRANSACTION_ID)).rejects.toThrow(ERROR);
-            expect(mockCreateAndLogError).toBeCalledWith(
+            expect(mockCreateAndLogError).toHaveBeenCalledWith(
                 `Http status code undefined - Failed to get transaction for transaction id ${TRANSACTION_ID}`
             );
         });
@@ -249,7 +249,7 @@ describe("transaction service tests", () => {
             });
 
             await expect(getTransaction(session, TRANSACTION_ID)).rejects.toThrow(ERROR);
-            expect(mockCreateAndLogError).toBeCalledWith(
+            expect(mockCreateAndLogError).toHaveBeenCalledWith(
                 `Http status code 404 - Failed to get transaction for transaction id ${TRANSACTION_ID}`
             );
         });
@@ -260,7 +260,7 @@ describe("transaction service tests", () => {
             });
 
             await expect(getTransaction(session, TRANSACTION_ID)).rejects.toThrow(ERROR);
-            expect(mockCreateAndLogError).toBeCalledWith(
+            expect(mockCreateAndLogError).toHaveBeenCalledWith(
                 `Transaction API GET request returned no resource for transaction id ${TRANSACTION_ID}`
             );
         });

@@ -48,7 +48,7 @@ describe("Test psc service", () => {
             };
             mockGetPersonsOfSignificantControl.mockResolvedValueOnce(resource);
             const response = await getPscs(session, TRANSACTION_ID, SUBMISSION_ID);
-            expect(mockGetPersonsOfSignificantControl).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID);
+            expect(mockGetPersonsOfSignificantControl).toHaveBeenCalledWith(TRANSACTION_ID, SUBMISSION_ID);
             expect(response).toEqual(mockPersonsOfSignificantControl);
         });
 
@@ -81,7 +81,7 @@ describe("Test psc service", () => {
 
             mockGetCompanyPscStatements.mockResolvedValueOnce(resource);
             const response = await getPscStatements(session, companyNumber, 25, 0);
-            expect(mockGetCompanyPscStatements).toBeCalledWith(companyNumber, 25, 0);
+            expect(mockGetCompanyPscStatements).toHaveBeenCalledWith(companyNumber, 25, 0);
             expect(response).toEqual(mockCompanyPscStatementResource);
         });
 

@@ -37,7 +37,7 @@ describe("User paper filing controller tests", () => {
 
             const response = await request(app).get(usePaperFilingPath);
 
-            expect(mockGetCompanyProfile).toBeCalledWith(validCompanyProfile.companyNumber);
+            expect(mockGetCompanyProfile).toHaveBeenCalledWith(validCompanyProfile.companyNumber);
             expect(response.text).toContain(USE_PAPER_FILING_PAGE_TITLE);
             expect(response.text).toContain("CS01 confirmation statement paper form");
         });

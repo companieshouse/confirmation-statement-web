@@ -42,7 +42,7 @@ describe("Test statement of capital service", () => {
         mockGetStatementOfCapital.mockResolvedValueOnce(resource);
         const session = getSessionRequest({ access_token: "token" });
         const response = await getStatementOfCapitalData(session, TRANSACTION_ID, SUBMISSION_ID);
-        expect(mockGetStatementOfCapital).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID);
+        expect(mockGetStatementOfCapital).toHaveBeenCalledWith(TRANSACTION_ID, SUBMISSION_ID);
         expect(response).toEqual(mockStatementOfCapital);
     });
 

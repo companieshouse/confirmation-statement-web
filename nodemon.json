@@ -2,9 +2,9 @@
   "exec": "node --inspect=0.0.0.0:48132 -r ts-node/register ./src/bin/nodemon-entry.ts",
   "ext": "ts,html,njk,json,js",
   "watch": ["./src", "./locales", "./views"],
+  "pollingInterval": 100,
   "events": {
     "restart": "echo '🔄 '  Nodemon Restarting...",
     "crash": "echo '💥 '  Nodemon Crashed!"
   }
 }
-

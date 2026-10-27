@@ -37,6 +37,12 @@ These instructions are for a local docker environment.
 This repo uses ESLint and Prettier for code linting and formatting, and are configured to run automatically via a pre-commit hook.
 You can by-pass the pre-commit hook using the `--no-verify` option in the `git` CLI.
 
+## SonarQube analysis
+
+`make sonar` and the `npm run sonarqube*` scripts require an externally installed
+SonarScanner CLI, with `sonar-scanner` available on `PATH`. The scanner is not
+installed as an npm dependency.
+
 ## Troubleshooting
 If you see the following error when running `npm install`:
 ```

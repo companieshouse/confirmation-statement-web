@@ -42,7 +42,7 @@ describe("Test active director details service", () => {
         const session = getSessionRequest({ access_token: "token" });
         const response = await getActiveOfficerDetailsData(session, TRANSACTION_ID, SUBMISSION_ID);
 
-        expect(mockGetActiveOfficerDetails).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID);
+        expect(mockGetActiveOfficerDetails).toHaveBeenCalledWith(TRANSACTION_ID, SUBMISSION_ID);
         expect(response).toEqual(mockActiveOfficerDetails);
     });
 

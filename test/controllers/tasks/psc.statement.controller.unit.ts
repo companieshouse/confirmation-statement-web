@@ -124,7 +124,7 @@ describe("PSC Statement controller tests", () => {
             const response = await request(app).get(PSC_STATEMENT_URL_WITHOUT_QUERY_PARAMS);
 
             expect(response.text).toContain(PSC_STATEMENT_TEXT);
-            expect(mockLookupPscStatementDescription).toBeCalledWith(mockSingleActivePsc.statement);
+            expect(mockLookupPscStatementDescription).toHaveBeenCalledWith(mockSingleActivePsc.statement);
         });
 
         it("Should show the not found psc statement text", async () => {

@@ -25,7 +25,7 @@ describe("Test node session handler authorization for private sdk", () => {
             createPublicOAuthApiClient({} as Session);
             fail();
         } catch (_error) {
-            expect(mockCreateAndLogError).toBeCalledWith(PUBLIC_ERROR_MESSAGE);
+            expect(mockCreateAndLogError).toHaveBeenCalledWith(PUBLIC_ERROR_MESSAGE);
         }
     });
 
@@ -36,7 +36,7 @@ describe("Test node session handler authorization for private sdk", () => {
             createPublicOAuthApiClient(session);
             fail();
         } catch (_error) {
-            expect(mockCreateAndLogError).toBeCalledWith(PUBLIC_ERROR_MESSAGE);
+            expect(mockCreateAndLogError).toHaveBeenCalledWith(PUBLIC_ERROR_MESSAGE);
         }
     });
 
@@ -45,7 +45,7 @@ describe("Test node session handler authorization for private sdk", () => {
             createPublicOAuthApiClient(getSessionRequest());
             fail();
         } catch (_error) {
-            expect(mockCreateAndLogError).toBeCalledWith(PUBLIC_ERROR_MESSAGE);
+            expect(mockCreateAndLogError).toHaveBeenCalledWith(PUBLIC_ERROR_MESSAGE);
         }
     });
 
