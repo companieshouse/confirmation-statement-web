@@ -114,7 +114,7 @@ describe("Company profile service test", () => {
             mockLookupCompanyType.mockReturnValueOnce(formattedCompanyType);
             const formattedCompanyProfile: CompanyProfile = formatForDisplay(clone(validCompanyProfile));
 
-            expect(mockLookupCompanyType).toBeCalledWith(validCompanyProfile.type);
+            expect(mockLookupCompanyType).toHaveBeenCalledWith(validCompanyProfile.type);
             expect(formattedCompanyProfile.type).toEqual(formattedCompanyType);
         });
 
@@ -123,7 +123,7 @@ describe("Company profile service test", () => {
             mockLookupCompanyStatus.mockReturnValueOnce(formattedCompanyStatus);
             const formattedCompanyProfile: CompanyProfile = formatForDisplay(clone(validCompanyProfile));
 
-            expect(mockLookupCompanyStatus).toBeCalledWith(validCompanyProfile.companyStatus);
+            expect(mockLookupCompanyStatus).toHaveBeenCalledWith(validCompanyProfile.companyStatus);
             expect(formattedCompanyProfile.companyStatus).toEqual(formattedCompanyStatus);
         });
 
@@ -134,7 +134,7 @@ describe("Company profile service test", () => {
             formatForDisplay(clonedCompanyProfile);
 
             expect(mockToReadableFormat.mock.calls[0][0]).toEqual(validCompanyProfile.dateOfCreation);
-            expect(mockToReadableFormat).toBeCalledTimes(1);
+            expect(mockToReadableFormat).toHaveBeenCalledTimes(1);
         });
 
         it("Should return empty strings for undefined dates", () => {

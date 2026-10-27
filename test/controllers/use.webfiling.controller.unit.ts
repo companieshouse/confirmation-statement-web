@@ -38,7 +38,7 @@ describe("Use Webfiling controller tests", () => {
 
             const response = await request(app).get(useWebFilingPath);
 
-            expect(mockGetCompanyProfile).toBeCalledWith(validCompanyProfile.companyNumber);
+            expect(mockGetCompanyProfile).toHaveBeenCalledWith(validCompanyProfile.companyNumber);
             expect(response.text).toContain(STOP_PAGE_TITLE_USE_WEBFILING);
             expect(response.text).toContain("our Webfiling service");
             expect(response.text).toContain(

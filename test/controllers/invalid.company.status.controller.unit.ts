@@ -37,7 +37,7 @@ describe("Invalid company status controller tests", () => {
 
             const response = await request(app).get(invalidCompanyStatusPath);
 
-            expect(mockGetCompanyProfile).toBeCalledWith(validCompanyProfile.companyNumber);
+            expect(mockGetCompanyProfile).toHaveBeenCalledWith(validCompanyProfile.companyNumber);
             expect(response.text).toContain(STOP_PAGE_TITLE_COMPANY_STATUS);
             expect(response.text).toContain("dissolved and struck off the register");
             expect(response.text).toContain(`cannot be filed for ${validCompanyProfile.companyName}`);

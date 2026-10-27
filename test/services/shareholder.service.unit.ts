@@ -36,7 +36,7 @@ describe("Test shareholder service", () => {
         mockGetShareholder.mockReturnValueOnce(resource);
         const session = getSessionRequest({ access_token: "token" });
         const response = await getShareholders(session, TRANSACTION_ID, SUBMISSION_ID);
-        expect(mockGetShareholder).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID);
+        expect(mockGetShareholder).toHaveBeenCalledWith(TRANSACTION_ID, SUBMISSION_ID);
         expect(response).toEqual(mockShareholder);
     });
 

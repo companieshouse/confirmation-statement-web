@@ -89,7 +89,7 @@ describe("Statement of Capital controller tests", () => {
             mockValidateTotalNumberOfShares.mockReturnValueOnce(false);
             const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
 
-            expect(mockValidateTotalNumberOfShares).toBeCalledTimes(1);
+            expect(mockValidateTotalNumberOfShares).toHaveBeenCalledTimes(1);
             expect(response.text).toContain(PAGE_TITLE);
             expect(response.text).toContain("Check the statement of capital");
             expect(response.text).toContain(UNPAID_AMOUNT_NULL_WARNING);
@@ -105,7 +105,7 @@ describe("Statement of Capital controller tests", () => {
             mockValidateTotalNumberOfShares.mockReturnValueOnce(true);
             const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
 
-            expect(mockValidateTotalNumberOfShares).toBeCalledTimes(1);
+            expect(mockValidateTotalNumberOfShares).toHaveBeenCalledTimes(1);
             expect(response.text).toContain(PAGE_TITLE);
             expect(response.text).toContain("Check the statement of capital");
             expect(response.text).toContain(UNPAID_AMOUNT_NULL_WARNING);
@@ -121,7 +121,7 @@ describe("Statement of Capital controller tests", () => {
             mockValidateTotalNumberOfShares.mockReturnValueOnce(true);
             const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
 
-            expect(mockValidateTotalNumberOfShares).toBeCalledTimes(1);
+            expect(mockValidateTotalNumberOfShares).toHaveBeenCalledTimes(1);
             expect(response.text).toContain(PAGE_TITLE);
             expect(response.text).toContain("Check the statement of capital");
             expect(response.text).toContain(UNPAID_AMOUNT_NULL_WARNING);
@@ -133,7 +133,7 @@ describe("Statement of Capital controller tests", () => {
             mockGetStatementOfCapitalData.mockResolvedValueOnce(mockStatementOfCapital);
             mockValidateTotalNumberOfShares.mockReturnValueOnce(false);
             const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
-            expect(mockValidateTotalNumberOfShares).toBeCalledTimes(1);
+            expect(mockValidateTotalNumberOfShares).toHaveBeenCalledTimes(1);
             expect(response.text).toContain(PAGE_TITLE);
             expect(response.text).toContain("Check the statement of capital");
             expect(response.text).toContain(SHARES_TOTALS_INVALID_WARNING);
@@ -145,7 +145,7 @@ describe("Statement of Capital controller tests", () => {
             mockGetStatementOfCapitalData.mockResolvedValueOnce(mockStatementOfCapital);
             mockValidateTotalNumberOfShares.mockReturnValueOnce(true);
             const response = await request(app).get(STATEMENT_OF_CAPITAL_URL);
-            expect(mockValidateTotalNumberOfShares).toBeCalledTimes(1);
+            expect(mockValidateTotalNumberOfShares).toHaveBeenCalledTimes(1);
             expect(response.text).toContain(PAGE_TITLE);
             expect(response.text).toContain("Check the statement of capital");
             expect(response.text).toContain("Is the statement of capital correct?");

@@ -36,7 +36,7 @@ describe("Test register location service", () => {
         mockGetRegisterLocations.mockReturnValueOnce(resource);
         const session = getSessionRequest({ access_token: "token" });
         const response = await getRegisterLocationData(session, TRANSACTION_ID, SUBMISSION_ID);
-        expect(mockGetRegisterLocations).toBeCalledWith(TRANSACTION_ID, SUBMISSION_ID);
+        expect(mockGetRegisterLocations).toHaveBeenCalledWith(TRANSACTION_ID, SUBMISSION_ID);
         expect(response).toEqual(mockRegisterLocation);
     });
 

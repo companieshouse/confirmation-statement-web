@@ -119,9 +119,9 @@ describe("People with significant control controller tests", () => {
         it("should navigate to the active pscs page", async () => {
             const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
             expect(response.text).toContain(PAGE_HEADING);
-            expect(mockGetPscs).toBeCalledTimes(1);
+            expect(mockGetPscs).toHaveBeenCalledTimes(1);
             expect(mockGetPscs.mock.calls[0][1]).toBe(TRANSACTION_ID);
-            expect(mockToReadableFormat).toBeCalledTimes(2);
+            expect(mockToReadableFormat).toHaveBeenCalledTimes(2);
             expect(mockToReadableFormat.mock.calls[0][0]).toBe(DOB_ISO);
             expect(response.text).toContain(ADDRESS_LINE_1_TITLE_CASE);
             expect(response.text).toContain(FORENAME_TITLE_CASE);
@@ -172,9 +172,9 @@ describe("People with significant control controller tests", () => {
             ]);
             const response = await request(app).get(PEOPLE_WITH_SIGNIFICANT_CONTROL_URL);
             expect(response.text).toContain(PAGE_HEADING);
-            expect(mockGetPscs).toBeCalledTimes(1);
+            expect(mockGetPscs).toHaveBeenCalledTimes(1);
             expect(mockGetPscs.mock.calls[0][1]).toBe(TRANSACTION_ID);
-            expect(mockToReadableFormat).toBeCalledTimes(4);
+            expect(mockToReadableFormat).toHaveBeenCalledTimes(4);
             expect(mockToReadableFormat.mock.calls[0][0]).toBe(DOB_ISO);
             expect(response.text).toContain(ADDRESS_LINE_1_TITLE_CASE);
             expect(response.text).toContain(FORENAME_TITLE_CASE);

@@ -65,7 +65,7 @@ describe("Wrong psc statement stop controller tests", () => {
             mockGetPscs.mockResolvedValueOnce(mockPscList);
             const response = await request(app).get(populatedWrongPscStatementPath);
 
-            expect(mockGetPscs).toBeCalledTimes(1);
+            expect(mockGetPscs).toHaveBeenCalledTimes(1);
             expect(mockGetPscs.mock.calls[0][1]).toBe(TRANSACTION_ID);
             expect(response.text).toContain(WRONG_PSC_PAGE_TITLE);
             expect(response.text).toContain(RADIO_LEGEND);
@@ -77,7 +77,7 @@ describe("Wrong psc statement stop controller tests", () => {
             mockGetPscs.mockResolvedValueOnce([]);
             const response = await request(app).get(populatedWrongPscStatementPath);
 
-            expect(mockGetPscs).toBeCalledTimes(1);
+            expect(mockGetPscs).toHaveBeenCalledTimes(1);
             expect(mockGetPscs.mock.calls[0][1]).toBe(TRANSACTION_ID);
             expect(response.text).toContain(WRONG_PSC_PAGE_TITLE);
             expect(response.text).toContain(RADIO_LEGEND);
@@ -89,7 +89,7 @@ describe("Wrong psc statement stop controller tests", () => {
             mockGetPscs.mockResolvedValueOnce(undefined);
             const response = await request(app).get(populatedWrongPscStatementPath);
 
-            expect(mockGetPscs).toBeCalledTimes(1);
+            expect(mockGetPscs).toHaveBeenCalledTimes(1);
             expect(mockGetPscs.mock.calls[0][1]).toBe(TRANSACTION_ID);
             expect(response.text).toContain(WRONG_PSC_PAGE_TITLE);
             expect(response.text).toContain(RADIO_LEGEND);
@@ -118,7 +118,7 @@ describe("Wrong psc statement stop controller tests", () => {
             const response = await request(app).post(populatedWrongPscStatementPath);
 
             expect(response.status).toEqual(200);
-            expect(mockGetPscs).toBeCalledTimes(1);
+            expect(mockGetPscs).toHaveBeenCalledTimes(1);
             expect(mockGetPscs.mock.calls[0][1]).toBe(TRANSACTION_ID);
             expect(response.text).toContain(WRONG_PSC_PAGE_TITLE);
             expect(response.text).toContain(RADIO_LEGEND);
@@ -132,7 +132,7 @@ describe("Wrong psc statement stop controller tests", () => {
             const response = await request(app).post(populatedWrongPscStatementPath);
 
             expect(response.status).toEqual(200);
-            expect(mockGetPscs).toBeCalledTimes(1);
+            expect(mockGetPscs).toHaveBeenCalledTimes(1);
             expect(mockGetPscs.mock.calls[0][1]).toBe(TRANSACTION_ID);
             expect(response.text).toContain(WRONG_PSC_PAGE_TITLE);
             expect(response.text).toContain(RADIO_LEGEND);
@@ -146,7 +146,7 @@ describe("Wrong psc statement stop controller tests", () => {
             const response = await request(app).post(populatedWrongPscStatementPath);
 
             expect(response.status).toEqual(200);
-            expect(mockGetPscs).toBeCalledTimes(1);
+            expect(mockGetPscs).toHaveBeenCalledTimes(1);
             expect(mockGetPscs.mock.calls[0][1]).toBe(TRANSACTION_ID);
             expect(response.text).toContain(WRONG_PSC_PAGE_TITLE);
             expect(response.text).toContain(RADIO_LEGEND);
